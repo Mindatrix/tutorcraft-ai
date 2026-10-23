@@ -1,4 +1,5 @@
-import type { BattleConfig, BattlePayload, Difficulty, Question, SkillTag } from './types';
+import type { BattleConfig, BattlePayload, BossProfile, Difficulty, Question, SkillTag } from './types';
+import { BOSS_AVATAR_IDS, MAP_SETTING_IDS, sanitizeBoss } from './boss';
 import { clampDuration } from './scaling';
 import { isScenarioId } from './scenarios';
 import { normalizeThemes } from './themes';
@@ -36,8 +37,11 @@ export function sanitizeQuestion(raw: unknown, id: number): Question | null {
   };
 }
 
-/** Validate a whole AI payload. Throws if fewer than `minQuestions` usable questions. */
-export function validateBattlePayload(raw: unknown, minQuestions = 1): BattlePayload {
+/**
+ * Validate a whole AI payload. Throws if fewer than `minQuestions` usable questions.
+ * With `bossFallback`, the top-level boss fields are validated too.
+ */
+export function validateBattlePayload(raw: unknown, minQuestions = 1, bossFallback?: BossProfile): BattlePayload {
   if (!raw || typeof raw !== 'object') throw new Error('Payload is not an object');
   const r = raw as Record<string, unknown>;
   const questions = (Array.isArray(r.questions) ? r.questions : [])
@@ -62,7 +66,8 @@ export function validateBattlePayload(raw: unknown, minQuestions = 1): BattlePay
         })
         .filter((k): k is NonNullable<typeof k> => !!k)
     : undefined;
-  return { teaching_notes: notes, questions, knowledge_matrix: matrix };
+  const boss = bossFallback ? sanitizeBoss(r.boss ?? r, bossFallback) : undefined;
+  return { teaching_notes: notes, questions, knowledge_matrix: matrix, boss };
 }
 
 /** Build a safe BattleConfig from untrusted request JSON. */
@@ -85,6 +90,12 @@ export function normalizeConfig(raw: Record<string, unknown>): BattleConfig {
 export const GEMINI_RESPONSE_SCHEMA = {
   type: 'OBJECT',
   properties: {
+    boss_name: { type: 'STRING' },
+    boss_avatar: { type: 'STRING', enum: BOSS_AVATAR_IDS },
+    boss_dialogue_on_attack: { type: 'STRING' },
+    boss_skills: { type: 'ARRAY', items: { type: 'STRING' } },
+    map_setting: { type: 'STRING', enum: MAP_SETTING_IDS },
+    map_name: { type: 'STRING' },
     teaching_notes: { type: 'ARRAY', items: { type: 'STRING' } },
     knowledge_matrix: {
       type: 'ARRAY',
@@ -116,5 +127,5 @@ export const GEMINI_RESPONSE_SCHEMA = {
       },
     },
   },
-  required: ['teaching_notes', 'questions'],
+  required: ['boss_name', 'boss_avatar', 'boss_dialogue_on_attack', 'boss_skills', 'map_setting', 'teaching_notes', 'questions'],
 } as const;

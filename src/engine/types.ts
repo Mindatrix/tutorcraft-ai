@@ -60,10 +60,25 @@ export interface BattleScaling {
   wrongPenalty: number;
 }
 
+export type BossAvatar = 'dragon' | 'golem' | 'wizard' | 'shadow_king';
+
+export type MapSetting = 'forest' | 'castle' | 'volcano' | 'ice_cave' | 'dungeon' | 'sky_arena';
+
+/** The boss and arena the AI designs from the lesson content. */
+export interface BossProfile {
+  boss_name: string;
+  boss_avatar: BossAvatar;
+  boss_dialogue_on_attack: string;
+  boss_skills: string[];
+  map_setting: MapSetting;
+  map_name: string;
+}
+
 export interface BattlePayload {
   teaching_notes: string[];
   questions: Question[];
   knowledge_matrix?: { topic: string; skill_tag: SkillTag; summary: string }[];
+  boss?: BossProfile;
 }
 
 export interface ThemeDefinition {
@@ -97,4 +112,10 @@ export interface AnswerRecord {
   chosenIdx: number; // -1 = timed out
   timeMs: number;
   shielded?: boolean;
+}
+
+/** A skill cast, recorded so the server can re-check the MP budget. */
+export interface SkillCast {
+  skill: SkillId;
+  questionId: number;
 }

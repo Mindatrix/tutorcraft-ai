@@ -1,4 +1,4 @@
-import type { AnswerRecord, BattleConfig, BattleScaling, Question, SkillId } from './types';
+import type { AnswerRecord, BattleConfig, BattleScaling, Question, SkillCast, SkillId } from './types';
 import { damageFor, timeLimitFor } from './scaling';
 import { MAX_MP, SKILLS, FREEZE_SECONDS, canCast, mpGain, optionsToRemove } from './skills';
 import { miracleBuffFor } from './dda';
@@ -33,10 +33,11 @@ export interface BattleState {
   timeLeft: number;
   selected: number | null;
   answers: AnswerRecord[];
+  casts: SkillCast[];
   feedback: { text: string; tone: FeedbackTone } | null;
   outcome: 'victory' | 'defeat' | null;
-  /** Increments on every event so the UI can fire one SFX per event. */
-  event: { kind: BattleEvent; n: number } | null;
+  /** Increments on every event so the UI can fire one SFX / animation per event. */
+  event: { kind: BattleEvent; n: number; amount?: number } | null;
 }
 
 export type BattleAction =
@@ -67,14 +68,15 @@ export function initialBattleState(ctx: BattleCtx): BattleState {
     timeLeft: t,
     selected: null,
     answers: [],
+    casts: [],
     feedback: null,
     outcome: null,
     event: null,
   };
 }
 
-function emit(s: BattleState, kind: BattleEvent): BattleState['event'] {
-  return { kind, n: (s.event?.n ?? 0) + 1 };
+function emit(s: BattleState, kind: BattleEvent, amount?: number): BattleState['event'] {
+  return { kind, n: (s.event?.n ?? 0) + 1, amount };
 }
 
 function answer(s: BattleState, chosen: number, ctx: BattleCtx): BattleState {
@@ -107,7 +109,7 @@ function answer(s: BattleState, chosen: number, ctx: BattleCtx): BattleState {
       bossHp: Math.max(0, s.bossHp - dmg),
       mp: Math.min(MAX_MP, s.mp + mpGain(combo)),
       feedback: { text: `${theme.emoji} ${line} -${dmg} HP${combo >= 2 ? ` · Combo x${combo}` : ''}`, tone: crit ? 'critical' : 'correct' },
-      event: emit(s, crit ? 'critical' : 'correct'),
+      event: emit(s, crit ? 'critical' : 'correct', dmg),
     };
   }
 
@@ -128,7 +130,7 @@ function answer(s: BattleState, chosen: number, ctx: BattleCtx): BattleState {
     consecutiveWrong: s.consecutiveWrong + 1,
     hp: Math.max(0, s.hp - ctx.scaling.wrongPenalty),
     feedback: { text: `${prefix}${theme.emoji} ${pick(theme.wrong, s.idx)} -${ctx.scaling.wrongPenalty} HP`, tone: 'wrong' },
-    event: emit(s, 'wrong'),
+    event: emit(s, 'wrong', ctx.scaling.wrongPenalty),
   };
 }
 
@@ -170,6 +172,7 @@ function cast(s: BattleState, skill: SkillId, ctx: BattleCtx): BattleState {
     ...s,
     ...patch,
     mp: s.mp - cost,
+    casts: [...s.casts, { skill, questionId: q.id }],
     feedback: { text, tone: 'skill' },
     event: emit(s, 'skill'),
   });
@@ -203,7 +206,7 @@ export function battleReducer(ctx: BattleCtx) {
         return { ...initialBattleState(ctx), phase: 'playing' };
       case 'RESTORE':
         // Resume saved progress, but never past the end of this battle.
-        return a.state.idx < ctx.questions.length ? { ...a.state, event: null } : s;
+        return a.state.idx < ctx.questions.length ? { ...a.state, casts: a.state.casts ?? [], event: null } : s;
     }
   };
 }

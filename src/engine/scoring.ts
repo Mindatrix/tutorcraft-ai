@@ -39,7 +39,7 @@ export function scoreBattle(
 ): BattleScore {
   const byId = new Map(questions.map((q) => [q.id, q]));
   const scenario = SCENARIOS[config.scenario];
-  const scaling = computeScaling({ ...config, teamSize: 1 }); // personal contribution
+  const scaling = computeScaling({ ...config, teamSize: 1 }, questions.length); // personal contribution
   const seen = new Set<number>();
   const topics = new Map<string, TopicStat>();
 

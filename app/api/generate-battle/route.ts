@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import {
   computeScaling,
+  defaultBoss,
   fallbackPayload,
   normalizeConfig,
   reviewSlots,
@@ -13,6 +14,7 @@ import { generateWithFailSafe, type InlineDocument } from '../../../src/server/g
 import { buildBattlePrompt } from '../../../src/server/prompt';
 import { clientKey, rateLimit } from '../../../src/server/rateLimit';
 import { serverSupabase } from '../../../src/server/supabase-server';
+import { saveBattle } from '../../../src/server/battles';
 
 const RATE_LIMIT = 5; // generations per IP per minute
 const MAX_DOC_BYTES = 4 * 1024 * 1024;
@@ -105,9 +107,11 @@ export async function POST(req: Request) {
     reviewCount,
   });
 
+  const bossFallback = defaultBoss(topic || doc?.name || '', config.themes);
+
   // Accept the AI output if it delivers at least 80% of the requested questions.
   const minQuestions = Math.max(1, Math.ceil(Q * 0.8));
-  const ai = await generateWithFailSafe(prompt, parsedDoc.inline, (raw) => validateBattlePayload(raw, minQuestions), Q);
+  const ai = await generateWithFailSafe(prompt, parsedDoc.inline, (raw) => validateBattlePayload(raw, minQuestions, bossFallback), Q);
 
   let payload: BattlePayload;
   let provider: string;
@@ -123,6 +127,7 @@ export async function POST(req: Request) {
     payload = fallbackPayload(Q, topic || 'fallback');
     provider = 'Local Cached Template';
   }
+  const boss = payload.boss ?? bossFallback;
 
   const reviewSet = new Set(reviewTopics.map((t) => t.toLowerCase()));
   const questions: Question[] = payload.questions.slice(0, Q).map((q, i) => ({
@@ -131,45 +136,26 @@ export async function POST(req: Request) {
     is_review: reviewSet.has(q.topic.toLowerCase()) || undefined,
   }));
 
-  const storedConfig = { ...config, scaling, classCode };
+  const lessonTitle = topic || doc?.name || 'Uploaded lesson';
+  const storedConfig = { ...config, scaling, classCode, boss };
 
-  // Persist. If the `config` column hasn't been migrated yet, retry with the legacy columns.
-  let battleId: string | null = null;
-  let dbWarning: string | undefined;
-  const db = serverSupabase();
-  if (db) {
-    const row = {
-      theme: config.themes[0],
-      raw_input: topic || doc?.name || 'Uploaded lesson',
-      teaching_notes: payload.teaching_notes.join('\n'),
-      questions,
-    };
-    const first = await db.from('battles').insert([{ ...row, config: storedConfig }]).select('id').single();
-    if (!first.error) {
-      battleId = first.data.id;
-    } else {
-      const legacy = await db.from('battles').insert([row]).select('id').single();
-      if (!legacy.error) {
-        battleId = legacy.data.id;
-        dbWarning = 'Cột "config" chưa có trong bảng battles — chạy supabase/schema.sql để lưu cấu hình trận.';
-      } else {
-        dbWarning = `Không lưu được vào Supabase: ${legacy.error.message}`;
-      }
-    }
-  } else {
-    dbWarning = 'Chưa cấu hình Supabase.';
-  }
+  // Studio drafts are previewed and edited first, then published via POST /api/battles.
+  const saved = body.draft === true
+    ? { id: null, code: null, warning: undefined }
+    : await saveBattle({ topic: lessonTitle, config: storedConfig, teachingNotes: payload.teaching_notes, questions });
 
   return NextResponse.json({
-    battle_id: battleId,
-    raw_input: topic,
+    battle_id: saved.id,
+    code: saved.code,
+    raw_input: lessonTitle,
     config: storedConfig,
+    boss,
     variants: variantCodes(config.studentCount),
     provider,
     attempts: ai.attempts,
     execution_time: `${((Date.now() - startTime) / 1000).toFixed(1)}s`,
     review_topics: reviewCount ? reviewTopics : [],
-    db_warning: dbWarning,
+    db_warning: saved.warning,
     teaching_notes: payload.teaching_notes,
     knowledge_matrix: payload.knowledge_matrix,
     questions,

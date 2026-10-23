@@ -15,13 +15,18 @@ create table if not exists public.battles (
   questions jsonb not null default '[]'::jsonb
 );
 alter table public.battles add column if not exists config jsonb;
+-- Early versions limited theme to survival/moba/sports. The full theme list lives in config.themes.
+alter table public.battles drop constraint if exists battles_theme_check;
+-- Short join code students type on the home page (e.g. K7Q2XM). Boss profile lives in config.boss.
+alter table public.battles add column if not exists code text;
+create unique index if not exists battles_code_key on public.battles (code) where code is not null;
 
 alter table public.battles enable row level security;
 
 drop policy if exists "battles readable by anyone with the link" on public.battles;
 create policy "battles readable by anyone with the link"
   on public.battles for select to anon, authenticated using (true);
--- No anon insert/update/delete: battles are created only by /api/generate-battle.
+-- No anon insert/update/delete: battles are created only by the server (/api/generate-battle, /api/battles).
 
 -- Battle results (authoritative Gems / EXP, computed server-side) -------------
 create table if not exists public.battle_results (
@@ -40,8 +45,10 @@ create table if not exists public.battle_results (
   exp int not null check (exp >= 0 and exp <= 5000),
   damage int not null default 0,
   boss_defeated boolean not null default false,
+  hp_remaining int check (hp_remaining between 0 and 100),
   topics jsonb not null default '[]'::jsonb
 );
+alter table public.battle_results add column if not exists hp_remaining int check (hp_remaining between 0 and 100);
 create index if not exists battle_results_battle_idx on public.battle_results (battle_id, gems desc);
 
 alter table public.battle_results enable row level security;

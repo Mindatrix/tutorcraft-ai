@@ -4,10 +4,13 @@ import {
   gradeAnswer,
   needsReview,
   nextReview,
+  replayBattle,
   scoreBattle,
   timeLimitFor,
   weakTopics,
   type AnswerRecord,
+  type SkillCast,
+  type SkillId,
   type TopicStat,
 } from '../../../src/engine';
 import { loadBattle } from '../../../src/server/battles';
@@ -48,7 +51,16 @@ export async function POST(req: Request) {
     })
     .filter((a) => Number.isInteger(a.questionId) && Number.isInteger(a.chosenIdx));
 
+  const casts: SkillCast[] = (Array.isArray(body.casts) ? body.casts : [])
+    .slice(0, 100)
+    .map((c) => {
+      const o = (c ?? {}) as Record<string, unknown>;
+      return { skill: String(o.skill) as SkillId, questionId: Number(o.questionId) };
+    })
+    .filter((c) => Number.isInteger(c.questionId));
+
   const score = scoreBattle(questions, answers, battle.config);
+  const { hpRemaining } = replayBattle(questions, answers, casts, battle.config);
   const nickname = cleanText(body.nickname, 24) || 'Anonymous Hero';
   const avatar = cleanText(body.avatar, 8) || '🐣';
   const studentKey = cleanText(body.studentKey, 64) || 'anon';
@@ -56,24 +68,26 @@ export async function POST(req: Request) {
   const db = serverSupabase();
   let saved = false;
   if (db && battle.id !== 'demo') {
-    const ins = await db.from('battle_results').insert([
-      {
-        battle_id: battle.id,
-        class_code: battle.config.classCode,
-        student_key: studentKey,
-        nickname,
-        avatar,
-        variant_code: variant,
-        correct: score.correct,
-        answered: score.answered,
-        accuracy: score.accuracy,
-        gems: score.gems,
-        exp: score.exp,
-        damage: score.damage,
-        boss_defeated: score.bossDefeated,
-        topics: score.topics,
-      },
-    ]);
+    const resultRow = {
+      battle_id: battle.id,
+      class_code: battle.config.classCode,
+      student_key: studentKey,
+      nickname,
+      avatar,
+      variant_code: variant,
+      correct: score.correct,
+      answered: score.answered,
+      accuracy: score.accuracy,
+      gems: score.gems,
+      exp: score.exp,
+      damage: score.damage,
+      boss_defeated: score.bossDefeated,
+      topics: score.topics,
+    };
+    let ins = await db.from('battle_results').insert([{ ...resultRow, hp_remaining: hpRemaining }]);
+    // hp_remaining column not migrated yet — save the rest anyway.
+    if (ins.error) ins = await db.from('battle_results').insert([resultRow]);
+    if (ins.error) console.error('battle_results insert failed:', ins.error.message);
     saved = !ins.error;
 
     // Spaced repetition: capture wrong / hesitant items into the weak matrix.
@@ -92,12 +106,15 @@ export async function POST(req: Request) {
         ...nextReview(null, grade),
       }];
     });
-    if (weakRows.length) {
-      await db.from('weak_knowledge_matrix').upsert(weakRows, { onConflict: 'class_code,student_key,topic' });
+    // One row per topic: Postgres rejects an upsert batch that hits the same key twice.
+    const byTopic = new Map(weakRows.map((r) => [r.topic.toLowerCase(), r]));
+    if (byTopic.size) {
+      const up = await db.from('weak_knowledge_matrix').upsert(Array.from(byTopic.values()), { onConflict: 'class_code,student_key,topic' });
+      if (up.error) console.error('weak_knowledge_matrix upsert failed:', up.error.message);
     }
   }
 
-  return NextResponse.json({ score, saved });
+  return NextResponse.json({ score, hpRemaining, saved });
 }
 
 /** Leaderboard (nicknames + pet avatars only) and class diagnostics for one battle. */

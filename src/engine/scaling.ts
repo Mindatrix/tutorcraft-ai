@@ -42,8 +42,12 @@ export function wrongPenalty(questions: number): number {
   return Math.ceil(PLAYER_MAX_HP / (allowedWrong + 1));
 }
 
-export function computeScaling(config: Pick<BattleConfig, 'durationMinutes' | 'scenario' | 'teamSize'>): BattleScaling {
-  const q = totalQuestions(config.durationMinutes);
+/**
+ * `questionCount` overrides the duration formula once a battle exists — tutors can
+ * delete questions in the Studio, and Boss HP must stay = Q x 100 for the real Q.
+ */
+export function computeScaling(config: Pick<BattleConfig, 'durationMinutes' | 'scenario' | 'teamSize'>, questionCount?: number): BattleScaling {
+  const q = questionCount && questionCount > 0 ? questionCount : totalQuestions(config.durationMinutes);
   const team = config.scenario === 'coop_raid' ? config.teamSize : 1;
   return {
     totalQuestions: q,

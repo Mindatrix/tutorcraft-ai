@@ -1,23 +1,23 @@
 import { GEMINI_RESPONSE_SCHEMA } from '../engine/schema';
 
 // Fail-safe loop:
-//   Attempt 1: fast primary Flash-Lite model, timeout >= 2000ms (scaled by question count).
+//   Attempt 1: fast primary Flash-Lite model (timeout scaled by question count).
 //   Attempt 2: secondary Flash-Lite model on timeout or error.
 //   Caller falls back to the local cached template if both fail.
 // The blueprint named Gemini 2.0 Flash / 1.5 Flash; Google has retired both (Oct 2026),
 // so the defaults are current Flash-Lite models. Override via env if needed.
 //
-// Latency (measured Oct 2026, free tier): ~7.3s for 15 questions (~2.6k output tokens)
-// on the primary model, ~21s on the secondary. A flat 2000ms cut-off would always fall
-// through to the local template, so the 2s floor is kept for short battles and longer
-// battles get ~1s (primary) / ~1.5s (secondary) per question.
+// Latency (measured Oct 2026, free tier, incl. boss design + teaching notes):
+// ~4.5s fixed overhead + ~0.2s per question on the primary model (9 Q ≈ 5.9s,
+// 15 Q ≈ 6.7s); the secondary is ~2-3x slower. A flat 2000ms cut-off would always
+// fall through to the local template, so timeouts = base + per-question allowance.
 
 export const PRIMARY_MODEL = process.env.GEMINI_PRIMARY_MODEL || 'gemini-flash-lite-latest';
 export const SECONDARY_MODEL = process.env.GEMINI_SECONDARY_MODEL || 'gemini-3.1-flash-lite';
 
 function timeouts(questionCount: number): [number, number] {
-  const primary = Number(process.env.GEMINI_PRIMARY_TIMEOUT_MS) || Math.max(2000, questionCount * 1000);
-  const secondary = Number(process.env.GEMINI_SECONDARY_TIMEOUT_MS) || Math.max(8000, questionCount * 1500);
+  const primary = Number(process.env.GEMINI_PRIMARY_TIMEOUT_MS) || 5000 + questionCount * 400;
+  const secondary = Number(process.env.GEMINI_SECONDARY_TIMEOUT_MS) || 8000 + questionCount * 800;
   return [primary, secondary];
 }
 

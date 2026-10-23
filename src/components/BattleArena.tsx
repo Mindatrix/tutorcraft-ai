@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react';
-import { Heart, Zap, Shield, Snowflake, Eye, Timer, Volume2, VolumeX, RotateCcw, Trophy, Gift, WifiOff, Users } from 'lucide-react';
+import { Zap, Shield, Snowflake, Eye, Timer, Volume2, VolumeX, RotateCcw, Trophy, Gift, WifiOff, Users } from 'lucide-react';
 import {
   MAX_MP,
   SCENARIOS,
@@ -16,6 +16,7 @@ import {
   scoreBattle,
   themeForQuestion,
   type BattleConfig,
+  type BossProfile,
   type BattleScore,
   type BattleState,
   type LootItem,
@@ -24,6 +25,7 @@ import {
 } from '../engine';
 import { flushQueue, load, remove, save, studentKey, submitResult } from '../client/storage';
 import { initSfx, play, setMuted } from '../client/sfx';
+import BattleCanvas from './BattleCanvas';
 
 const PETS = ['🐣', '🦊', '🐼', '🐸', '🐙', '🦄', '🐲', '🐧', '🐯', '🦉'];
 const SKILL_ICONS: Record<SkillId, typeof Shield> = { shield: Shield, freeze: Snowflake, eye_of_truth: Eye };
@@ -40,6 +42,7 @@ interface Props {
   topic: string;
   config: BattleConfig;
   questions: Question[];
+  boss: BossProfile;
   variant: number | null;
 }
 
@@ -49,9 +52,9 @@ interface Leaderboard {
   totalDamage?: number;
 }
 
-export default function BattleArena({ battleId, topic, config, questions: baseQuestions, variant, prefs }: Props) {
+export default function BattleArena({ battleId, topic, config, questions: baseQuestions, boss, variant, prefs }: Props) {
   const questions = useMemo(() => buildVariant(baseQuestions, battleId, variant), [baseQuestions, battleId, variant]);
-  const scaling = useMemo(() => computeScaling(config), [config]);
+  const scaling = useMemo(() => computeScaling(config, baseQuestions.length), [config, baseQuestions.length]);
   const ctx = useMemo(() => ({ questions, config, scaling }), [questions, config, scaling]);
   const reducer = useMemo(() => battleReducer(ctx), [ctx]);
   const storageKey = `tc:battle:${battleId}:${variant ?? 0}`;
@@ -65,6 +68,7 @@ export default function BattleArena({ battleId, topic, config, questions: baseQu
   const [anonymous, setAnonymous] = useState(prefs.profile?.anonymous ?? false);
   const [online, setOnline] = useState(prefs.online);
   const [serverScore, setServerScore] = useState<BattleScore | null>(null);
+  const [serverHp, setServerHp] = useState<number | null>(null);
   // 'idle' while in a result phase means the submission is in flight.
   const [syncState, setSyncState] = useState<'idle' | 'saved' | 'queued'>('idle');
   const [board, setBoard] = useState<Leaderboard | null>(null);
@@ -133,22 +137,24 @@ export default function BattleArena({ battleId, topic, config, questions: baseQu
     if (state.phase !== 'result' || submitted.current) return;
     submitted.current = true;
     remove(storageKey);
-    void submitResult<{ score: BattleScore }>({
+    void submitResult<{ score: BattleScore; hpRemaining?: number }>({
       battleId,
       variant,
       nickname: playerName,
       avatar,
       studentKey: studentKey(),
       answers: state.answers,
+      casts: state.casts,
     }).then(async ({ data, queued }) => {
       if (data?.score) setServerScore(data.score);
+      if (typeof data?.hpRemaining === 'number') setServerHp(data.hpRemaining);
       setSyncState(queued ? 'queued' : 'saved');
       if (scenario.showLeaderboard && !queued) {
         const res = await fetch(`/api/battle-result?battleId=${encodeURIComponent(battleId)}`).catch(() => null);
         if (res?.ok) setBoard(await res.json());
       }
     });
-  }, [state.phase, state.answers, storageKey, battleId, variant, playerName, avatar, scenario.showLeaderboard]);
+  }, [state.phase, state.answers, state.casts, storageKey, battleId, variant, playerName, avatar, scenario.showLeaderboard]);
 
   const start = useCallback(() => {
     initSfx(muted); // unlocks audio on a user gesture so SFX play instantly
@@ -160,6 +166,7 @@ export default function BattleArena({ battleId, topic, config, questions: baseQu
     remove(storageKey);
     submitted.current = false;
     setServerScore(null);
+    setServerHp(null);
     setSyncState('idle');
     setBoard(null);
     setLoot(null);
@@ -230,7 +237,13 @@ export default function BattleArena({ battleId, topic, config, questions: baseQu
               <div className={`text-xs font-bold uppercase tracking-wider ${gamified ? 'text-blue-400' : 'text-blue-600'}`}>
                 {scenario.name} · {scenario.style}
               </div>
-              <h1 className="text-2xl font-extrabold mt-1">{gamified ? `${theme.emoji} ${config.themes.map((t) => THEMES[t].name).join(' × ')}` : 'Academic Test'}</h1>
+              <h1 className="text-2xl font-extrabold mt-1">{gamified ? `${theme.emoji} ${boss.map_name}` : 'Academic Test'}</h1>
+              {gamified && (
+                <p className="text-sm font-bold text-rose-400 mt-1">
+                  👹 Boss: {boss.boss_name}
+                  <span className={`font-normal ${muted2}`}> · {config.themes.map((t) => THEMES[t].name).join(' × ')}</span>
+                </p>
+              )}
               <p className={`text-sm mt-1 ${muted2}`}>
                 {questions.length} questions · ~{config.durationMinutes} min
                 {gamified ? ` · Boss HP ${scaling.bossHp.toLocaleString('en-US')}` : ''}
@@ -274,30 +287,24 @@ export default function BattleArena({ battleId, topic, config, questions: baseQu
           </div>
         )}
 
+        {/* Battle scene — stays mounted into the result screen so the boss break + chest drop can play */}
+        {gamified && state.phase !== 'lobby' && (
+          <BattleCanvas
+            boss={boss}
+            heroAvatar={avatar}
+            heroName={playerName}
+            bossHp={state.bossHp}
+            bossMax={scaling.bossHp}
+            hp={state.hp}
+            hpMax={scaling.playerHp}
+            shield={state.shield}
+            event={state.event}
+          />
+        )}
+
         {/* Playing */}
         {state.phase === 'playing' && q && (
           <>
-            {gamified && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <Bar
-                  label={`👹 ${theme.bossName}`}
-                  value={state.bossHp}
-                  max={scaling.bossHp}
-                  gradient={theme.accent}
-                  border="border-red-500/30"
-                  labelClass="text-red-400"
-                />
-                <Bar
-                  label={<><Heart className="w-3.5 h-3.5 fill-emerald-400 inline" /> Hero HP{state.shield ? ' 🛡️' : ''}</>}
-                  value={state.hp}
-                  max={scaling.playerHp}
-                  gradient="from-emerald-600 to-teal-400"
-                  border="border-emerald-500/30"
-                  labelClass="text-emerald-400"
-                />
-              </div>
-            )}
-
             <div className={`border rounded-2xl p-3 flex items-center justify-between ${card}`}>
               <div className={`flex items-center gap-2 font-bold text-sm ${state.freezeLeft > 0 ? 'text-cyan-400' : state.timeLeft <= 5 ? 'text-rose-500' : 'text-amber-500'}`}>
                 {state.freezeLeft > 0 ? <Snowflake className="w-4 h-4" /> : <Timer className="w-4 h-4" />}
@@ -413,6 +420,9 @@ export default function BattleArena({ battleId, topic, config, questions: baseQu
               <div className="grid grid-cols-2 gap-3 max-w-sm mx-auto">
                 <Stat label="Gems" value={`+${score.gems}`} className="text-amber-400" />
                 <Stat label="EXP" value={`+${score.exp}`} className="text-blue-400" />
+                <div className="col-span-2">
+                  <Stat label="HP còn lại" value={`${serverHp ?? state.hp} / ${scaling.playerHp}`} className="text-emerald-400" />
+                </div>
                 {score.milestoneMultiplier > 1 && (
                   <div className="col-span-2 text-xs font-bold text-emerald-400">🎯 Expected Score reached — x{score.milestoneMultiplier} multiplier!</div>
                 )}
