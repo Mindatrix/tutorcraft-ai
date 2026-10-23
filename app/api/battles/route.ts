@@ -9,7 +9,7 @@ import {
   validateBattlePayload,
   variantCodes,
 } from '../../../src/engine';
-import { demoLoadedBattle, loadBattle, loadBattleByCode, saveBattle } from '../../../src/server/battles';
+import { demoLoadedBattle, loadBattle, loadBattleByCode, publicBattle, saveBattle } from '../../../src/server/battles';
 import { clientKey, rateLimit } from '../../../src/server/rateLimit';
 
 /** Publish a battle the tutor reviewed and edited in the Studio. */
@@ -39,9 +39,10 @@ export async function POST(req: Request) {
   const boss = sanitizeBoss(body.boss, defaultBoss(topic, config.themes));
   const scaling = computeScaling(config, questions.length);
 
+  const tutorName = typeof rawConfig.tutorName === 'string' ? rawConfig.tutorName.trim().slice(0, 60) : '';
   const saved = await saveBattle({
     topic,
-    config: { ...config, scaling, classCode, boss },
+    config: { ...config, scaling, classCode, boss, tutorName },
     teachingNotes: payload.teaching_notes,
     questions,
   });
@@ -55,7 +56,7 @@ export async function POST(req: Request) {
   });
 }
 
-/** Fetch a battle by short code (?code=ABC123) or id (?id=uuid) for the student arena. */
+/** Public battle info by short code (?code=ABC123) or id (?id=uuid) for the student lobby. */
 export async function GET(req: Request) {
   const params = new URL(req.url).searchParams;
   const limit = rateLimit(`lookup:${clientKey(req)}`, 60, 60_000);
@@ -68,5 +69,6 @@ export async function GET(req: Request) {
   const battle = id === 'demo' ? demoLoadedBattle() : id ? await loadBattle(id) : await loadBattleByCode(code!);
   if (!battle) return NextResponse.json({ error: 'Không tìm thấy đấu trường.' }, { status: 404 });
 
-  return NextResponse.json(battle, { headers: { 'Cache-Control': 'no-store' } });
+  // Never the questions or answers — those are served one at a time by /api/session.
+  return NextResponse.json(publicBattle(battle), { headers: { 'Cache-Control': 'no-store' } });
 }

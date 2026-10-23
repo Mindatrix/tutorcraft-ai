@@ -28,6 +28,8 @@ export interface BattleScore {
   gems: number;
   exp: number;
   milestoneMultiplier: number;
+  /** Flat Gems from completed side quests (not multiplied). */
+  questGems: number;
   topics: TopicStat[];
 }
 
@@ -36,6 +38,7 @@ export function scoreBattle(
   answers: AnswerRecord[],
   config: Pick<BattleConfig, 'durationMinutes' | 'scenario' | 'teamSize'>,
   expectedAccuracy = DEFAULT_EXPECTED_ACCURACY,
+  bonusGems = 0,
 ): BattleScore {
   const byId = new Map(questions.map((q) => [q.id, q]));
   const scenario = SCENARIOS[config.scenario];
@@ -89,9 +92,10 @@ export function scoreBattle(
     damage,
     bossDefeated,
     speedPoints,
-    gems: Math.round(baseGems * milestoneMultiplier),
+    gems: Math.round(baseGems * milestoneMultiplier) + Math.max(0, Math.round(bonusGems)),
     exp: Math.round(correct * EXP_PER_CORRECT * milestoneMultiplier),
     milestoneMultiplier,
+    questGems: Math.max(0, Math.round(bonusGems)),
     topics: Array.from(topics.values()),
   };
 }

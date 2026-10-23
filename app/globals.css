@@ -24,3 +24,10 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Exam content never prints (Ctrl+P / "Save as PDF" leaks). */
+@media print {
+  .tc-protected {
+    display: none !important;
+  }
+}

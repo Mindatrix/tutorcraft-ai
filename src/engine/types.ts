@@ -72,6 +72,11 @@ export interface BossProfile {
   boss_skills: string[];
   map_setting: MapSetting;
   map_name: string;
+  /** Phase 2 form, entered at 50% boss HP. */
+  phase2_name: string;
+  phase2_dialogue: string;
+  /** Said when the student misses 3 in a row — a taunt plus a deeper hint. */
+  enrage_dialogue: string;
 }
 
 export interface BattlePayload {

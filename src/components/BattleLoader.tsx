@@ -3,49 +3,34 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Loader2 } from 'lucide-react';
-import {
-  DEMO_BATTLE_ID,
-  defaultBoss,
-  demoBattle,
-  normalizeConfig,
-  sanitizeBoss,
-  validateBattlePayload,
-  type BattleConfig,
-  type BossProfile,
-  type Question,
-} from '../engine';
-import BattleArena, { type Prefs } from './BattleArena';
+import { defaultBoss, normalizeConfig, sanitizeBoss } from '../engine';
+import BattleArena, { type ArenaBattle, type Prefs } from './BattleArena';
 import { load, save } from '../client/storage';
 
-interface Loaded {
-  id: string;
-  topic: string;
-  config: BattleConfig;
-  boss: BossProfile;
-  questions: Question[];
-}
-
-/** Re-validate whatever came from the network or cache before playing it. */
-function parse(raw: Record<string, unknown>): Loaded {
-  const config = normalizeConfig((raw.config ?? {}) as Record<string, unknown>);
+/** Re-validate the public battle info from the network or cache. Contains no questions or answers. */
+function parse(raw: Record<string, unknown>): ArenaBattle {
+  const rawConfig = (raw.config ?? {}) as Record<string, unknown>;
+  const config = normalizeConfig(rawConfig);
   const topic = typeof raw.topic === 'string' ? raw.topic : '';
   return {
     id: String(raw.id),
     topic,
     config,
     boss: sanitizeBoss(raw.boss, defaultBoss(topic, config.themes)),
-    questions: validateBattlePayload({ questions: raw.questions }).questions,
+    tutorName: typeof raw.tutorName === 'string' ? raw.tutorName : '',
+    classCode: typeof rawConfig.classCode === 'string' ? rawConfig.classCode : '',
+    totalQuestions: Math.max(1, Number(raw.totalQuestions) || 1),
   };
 }
 
-async function fetchBattle(query: string): Promise<Loaded> {
+async function fetchBattle(query: string): Promise<ArenaBattle> {
   const res = await fetch(`/api/battles?${query}`, { cache: 'no-store' });
   if (!res.ok) throw Object.assign(new Error('not found'), { status: res.status });
   return parse(await res.json());
 }
 
 export default function BattleLoader({ battleId, code }: { battleId?: string; code?: string }) {
-  const [state, setState] = useState<{ data: Loaded; variant: number | null; prefs: Prefs } | null>(null);
+  const [state, setState] = useState<{ data: ArenaBattle; variant: number | null; prefs: Prefs } | null>(null);
   const [error, setError] = useState<'not_found' | 'offline' | null>(null);
 
   useEffect(() => {
@@ -60,14 +45,8 @@ export default function BattleLoader({ battleId, code }: { battleId?: string; co
       };
       const cacheKey = `tc:battle-data:${battleId ?? code}`;
       try {
-        let data: Loaded;
-        if (battleId === DEMO_BATTLE_ID) {
-          const d = demoBattle();
-          data = { id: DEMO_BATTLE_ID, topic: d.topic, config: d.config, boss: d.payload.boss!, questions: d.payload.questions };
-        } else {
-          data = await fetchBattle(battleId ? `id=${encodeURIComponent(battleId)}` : `code=${encodeURIComponent(code ?? '')}`);
-          save(cacheKey, data); // lets the battle reopen without a connection
-        }
+        const data = await fetchBattle(battleId ? `id=${encodeURIComponent(battleId)}` : `code=${encodeURIComponent(code ?? '')}`);
+        save(cacheKey, data); // lobby info only — playing still needs the server
         if (!cancelled) setState({ data, variant, prefs });
       } catch (e) {
         const cached = load<Record<string, unknown> | null>(cacheKey, null);
@@ -119,15 +98,5 @@ export default function BattleLoader({ battleId, code }: { battleId?: string; co
   }
 
   const { data, variant, prefs } = state;
-  return (
-    <BattleArena
-      battleId={data.id}
-      topic={data.topic}
-      config={data.config}
-      questions={data.questions}
-      boss={data.boss}
-      variant={variant}
-      prefs={prefs}
-    />
-  );
+  return <BattleArena battle={data} variant={variant} prefs={prefs} />;
 }

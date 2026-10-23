@@ -22,6 +22,9 @@ export const DEMO_BOSS: BossProfile = {
   boss_skills: ['Hơi Thở Bị Động', 'Lời Nguyền Câu Điều Kiện', 'Bão Thì Hoàn Thành'],
   map_setting: 'volcano',
   map_name: 'Núi Lửa Ngữ Pháp',
+  phase2_name: 'Hắc Long Ngữ Pháp',
+  phase2_dialogue: 'Gràooo! Vảy ta đã đổi màu — từ giờ mỗi thì động từ đều là bẫy!',
+  enrage_dialogue: 'Ba lần sai rồi! Gợi ý cho ngươi: hãy tìm dấu hiệu thời gian trong câu trước khi chọn!',
 };
 
 export function demoBattle(): { topic: string; config: BattleConfig; payload: BattlePayload } {

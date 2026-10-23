@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import type { BattleEvent, BossAvatar, BossProfile, MapSetting } from '../engine';
+import { animationFor, type AnimationProfile, type BattleEvent, type BossAvatar, type BossProfile, type MapSetting, type StoryBeat } from '../engine';
 
 // 2D canvas battle scene: hero vs boss, smooth HP drain, attack VFX, floating
 // damage numbers, screen shake, boss dialogue, boss shatter and gacha chest drop.
@@ -16,7 +16,15 @@ export interface BattleCanvasProps {
   hp: number;
   hpMax: number;
   shield: boolean;
-  event: { kind: BattleEvent; n: number; amount?: number } | null;
+  event: { kind: BattleEvent; n: number; amount?: number; beats?: StoryBeat[] } | null;
+  /** 2 = boss transformed (50% HP). */
+  bossPhase?: 1 | 2;
+  /** Boss enraged by the student's wrong streak. */
+  enraged?: boolean;
+  /** "Giải phóng Thần Thú" quest completed. */
+  spiritBeast?: boolean;
+  /** Timing / shake / camera data; defaults to the boss type's built-in profile. */
+  animation?: AnimationProfile;
 }
 
 type Vec = { x: number; y: number };
@@ -65,6 +73,10 @@ export default function BattleCanvas(props: BattleCanvasProps) {
     chest: props.bossHp <= 0 ? { y: 0, vy: 0, landed: true } : null as { y: number; vy: number; landed: boolean } | null,
     koStart: props.hp <= 0 ? -1e9 : null as number | null,
     sparkleUntil: 0, sparkleColor: '#facc15',
+    camera: null as { start: number; zoom: number; durationMs: number; focus: 'hero' | 'boss' | 'center' } | null,
+    hitstopUntil: 0,
+    sceneT: 0,
+    phaseFlash: 0,
     reduced: false,
     size: { w: 600, h: 260 },
   });
@@ -84,6 +96,29 @@ export default function BattleCanvas(props: BattleCanvasProps) {
     const heroPos = { x: w * 0.22, y: h * 0.62 };
     const bossPos = { x: w * 0.74, y: h * 0.52 };
     const colors = BOSS_COLORS[propsRef.current.boss.boss_avatar];
+    const prof = propsRef.current.animation ?? animationFor(propsRef.current.boss.boss_avatar);
+    const zoom = (spec: AnimationProfile['camera']['critical']) => {
+      if (!a.reduced && spec.zoom > 1) a.camera = { start: now(), ...spec };
+    };
+    // Story beats land on impact: transformation, enrage taunt, quest fanfare.
+    const playBeats = () => {
+      for (const b of ev.beats ?? []) {
+        const boss = propsRef.current.boss;
+        if (b.kind === 'phase') {
+          a.dialogue = { text: boss.phase2_dialogue, until: now() + 3400 };
+          a.phaseFlash = now() + 500;
+          zoom(prof.camera.phase);
+          burst(bossPos, '#e879f9', 40, 260);
+          float({ x: bossPos.x, y: bossPos.y - h * 0.32 }, 'PHASE 2!', '#f0abfc', 24);
+        } else if (b.kind === 'enrage') {
+          a.dialogue = { text: boss.enrage_dialogue, until: now() + 3400 };
+          burst(bossPos, '#f97316', 26, 200);
+        } else if (b.kind === 'quest') {
+          burst(heroPos, '#34d399', 24, 180);
+          float({ x: heroPos.x, y: heroPos.y - h * 0.38 }, '🏅 QUEST!', '#6ee7b7', 20);
+        }
+      }
+    };
 
     const burst = (p: Vec, color: string, n: number, speed = 220) => {
       const count = a.reduced ? Math.ceil(n / 3) : n;
@@ -110,15 +145,23 @@ export default function BattleCanvas(props: BattleCanvasProps) {
       a.heroLunge = t;
       a.inFlight += 1;
       a.projectiles.push({
-        from: 'hero', start: t + 150, dur: 320, color: crit ? '#facc15' : '#38bdf8',
+        from: 'hero', start: t + prof.heroAttack.windupMs, dur: prof.heroAttack.travelMs, color: crit ? '#facc15' : '#38bdf8',
         onHit: () => {
           a.inFlight -= 1;
           syncTargets();
+          a.hitstopUntil = now() + prof.heroAttack.hitstopMs;
           a.bossFlash = now() + 160;
           burst(bossPos, crit ? '#facc15' : '#7dd3fc', crit ? 28 : 16);
           float({ x: bossPos.x, y: bossPos.y - h * 0.22 }, crit ? `CRITICAL! -${ev.amount ?? ''}` : `-${ev.amount ?? ''}`, crit ? '#facc15' : '#ffffff', crit ? 26 : 20);
-          if (crit) shake(5, 220);
-          if (propsRef.current.bossHp <= 0 && a.defeatStart === null) a.defeatStart = now();
+          if (crit) {
+            shake(prof.shake.critical.magnitude, prof.shake.critical.durationMs);
+            zoom(prof.camera.critical);
+          }
+          if (propsRef.current.bossHp <= 0 && a.defeatStart === null) {
+            a.defeatStart = now();
+            zoom(prof.camera.bossBreak);
+          }
+          playBeats();
         },
       });
     } else if (ev.kind === 'wrong' || ev.kind === 'blocked') {
@@ -127,10 +170,11 @@ export default function BattleCanvas(props: BattleCanvasProps) {
       a.inFlight += 1;
       a.dialogue = { text: propsRef.current.boss.boss_dialogue_on_attack, until: t + 2600 };
       a.projectiles.push({
-        from: 'boss', start: t + 200, dur: 380, color: colors.shot,
+        from: 'boss', start: t + prof.bossAttack.windupMs, dur: prof.bossAttack.travelMs, color: propsRef.current.bossPhase === 2 ? '#e879f9' : colors.shot,
         onHit: () => {
           a.inFlight -= 1;
           syncTargets();
+          a.hitstopUntil = now() + prof.bossAttack.hitstopMs;
           if (blocked) {
             burst(heroPos, '#60a5fa', 14, 160);
             float({ x: heroPos.x, y: heroPos.y - h * 0.25 }, 'BLOCKED!', '#93c5fd', 20);
@@ -138,9 +182,10 @@ export default function BattleCanvas(props: BattleCanvasProps) {
             a.heroFlash = now() + 220;
             burst(heroPos, '#f87171', 14, 180);
             float({ x: heroPos.x, y: heroPos.y - h * 0.25 }, `-${ev.amount ?? ''}`, '#f87171', 22);
-            shake(12, 380);
+            shake(prof.shake.playerHit.magnitude, prof.shake.playerHit.durationMs);
             if (propsRef.current.hp <= 0 && a.koStart === null) a.koStart = now();
           }
+          playBeats();
         },
       });
     } else if (ev.kind === 'skill' || ev.kind === 'buff') {
@@ -179,8 +224,11 @@ export default function BattleCanvas(props: BattleCanvasProps) {
     let last = now();
     const frame = () => {
       const t = now();
-      const dt = Math.min(0.05, (t - last) / 1000);
+      // Hitstop: freeze the world for a few frames on impact so hits feel heavy.
+      const dt = t < a.hitstopUntil ? 0 : Math.min(0.05, (t - last) / 1000);
       last = t;
+      a.sceneT += dt * 1000;
+      const st = a.sceneT;
       const p = propsRef.current;
       const { w, h } = a.size;
 
@@ -211,14 +259,28 @@ export default function BattleCanvas(props: BattleCanvasProps) {
       }
 
       const groundY = h * 0.8;
-      drawMap(ctx, p.boss.map_setting, w, h, groundY, t);
+      // Dynamic camera: ease in and back out toward the focus point.
+      if (a.camera) {
+        const k = (t - a.camera.start) / a.camera.durationMs;
+        if (k >= 1) a.camera = null;
+        else {
+          const z = 1 + (a.camera.zoom - 1) * Math.sin(Math.PI * Math.max(0, k));
+          const fx = a.camera.focus === 'hero' ? w * 0.22 : a.camera.focus === 'boss' ? w * 0.74 : w / 2;
+          const fy = groundY - h * 0.25;
+          ctx.translate(fx, fy);
+          ctx.scale(z, z);
+          ctx.translate(-fx, -fy);
+        }
+      }
+      drawMap(ctx, p.boss.map_setting, w, h, groundY, st);
 
       // Hero
       const heroBase = { x: w * 0.22, y: groundY };
       const heroLungeT = (t - a.heroLunge) / 450;
       const heroOffset = heroLungeT >= 0 && heroLungeT <= 1 ? Math.sin(heroLungeT * Math.PI) * w * 0.09 : 0;
       const koT = a.koStart === null ? 0 : ease((t - a.koStart) / 700);
-      drawHero(ctx, heroBase.x + heroOffset, heroBase.y, Math.min(h * 0.3, w * 0.14), t, p.heroAvatar, t < a.heroFlash, p.shield, koT, heroLungeT);
+      drawHero(ctx, heroBase.x + heroOffset, heroBase.y, Math.min(h * 0.3, w * 0.14), st, p.heroAvatar, t < a.heroFlash, p.shield, koT, heroLungeT);
+      if (p.spiritBeast && koT === 0) drawSpiritBeast(ctx, heroBase.x - w * 0.09, groundY - h * 0.42, Math.min(h, w) * 0.09, st);
 
       // Boss
       const s = Math.min(h * 0.34, w * 0.17);
@@ -235,7 +297,11 @@ export default function BattleCanvas(props: BattleCanvasProps) {
           ctx.rotate(fall * 0.9);
           ctx.translate(-bossBase.x, -bossBase.y + fall * s * 0.3);
         }
-        drawBoss(ctx, p.boss.boss_avatar, bossBase.x + bossOffset, bossBase.y, s, t, t < a.bossFlash);
+        const bx = bossBase.x + bossOffset;
+        if (p.bossPhase === 2 || p.enraged) drawAura(ctx, bx, bossBase.y - s * 0.8, s, st, p.enraged ? '#f97316' : '#d946ef');
+        // Phase 2: the boss grows and changes palette.
+        const grow = p.bossPhase === 2 ? 1.14 : 1;
+        drawBoss(ctx, p.boss.boss_avatar, bx, bossBase.y, s * grow, st, t < a.bossFlash || t < a.phaseFlash, p.bossPhase === 2);
         if (dT >= 0) drawCracks(ctx, bossBase.x, bossBase.y - s * 0.7, s, Math.min(1, dT / 0.6));
         ctx.restore();
         if (dT > 0.6 && dT - dt <= 0.6) {
@@ -326,7 +392,7 @@ export default function BattleCanvas(props: BattleCanvasProps) {
 
       // HP bars (not shaken)
       drawBar(ctx, 12, 10, w * 0.42, p.heroName, a.heroDisp, a.heroGhost, p.hpMax, '#10b981', '#34d399', 'left');
-      drawBar(ctx, w - 12 - w * 0.42, 10, w * 0.42, p.boss.boss_name, a.bossDisp, a.bossGhost, p.bossMax, '#dc2626', '#fb7185', 'right');
+      drawBar(ctx, w - 12 - w * 0.42, 10, w * 0.42, p.bossPhase === 2 ? p.boss.phase2_name : p.boss.boss_name, a.bossDisp, a.bossGhost, p.bossMax, p.bossPhase === 2 ? '#a21caf' : '#dc2626', p.bossPhase === 2 ? '#f0abfc' : '#fb7185', 'right');
 
       raf = requestAnimationFrame(frame);
     };
@@ -507,8 +573,11 @@ function drawHero(ctx: CanvasRenderingContext2D, x: number, y: number, s: number
   ctx.restore();
 }
 
-function drawBoss(ctx: CanvasRenderingContext2D, avatar: BossAvatar, x: number, y: number, s: number, t: number, flash: boolean) {
-  const c = BOSS_COLORS[avatar] ?? BOSS_COLORS.dragon;
+const PHASE2_BODY: Record<BossAvatar, string> = { dragon: '#4c1d95', golem: '#44403c', wizard: '#831843', shadow_king: '#3b0764' };
+
+function drawBoss(ctx: CanvasRenderingContext2D, avatar: BossAvatar, x: number, y: number, s: number, t: number, flash: boolean, phase2 = false) {
+  const base = BOSS_COLORS[avatar] ?? BOSS_COLORS.dragon;
+  const c = phase2 ? { ...base, body: PHASE2_BODY[avatar] ?? base.body, eye: '#f43f5e' } : base;
   const body = flash ? '#ffffff' : c.body;
   const bob = Math.sin(t / 400) * s * 0.03;
   ctx.save();
@@ -775,5 +844,29 @@ function drawBar(
   ctx.beginPath();
   ctx.roundRect(align === 'left' ? x : x + w * (1 - pct(value)), by, w * pct(value), 10, 5);
   ctx.fill();
+  ctx.restore();
+}
+
+function drawAura(ctx: CanvasRenderingContext2D, x: number, y: number, s: number, t: number, color: string) {
+  ctx.save();
+  const r = s * (1.1 + Math.sin(t / 180) * 0.06);
+  const g = ctx.createRadialGradient(x, y, s * 0.2, x, y, r);
+  g.addColorStop(0, `${color}66`);
+  g.addColorStop(1, `${color}00`);
+  ctx.fillStyle = g;
+  ctx.beginPath();
+  ctx.arc(x, y, r, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawSpiritBeast(ctx: CanvasRenderingContext2D, x: number, y: number, s: number, t: number) {
+  const bob = Math.sin(t / 300) * s * 0.25;
+  glow(ctx, x, y + bob, s * 0.55, '#fde68a', 0.35);
+  ctx.save();
+  ctx.font = `${Math.round(s * 1.1)}px system-ui, "Apple Color Emoji", "Segoe UI Emoji", sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('🦁', x, y + bob);
   ctx.restore();
 }

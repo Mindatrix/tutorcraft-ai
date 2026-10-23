@@ -23,10 +23,10 @@ create unique index if not exists battles_code_key on public.battles (code) wher
 
 alter table public.battles enable row level security;
 
+-- Battles hold the correct answers, so browsers must NOT read them directly (the anon key
+-- ships in every page). Students get questions one at a time from /api/session, answers
+-- only after locking in. No anon policies = server (service role) only.
 drop policy if exists "battles readable by anyone with the link" on public.battles;
-create policy "battles readable by anyone with the link"
-  on public.battles for select to anon, authenticated using (true);
--- No anon insert/update/delete: battles are created only by the server (/api/generate-battle, /api/battles).
 
 -- Battle results (authoritative Gems / EXP, computed server-side) -------------
 create table if not exists public.battle_results (
@@ -49,10 +49,34 @@ create table if not exists public.battle_results (
   topics jsonb not null default '[]'::jsonb
 );
 alter table public.battle_results add column if not exists hp_remaining int check (hp_remaining between 0 and 100);
+-- One result per battle session: a replayed or double-submitted finish can't pay out twice.
+alter table public.battle_results add column if not exists session_id uuid;
+create unique index if not exists battle_results_session_key on public.battle_results (session_id) where session_id is not null;
 create index if not exists battle_results_battle_idx on public.battle_results (battle_id, gems desc);
 
 alter table public.battle_results enable row level security;
 -- No anon policies: only the service role (server) may read or write.
+
+-- Battle sessions (server-authoritative action log, see src/engine/session.ts) --------
+create table if not exists public.battle_sessions (
+  id uuid primary key,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  battle_id uuid not null references public.battles(id) on delete cascade,
+  variant int,
+  student_key text not null,
+  nickname text not null,
+  avatar text not null,
+  started_at timestamptz not null,
+  log jsonb not null default '[]'::jsonb,
+  status text not null default 'active' check (status in ('active', 'finished', 'flagged')),
+  flags jsonb not null default '[]'::jsonb,
+  result jsonb,
+  version int not null default 0
+);
+create index if not exists battle_sessions_battle_idx on public.battle_sessions (battle_id, status);
+alter table public.battle_sessions enable row level security;
+-- No anon policies: server only.
 
 -- Weak knowledge matrix (SM-2 spaced repetition: Day 1 -> 3 -> 7 -> 14) -----
 create table if not exists public.weak_knowledge_matrix (

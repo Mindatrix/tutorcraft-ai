@@ -44,6 +44,7 @@ function readFile(file: File): Promise<UploadedDoc> {
 
 export const DEFAULT_SETTINGS: StudioSettings = {
   topic: '',
+  tutorName: '',
   classCode: '',
   cefrLevel: '',
   scenario: 'homework',
@@ -151,7 +152,11 @@ export default function LessonStep({ initial, onGenerated }: { initial: StudioSe
             </label>
           )}
         </div>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div>
+            <label className={label} htmlFor="tutor">Tên gia sư</label>
+            <input id="tutor" value={s.tutorName} onChange={(e) => set('tutorName', e.target.value.slice(0, 60))} placeholder="Hiện trong watermark" className={field} />
+          </div>
           <div>
             <label className={label} htmlFor="class">Mã lớp</label>
             <input id="class" value={s.classCode} onChange={(e) => set('classCode', e.target.value)} placeholder="vd: IELTS-K12" className={field} />

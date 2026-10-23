@@ -2,6 +2,7 @@ import type { BossProfile, ExamMode, Question, ScenarioId, ThemeId } from '../..
 
 export interface StudioSettings {
   topic: string;
+  tutorName: string;
   classCode: string;
   cefrLevel: string;
   scenario: ScenarioId;

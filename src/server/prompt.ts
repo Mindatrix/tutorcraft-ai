@@ -43,6 +43,9 @@ GAME DESIGN — design the boss of this arena from the lesson content:
 - "boss_skills": 3 boss skill names in Vietnamese, themed on the lesson's typical mistakes.
 - "map_setting": one of forest | castle | volcano | ice_cave | dungeon | sky_arena.
 - "map_name": short Vietnamese arena name.
+- "phase2_name": the boss's transformed name at 50% HP (Vietnamese).
+- "phase2_dialogue": one Vietnamese line when it transforms — a challenge that names the harder part of the lesson.
+- "enrage_dialogue": one Vietnamese line when the student misses 3 in a row: a short taunt PLUS a genuinely useful study tip for this lesson (no answers).
 
 Write exactly ${p.questionCount} multiple-choice questions:
 - 4 options each, exactly one correct, plausible distractors, no duplicate options.

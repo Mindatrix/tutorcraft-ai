@@ -37,6 +37,9 @@ export function defaultBoss(topic: string, themes: ThemeId[]): BossProfile {
     boss_skills: ['Đòn Đánh Ngữ Pháp', 'Lời Nguyền Từ Vựng', 'Bão Câu Hỏi'],
     map_setting: MAP_SETTING_IDS[h % MAP_SETTING_IDS.length],
     map_name: theme.name,
+    phase2_name: cleanTopic ? `${cleanTopic} — Hình Thái Cuồng Nộ` : `${theme.bossName} (Cuồng Nộ)`,
+    phase2_dialogue: 'Ngươi khá lắm... Nhưng giờ ta mới thật sự nghiêm túc! Hãy đọc kỹ từng chữ!',
+    enrage_dialogue: 'Sai liên tiếp rồi! Dừng lại, đọc lại câu hỏi và tìm từ khoá chỉ thời gian đi!',
   };
 }
 
@@ -54,5 +57,8 @@ export function sanitizeBoss(raw: unknown, fallback: BossProfile): BossProfile {
     boss_skills: skills.length ? skills : fallback.boss_skills,
     map_setting: MAP_SETTING_IDS.includes(r.map_setting as MapSetting) ? (r.map_setting as MapSetting) : fallback.map_setting,
     map_name: str(r.map_name, 60) ?? fallback.map_name,
+    phase2_name: str(r.phase2_name, 60) ?? fallback.phase2_name,
+    phase2_dialogue: str(r.phase2_dialogue, 200) ?? fallback.phase2_dialogue,
+    enrage_dialogue: str(r.enrage_dialogue, 200) ?? fallback.enrage_dialogue,
   };
 }

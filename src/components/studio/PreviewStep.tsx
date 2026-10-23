@@ -10,6 +10,7 @@ import {
   type BossProfile,
   type Difficulty,
   type Question,
+  type StoryBeat,
 } from '../../engine';
 import BattleCanvas from '../BattleCanvas';
 import { field, label, type PublishedBattle, type StudioDraft } from './types';
@@ -33,13 +34,18 @@ export default function PreviewStep({ draft, onBack, onPublished }: { draft: Stu
 
   // Preview scene state — buttons fire the same events the real battle uses.
   const bossMax = Math.max(1, questions.length) * 100;
-  const [sim, setSim] = useState<{ bossHp: number; hp: number; event: { kind: BattleEvent; n: number; amount?: number } | null }>({ bossHp: bossMax, hp: 100, event: null });
-  const fire = (kind: BattleEvent, bossDelta: number, hpDelta: number, amount?: number) =>
-    setSim((p) => ({
-      bossHp: Math.max(0, p.bossHp - bossDelta),
-      hp: Math.max(0, p.hp - hpDelta),
-      event: { kind, n: (p.event?.n ?? 0) + 1, amount },
-    }));
+  type SimEvent = { kind: BattleEvent; n: number; amount?: number; beats?: StoryBeat[] };
+  const [sim, setSim] = useState<{ bossHp: number; hp: number; phase: 1 | 2; event: SimEvent | null }>({ bossHp: bossMax, hp: 100, phase: 1, event: null });
+  const fire = (kind: BattleEvent, bossDelta: number, hpDelta: number, amount?: number, beats?: StoryBeat[]) =>
+    setSim((p) => {
+      const bossHp = Math.max(0, p.bossHp - bossDelta);
+      return {
+        bossHp,
+        hp: Math.max(0, p.hp - hpDelta),
+        phase: p.phase === 2 || (bossHp > 0 && bossHp <= bossMax / 2) ? 2 : 1,
+        event: { kind, n: (p.event?.n ?? 0) + 1, amount, beats },
+      };
+    });
 
   const setB = <K extends keyof BossProfile>(k: K, v: BossProfile[K]) => setBoss((b) => ({ ...b, [k]: v }));
   const updateQ = (i: number, patch: Partial<Question>) => setQuestions((qs) => qs.map((q, j) => (j === i ? { ...q, ...patch } : q)));
@@ -78,6 +84,7 @@ export default function PreviewStep({ draft, onBack, onPublished }: { draft: Stu
             studentCount: s.studentCount,
             teamSize: s.teamSize,
             classCode: s.classCode || undefined,
+            tutorName: s.tutorName || undefined,
             cefrLevel: s.cefrLevel || undefined,
             examType: s.scenario === 'coop_raid' ? 'group' : 'individual',
           },
@@ -108,13 +115,14 @@ export default function PreviewStep({ draft, onBack, onPublished }: { draft: Stu
         <h2 className="text-lg font-bold text-rose-400">👹 Boss & Bản đồ</h2>
         {draft.settings.mode === 'gamified' ? (
           <>
-            <BattleCanvas boss={boss} heroAvatar="🦊" heroName="Học sinh" bossHp={sim.bossHp} bossMax={bossMax} hp={sim.hp} hpMax={100} shield={false} event={sim.event} />
+            <BattleCanvas boss={boss} heroAvatar="🦊" heroName="Học sinh" bossHp={sim.bossHp} bossMax={bossMax} hp={sim.hp} hpMax={100} shield={false} event={sim.event} bossPhase={sim.phase} />
             <div className="flex flex-wrap gap-2">
               <PreviewBtn onClick={() => fire('correct', 100, 0, 100)}>⚔️ Đòn đúng</PreviewBtn>
               <PreviewBtn onClick={() => fire('critical', 150, 0, 150)}>💥 Chí mạng</PreviewBtn>
               <PreviewBtn onClick={() => fire('wrong', 0, 25, 25)}>👹 Boss phản công</PreviewBtn>
+              <PreviewBtn onClick={() => fire('critical', Math.max(0, sim.bossHp - Math.floor(bossMax / 2)), 0, 150, [{ kind: 'phase', text: boss.phase2_dialogue }])}>⚡ Biến hình</PreviewBtn>
               <PreviewBtn onClick={() => fire('critical', bossMax, 0, bossMax)}>🏆 Hạ Boss</PreviewBtn>
-              <PreviewBtn onClick={() => setSim({ bossHp: bossMax, hp: 100, event: null })}>↺ Đặt lại</PreviewBtn>
+              <PreviewBtn onClick={() => setSim({ bossHp: bossMax, hp: 100, phase: 1, event: null })}>↺ Đặt lại</PreviewBtn>
             </div>
           </>
         ) : (
@@ -150,6 +158,20 @@ export default function PreviewStep({ draft, onBack, onPublished }: { draft: Stu
               </button>
             ))}
           </div>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label className={label} htmlFor="p2name">Tên hình thái 2 (còn 50% HP)</label>
+            <input id="p2name" value={boss.phase2_name} onChange={(e) => setB('phase2_name', e.target.value.slice(0, 60))} className={field} />
+          </div>
+          <div>
+            <label className={label} htmlFor="p2line">Lời thoại khi biến hình</label>
+            <input id="p2line" value={boss.phase2_dialogue} onChange={(e) => setB('phase2_dialogue', e.target.value.slice(0, 200))} className={field} />
+          </div>
+        </div>
+        <div>
+          <label className={label} htmlFor="enrage">Lời thoại cuồng nộ + gợi ý (khi sai 3 câu liên tiếp)</label>
+          <input id="enrage" value={boss.enrage_dialogue} onChange={(e) => setB('enrage_dialogue', e.target.value.slice(0, 200))} className={field} />
         </div>
         <div>
           <label className={label} htmlFor="dialogue">Lời thoại khi học sinh trả lời sai</label>

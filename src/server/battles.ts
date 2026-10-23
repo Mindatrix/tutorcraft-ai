@@ -13,7 +13,7 @@ import {
 } from '../engine';
 import { serverSupabase } from './supabase-server';
 
-export type StoredConfig = BattleConfig & { classCode: string; code?: string; boss?: BossProfile; scaling?: BattleScaling };
+export type StoredConfig = BattleConfig & { classCode: string; code?: string; boss?: BossProfile; scaling?: BattleScaling; tutorName?: string };
 
 export interface LoadedBattle {
   id: string;
@@ -22,6 +22,7 @@ export interface LoadedBattle {
   config: BattleConfig & { classCode: string };
   boss: BossProfile;
   questions: Question[];
+  tutorName: string;
 }
 
 type Row = Record<string, unknown> & { id: string; questions?: unknown[]; config?: Record<string, unknown> | null };
@@ -38,6 +39,7 @@ function fromRow(row: Row): LoadedBattle {
     config: { ...config, classCode: typeof cfg.classCode === 'string' ? cfg.classCode : 'default' },
     boss: sanitizeBoss(cfg.boss, defaultBoss(topic, config.themes)),
     questions,
+    tutorName: typeof cfg.tutorName === 'string' ? cfg.tutorName.slice(0, 60) : '',
   };
 }
 
@@ -57,10 +59,26 @@ export function demoLoadedBattle(): LoadedBattle {
     config: { ...d.config, classCode: 'demo' },
     boss: d.payload.boss ?? defaultBoss(d.topic, d.config.themes),
     questions: d.payload.questions,
+    tutorName: 'TutorCraft Demo',
   };
 }
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+const CACHE_TTL_MS = 5 * 60 * 1000;
+const cache = new Map<string, { at: number; battle: LoadedBattle }>();
+
+/** Same as loadBattle, but cached for 5 minutes — every answer check needs the battle. */
+export async function loadBattleCached(id: string): Promise<LoadedBattle | null> {
+  const hit = cache.get(id);
+  if (hit && Date.now() - hit.at < CACHE_TTL_MS) return hit.battle;
+  const battle = await loadBattle(id);
+  if (battle) {
+    if (cache.size > 500) cache.delete(cache.keys().next().value!);
+    cache.set(id, { at: Date.now(), battle });
+  }
+  return battle;
+}
 
 /** Load a battle with server credentials and re-validate its questions. */
 export async function loadBattle(id: string): Promise<LoadedBattle | null> {
@@ -148,4 +166,17 @@ export async function saveBattle(input: {
     }
   }
   return { id: null, code: null, warning: `Không lưu được vào Supabase: ${lastError}` };
+}
+
+/** What a student's browser may know about a battle before playing: no questions, no answers. */
+export function publicBattle(b: LoadedBattle) {
+  return {
+    id: b.id,
+    code: b.code,
+    topic: b.topic,
+    config: b.config,
+    boss: b.boss,
+    tutorName: b.tutorName,
+    totalQuestions: b.questions.length,
+  };
 }

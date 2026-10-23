@@ -96,6 +96,9 @@ export const GEMINI_RESPONSE_SCHEMA = {
     boss_skills: { type: 'ARRAY', items: { type: 'STRING' } },
     map_setting: { type: 'STRING', enum: MAP_SETTING_IDS },
     map_name: { type: 'STRING' },
+    phase2_name: { type: 'STRING' },
+    phase2_dialogue: { type: 'STRING' },
+    enrage_dialogue: { type: 'STRING' },
     teaching_notes: { type: 'ARRAY', items: { type: 'STRING' } },
     knowledge_matrix: {
       type: 'ARRAY',

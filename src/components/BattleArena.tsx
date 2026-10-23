@@ -1,31 +1,34 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react';
-import { Zap, Shield, Snowflake, Eye, Timer, Volume2, VolumeX, RotateCcw, Trophy, Gift, WifiOff, Users } from 'lucide-react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Zap, Shield, Snowflake, Eye, Timer, Volume2, VolumeX, RotateCcw, Trophy, Gift, WifiOff, Users, Lock, ScrollText, AlertTriangle, Loader2 } from 'lucide-react';
 import {
+  FEEDBACK_MS,
   MAX_MP,
   SCENARIOS,
   SKILLS,
   SKILL_IDS,
   THEMES,
-  battleReducer,
-  buildVariant,
   computeScaling,
-  initialBattleState,
   rollGacha,
-  scoreBattle,
   themeForQuestion,
+  type AnswerReveal,
   type BattleConfig,
-  type BossProfile,
-  type BattleScore,
   type BattleState,
+  type BossProfile,
   type LootItem,
-  type Question,
+  type PublicQuestion,
   type SkillId,
+  type StoryBeat,
 } from '../engine';
-import { flushQueue, load, remove, save, studentKey, submitResult } from '../client/storage';
+import { load, remove, save, studentKey } from '../client/storage';
 import { initSfx, play, setMuted } from '../client/sfx';
+import { ApiError, sessionApi, type FinalizeResponse, type SessionView } from '../client/sessionApi';
 import BattleCanvas from './BattleCanvas';
+import { useContentGuard, useWindowFocused, Watermark } from './ContentGuard';
+
+/** Wall clock for event handlers (kept out of render). */
+const wallClock = () => Date.now();
 
 const PETS = ['🐣', '🦊', '🐼', '🐸', '🐙', '🦄', '🐲', '🐧', '🐯', '🦉'];
 const SKILL_ICONS: Record<SkillId, typeof Shield> = { shield: Shield, freeze: Snowflake, eye_of_truth: Eye };
@@ -36,14 +39,15 @@ export interface Prefs {
   online: boolean;
 }
 
-interface Props {
-  prefs: Prefs;
-  battleId: string;
+/** Public battle info only — the arena never receives the answer key. */
+export interface ArenaBattle {
+  id: string;
   topic: string;
   config: BattleConfig;
-  questions: Question[];
   boss: BossProfile;
-  variant: number | null;
+  tutorName: string;
+  classCode: string;
+  totalQuestions: number;
 }
 
 interface Leaderboard {
@@ -52,47 +56,107 @@ interface Leaderboard {
   totalDamage?: number;
 }
 
-export default function BattleArena({ battleId, topic, config, questions: baseQuestions, boss, variant, prefs }: Props) {
-  const questions = useMemo(() => buildVariant(baseQuestions, battleId, variant), [baseQuestions, battleId, variant]);
-  const scaling = useMemo(() => computeScaling(config, baseQuestions.length), [config, baseQuestions.length]);
-  const ctx = useMemo(() => ({ questions, config, scaling }), [questions, config, scaling]);
-  const reducer = useMemo(() => battleReducer(ctx), [ctx]);
-  const storageKey = `tc:battle:${battleId}:${variant ?? 0}`;
+interface Feedback {
+  state: BattleState;
+  reveal: AnswerReveal | null;
+  question: PublicQuestion;
+}
 
-  const [state, dispatch] = useReducer(reducer, ctx, initialBattleState);
-  const restored = useRef(false);
-  const submitted = useRef(false);
+export default function BattleArena({ battle, variant, prefs }: { battle: ArenaBattle; variant: number | null; prefs: Prefs }) {
+  const { config, boss } = battle;
+  const scaling = useMemo(() => computeScaling(config, battle.totalQuestions), [config, battle.totalQuestions]);
+  const tokenKey = `tc:session:${battle.id}:${variant ?? 0}`;
+  const gamified = config.mode === 'gamified';
+  const scenario = SCENARIOS[config.scenario];
+
+  const [phase, setPhase] = useState<'lobby' | 'playing' | 'result'>('lobby');
+  const [token, setToken] = useState<string | null>(null);
+  const [view, setView] = useState<SessionView | null>(null);
+  const [feedback, setFeedback] = useState<Feedback | null>(null);
+  const [pending, setPending] = useState(false);
+  const [netError, setNetError] = useState<string | null>(null);
+  const [retry, setRetry] = useState<{ questionId: number; chosenIdx: number } | null>(null);
+  const [deadline, setDeadline] = useState(0);
+  const [frozenUntil, setFrozenUntil] = useState(0);
+  const [clock, setClock] = useState(0);
+  const [beats, setBeats] = useState<StoryBeat[]>([]);
+  const [final, setFinal] = useState<FinalizeResponse | null>(null);
+  const [finalError, setFinalError] = useState<string | null>(null);
+  const [board, setBoard] = useState<Leaderboard | null>(null);
+  const [loot, setLoot] = useState<LootItem | null>(null);
+  const [guardToast, setGuardToast] = useState(false);
+  const [starting, setStarting] = useState(false);
+
   const [muted, setMutedState] = useState(prefs.muted);
   const [nickname, setNickname] = useState(() => prefs.profile?.nickname ?? `Hero${Math.floor(1000 + Math.random() * 9000)}`);
   const [avatar, setAvatar] = useState(prefs.profile?.avatar ?? PETS[0]);
   const [anonymous, setAnonymous] = useState(prefs.profile?.anonymous ?? false);
   const [online, setOnline] = useState(prefs.online);
-  const [serverScore, setServerScore] = useState<BattleScore | null>(null);
-  const [serverHp, setServerHp] = useState<number | null>(null);
-  // 'idle' while in a result phase means the submission is in flight.
-  const [syncState, setSyncState] = useState<'idle' | 'saved' | 'queued'>('idle');
-  const [board, setBoard] = useState<Leaderboard | null>(null);
-  const [loot, setLoot] = useState<LootItem | null>(null);
+  const [sid] = useState(() => studentKey());
 
-  const gamified = config.mode === 'gamified';
-  const scenario = SCENARIOS[config.scenario];
-  const q = questions[state.idx];
-  const theme = themeForQuestion(config.themes, state.idx);
+  const focused = useWindowFocused();
+  const flashGuard = useCallback(() => {
+    setGuardToast(true);
+    setTimeout(() => setGuardToast(false), 2000);
+  }, []);
+  useContentGuard(phase !== 'lobby', flashGuard);
 
-  // Restore saved progress + profile once on mount.
+  const display = feedback?.state ?? view?.state ?? null;
+  const question = feedback?.question ?? view?.question ?? null;
+  const theme = themeForQuestion(config.themes, display?.idx ?? 0);
+  const playerName = anonymous ? 'Anonymous' : nickname || 'Hero';
+  const timeLeft = Math.max(0, Math.ceil((deadline - clock) / 1000));
+  const freezeLeft = Math.max(0, Math.ceil((frozenUntil - clock) / 1000));
+
+  /** Show a new server view and restart the local countdown for its question. */
+  const applyView = useCallback((v: SessionView) => {
+    setView(v);
+    const t = Date.now();
+    setClock(t);
+    setDeadline(t + v.state.questionTime * 1000);
+    setFrozenUntil(0);
+  }, []);
+
+  const finish = useCallback(
+    async (tok: string) => {
+      setPhase('result');
+      try {
+        const res = await sessionApi.finalize(tok);
+        setFinal(res);
+        remove(tokenKey);
+        if (!res.flagged && scenario.showLeaderboard) {
+          const r = await fetch(`/api/battle-result?battleId=${encodeURIComponent(battle.id)}`).catch(() => null);
+          if (r?.ok) setBoard(await r.json());
+        }
+      } catch (e) {
+        setFinalError(e instanceof ApiError && e.status === 0 ? 'Mất kết nối — bấm “Nộp lại” khi có mạng.' : (e as Error).message);
+      }
+    },
+    [tokenKey, scenario.showLeaderboard, battle.id],
+  );
+
+  // Resume an unfinished session after a reload.
   useEffect(() => {
-    if (restored.current) return;
-    restored.current = true;
-    const saved = load<BattleState | null>(storageKey, null);
-    if (saved && saved.phase !== 'lobby' && saved.answers.length <= questions.length) {
-      dispatch({ type: 'RESTORE', state: saved });
-    }
     setMuted(prefs.muted);
-    void flushQueue();
-    const on = () => {
-      setOnline(true);
-      void flushQueue();
-    };
+    const saved = load<string | null>(tokenKey, null);
+    if (saved) {
+      sessionApi
+        .current(saved)
+        .then(({ view: v }) => {
+          if (v.status !== 'active') return remove(tokenKey);
+          setToken(saved);
+          initSfx(prefs.muted);
+          if (v.state.phase === 'playing') {
+            applyView(v);
+            setPhase('playing');
+          } else {
+            setView(v);
+            void finish(saved);
+          }
+        })
+        .catch(() => remove(tokenKey));
+    }
+    const on = () => setOnline(true);
     const off = () => setOnline(false);
     window.addEventListener('online', on);
     window.addEventListener('offline', off);
@@ -103,74 +167,112 @@ export default function BattleArena({ battleId, topic, config, questions: baseQu
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Persist progress on every change.
-  useEffect(() => {
-    if (!restored.current) return;
-    if (state.phase === 'playing') save(storageKey, state);
-  }, [state, storageKey]);
+  const submit = useCallback(
+    async (chosenIdx: number, questionId?: number) => {
+      const q = view?.question;
+      if (!token || !q || pending || feedback) return;
+      const qid = questionId ?? q.id;
+      setPending(true);
+      setNetError(null);
+      try {
+        const res = await sessionApi.answer(token, qid, chosenIdx);
+        setRetry(null);
+        if (res.afterAnswer) {
+          setFeedback({ state: res.afterAnswer, reveal: res.reveal, question: q });
+          const newBeats = res.afterAnswer.event?.beats ?? [];
+          if (newBeats.length) setBeats((b) => [...newBeats, ...b].slice(0, 4));
+        }
+        setTimeout(() => {
+          setFeedback(null);
+          applyView(res.view);
+          if (res.view.state.phase === 'result') void finish(token);
+        }, res.afterAnswer ? FEEDBACK_MS : 0);
+      } catch (e) {
+        if (e instanceof ApiError && e.status === 0) {
+          setRetry({ questionId: qid, chosenIdx });
+          setNetError('Mất kết nối — câu trả lời chưa được gửi.');
+        } else if (e instanceof ApiError && e.status === 409) {
+          // Out of sync (e.g. double tap): reload the server's truth.
+          const cur = await sessionApi.current(token).catch(() => null);
+          if (cur) applyView(cur.view);
+        } else {
+          setNetError((e as Error).message);
+        }
+      } finally {
+        setPending(false);
+      }
+    },
+    [token, view, pending, feedback, applyView, finish],
+  );
 
-  // Timer.
+  const submitRef = useRef(submit);
   useEffect(() => {
-    if (state.phase !== 'playing' || state.selected !== null) return;
-    const t = setInterval(() => dispatch({ type: 'TICK' }), 1000);
+    submitRef.current = submit;
+  });
+
+  // Local countdown display; the server keeps its own clock and has the final say on timeouts.
+  useEffect(() => {
+    if (phase !== 'playing' || feedback || !view?.question) return;
+    const t = setInterval(() => {
+      const n = Date.now();
+      setClock(n);
+      if (n >= deadline && !pending && !retry) void submitRef.current(-1);
+    }, 250);
     return () => clearInterval(t);
-  }, [state.phase, state.selected, state.idx]);
+  }, [phase, feedback, view, deadline, pending, retry]);
 
-  // Advance after showing feedback.
+  // Auto-retry a lost answer when the connection returns.
   useEffect(() => {
-    if (state.phase !== 'playing' || state.selected === null) return;
-    const t = setTimeout(() => dispatch({ type: 'NEXT' }), 1400);
-    return () => clearTimeout(t);
-  }, [state.phase, state.selected, state.idx]);
+    if (online && retry && !pending) void submitRef.current(retry.chosenIdx, retry.questionId);
+  }, [online, retry, pending]);
 
   // One sound per event.
+  const lastSfx = useRef<number | null>(null);
   useEffect(() => {
-    if (!state.event) return;
-    const k = state.event.kind;
-    play(k === 'blocked' || k === 'buff' ? 'skill' : k);
-  }, [state.event]);
+    const ev = display?.event;
+    if (!ev || ev.n === lastSfx.current) return;
+    lastSfx.current = ev.n;
+    play(ev.kind === 'blocked' || ev.kind === 'buff' ? 'skill' : ev.kind);
+  }, [display?.event]);
 
-  const playerName = anonymous ? 'Anonymous' : nickname || 'Hero';
-
-  // Submit on finish — server recomputes Gems/EXP.
-  useEffect(() => {
-    if (state.phase !== 'result' || submitted.current) return;
-    submitted.current = true;
-    remove(storageKey);
-    void submitResult<{ score: BattleScore; hpRemaining?: number }>({
-      battleId,
-      variant,
-      nickname: playerName,
-      avatar,
-      studentKey: studentKey(),
-      answers: state.answers,
-      casts: state.casts,
-    }).then(async ({ data, queued }) => {
-      if (data?.score) setServerScore(data.score);
-      if (typeof data?.hpRemaining === 'number') setServerHp(data.hpRemaining);
-      setSyncState(queued ? 'queued' : 'saved');
-      if (scenario.showLeaderboard && !queued) {
-        const res = await fetch(`/api/battle-result?battleId=${encodeURIComponent(battleId)}`).catch(() => null);
-        if (res?.ok) setBoard(await res.json());
-      }
-    });
-  }, [state.phase, state.answers, state.casts, storageKey, battleId, variant, playerName, avatar, scenario.showLeaderboard]);
-
-  const start = useCallback(() => {
-    initSfx(muted); // unlocks audio on a user gesture so SFX play instantly
+  const start = async () => {
+    initSfx(muted);
     save('tc:profile', { nickname, avatar, anonymous });
-    dispatch({ type: 'START' });
-  }, [muted, nickname, avatar, anonymous]);
+    setStarting(true);
+    setNetError(null);
+    try {
+      const res = await sessionApi.start({ battleId: battle.id, variant, nickname: playerName, avatar, studentKey: sid });
+      save(tokenKey, res.token);
+      setToken(res.token);
+      setFinal(null);
+      setFinalError(null);
+      setBoard(null);
+      setLoot(null);
+      setBeats([]);
+      applyView(res.view);
+      setPhase('playing');
+    } catch (e) {
+      setNetError((e as Error).message);
+    } finally {
+      setStarting(false);
+    }
+  };
 
-  const restart = () => {
-    remove(storageKey);
-    submitted.current = false;
-    setServerScore(null);
-    setServerHp(null);
-    setSyncState('idle');
-    setBoard(null);
-    setLoot(null);
-    dispatch({ type: 'RESET' });
+  const cast = async (skill: SkillId) => {
+    if (!token || pending || feedback) return;
+    setPending(true);
+    try {
+      const res = await sessionApi.cast(token, skill);
+      setView(res.view);
+      if (skill === 'freeze') {
+        setFrozenUntil(wallClock() + 30_000);
+        setDeadline((d) => d + 30_000);
+      }
+    } catch (e) {
+      setNetError((e as Error).message);
+    } finally {
+      setPending(false);
+    }
   };
 
   const toggleMute = () => {
@@ -183,25 +285,26 @@ export default function BattleArena({ battleId, topic, config, questions: baseQu
   const openChest = () => {
     const item = rollGacha(Math.random());
     setLoot(item);
-    const inv = load<string[]>('tc:inventory', []);
-    save('tc:inventory', [...inv, item.id]);
+    save('tc:inventory', [...load<string[]>('tc:inventory', []), item.id]);
     play('loot');
   };
-
-  const localScore = useMemo(
-    () => (state.phase === 'result' ? scoreBattle(questions, state.answers, config) : null),
-    [state.phase, state.answers, questions, config],
-  );
-  const score = serverScore ?? localScore;
 
   // ---------- RENDER ----------
   const shell = gamified ? 'bg-slate-950 text-white' : 'bg-white text-slate-900';
   const card = gamified ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200';
   const muted2 = gamified ? 'text-slate-400' : 'text-slate-500';
+  const spiritBeast = !!display?.quests.find((q) => q.id === 'spirit_beast' && q.status === 'done');
+  const score = final?.score ?? null;
 
   return (
-    <div className={`min-h-screen ${shell} px-4 py-5 md:p-8 font-sans`}>
-      <div className="max-w-3xl mx-auto space-y-4">
+    <div className={`tc-protected min-h-screen ${shell} px-4 py-5 md:p-8 font-sans ${phase !== 'lobby' ? 'select-none [-webkit-touch-callout:none]' : ''}`}>
+      {phase !== 'lobby' && <Watermark tutorName={battle.tutorName} classCode={battle.classCode} studentId={sid.slice(0, 8)} dark={gamified} />}
+      {guardToast && (
+        <div role="status" className="fixed top-4 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-xl bg-slate-800 text-white text-sm font-bold flex items-center gap-2 shadow-xl">
+          <Lock className="w-4 h-4" /> Nội dung đề thi được bảo vệ bản quyền
+        </div>
+      )}
+      <div className="max-w-3xl mx-auto space-y-4 relative">
         {/* Top bar */}
         <div className={`border rounded-2xl p-3 flex items-center justify-between gap-2 ${card}`}>
           <div className="flex items-center gap-2 min-w-0">
@@ -209,7 +312,7 @@ export default function BattleArena({ battleId, topic, config, questions: baseQu
             <div className="min-w-0">
               <div className="font-bold text-sm truncate">{playerName}</div>
               <div className={`text-xs truncate ${muted2}`}>
-                {topic}
+                {battle.topic}
                 {variant ? ` · Code ${variant}` : ''}
               </div>
             </div>
@@ -220,18 +323,14 @@ export default function BattleArena({ battleId, topic, config, questions: baseQu
                 <WifiOff className="w-3.5 h-3.5" /> Offline
               </span>
             )}
-            <button
-              onClick={toggleMute}
-              aria-label={muted ? 'Unmute sound' : 'Mute sound'}
-              className={`p-2 rounded-xl border ${gamified ? 'border-slate-700 hover:bg-slate-800' : 'border-slate-300 hover:bg-slate-100'}`}
-            >
+            <button onClick={toggleMute} aria-label={muted ? 'Bật âm thanh' : 'Tắt âm thanh'} className={`p-2 rounded-xl border ${gamified ? 'border-slate-700 hover:bg-slate-800' : 'border-slate-300 hover:bg-slate-100'}`}>
               {muted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
             </button>
           </div>
         </div>
 
         {/* Lobby */}
-        {state.phase === 'lobby' && (
+        {phase === 'lobby' && (
           <div className={`border rounded-2xl p-6 space-y-5 ${card}`}>
             <div>
               <div className={`text-xs font-bold uppercase tracking-wider ${gamified ? 'text-blue-400' : 'text-blue-600'}`}>
@@ -245,20 +344,14 @@ export default function BattleArena({ battleId, topic, config, questions: baseQu
                 </p>
               )}
               <p className={`text-sm mt-1 ${muted2}`}>
-                {questions.length} questions · ~{config.durationMinutes} min
+                {battle.totalQuestions} questions · ~{config.durationMinutes} min
                 {gamified ? ` · Boss HP ${scaling.bossHp.toLocaleString('en-US')}` : ''}
               </p>
             </div>
 
             <div className="space-y-2">
               <label className="text-sm font-semibold" htmlFor="nick">Nickname</label>
-              <input
-                id="nick"
-                value={nickname}
-                onChange={(e) => setNickname(e.target.value.slice(0, 24))}
-                disabled={anonymous}
-                className={`w-full rounded-xl px-4 py-3 border focus:outline-none focus:border-blue-500 ${gamified ? 'bg-slate-950 border-slate-700' : 'bg-white border-slate-300'} disabled:opacity-50`}
-              />
+              <input id="nick" value={nickname} onChange={(e) => setNickname(e.target.value.slice(0, 24))} disabled={anonymous} className={`w-full rounded-xl px-4 py-3 border focus:outline-none focus:border-blue-500 ${gamified ? 'bg-slate-950 border-slate-700' : 'bg-white border-slate-300'} disabled:opacity-50`} />
               <label className="flex items-center gap-2 text-sm">
                 <input type="checkbox" checked={anonymous} onChange={(e) => setAnonymous(e.target.checked)} />
                 Hide my name on the leaderboard
@@ -269,114 +362,113 @@ export default function BattleArena({ battleId, topic, config, questions: baseQu
               <div className="text-sm font-semibold">Pet avatar</div>
               <div className="flex flex-wrap gap-2">
                 {PETS.map((p) => (
-                  <button
-                    key={p}
-                    onClick={() => setAvatar(p)}
-                    aria-label={`Avatar ${p}`}
-                    className={`w-11 h-11 text-2xl rounded-xl border ${avatar === p ? 'border-blue-500 ring-2 ring-blue-500' : gamified ? 'border-slate-700' : 'border-slate-300'}`}
-                  >
+                  <button key={p} onClick={() => setAvatar(p)} aria-label={`Avatar ${p}`} className={`w-11 h-11 text-2xl rounded-xl border ${avatar === p ? 'border-blue-500 ring-2 ring-blue-500' : gamified ? 'border-slate-700' : 'border-slate-300'}`}>
                     {p}
                   </button>
                 ))}
               </div>
             </div>
 
-            <button onClick={start} className="w-full py-4 rounded-xl font-bold text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500">
-              {gamified ? '⚔️ Enter Battle' : 'Start Test'}
+            <button onClick={start} disabled={starting} className="w-full py-4 rounded-xl font-bold text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 disabled:opacity-60 flex items-center justify-center gap-2">
+              {starting && <Loader2 className="w-5 h-5 animate-spin" />} {gamified ? '⚔️ Enter Battle' : 'Start Test'}
             </button>
+            {netError && <p role="alert" className="text-sm text-rose-400">{netError}</p>}
           </div>
         )}
 
         {/* Battle scene — stays mounted into the result screen so the boss break + chest drop can play */}
-        {gamified && state.phase !== 'lobby' && (
+        {gamified && phase !== 'lobby' && display && (
           <BattleCanvas
             boss={boss}
             heroAvatar={avatar}
             heroName={playerName}
-            bossHp={state.bossHp}
+            bossHp={display.bossHp}
             bossMax={scaling.bossHp}
-            hp={state.hp}
+            hp={display.hp}
             hpMax={scaling.playerHp}
-            shield={state.shield}
-            event={state.event}
+            shield={display.shield}
+            event={display.event}
+            bossPhase={display.bossPhase}
+            enraged={display.enraged}
+            spiritBeast={spiritBeast}
           />
         )}
 
+        {/* Story beats: boss transformation, enrage taunts, quest completions */}
+        {gamified && phase === 'playing' && beats.length > 0 && (
+          <div className="space-y-1.5" aria-live="polite">
+            {beats.slice(0, 2).map((b, i) => (
+              <div key={`${b.text}-${i}`} className={`text-sm rounded-xl px-3 py-2 border ${b.kind === 'quest' ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-300' : b.kind === 'phase' ? 'border-fuchsia-500/40 bg-fuchsia-500/10 text-fuchsia-200' : 'border-orange-500/40 bg-orange-500/10 text-orange-200'} ${i ? 'opacity-60' : ''}`}>
+                {b.text}
+              </div>
+            ))}
+          </div>
+        )}
+
         {/* Playing */}
-        {state.phase === 'playing' && q && (
+        {phase === 'playing' && display && question && (
           <>
             <div className={`border rounded-2xl p-3 flex items-center justify-between ${card}`}>
-              <div className={`flex items-center gap-2 font-bold text-sm ${state.freezeLeft > 0 ? 'text-cyan-400' : state.timeLeft <= 5 ? 'text-rose-500' : 'text-amber-500'}`}>
-                {state.freezeLeft > 0 ? <Snowflake className="w-4 h-4" /> : <Timer className="w-4 h-4" />}
-                {state.freezeLeft > 0 ? `Frozen ${state.freezeLeft}s · ` : ''}
-                {state.timeLeft}s
-                <span className={`font-normal ${muted2}`}>· {q.difficulty}</span>
+              <div className={`flex items-center gap-2 font-bold text-sm ${freezeLeft > 0 ? 'text-cyan-400' : timeLeft <= 5 ? 'text-rose-500' : 'text-amber-500'}`}>
+                {freezeLeft > 0 ? <Snowflake className="w-4 h-4" /> : <Timer className="w-4 h-4" />}
+                {freezeLeft > 0 ? `Frozen ${freezeLeft}s · ` : ''}
+                {feedback ? '—' : `${Math.min(timeLeft, display.questionTime + 30)}s`}
+                <span className={`font-normal ${muted2}`}>· {question.difficulty}</span>
               </div>
               <div className="flex items-center gap-2">
-                {q.is_review && <span className="text-xs px-2 py-0.5 rounded-full bg-sky-500/15 text-sky-500 font-semibold">Review</span>}
-                {gamified && state.combo >= 2 && (
-                  <span className="px-3 py-1 bg-purple-500/20 border border-purple-500/40 text-purple-300 rounded-full text-xs font-black">🔥 Combo x{state.combo}</span>
-                )}
+                {question.is_review && <span className="text-xs px-2 py-0.5 rounded-full bg-sky-500/15 text-sky-500 font-semibold">Review</span>}
+                {gamified && display.bossPhase === 2 && <span className="text-xs px-2 py-0.5 rounded-full bg-fuchsia-500/20 text-fuchsia-300 font-bold">Phase 2</span>}
+                {gamified && display.combo >= 2 && <span className="px-3 py-1 bg-purple-500/20 border border-purple-500/40 text-purple-300 rounded-full text-xs font-black">🔥 Combo x{display.combo}</span>}
               </div>
             </div>
 
-            <div className={`border rounded-2xl p-5 space-y-5 ${card}`}>
+            <div className={`border rounded-2xl p-5 space-y-5 ${card} transition ${focused ? '' : 'blur-md'}`} onCopy={(e) => e.preventDefault()}>
               <div className={`text-xs font-bold uppercase tracking-wider ${gamified ? 'text-blue-400' : 'text-blue-600'}`}>
-                {gamified ? 'Round' : 'Question'} {state.idx + 1} / {questions.length}
+                {gamified ? 'Round' : 'Question'} {question.index + 1} / {view?.totalQuestions ?? battle.totalQuestions}
               </div>
-              <h2 className="text-lg md:text-xl font-extrabold leading-snug">{q.question}</h2>
+              <h2 className="text-lg md:text-xl font-extrabold leading-snug">{question.question}</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {q.options.map((opt, i) => {
-                  const hidden = state.removed.includes(i);
-                  let cls = gamified
-                    ? 'bg-slate-950 border-slate-800 text-slate-200 hover:border-blue-500 hover:bg-blue-600/10'
-                    : 'bg-white border-slate-300 text-slate-800 hover:border-blue-500';
-                  if (state.selected !== null) {
-                    if (i === q.correct_idx) cls = 'bg-emerald-500/20 border-emerald-500 text-emerald-600 ring-2 ring-emerald-500';
-                    else if (i === state.selected) cls = 'bg-rose-500/20 border-rose-500 text-rose-500';
+                {question.options.map((opt, i) => {
+                  const hidden = display.removed.includes(i);
+                  let cls = gamified ? 'bg-slate-950 border-slate-800 text-slate-200 hover:border-blue-500 hover:bg-blue-600/10' : 'bg-white border-slate-300 text-slate-800 hover:border-blue-500';
+                  if (feedback?.reveal) {
+                    if (i === feedback.reveal.correctIdx) cls = 'bg-emerald-500/20 border-emerald-500 text-emerald-600 ring-2 ring-emerald-500';
+                    else if (i === feedback.reveal.chosenIdx) cls = 'bg-rose-500/20 border-rose-500 text-rose-500';
                   }
                   return (
-                    <button
-                      key={i}
-                      onClick={() => dispatch({ type: 'ANSWER', idx: i })}
-                      disabled={state.selected !== null || hidden}
-                      className={`p-4 rounded-xl border text-left font-semibold text-sm transition-all ${cls} ${hidden ? 'opacity-20 line-through' : ''}`}
-                    >
+                    <button key={i} onClick={() => submit(i)} disabled={!!feedback || pending || hidden} className={`p-4 rounded-xl border text-left font-semibold text-sm transition-all ${cls} ${hidden ? 'opacity-20 line-through' : ''}`}>
                       <span className={`mr-2 ${muted2}`}>{String.fromCharCode(65 + i)}.</span>
                       {opt}
                     </button>
                   );
                 })}
               </div>
-              {state.selected !== null && q.explanation && (
-                <p className={`text-xs ${muted2}`}>💡 {q.explanation}</p>
-              )}
-              {gamified && state.selected === null && q.hint && state.miracle && (
-                <p className="text-xs text-amber-400">🐾 {q.hint}</p>
-              )}
+              {feedback?.reveal?.explanation && <p className={`text-xs ${muted2}`}>💡 {feedback.reveal.explanation}</p>}
+              {!feedback && question.hint && <p className="text-xs text-amber-400">🐾 {question.hint}</p>}
+              {pending && !feedback && <p className={`text-xs ${muted2} flex items-center gap-1`}><Loader2 className="w-3 h-3 animate-spin" /> Đang chấm…</p>}
             </div>
+
+            {netError && (
+              <div role="alert" className="p-3 rounded-xl border border-amber-500/40 bg-amber-500/10 text-amber-500 text-sm flex items-center justify-between gap-2">
+                <span className="flex items-center gap-2"><AlertTriangle className="w-4 h-4 shrink-0" /> {netError}</span>
+                {retry && <button onClick={() => submit(retry.chosenIdx, retry.questionId)} className="px-3 py-1 rounded-lg bg-amber-500 text-slate-950 font-bold">Thử lại</button>}
+              </div>
+            )}
 
             {gamified && (
               <div className={`border rounded-2xl p-3 space-y-3 ${card}`}>
                 <div className="flex items-center gap-2 text-xs font-bold text-sky-400">
-                  <Zap className="w-3.5 h-3.5" /> MP {state.mp} / {MAX_MP}
+                  <Zap className="w-3.5 h-3.5" /> MP {display.mp} / {MAX_MP}
                   <div className="flex-1 h-2 bg-slate-950 rounded-full overflow-hidden border border-slate-800">
-                    <div className="h-full bg-gradient-to-r from-sky-500 to-indigo-400 transition-all" style={{ width: `${(state.mp / MAX_MP) * 100}%` }} />
+                    <div className="h-full bg-gradient-to-r from-sky-500 to-indigo-400 transition-all" style={{ width: `${(display.mp / MAX_MP) * 100}%` }} />
                   </div>
                 </div>
                 <div className="grid grid-cols-3 gap-2">
                   {SKILL_IDS.map((id) => {
                     const sk = SKILLS[id];
                     const Icon = SKILL_ICONS[id];
-                    const disabled = state.mp < sk.cost || state.selected !== null;
                     return (
-                      <button
-                        key={id}
-                        onClick={() => dispatch({ type: 'CAST', skill: id })}
-                        disabled={disabled}
-                        title={sk.description}
-                        className="p-2 rounded-xl border border-slate-700 text-xs font-bold flex flex-col items-center gap-1 hover:bg-slate-800 disabled:opacity-35"
-                      >
+                      <button key={id} onClick={() => cast(id)} disabled={display.mp < sk.cost || !!feedback || pending} title={sk.description} className="p-2 rounded-xl border border-slate-700 text-xs font-bold flex flex-col items-center gap-1 hover:bg-slate-800 disabled:opacity-35">
                         <Icon className="w-4 h-4" />
                         <span className="leading-tight text-center">{sk.nameVi}</span>
                         <span className="text-sky-400">{sk.cost} MP</span>
@@ -387,75 +479,89 @@ export default function BattleArena({ battleId, topic, config, questions: baseQu
               </div>
             )}
 
-            {state.feedback && (
-              <div
-                role="status"
-                className={`p-3 rounded-xl border text-center font-bold text-sm ${
-                  state.feedback.tone === 'wrong'
-                    ? 'bg-rose-500/15 border-rose-500/40 text-rose-500'
-                    : state.feedback.tone === 'critical'
-                      ? 'bg-amber-500/15 border-amber-500/40 text-amber-500'
-                      : 'bg-blue-600/15 border-blue-500/40 text-blue-500'
-                }`}
-              >
-                {state.feedback.text}
+            {gamified && display.quests.length > 0 && (
+              <div className={`border rounded-2xl p-3 space-y-2 ${card}`}>
+                <div className="text-xs font-bold text-emerald-400 flex items-center gap-1"><ScrollText className="w-3.5 h-3.5" /> Nhiệm vụ phụ</div>
+                {display.quests.map((q) => (
+                  <div key={q.id} className={`text-xs flex items-start justify-between gap-2 ${q.status === 'failed' ? 'opacity-40 line-through' : ''}`}>
+                    <div>
+                      <span className="font-bold">{q.status === 'done' ? '✅' : q.status === 'failed' ? '✖' : '⬜'} {q.title}</span>
+                      <span className={`block ${muted2}`}>{q.description}</span>
+                    </div>
+                    <span className="font-mono shrink-0">{q.progress}/{q.target}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {display.feedback && (
+              <div role="status" className={`p-3 rounded-xl border text-center font-bold text-sm ${display.feedback.tone === 'wrong' ? 'bg-rose-500/15 border-rose-500/40 text-rose-500' : display.feedback.tone === 'critical' ? 'bg-amber-500/15 border-amber-500/40 text-amber-500' : 'bg-blue-600/15 border-blue-500/40 text-blue-500'}`}>
+                {display.feedback.text}
               </div>
             )}
           </>
         )}
 
         {/* Result */}
-        {state.phase === 'result' && score && (
+        {phase === 'result' && (
           <div className={`border rounded-3xl p-6 text-center space-y-5 ${card}`}>
-            <div className="text-5xl">{!gamified ? '📋' : state.outcome === 'defeat' ? '💀' : score.bossDefeated ? '🏆' : '⚔️'}</div>
-            <h1 className="text-2xl md:text-3xl font-black">
-              {!gamified ? 'Test Complete' : state.outcome === 'defeat' ? 'DEFEATED!' : score.bossDefeated ? 'BOSS DEFEATED!' : 'Battle Complete!'}
-            </h1>
-            <p className={`text-sm ${muted2}`}>
-              {score.correct} / {questions.length} correct · {Math.round(score.accuracy * 100)}% accuracy
-              {gamified ? ` · Best combo x${score.maxCombo}` : ''}
-            </p>
-
-            {gamified && (
-              <div className="grid grid-cols-2 gap-3 max-w-sm mx-auto">
-                <Stat label="Gems" value={`+${score.gems}`} className="text-amber-400" />
-                <Stat label="EXP" value={`+${score.exp}`} className="text-blue-400" />
-                <div className="col-span-2">
-                  <Stat label="HP còn lại" value={`${serverHp ?? state.hp} / ${scaling.playerHp}`} className="text-emerald-400" />
-                </div>
-                {score.milestoneMultiplier > 1 && (
-                  <div className="col-span-2 text-xs font-bold text-emerald-400">🎯 Expected Score reached — x{score.milestoneMultiplier} multiplier!</div>
-                )}
+            {!final && !finalError && (
+              <p className={`text-sm ${muted2} flex items-center justify-center gap-2`}><Loader2 className="w-4 h-4 animate-spin" /> Máy chủ đang chấm điểm từ nhật ký trận đấu…</p>
+            )}
+            {finalError && (
+              <div className="space-y-2">
+                <p role="alert" className="text-sm text-rose-400">{finalError}</p>
+                {token && <button onClick={() => { setFinalError(null); void finish(token); }} className="px-4 py-2 rounded-xl bg-blue-600 text-white font-bold">Nộp lại</button>}
               </div>
             )}
-
-            <div className={`text-xs ${muted2}`}>
-              {syncState === 'idle' && 'Saving result…'}
-              {syncState === 'saved' && (serverScore ? '✅ Result verified by server' : '✅ Saved')}
-              {syncState === 'queued' && '📴 Offline — result will sync automatically when you reconnect'}
-            </div>
-
-            {gamified && score.bossDefeated && (
+            {final?.flagged && (
               <div className="space-y-2">
-                {!loot ? (
-                  <button onClick={openChest} className="px-5 py-3 rounded-xl font-bold bg-amber-500 text-slate-950 hover:bg-amber-400 inline-flex items-center gap-2">
-                    <Gift className="w-5 h-5" /> Open Gacha Chest
-                  </button>
-                ) : (
-                  <div className="text-sm font-bold">
-                    Loot Dropped! {loot.emoji} {loot.name} <span className={`uppercase text-xs ${muted2}`}>({loot.rarity})</span>
+                <div className="text-5xl">🚩</div>
+                <h1 className="text-2xl font-black text-rose-400">Kết quả không được ghi nhận</h1>
+                <p className={`text-sm ${muted2}`}>Hệ thống phát hiện tốc độ trả lời bất thường:</p>
+                <ul className="text-sm text-rose-300 space-y-1">{final.reasons.map((r) => <li key={r}>• {r}</li>)}</ul>
+              </div>
+            )}
+            {score && (
+              <>
+                <div className="text-5xl">{!gamified ? '📋' : view?.state.outcome === 'defeat' ? '💀' : score.bossDefeated ? '🏆' : '⚔️'}</div>
+                <h1 className="text-2xl md:text-3xl font-black">
+                  {!gamified ? 'Test Complete' : view?.state.outcome === 'defeat' ? 'DEFEATED!' : score.bossDefeated ? 'BOSS DEFEATED!' : 'Battle Complete!'}
+                </h1>
+                <p className={`text-sm ${muted2}`}>
+                  {score.correct} / {battle.totalQuestions} correct · {Math.round(score.accuracy * 100)}% accuracy
+                  {gamified ? ` · Best combo x${score.maxCombo}` : ''}
+                </p>
+                {gamified && (
+                  <div className="grid grid-cols-2 gap-3 max-w-sm mx-auto">
+                    <Stat label="Gems" value={`+${score.gems}`} className="text-amber-400" />
+                    <Stat label="EXP" value={`+${score.exp}`} className="text-blue-400" />
+                    <div className="col-span-2">
+                      <Stat label="HP còn lại" value={`${final?.hpRemaining ?? 0} / ${scaling.playerHp}`} className="text-emerald-400" />
+                    </div>
+                    {score.questGems > 0 && <div className="col-span-2 text-xs font-bold text-emerald-400">🏅 Nhiệm vụ phụ: +{score.questGems} Gems</div>}
+                    {score.milestoneMultiplier > 1 && <div className="col-span-2 text-xs font-bold text-emerald-400">🎯 Expected Score reached — x{score.milestoneMultiplier} multiplier!</div>}
                   </div>
                 )}
-              </div>
+                <div className={`text-xs ${muted2}`}>✅ Điểm do máy chủ tính từ nhật ký trận đấu{final?.saved ? ' · đã lưu' : ''}</div>
+                {gamified && score.bossDefeated && (
+                  <div>
+                    {!loot ? (
+                      <button onClick={openChest} className="px-5 py-3 rounded-xl font-bold bg-amber-500 text-slate-950 hover:bg-amber-400 inline-flex items-center gap-2"><Gift className="w-5 h-5" /> Open Gacha Chest</button>
+                    ) : (
+                      <div className="text-sm font-bold">Loot Dropped! {loot.emoji} {loot.name} <span className={`uppercase text-xs ${muted2}`}>({loot.rarity})</span></div>
+                    )}
+                  </div>
+                )}
+              </>
             )}
 
             {board && config.scenario === 'coop_raid' && board.totalDamage != null && (
               <div className="text-sm space-y-1">
                 <div className="font-bold flex items-center justify-center gap-1"><Users className="w-4 h-4" /> Raid progress ({board.participants} heroes)</div>
-                <Bar label="Shared Boss HP" value={Math.max(0, scaling.bossHp - board.totalDamage)} max={scaling.bossHp} gradient={theme.accent} border="border-red-500/30" labelClass="text-red-400" />
+                <Bar label="Shared Boss HP" value={Math.max(0, scaling.bossHp - board.totalDamage)} max={scaling.bossHp} gradient={theme.accent} />
               </div>
             )}
-
             {board && board.leaderboard.length > 0 && (
               <div className="text-left max-w-sm mx-auto">
                 <div className="font-bold text-sm mb-2 flex items-center gap-1"><Trophy className="w-4 h-4 text-amber-400" /> Leaderboard</div>
@@ -469,9 +575,8 @@ export default function BattleArena({ battleId, topic, config, questions: baseQu
                 </ol>
               </div>
             )}
-
-            {(scenario.allowRetry || battleId === 'demo') && (
-              <button onClick={restart} className="w-full max-w-sm mx-auto py-3 rounded-xl font-bold text-white bg-gradient-to-r from-emerald-600 to-teal-600 flex items-center justify-center gap-2">
+            {final && (scenario.allowRetry || battle.id === 'demo') && (
+              <button onClick={start} className="w-full max-w-sm mx-auto py-3 rounded-xl font-bold text-white bg-gradient-to-r from-emerald-600 to-teal-600 flex items-center justify-center gap-2">
                 <RotateCcw className="w-5 h-5" /> Play Again
               </button>
             )}
@@ -482,12 +587,12 @@ export default function BattleArena({ battleId, topic, config, questions: baseQu
   );
 }
 
-function Bar({ label, value, max, gradient, border, labelClass }: { label: React.ReactNode; value: number; max: number; gradient: string; border: string; labelClass: string }) {
+function Bar({ label, value, max, gradient }: { label: string; value: number; max: number; gradient: string }) {
   const pct = max ? Math.max(0, Math.min(100, (value / max) * 100)) : 0;
   return (
-    <div className={`bg-slate-900 border ${border} rounded-2xl p-3 space-y-2`}>
+    <div className="bg-slate-900 border border-red-500/30 rounded-2xl p-3 space-y-2">
       <div className="flex justify-between items-center text-xs font-bold gap-2">
-        <span className={`${labelClass} truncate`}>{label}</span>
+        <span className="text-red-400 truncate">{label}</span>
         <span className="text-slate-400 shrink-0">{Math.round(value).toLocaleString('en-US')} / {max.toLocaleString('en-US')}</span>
       </div>
       <div className="w-full bg-slate-950 h-3 rounded-full overflow-hidden border border-slate-800">

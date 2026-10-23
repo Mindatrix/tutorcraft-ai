@@ -1,0 +1,16 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "outDir": ".test-build",
+    "rootDir": ".",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "target": "ES2022",
+    "jsx": "react-jsx",
+    "incremental": false,
+    "plugins": []
+  },
+  "include": ["tests/**/*.ts", "src/engine/**/*.ts", "src/server/crypto.ts", "src/server/sessionService.ts", "src/server/sessionStore.ts", "proxy.ts"],
+  "exclude": ["node_modules", ".next", ".test-build"]
+}
