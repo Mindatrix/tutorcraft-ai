@@ -21,6 +21,7 @@ import {
   type QuestionType,
 } from '../../engine';
 import { field, label, type StudioDraft, type StudioSettings } from './types';
+import { authFetch } from '../../client/supabaseBrowser';
 
 const TEXT_TYPES = ['text/plain', 'text/markdown'];
 const INLINE_TYPES = ['application/pdf', 'image/png', 'image/jpeg', 'image/webp'];
@@ -101,7 +102,7 @@ export default function LessonStep({ initial, onGenerated }: { initial: StudioSe
     // Pasted lesson text is sent as a text document; an uploaded file takes priority.
     const document = doc ?? (lessonText.trim() ? { name: 'Bài học', mimeType: 'text/plain', text: lessonText } : undefined);
     try {
-      const res = await fetch('/api/generate-battle', {
+      const res = await authFetch('/api/generate-battle', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

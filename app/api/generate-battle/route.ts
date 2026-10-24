@@ -15,9 +15,9 @@ import {
 } from '../../../src/engine';
 import { generateWithFailSafe, type InlineDocument } from '../../../src/server/gemini';
 import { buildBattlePrompt } from '../../../src/server/prompt';
-import { clientKey, rateLimit } from '../../../src/server/rateLimit';
+import { rateLimit } from '../../../src/server/rateLimit';
 import { serverSupabase } from '../../../src/server/supabase-server';
-import { saveBattle } from '../../../src/server/battles';
+import { UNAUTHORIZED, requireTutor } from '../../../src/server/auth';
 
 const RATE_LIMIT = 5; // generations per IP per minute
 const MAX_DOC_BYTES = 4 * 1024 * 1024;
@@ -64,7 +64,11 @@ async function dueReviewTopics(classCode: string): Promise<string[]> {
 export async function POST(req: Request) {
     const startTime = Date.now();
 
-    const limit = rateLimit(`gen:${clientKey(req)}`, RATE_LIMIT, 60_000);
+    // Only signed-in tutors may spend AI quota; the browser's claim is never trusted.
+    const tutor = await requireTutor(req);
+    if (!tutor) return NextResponse.json(UNAUTHORIZED, { status: 401 });
+
+    const limit = rateLimit(`gen:${tutor.id}`, RATE_LIMIT, 60_000);
     if (!limit.ok) {
         return NextResponse.json(
             { error: `Quá nhiều yêu cầu. Thử lại sau ${limit.retryAfterSec}s.` },
@@ -144,10 +148,9 @@ export async function POST(req: Request) {
     const scaling = computeScaling(config, questions.length, questions); // Boss HP weighted by format
     const storedConfig = { ...config, scaling, classCode, boss };
 
-    // Studio drafts are previewed and edited first, then published via POST /api/battles.
-    const saved = body.draft === true
-        ? { id: null, code: null, warning: undefined }
-        : await saveBattle({ topic: lessonTitle, config: storedConfig, teachingNotes: payload.teaching_notes, questions });
+    // Generation never issues a class code: the tutor must review the draft and
+    // publish it explicitly via POST /api/battles (which stores it under their account).
+    const saved: { id: string | null; code: string | null; warning?: string } = { id: null, code: null };
 
     return NextResponse.json({
         battle_id: saved.id,

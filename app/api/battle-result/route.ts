@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { teamRace, weakTopics, type TopicStat } from '../../../src/engine';
 import { clientKey, rateLimit } from '../../../src/server/rateLimit';
+import { requireTutor } from '../../../src/server/auth';
 import { serverSupabase } from '../../../src/server/supabase-server';
 import { loadBattleCached } from '../../../src/server/battles';
 import { SESSION_HEADER, sessionErrorResponse, sessions } from '../../../src/server/sessions';
@@ -56,11 +57,19 @@ export async function GET(req: Request) {
   const isRace = (await loadBattleCached(battleId).catch(() => null))?.config.scenario === 'boat_race';
   const teams = isRace && data.length >= 2 ? teamRace(joined.map((r) => ({ nickname: r.nickname, avatar: r.avatar, correct: r.correct ?? 0, gems: r.gems ?? 0, team: r.team }))) : null;
 
+  // Weak-topic diagnostics are for the tutor who owns this battle; students only get the board.
+  let isOwner = false;
+  const tutor = await requireTutor(req);
+  if (tutor) {
+    const { data: owner } = await db.from('battles').select('tutor_id').eq('id', battleId).maybeSingle();
+    isOwner = owner?.tutor_id === tutor.id;
+  }
+
   return NextResponse.json({
     teams,
     leaderboard: data.slice(0, 10).map(({ nickname, avatar, gems, accuracy, damage }) => ({ nickname, avatar, gems, accuracy, damage })),
     participants: data.length,
     totalDamage: data.reduce((s, r) => s + (r.damage ?? 0), 0),
-    diagnostics: weakTopics(Array.from(merged.values())).slice(0, 10),
+    diagnostics: isOwner ? weakTopics(Array.from(merged.values())).slice(0, 10) : [],
   });
 }

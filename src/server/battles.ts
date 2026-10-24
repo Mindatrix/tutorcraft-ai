@@ -122,6 +122,7 @@ export async function saveBattle(input: {
   config: StoredConfig;
   teachingNotes: string[];
   questions: Question[];
+  tutorId?: string;
 }): Promise<SaveResult> {
   const db = serverSupabase();
   if (!db) return { id: null, code: null, warning: 'Chưa cấu hình Supabase.' };
@@ -134,6 +135,7 @@ export async function saveBattle(input: {
     questions: input.questions,
     config: { ...input.config, code },
     code,
+    ...(input.tutorId ? { tutor_id: input.tutorId } : {}),
   };
   const warnings: string[] = [];
   let lastError = '';

@@ -11,10 +11,13 @@ import {
 } from '../../../src/engine';
 import { demoLoadedBattle, loadBattle, loadBattleByCode, publicBattle, saveBattle } from '../../../src/server/battles';
 import { clientKey, rateLimit } from '../../../src/server/rateLimit';
+import { UNAUTHORIZED, ensureTutorProfile, requireTutor } from '../../../src/server/auth';
 
 /** Publish a battle the tutor reviewed and edited in the Studio. */
 export async function POST(req: Request) {
-  const limit = rateLimit(`publish:${clientKey(req)}`, 10, 60_000);
+  const tutor = await requireTutor(req);
+  if (!tutor) return NextResponse.json(UNAUTHORIZED, { status: 401 });
+  const limit = rateLimit(`publish:${tutor.id}`, 10, 60_000);
   if (!limit.ok) return NextResponse.json({ error: `Quá nhiều yêu cầu. Thử lại sau ${limit.retryAfterSec}s.` }, { status: 429 });
 
   let body: Record<string, unknown>;
@@ -39,12 +42,15 @@ export async function POST(req: Request) {
   const boss = sanitizeBoss(body.boss, defaultBoss(topic, config.themes));
   const scaling = computeScaling(config, questions.length, questions); // Boss HP weighted by format
 
-  const tutorName = typeof rawConfig.tutorName === 'string' ? rawConfig.tutorName.trim().slice(0, 60) : '';
+  // The watermark name comes from the verified account, not from the request body.
+  const tutorName = tutor.name;
+  await ensureTutorProfile(tutor);
   const saved = await saveBattle({
     topic,
     config: { ...config, scaling, classCode, boss, tutorName },
     teachingNotes: payload.teaching_notes,
     questions,
+    tutorId: tutor.id,
   });
   if (!saved.id) return NextResponse.json({ error: saved.warning ?? 'Không lưu được đấu trường.' }, { status: 503 });
 

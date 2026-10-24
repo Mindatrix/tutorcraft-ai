@@ -5,6 +5,7 @@ import QRCode from 'qrcode';
 import { Copy, Download, MessageCircle, Plus, RefreshCw, BarChart3, AlertTriangle } from 'lucide-react';
 import type { TeamRace } from '../../engine';
 import type { PublishedBattle } from './types';
+import { authFetch } from '../../client/supabaseBrowser';
 
 interface Diagnostics {
   participants?: number;
@@ -65,7 +66,7 @@ export default function ShareStep({ battle, onNew }: { battle: PublishedBattle; 
   const loadDiagnostics = async (silent = false) => {
     if (!silent) setDiagLoading(true);
     try {
-      const res = await fetch(`/api/battle-result?battleId=${battle.battle_id}`);
+      const res = await authFetch(`/api/battle-result?battleId=${battle.battle_id}`);
       setDiag(await res.json());
     } catch {
       /* keep the last board when the network blips */

@@ -20,6 +20,7 @@ import {
 import BattleCanvas from '../BattleCanvas';
 import QuestionEditor from './QuestionEditor';
 import { field, label, type PublishedBattle, type StudioDraft } from './types';
+import { authFetch } from '../../client/supabaseBrowser';
 
 export default function PreviewStep({ draft, onBack, onPublished }: { draft: StudioDraft; onBack: () => void; onPublished: (p: PublishedBattle) => void }) {
   const [boss, setBoss] = useState<BossProfile>(draft.boss);
@@ -66,7 +67,7 @@ export default function PreviewStep({ draft, onBack, onPublished }: { draft: Stu
     setError(null);
     try {
       const s = draft.settings;
-      const res = await fetch('/api/battles', {
+      const res = await authFetch('/api/battles', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
