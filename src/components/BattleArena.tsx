@@ -32,7 +32,11 @@ import { load, remove, save, studentKey } from '../client/storage';
 import { initSfx, play, setMuted } from '../client/sfx';
 import { ApiError, sessionApi, type FinalizeResponse, type SessionView } from '../client/sessionApi';
 import BattleCanvas from './BattleCanvas';
+import dynamic from 'next/dynamic';
 import RaceTrack from './RaceTrack';
+
+// Three.js is heavy: load it only when a Boat Race actually starts.
+const RaceScene3D = dynamic(() => import('./RaceScene3D'), { ssr: false });
 import { useContentGuard, useWindowFocused, Watermark } from './ContentGuard';
 
 /** Wall clock for event handlers (kept out of render). */
@@ -79,6 +83,8 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
   const scenario = SCENARIOS[config.scenario];
   const isRace = config.scenario === 'boat_race';
   const plan = useMemo(() => botPlan(raceSeed(battle.id, variant, config.level), battle.totalQuestions, config.level), [battle.id, variant, config.level, battle.totalQuestions]);
+  const [scene3d, setScene3d] = useState(true); // flips to false if WebGL is unavailable
+  const no3d = useCallback(() => setScene3d(false), []);
   const [limits, setLimits] = useState<number[]>([]); // per-question time limits seen so far (drives the bot's pace)
 
   const [phase, setPhase] = useState<'lobby' | 'playing' | 'result'>('lobby');
@@ -405,8 +411,9 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
         )}
 
         {/* Battle scene — stays mounted into the result screen so the boss break + chest drop can play */}
+        {isRace && race && scene3d && phase !== 'lobby' && display && <RaceScene3D playerPos={race.playerPos} botPos={race.botPos} onUnavailable={no3d} />}
         {isRace && race && phase !== 'lobby' && display && (
-          <RaceTrack
+          <RaceTrack compact={scene3d}
             heroAvatar={avatar}
             heroName={playerName}
             playerPos={race.playerPos}

@@ -16,6 +16,8 @@ interface Props {
   finished?: boolean;
   /** Team name when playing team vs team. */
   teamName?: string | null;
+  /** The 3D scene is showing: keep only the scoreboard strip. */
+  compact?: boolean;
   teamTone?: 'A' | 'B' | null;
 }
 
@@ -39,14 +41,23 @@ function Lane({ emoji, name, pos, correct, total, tone }: { emoji: string; name:
   );
 }
 
-export default function RaceTrack({ heroAvatar, heroName, playerPos, botPos, playerCorrect, botCorrect, total, botName, finished, teamName, teamTone }: Props) {
+export default function RaceTrack({ heroAvatar, heroName, playerPos, botPos, playerCorrect, botCorrect, total, botName, finished, teamName, teamTone, compact }: Props) {
   return (
     <div role="img" aria-label={`Đua thuyền: ${heroName} ${playerCorrect}/${total}, ${botName} ${botCorrect}/${total}`} className="rounded-2xl border border-sky-500/30 bg-slate-900/70 p-3 space-y-3">
       {teamName && (
         <div className={`text-center text-xs font-bold rounded-lg py-1 ${teamTone === 'B' ? 'bg-orange-500/15 text-orange-300' : 'bg-sky-500/15 text-sky-300'}`}>Bạn thuộc {teamName} — điểm đội là số chặng đúng trung bình mỗi người</div>
       )}
-      <Lane emoji={heroAvatar} name={heroName} pos={playerPos} correct={playerCorrect} total={total} tone="me" />
-      <Lane emoji="🤖" name={botName} pos={botPos} correct={botCorrect} total={total} tone="bot" />
+      {compact ? (
+        <div className="flex items-center justify-between text-sm font-bold">
+          <span className="text-sky-300">{heroAvatar} {heroName}: {playerCorrect}/{total}</span>
+          <span className="text-orange-300">🤖 {botName}: {botCorrect}/{total}</span>
+        </div>
+      ) : (
+        <>
+          <Lane emoji={heroAvatar} name={heroName} pos={playerPos} correct={playerCorrect} total={total} tone="me" />
+          <Lane emoji="🤖" name={botName} pos={botPos} correct={botCorrect} total={total} tone="bot" />
+        </>
+      )}
       {!finished && <p className="text-[11px] text-slate-400 text-center">Trả lời đúng để chèo thuyền tới đích — trả lời nhanh để bỏ xa đối thủ. Kết quả cuối do máy chủ chốt.</p>}
     </div>
   );
