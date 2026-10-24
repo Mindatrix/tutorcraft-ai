@@ -15,6 +15,15 @@
   --font-mono: var(--font-geist-mono);
 }
 
+/* Fewer soft rounded rectangles: panels/buttons stay nearly square; circles, arches and
+   sticker shapes carry the personality instead (see .tc-sticker, .tc-ticket, arches). */
+@theme {
+  --radius-lg: 0.25rem;
+  --radius-xl: 0.3rem;
+  --radius-2xl: 0.4rem;
+  --radius-3xl: 0.5rem;
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
@@ -91,3 +100,23 @@ h1, h2, h3 { font-family: var(--font-display), var(--font-body), system-ui, sans
 @media (prefers-reduced-motion: reduce) {
   .tc-aurora, .tc-reveal, .tc-marquee, .tc-twinkle, .tc-float, .tc-bob, .tc-drift, .tc-sweep, .tc-sweep-r, .tc-wave, .tc-wave-r { animation: none !important; }
 }
+
+/* ---- Sticker / ticket / paper shapes (no soft rounded rectangles) ---- */
+.tc-sticker { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; padding: .85rem 1.5rem; font-weight: 800; color: #1b1448; background: #fcd34d;
+  border: 2px solid #1b1448; box-shadow: 5px 5px 0 #1b1448; transition: transform .12s ease, box-shadow .12s ease; }
+.tc-sticker:hover { transform: translate(-2px, -2px); box-shadow: 7px 7px 0 #1b1448; }
+.tc-sticker:active { transform: translate(3px, 3px); box-shadow: 2px 2px 0 #1b1448; }
+.tc-sticker--ghost { background: transparent; color: #fff; border-color: #fff; box-shadow: 5px 5px 0 rgb(255 255 255 / .35); }
+.tc-sticker--ghost:hover { box-shadow: 7px 7px 0 rgb(255 255 255 / .45); }
+.tc-sticker--coral { background: #fb7185; color: #fff; }
+
+.tc-ticket { --r: 11px; background: #fff7e0; color: #1b1448;
+  -webkit-mask: radial-gradient(circle var(--r) at 0 50%, #0000 97%, #000) left / 51% 100% no-repeat, radial-gradient(circle var(--r) at 100% 50%, #0000 97%, #000) right / 51% 100% no-repeat;
+  mask: radial-gradient(circle var(--r) at 0 50%, #0000 97%, #000) left / 51% 100% no-repeat, radial-gradient(circle var(--r) at 100% 50%, #0000 97%, #000) right / 51% 100% no-repeat; }
+
+.tc-stripes { background-image: repeating-linear-gradient(45deg, rgb(255 255 255 / .28) 0 8px, transparent 8px 16px); }
+.tc-doodle { fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.tc-spin-slow { animation: tc-spin 40s linear infinite; }
+@keyframes tc-spin { to { transform: rotate(360deg); } }
+.tc-band { transform: rotate(-1.4deg); }
+@media (prefers-reduced-motion: reduce) { .tc-spin-slow { animation: none !important; } }

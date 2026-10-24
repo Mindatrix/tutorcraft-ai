@@ -29,18 +29,19 @@ function GameStudio({ email, signOut }: { email: string; signOut: () => void }) 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 px-4 py-5 md:p-8 font-sans">
       <div className="max-w-4xl mx-auto space-y-5">
-        <header className="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 space-y-4">
+        <header className="border-l-4 border-amber-300 bg-slate-900/80 p-5 space-y-5">
           <div>
-            <span className="px-3 py-1 bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-semibold rounded-full uppercase tracking-wider">TutorCraft AI · Game Studio</span>
+            <span className="text-amber-300 text-xs font-bold uppercase tracking-[0.18em]">TutorCraft AI · Game Studio</span>
             <h1 className="text-2xl md:text-3xl font-extrabold text-white mt-2">Tạo Đấu trường RPG từ bài học</h1>
             <p className="text-xs text-slate-400 mt-1">Đăng nhập: {email} · <button type="button" onClick={signOut} className="underline hover:text-white">Đăng xuất</button></p>
             <Link href="/tutor/animation-lab" className="text-xs text-slate-400 hover:text-white">🎬 Animation Lab — phân tích video mẫu cho hiệu ứng trận đấu →</Link>
           </div>
-          <ol className="grid grid-cols-3 gap-2" aria-label="Các bước">
+          <ol className="relative grid grid-cols-3" aria-label="Các bước">
+            <span aria-hidden className="absolute left-[16%] right-[16%] top-4 h-0.5 bg-slate-700" />
             {STEPS.map((name, i) => (
-              <li key={name} aria-current={i === step ? 'step' : undefined} className={`rounded-xl border px-3 py-2 text-xs sm:text-sm font-bold flex items-center gap-2 ${i === step ? 'border-blue-500 bg-blue-600/15 text-white' : i < step ? 'border-emerald-500/40 text-emerald-400' : 'border-slate-800 text-slate-500'}`}>
-                <span className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 ${i < step ? 'bg-emerald-500 text-slate-950' : i === step ? 'bg-blue-500' : 'bg-slate-800'}`}>{i < step ? '✓' : i + 1}</span>
-                <span className="truncate">{name}</span>
+              <li key={name} aria-current={i === step ? 'step' : undefined} className={`relative flex flex-col items-center gap-1.5 text-center text-xs sm:text-sm font-bold ${i === step ? 'text-white' : i < step ? 'text-emerald-400' : 'text-slate-500'}`}>
+                <span className={`flex h-8 w-8 items-center justify-center rounded-full border-2 ${i < step ? 'border-emerald-400 bg-emerald-400 text-slate-950' : i === step ? 'border-amber-300 bg-amber-300 text-slate-950 shadow-[0_0_0_5px_rgb(252_211_77/.2)]' : 'border-slate-600 bg-slate-950'}`}>{i < step ? '✓' : i + 1}</span>
+                <span>{name}</span>
               </li>
             ))}
           </ol>
