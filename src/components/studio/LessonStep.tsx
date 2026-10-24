@@ -1,13 +1,12 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import ScenarioCarousel3D from '../ScenarioCarousel3D';
 import ParticleThinking from '../ParticleThinking';
 import { Sparkles, Loader2, Upload, AlertTriangle, X } from 'lucide-react';
 import {
   MAX_DURATION,
   MIN_DURATION,
-  SCENARIOS,
-  SCENARIO_IDS,
   THEMES,
   THEME_IDS,
   LEVELS,
@@ -178,14 +177,7 @@ export default function LessonStep({ initial, onGenerated }: { initial: StudioSe
 
       <div>
         <span className={label}>① Kịch bản sư phạm</span>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-          {SCENARIO_IDS.map((id) => (
-            <button type="button" key={id} onClick={() => set('scenario', id)} aria-pressed={s.scenario === id} className={`text-left p-3 rounded-xl border ${s.scenario === id ? 'border-blue-500 bg-blue-600/10' : 'border-slate-800 bg-slate-950 hover:border-slate-600'}`}>
-              <div className="font-bold text-sm">{SCENARIOS[id].nameVi}</div>
-              <div className="text-xs text-slate-400">{SCENARIOS[id].style}</div>
-            </button>
-          ))}
-        </div>
+        <ScenarioCarousel3D value={s.scenario} onChange={(id) => set('scenario', id)} />
       </div>
 
       <div>

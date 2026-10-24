@@ -37,6 +37,7 @@ import RaceTrack from './RaceTrack';
 
 // Three.js is heavy: load it only when a Boat Race actually starts.
 const RaceScene3D = dynamic(() => import('./RaceScene3D'), { ssr: false });
+const PortalIntro = dynamic(() => import('./PortalIntro'), { ssr: false });
 const RaceSceneUnity = dynamic(() => import('./RaceSceneUnity'), { ssr: false });
 import { useContentGuard, useWindowFocused, Watermark } from './ContentGuard';
 
@@ -273,12 +274,20 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
     play(ev.kind === 'blocked' || ev.kind === 'buff' ? 'skill' : ev.kind);
   }, [display?.event]);
 
+  const [portal, setPortal] = useState(false);
+  const portalDone = useRef<(() => void) | null>(null);
+
   const start = async () => {
     initSfx(muted);
     save('tc:profile', { nickname, avatar, anonymous });
     setStarting(true);
     setNetError(null);
     try {
+      // Portal intro first, so the server-side question timer starts after it.
+      if (gamified) {
+        await new Promise<void>((resolve) => { portalDone.current = resolve; setPortal(true); });
+        setPortal(false);
+      }
       const res = await sessionApi.start({ battleId: battle.id, variant, nickname: playerName, avatar, studentKey: sid });
       save(tokenKey, res.token);
       setToken(res.token);
@@ -336,6 +345,7 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
 
   return (
     <div className={`tc-protected min-h-screen ${shell} px-4 py-5 md:p-8 font-sans ${phase !== 'lobby' ? 'select-none [-webkit-touch-callout:none]' : ''}`}>
+      {portal && <PortalIntro onDone={() => portalDone.current?.()} />}
       {phase !== 'lobby' && <Watermark tutorName={battle.tutorName} classCode={battle.classCode} studentId={sid.slice(0, 8)} dark={gamified} />}
       {guardToast && (
         <div role="status" className="fixed top-4 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-xl bg-slate-800 text-white text-sm font-bold flex items-center gap-2 shadow-xl">
