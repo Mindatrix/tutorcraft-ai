@@ -11,6 +11,6 @@
     "incremental": false,
     "plugins": []
   },
-  "include": ["tests/**/*.ts", "src/engine/**/*.ts", "src/server/crypto.ts", "src/server/sessionService.ts", "src/server/sessionStore.ts", "proxy.ts"],
+  "include": ["tests/**/*.ts", "src/engine/**/*.ts", "src/config/**/*.ts", "src/server/crypto.ts", "src/server/sessionService.ts", "src/server/sessionStore.ts", "proxy.ts"],
   "exclude": ["node_modules", ".next", ".test-build"]
 }

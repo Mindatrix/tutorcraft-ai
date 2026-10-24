@@ -93,7 +93,8 @@ export default function RaceSceneUnity({ playerPos, botPos, result, onUnavailabl
 
   return (
     <div className="relative w-full h-56 sm:h-72 rounded-2xl overflow-hidden border border-sky-500/30" aria-hidden>
-      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
+      {/* Unity's Emscripten input layer looks the canvas up by id ("#" + id); without one it throws. */}
+      <canvas ref={canvasRef} id="unity-boatrace-canvas" className="absolute inset-0 w-full h-full" />
       {!ready && <div className="absolute inset-0 grid place-items-center text-xs text-slate-200 bg-sky-900/40">Đang tải sông 3D… {Math.round(progress * 100)}%</div>}
     </div>
   );
