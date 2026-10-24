@@ -31,3 +31,10 @@ body {
     display: none !important;
   }
 }
+
+/* Matching: energy beam dash travelling between two matched cards. */
+@keyframes beam {
+  to {
+    stroke-dashoffset: -12;
+  }
+}

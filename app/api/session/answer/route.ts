@@ -4,6 +4,9 @@ import { SESSION_HEADER, sessionErrorResponse, sessions } from '../../../../src/
 /**
  * Lock in an answer. The server checks it, times it with its own clock, and only
  * then reveals the correct option and explanation.
+ * Body: { questionId, chosenIdx } for multiple choice (-1 = timeout), or
+ *       { questionId, response } for written / cloze (string[]) / reorder (chip ids).
+ * Any score the client sends is ignored — open answers are graded here.
  */
 export async function POST(req: Request) {
   const token = req.headers.get(SESSION_HEADER) ?? '';
@@ -18,7 +21,7 @@ export async function POST(req: Request) {
     return Response.json({ error: 'Body không phải JSON hợp lệ.' }, { status: 400 });
   }
   try {
-    const res = await sessions.act(token, { kind: 'answer', questionId: body.questionId, chosenIdx: body.chosenIdx });
+    const res = await sessions.act(token, { kind: 'answer', questionId: body.questionId, chosenIdx: body.chosenIdx, response: body.response });
     return Response.json(res, { headers: { 'Cache-Control': 'no-store' } });
   } catch (e) {
     return sessionErrorResponse(e);

@@ -25,9 +25,35 @@ const keysOf = (v, out = new Set()) => {
   }
   return out;
 };
-const leaksAnswers = (v) => ['correct_idx', 'correctIdx', 'explanation'].some((k) => keysOf(v).has(k));
-// Mirror of engine/anticheat minPlausibleMs, plus margin, to play "like a human".
-const humanMs = (q) => Math.min(6000, Math.max(700, 400 + `${q.question} ${q.options.join(' ')}`.split(/\s+/).length * 60)) + 900;
+// Answer-key fields that must never appear in what a student's browser receives.
+const SECRET_KEYS = ['correct_idx', 'correctIdx', 'explanation', 'pairs', 'answers', 'tokens', 'key_phrases', 'key_points', 'sample_answer', 'rubric', 'deep_insight', 'gaps', 'word_bank'];
+// The whole view must never carry the classic key; the public QUESTION must carry none of the
+// answer-key fields (state.answers is the student's own answer log, so it isn't scanned for "answers").
+const leaksAnswers = (view) => {
+  if (!view) return false;
+  const q = view.question ?? (view.type ? view : null);
+  return ['correct_idx', 'correctIdx', 'explanation'].some((k) => keysOf(view).has(k)) || (q ? SECRET_KEYS.some((k) => keysOf(q).has(k)) : false);
+};
+// Everything a student must read, in any format (mirror of engine/anticheat readableText).
+const readable = (q) =>
+  [q.question, ...(q.options ?? []), q.passage, q.source, q.clozeText, q.hub, ...(q.leftItems ?? []), ...(q.rightItems ?? []).map((r) => r.text), ...(q.chips ?? []).map((c) => c.text)]
+    .filter(Boolean)
+    .join(' ');
+// Mirror of engine/anticheat minPlausibleMs (+ typing time), plus margin, to play "like a human".
+const humanMs = (q, typed = 0) => Math.min(q.type === 'reading' ? 12000 : 6000, Math.max(700, 400 + readable(q).split(/\s+/).length * 60 * (q.type === 'reading' ? 1.5 : 1))) + typed * 200 + 900;
+/** A plausible (not necessarily right) answer for any format. Matching gives up (keeps matched pairs). */
+const payloadFor = (q, pick = 0) => {
+  switch (q.type) {
+    case 'essay': return { response: 'Last weekend I visited my grandparents and we cooked lunch together.' };
+    case 'reading': return { response: 'Keep working hard and never give up.' };
+    case 'transform': return { response: q.source ?? 'x' };
+    case 'cloze': return { response: Array.from({ length: q.gapCount ?? 1 }, () => 'went') };
+    case 'reorder': return { response: (q.chips ?? []).map((c) => c.id) };
+    case 'matching': return { chosenIdx: -1 };
+    default: return { chosenIdx: pick };
+  }
+};
+const typedWords = (p) => (typeof p.response === 'string' ? p.response.split(/\s+/).length : 0);
 const json = (r) => r.json().catch(() => ({}));
 const post = (path, body, headers = {}) =>
   fetch(BASE + path, { method: 'POST', headers: { 'Content-Type': 'application/json', ...headers }, body: JSON.stringify(body) });
@@ -80,7 +106,8 @@ check('token payload is not readable', !Buffer.from(String(s1.token).slice(3), '
   let q = s.view.question;
   const hdr = { [H]: s.token, ...ip() };
   while (q) {
-    const r = await json(await post('/api/session/answer', { questionId: q.id, chosenIdx: 0 }, hdr));
+    if (leaksAnswers(q)) check(`${q.type} question leaks its answer key`, false);
+    const r = await json(await post('/api/session/answer', { questionId: q.id, ...payloadFor(q) }, hdr));
     q = r.view?.question;
   }
   const r = await post('/api/battle-result', { gems: 99999 }, hdr);
@@ -94,14 +121,17 @@ check('token payload is not readable', !Buffer.from(String(s1.token).slice(3), '
   let q = s.view.question;
   const hdr = { [H]: s.token, ...ip() };
   let revealedBefore = false;
+  const formats = new Set();
   while (q) {
-    await sleep(humanMs(q));
-    const r = await json(await post('/api/session/answer', { questionId: q.id, chosenIdx: 1 }, hdr));
+    formats.add(q.type);
+    const p = payloadFor(q, 1);
+    await sleep(humanMs(q, typedWords(p)));
+    const r = await json(await post('/api/session/answer', { questionId: q.id, ...p }, hdr));
     if (leaksAnswers(r.view)) revealedBefore = true;
     q = r.view?.question;
     if (q) await sleep(1450);
   }
-  check('next question never leaks its answer', !revealedBefore);
+  check('next question never leaks its answer (all formats)', !revealedBefore, [...formats].join(','));
   const r1 = await post('/api/battle-result', { gems: 99999, exp: 99999, hpRemaining: 100, correct: 6 }, hdr);
   const b1 = await json(r1);
   const r2 = await post('/api/battle-result', {}, hdr);

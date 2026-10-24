@@ -1,5 +1,6 @@
 import {
   DEMO_BATTLE_ID,
+  computeScaling,
   defaultBoss,
   demoBattle,
   generateBattleCode,
@@ -178,5 +179,7 @@ export function publicBattle(b: LoadedBattle) {
     boss: b.boss,
     tutorName: b.tutorName,
     totalQuestions: b.questions.length,
+    /** Weighted by format (essay ×3 …) — the lobby shows it without seeing any question. */
+    bossMaxHp: computeScaling(b.config, b.questions.length, b.questions).bossHp,
   };
 }

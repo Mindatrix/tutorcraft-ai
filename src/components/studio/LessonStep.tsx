@@ -15,6 +15,10 @@ import {
   timeLimitFor,
   variantCodes,
   type ThemeId,
+  QUESTION_TYPES,
+  QUESTION_TYPE_IDS,
+  plannedQuestionCount,
+  type QuestionType,
 } from '../../engine';
 import { field, label, type StudioDraft, type StudioSettings } from './types';
 
@@ -56,6 +60,7 @@ export const DEFAULT_SETTINGS: StudioSettings = {
   durationMinutes: 10,
   studentCount: 1,
   teamSize: 4,
+  questionTypes: ['mcq'],
 };
 
 export default function LessonStep({ initial, onGenerated }: { initial: StudioSettings; onGenerated: (d: StudioDraft) => void }) {
@@ -66,7 +71,12 @@ export default function LessonStep({ initial, onGenerated }: { initial: StudioSe
   const [error, setError] = useState<string | null>(null);
 
   const set = <K extends keyof StudioSettings>(k: K, v: StudioSettings[K]) => setS((prev) => ({ ...prev, [k]: v }));
-  const scaling = useMemo(() => computeScaling({ durationMinutes: s.durationMinutes, scenario: s.scenario, teamSize: s.teamSize, level: s.level }), [s.durationMinutes, s.scenario, s.teamSize, s.level]);
+  const plannedCount = plannedQuestionCount(s.durationMinutes, s.questionTypes);
+  // Estimate only: the real Boss HP is weighted by each question's format in step 2.
+  const scaling = useMemo(() => computeScaling({ durationMinutes: s.durationMinutes, scenario: s.scenario, teamSize: s.teamSize, level: s.level }, plannedCount), [s.durationMinutes, s.scenario, s.teamSize, s.level, plannedCount]);
+  const avgWeight = s.questionTypes.reduce((n, t) => n + QUESTION_TYPES[t].weight, 0) / Math.max(1, s.questionTypes.length);
+  const toggleType = (t: QuestionType) =>
+    set('questionTypes', s.questionTypes.includes(t) ? (s.questionTypes.length > 1 ? s.questionTypes.filter((x) => x !== t) : s.questionTypes) : [...s.questionTypes, t]);
   const variants = variantCodes(s.studentCount);
   const canGenerate = !!(s.topic.trim() || doc || lessonText.trim());
 
@@ -106,6 +116,7 @@ export default function LessonStep({ initial, onGenerated }: { initial: StudioSe
           classCode: s.classCode || undefined,
           cefrLevel: s.cefrLevel || undefined,
           level: s.level,
+          questionTypes: s.questionTypes,
           examType: s.scenario === 'coop_raid' ? 'group' : 'individual',
           document,
         }),
@@ -206,6 +217,23 @@ export default function LessonStep({ initial, onGenerated }: { initial: StudioSe
         </div>
       </div>
 
+      <div>
+        <span className={label}>Dạng bài — chọn 1 hoặc trộn nhiều ({s.questionTypes.length} đã chọn)</span>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+          {QUESTION_TYPE_IDS.map((t) => {
+            const def = QUESTION_TYPES[t];
+            const on = s.questionTypes.includes(t);
+            return (
+              <button type="button" key={t} onClick={() => toggleType(t)} aria-pressed={on} className={`text-left p-2.5 rounded-xl border ${on ? 'border-emerald-500 bg-emerald-500/10' : 'border-slate-800 bg-slate-950 hover:border-slate-600'}`}>
+                <div className="text-sm font-bold">{def.icon} {def.nameVi} <span className="text-xs font-mono text-rose-300">×{def.weight}</span></div>
+                <div className="text-[11px] leading-tight text-slate-400">{def.blurb}</div>
+              </button>
+            );
+          })}
+        </div>
+        <p className="text-xs text-slate-500 mt-1">Tự luận & Đọc hiểu được AI chấm theo Rubric (gia sư chỉnh ở bước 2). Bài dài hơn nên cùng thời lượng sẽ có ít câu hơn.</p>
+      </div>
+
       <fieldset disabled={s.mode === 'standard'} className="disabled:opacity-40">
         <span className={label}>② Thư viện Game — chọn 1 hoặc trộn nhiều theme ({s.themes.length} đã chọn)</span>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
@@ -227,7 +255,7 @@ export default function LessonStep({ initial, onGenerated }: { initial: StudioSe
         <input id="duration" type="range" min={MIN_DURATION} max={MAX_DURATION} value={s.durationMinutes} onChange={(e) => set('durationMinutes', Number(e.target.value))} className="w-full accent-amber-500" />
         <div className="grid grid-cols-3 gap-2 mt-3 text-center">
           <Metric label="Số câu hỏi" value={scaling.totalQuestions} />
-          <Metric label="Boss HP" value={scaling.bossHp.toLocaleString('en-US')} />
+          <Metric label="Boss HP (ước tính)" value={`~${Math.round((scaling.bossHp * avgWeight) / 50) * 50}`} />
           <Metric label="Thời gian / câu" value={`${timeLimitFor('easy', s.level)}–${timeLimitFor('hard', s.level)}s`} />
         </div>
       </div>

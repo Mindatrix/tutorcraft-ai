@@ -4,6 +4,7 @@ import { clampDuration } from './scaling';
 import { normalizeLevel } from './levels';
 import { isScenarioId } from './scenarios';
 import { normalizeThemes } from './themes';
+import { QUESTION_TYPE_IDS, normalizeQuestionTypes, questionType, sanitizeTypedFields } from './questionTypes';
 
 const DIFFICULTIES: Difficulty[] = ['easy', 'medium', 'hard'];
 const SKILL_TAGS: SkillTag[] = ['grammar', 'vocabulary', 'reading', 'listening', 'pronunciation', 'other'];
@@ -12,10 +13,12 @@ function str(v: unknown, max = 600): string | null {
   return typeof v === 'string' && v.trim() ? v.trim().slice(0, max) : null;
 }
 
-/** Validate one AI question; returns null if it can't be repaired. */
+/** Validate one AI / tutor question of any format; returns null if it can't be repaired. */
 export function sanitizeQuestion(raw: unknown, id: number): Question | null {
   if (!raw || typeof raw !== 'object') return null;
   const r = raw as Record<string, unknown>;
+  const type = questionType(r as Pick<Question, 'type'>);
+  if (type !== 'mcq') return sanitizeTypedQuestion(r, id);
   const question = str(r.question);
   const options = Array.isArray(r.options) ? r.options.map((o) => str(o, 200)).filter((o): o is string => !!o) : [];
   const correct = Number(r.correct_idx);
@@ -35,6 +38,30 @@ export function sanitizeQuestion(raw: unknown, id: number): Question | null {
     topic: str(r.topic, 80) ?? 'general',
     hint: str(r.hint, 300) ?? undefined,
     explanation: str(r.explanation, 400) ?? undefined,
+  };
+}
+
+function sanitizeTypedQuestion(r: Record<string, unknown>, id: number): Question | null {
+  const type = questionType(r as Pick<Question, 'type'>);
+  const question = str(r.question);
+  if (!question) return null;
+  const { fields, problem } = sanitizeTypedFields(type, r);
+  if (problem) return null;
+  const difficulty = DIFFICULTIES.includes(r.difficulty as Difficulty) ? (r.difficulty as Difficulty) : 'medium';
+  const skill_tag = SKILL_TAGS.includes(r.skill_tag as SkillTag) ? (r.skill_tag as SkillTag) : type === 'reading' ? 'reading' : 'other';
+  return {
+    id,
+    type,
+    question,
+    options: [],
+    correct_idx: -1,
+    difficulty,
+    skill_tag,
+    topic: str(r.topic, 80) ?? 'general',
+    hint: str(r.hint, 300) ?? undefined,
+    explanation: str(r.explanation, 600) ?? undefined,
+    ...(r.is_review === true ? { is_review: true } : {}),
+    ...fields,
   };
 }
 
@@ -85,6 +112,7 @@ export function normalizeConfig(raw: Record<string, unknown>): BattleConfig {
     teamSize: Math.min(10, Math.max(1, Math.round(Number(raw.teamSize) || (scenario === 'coop_raid' ? 4 : 1)))),
     cefrLevel: str(raw.cefrLevel, 4) ?? undefined,
     level: normalizeLevel(raw.level),
+    questionTypes: normalizeQuestionTypes(raw.questionTypes),
   };
 }
 
@@ -119,7 +147,9 @@ export const GEMINI_RESPONSE_SCHEMA = {
       items: {
         type: 'OBJECT',
         properties: {
+          type: { type: 'STRING', enum: QUESTION_TYPE_IDS },
           question: { type: 'STRING' },
+          // mcq
           options: { type: 'ARRAY', items: { type: 'STRING' } },
           correct_idx: { type: 'INTEGER' },
           difficulty: { type: 'STRING', enum: DIFFICULTIES },
@@ -127,8 +157,50 @@ export const GEMINI_RESPONSE_SCHEMA = {
           skill_tag: { type: 'STRING', enum: SKILL_TAGS },
           hint: { type: 'STRING' },
           explanation: { type: 'STRING' },
+          // essay / reading
+          passage: { type: 'STRING' },
+          rubric: { type: 'STRING' },
+          min_words: { type: 'INTEGER' },
+          max_words: { type: 'INTEGER' },
+          sample_answer: { type: 'STRING' },
+          key_points: { type: 'ARRAY', items: { type: 'STRING' } },
+          // matching
+          hub: { type: 'STRING' },
+          pairs: {
+            type: 'ARRAY',
+            items: {
+              type: 'OBJECT',
+              properties: {
+                left: { type: 'STRING' },
+                right: { type: 'STRING' },
+                relation: { type: 'STRING', enum: ['term_definition', 'formula_example', 'situation_response', 'cause_effect'] },
+              },
+              required: ['left', 'right'],
+            },
+          },
+          deep_insight: { type: 'STRING' },
+          // transform
+          source: { type: 'STRING' },
+          cue: { type: 'STRING' },
+          answers: { type: 'ARRAY', items: { type: 'STRING' } },
+          key_phrases: { type: 'ARRAY', items: { type: 'STRING' } },
+          // reorder
+          tokens: { type: 'ARRAY', items: { type: 'STRING' } },
+          // cloze
+          text: { type: 'STRING' },
+          gaps: { type: 'ARRAY', items: { type: 'OBJECT', properties: { answers: { type: 'ARRAY', items: { type: 'STRING' } } }, required: ['answers'] } },
+          word_bank: { type: 'ARRAY', items: { type: 'STRING' } },
         },
-        required: ['question', 'options', 'correct_idx', 'difficulty', 'topic', 'skill_tag'],
+        // Gemini can't express "required for this type only", and it drops optional keys it
+        // considers unimportant (measured: mcq without correct_idx, cloze without gaps).
+        // So the answer-key fields are required everywhere; unused formats send [] / -1.
+        required: [
+          'type', 'question', 'difficulty', 'topic', 'skill_tag', 'hint', 'explanation',
+          'options', 'correct_idx', 'gaps', 'text', 'word_bank',
+          'hub', 'pairs', 'deep_insight',
+          'source', 'cue', 'answers', 'key_phrases', 'tokens',
+          'passage', 'rubric', 'key_points', 'sample_answer', 'min_words', 'max_words',
+        ],
       },
     },
   },

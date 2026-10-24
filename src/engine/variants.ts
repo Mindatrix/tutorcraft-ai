@@ -47,6 +47,7 @@ export function buildVariant(questions: Question[], battleId: string, code: numb
   if (code == null) return questions;
   const rand = mulberry32(hashString(`${battleId}:${code}`));
   return seededShuffle(questions, rand).map((q) => {
+    if (q.type && q.type !== 'mcq') return q; // cards / chips are shuffled per session instead
     const order = seededShuffle(q.options.map((_, i) => i), rand);
     return {
       ...q,

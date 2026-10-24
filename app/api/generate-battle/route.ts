@@ -3,6 +3,9 @@ import {
     computeScaling,
     defaultBoss,
     fallbackPayload,
+    configTypes,
+    averageWeight,
+    plannedQuestionCount,
     normalizeConfig,
     reviewSlots,
     validateBattlePayload,
@@ -91,8 +94,9 @@ export async function POST(req: Request) {
 
     const config = normalizeConfig(body);
     const classCode = typeof body.classCode === 'string' && body.classCode.trim() ? body.classCode.trim().slice(0, 40) : 'default';
-    const scaling = computeScaling(config);
-    const Q = scaling.totalQuestions;
+    const types = configTypes(config);
+    // Mixed formats take longer per question, so fewer of them fit the same duration.
+    const Q = plannedQuestionCount(config.durationMinutes, types);
 
     const reviewTopics = await dueReviewTopics(classCode);
     const reviewCount = reviewSlots(Q, reviewTopics.length ? Q : 0);
@@ -111,7 +115,7 @@ export async function POST(req: Request) {
 
     // Accept the AI output if it delivers at least 80% of the requested questions.
     const minQuestions = Math.max(1, Math.ceil(Q * 0.8));
-    const ai = await generateWithFailSafe(prompt, parsedDoc.inline, (raw) => validateBattlePayload(raw, minQuestions, bossFallback), Q);
+    const ai = await generateWithFailSafe(prompt, parsedDoc.inline, (raw) => validateBattlePayload(raw, minQuestions, bossFallback), Math.round(Q * averageWeight(types)));
 
     let payload: BattlePayload;
     let provider: string;
@@ -120,11 +124,11 @@ export async function POST(req: Request) {
         provider = ai.model!;
         if (payload.questions.length < Q) {
             // Top up the last few from the local bank so Q always matches the duration formula.
-            const extra = fallbackPayload(Q - payload.questions.length, topic).questions;
+            const extra = fallbackPayload(Q - payload.questions.length, topic, types).questions;
             payload.questions.push(...extra);
         }
     } else {
-        payload = fallbackPayload(Q, topic || 'fallback');
+        payload = fallbackPayload(Q, topic || 'fallback', types);
         provider = 'Local Cached Template';
     }
     const boss = payload.boss ?? bossFallback;
@@ -137,6 +141,7 @@ export async function POST(req: Request) {
     }));
 
     const lessonTitle = topic || doc?.name || 'Uploaded lesson';
+    const scaling = computeScaling(config, questions.length, questions); // Boss HP weighted by format
     const storedConfig = { ...config, scaling, classCode, boss };
 
     // Studio drafts are previewed and edited first, then published via POST /api/battles.

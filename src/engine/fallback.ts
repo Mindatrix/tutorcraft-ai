@@ -1,4 +1,4 @@
-import type { BattlePayload, Question } from './types';
+import type { BattlePayload, Question, QuestionType } from './types';
 import { hashString, mulberry32, seededShuffle } from './variants';
 
 // Local cached template payload — used when both Gemini attempts fail,
@@ -45,15 +45,92 @@ export const FALLBACK_TEACHING_NOTES = [
   'Review the weak topics shown in the diagnostics panel at the start of next lesson.',
 ];
 
+// Non-multiple-choice templates, 2 per format, used when the tutor asked for those formats.
+export const TYPED_BANK: Q[] = [
+  {
+    type: 'cloze', question: 'Điền dạng đúng của động từ vào chỗ trống.', options: [], correct_idx: -1, difficulty: 'easy', topic: 'past simple', skill_tag: 'grammar',
+    text: 'Yesterday I {{1}} to the park and {{2}} football with my friends.', gaps: [{ answers: ['went'] }, { answers: ['played'] }],
+    word_bank: ['went', 'go', 'played', 'play', 'going'], hint: 'Có “Yesterday” → dùng quá khứ đơn.', explanation: 'Yesterday là dấu hiệu quá khứ đơn: go → went, play → played.',
+  },
+  {
+    type: 'cloze', question: 'Điền giới từ thích hợp.', options: [], correct_idx: -1, difficulty: 'medium', topic: 'prepositions of time', skill_tag: 'grammar',
+    text: 'My birthday is {{1}} May. The party starts {{2}} 7 p.m. {{3}} Saturday.', gaps: [{ answers: ['in'] }, { answers: ['at'] }, { answers: ['on'] }],
+    hint: 'in + tháng, at + giờ, on + thứ.', explanation: 'in May (tháng), at 7 p.m. (giờ), on Saturday (thứ).',
+  },
+  {
+    type: 'reorder', question: 'Sắp xếp các từ thành câu hoàn chỉnh.', options: [], correct_idx: -1, difficulty: 'easy', topic: 'present continuous', skill_tag: 'grammar',
+    tokens: ['She', 'is', 'reading', 'a', 'book', 'now.'], hint: 'Chủ ngữ + am/is/are + V-ing.', explanation: 'Hiện tại tiếp diễn: S + is + V-ing + O.',
+  },
+  {
+    type: 'reorder', question: 'Sắp xếp thành câu hỏi đúng.', options: [], correct_idx: -1, difficulty: 'medium', topic: 'question formation', skill_tag: 'grammar',
+    tokens: ['Where', 'did', 'you', 'go', 'last', 'weekend?'], hint: 'Từ để hỏi + trợ động từ + chủ ngữ + động từ.', explanation: 'Câu hỏi quá khứ: Wh- + did + S + V nguyên mẫu.',
+  },
+  {
+    type: 'transform', question: 'Viết lại câu sao cho nghĩa không đổi, dùng từ trong ngoặc.', options: [], correct_idx: -1, difficulty: 'medium', topic: 'passive voice', skill_tag: 'grammar',
+    source: 'They built this school in 1998.', cue: 'was', answers: ['This school was built in 1998.', 'This school was built by them in 1998.'],
+    key_phrases: ['this school', 'was built', 'in 1998'], hint: 'Đưa tân ngữ lên làm chủ ngữ: was + V3.', explanation: 'Bị động quá khứ: S + was/were + V3.',
+  },
+  {
+    type: 'transform', question: 'Viết lại câu với từ gợi ý, giữ nguyên nghĩa.', options: [], correct_idx: -1, difficulty: 'hard', topic: 'present perfect', skill_tag: 'grammar',
+    source: 'I started learning English five years ago.', cue: 'for', answers: ['I have learned English for five years.', 'I have been learning English for five years.', 'I have learnt English for five years.'],
+    key_phrases: ['have', 'english', 'for five years'], hint: 'started … ago → have + V3 … for.', explanation: 'Hành động bắt đầu trong quá khứ và còn tiếp diễn → hiện tại hoàn thành + for.',
+  },
+  {
+    type: 'matching', question: 'Nối mỗi cấu trúc với ví dụ đúng.', options: [], correct_idx: -1, difficulty: 'medium', topic: 'past simple', skill_tag: 'grammar',
+    hub: 'Thì Quá khứ Đơn — Past Simple',
+    pairs: [
+      { left: 'S + V2/ed', right: 'She visited Hue last summer.', relation: 'formula_example' },
+      { left: 'S + did not + V', right: "We didn't watch TV yesterday.", relation: 'formula_example' },
+      { left: 'Did + S + V?', right: 'Did you finish your homework?', relation: 'formula_example' },
+      { left: 'Dấu hiệu thời gian', right: 'yesterday, last week, two days ago', relation: 'term_definition' },
+    ],
+    deep_insight: 'Quá khứ đơn diễn tả hành động đã kết thúc tại thời điểm xác định trong quá khứ. Câu phủ định và nghi vấn mượn “did”, nên động từ chính trở về nguyên mẫu.',
+    hint: 'Câu có “did” thì động từ chính không chia.',
+  },
+  {
+    type: 'matching', question: 'Nối nguyên nhân với kết quả.', options: [], correct_idx: -1, difficulty: 'easy', topic: 'cause and effect', skill_tag: 'vocabulary',
+    hub: 'Because / So — Nguyên nhân & Kết quả',
+    pairs: [
+      { left: 'It was raining heavily', right: 'so we stayed at home.', relation: 'cause_effect' },
+      { left: 'She studied very hard', right: 'so she passed the exam.', relation: 'cause_effect' },
+      { left: 'He forgot his umbrella', right: 'so he got wet.', relation: 'cause_effect' },
+    ],
+    deep_insight: '“so” đứng trước KẾT QUẢ, “because” đứng trước NGUYÊN NHÂN: We stayed at home because it was raining.',
+  },
+  {
+    type: 'reading', question: 'Thông điệp chính của đoạn văn là gì? Viết 1–3 câu bằng tiếng Anh.', options: [], correct_idx: -1, difficulty: 'medium', topic: 'main idea', skill_tag: 'reading',
+    passage: 'Every morning, Lan waters the small garden behind her house. At first, nothing grew and her neighbours laughed at her. But she kept watering, weeding and learning from her mistakes. After two years, her garden was full of flowers and vegetables, and the same neighbours came to ask for her advice.',
+    min_words: 8, max_words: 60, key_points: ['patience and hard work bring results', 'do not give up when others laugh', 'learning from mistakes'],
+    sample_answer: 'If we keep working patiently and learn from our mistakes, we will succeed, even when other people doubt us.',
+    rubric: 'Nêu được ý kiên trì/không bỏ cuộc dẫn đến thành công. Không cần kể lại chi tiết.',
+    hint: 'Điều gì đã thay đổi sau hai năm, và vì sao?',
+  },
+  {
+    type: 'essay', question: 'Write 3–5 sentences about what you did last weekend. Use the past simple.', options: [], correct_idx: -1, difficulty: 'medium', topic: 'past simple', skill_tag: 'grammar',
+    min_words: 25, max_words: 100, key_points: ['activities last weekend', 'past simple verbs', 'time expressions like on Saturday'],
+    rubric: 'Dùng đúng quá khứ đơn (động từ có quy tắc và bất quy tắc). Có ít nhất 3 hoạt động. Câu rõ ràng.',
+    sample_answer: 'Last weekend I visited my grandparents. On Saturday we cooked lunch together and I helped my grandmother in the garden. On Sunday I went to the cinema with my friends and we watched a funny film.',
+    hint: 'Kể theo thứ tự: Saturday… then… On Sunday…',
+  },
+];
+
 /** Return `count` questions from the local bank. Repeats (reshuffled) if count > bank size. */
-export function fallbackPayload(count: number, seedText = 'fallback'): BattlePayload {
+/** Return `count` questions from the local bank. Repeats (reshuffled) if count > bank size. */
+export function fallbackPayload(count: number, seedText = 'fallback', types: QuestionType[] = ['mcq']): BattlePayload {
   const rand = mulberry32(hashString(seedText));
+  const wanted = types.length ? types : (['mcq'] as QuestionType[]);
+  // One pool per requested format; formats are interleaved so a battle mixes them.
+  const pools = wanted.map((t) => (t === 'mcq' ? BANK : TYPED_BANK.filter((q) => q.type === t))).filter((p) => p.length);
+  const decks = pools.map((p) => seededShuffle(p, rand));
+  const cursor = decks.map(() => 0);
   const out: Question[] = [];
-  while (out.length < count) {
-    for (const q of seededShuffle(BANK, rand)) {
-      if (out.length >= count) break;
-      out.push({ ...q, id: out.length + 1 });
+  for (let k = 0; out.length < count && decks.length; k++) {
+    const d = k % decks.length;
+    if (cursor[d] >= decks[d].length) {
+      decks[d] = seededShuffle(pools[d], rand);
+      cursor[d] = 0;
     }
+    out.push({ ...decks[d][cursor[d]++], id: out.length + 1 });
   }
   return { teaching_notes: FALLBACK_TEACHING_NOTES, questions: out };
 }

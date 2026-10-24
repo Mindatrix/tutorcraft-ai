@@ -1,6 +1,6 @@
 import type { AnswerRecord, DifficultyLevel, Question } from './types';
 import { LEVELS, normalizeLevel } from './levels';
-import { timeLimitFor } from './scaling';
+import { isAnswerCorrect, questionTimeLimit } from './questionTypes';
 
 // Boat Race 1v1 vs a bot. Pure + deterministic: the bot's plan comes from a seeded PRNG,
 // so the server (authoritative) and the client (live animation) agree without any wall clock.
@@ -111,7 +111,7 @@ export function botPosition(plan: BotStep[], stepMs: number[], elapsedMs: number
 export function raceOutcome(questions: Question[], answers: AnswerRecord[], seed: string, level: DifficultyLevel | undefined): RaceOutcome {
   const byId = new Map(questions.map((q) => [q.id, q]));
   const plan = botPlan(seed, questions.length, level);
-  const stepMs = botStepTimes(plan, questions.map((q) => timeLimitFor(q.difficulty, level)));
+  const stepMs = botStepTimes(plan, questions.map((q) => questionTimeLimit(q, level)));
   const botDistance = plan.reduce((n, s) => n + (s.correct ? 1 : 0), 0);
   const botTimeMs = stepMs.reduce((a, b) => a + b, 0);
 
@@ -122,8 +122,8 @@ export function raceOutcome(questions: Question[], answers: AnswerRecord[], seed
     const q = byId.get(a.questionId);
     if (!q || seen.has(a.questionId)) continue;
     seen.add(a.questionId);
-    if (a.chosenIdx === q.correct_idx) playerDistance += 1;
-    const cap = (timeLimitFor(q.difficulty, level) + 60) * 1000;
+    if (isAnswerCorrect(q, a)) playerDistance += 1;
+    const cap = (questionTimeLimit(q, level) + 60) * 1000;
     playerTimeMs += Math.min(Math.max(0, Number(a.timeMs) || 0), cap);
   }
 

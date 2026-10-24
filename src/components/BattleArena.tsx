@@ -17,7 +17,8 @@ import {
   raceSeed,
   rollGacha,
   themeForQuestion,
-  timeLimitFor,
+  QUESTION_TYPES,
+  questionTimeLimit,
   type AnswerReveal,
   type BattleConfig,
   type BattleState,
@@ -30,7 +31,8 @@ import {
 } from '../engine';
 import { load, remove, save, studentKey } from '../client/storage';
 import { initSfx, play, setMuted } from '../client/sfx';
-import { ApiError, sessionApi, type FinalizeResponse, type SessionView } from '../client/sessionApi';
+import { ApiError, sessionApi, type ActResponse, type FinalizeResponse, type SessionView } from '../client/sessionApi';
+import AnswerPanel, { type AnswerPayload } from './AnswerPanel';
 import BattleCanvas from './BattleCanvas';
 import dynamic from 'next/dynamic';
 import RaceTrack from './RaceTrack';
@@ -62,6 +64,8 @@ export interface ArenaBattle {
   tutorName: string;
   classCode: string;
   totalQuestions: number;
+  /** Boss HP weighted by question format (from the server). */
+  bossMaxHp?: number;
 }
 
 interface Leaderboard {
@@ -79,7 +83,7 @@ interface Feedback {
 
 export default function BattleArena({ battle, variant, prefs }: { battle: ArenaBattle; variant: number | null; prefs: Prefs }) {
   const { config, boss } = battle;
-  const scaling = useMemo(() => computeScaling(config, battle.totalQuestions), [config, battle.totalQuestions]);
+  const baseScaling = useMemo(() => computeScaling(config, battle.totalQuestions), [config, battle.totalQuestions]);
   const tokenKey = `tc:session:${battle.id}:${variant ?? 0}`;
   const gamified = config.mode === 'gamified';
   const scenario = SCENARIOS[config.scenario];
@@ -95,10 +99,15 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
   const [phase, setPhase] = useState<'lobby' | 'playing' | 'result'>('lobby');
   const [token, setToken] = useState<string | null>(null);
   const [view, setView] = useState<SessionView | null>(null);
+  // Boss HP is weighted by format on the server (essay ×3 …); the lobby value comes from /api/battles.
+  const bossMaxHp = view?.bossMaxHp ?? battle.bossMaxHp ?? baseScaling.bossHp;
+  const scaling = useMemo(() => ({ ...baseScaling, bossHp: bossMaxHp }), [baseScaling, bossMaxHp]);
   const [feedback, setFeedback] = useState<Feedback | null>(null);
   const [pending, setPending] = useState(false);
   const [netError, setNetError] = useState<string | null>(null);
-  const [retry, setRetry] = useState<{ questionId: number; chosenIdx: number } | null>(null);
+  const [retry, setRetry] = useState<{ questionId: number; payload: AnswerPayload } | null>(null);
+  const [charge, setCharge] = useState(0);
+  const [advance, setAdvance] = useState(0);
   const [deadline, setDeadline] = useState(0);
   const [frozenUntil, setFrozenUntil] = useState(0);
   const [clock, setClock] = useState(0);
@@ -149,7 +158,9 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
   const applyView = useCallback((v: SessionView) => {
     setView(v);
     const q = v.question;
-    if (q) setLimits((l) => { const n = [...l]; n[q.index] = timeLimitFor(q.difficulty, config.level); return n; });
+    if (q) setLimits((l) => { const n = [...l]; n[q.index] = questionTimeLimit(q, config.level); return n; });
+    setCharge(0);
+    setAdvance(0);
     const t = Date.now();
     setClock(t);
     setDeadline(t + v.state.questionTime * 1000);
@@ -206,29 +217,39 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  /** A response locked the question in: show the server's verdict, then move on. */
+  const afterLockIn = useCallback(
+    (res: ActResponse, q: PublicQuestion, tok: string) => {
+      if (res.afterAnswer) {
+        setFeedback({ state: res.afterAnswer, reveal: res.reveal, question: q });
+        const newBeats = res.afterAnswer.event?.beats ?? [];
+        if (newBeats.length) setBeats((b) => [...newBeats, ...b].slice(0, 4));
+      }
+      // Written answers get longer to read the AI's feedback before the next question.
+      const hold = !res.afterAnswer ? 0 : q.type === 'mcq' ? FEEDBACK_MS : FEEDBACK_MS + 2600;
+      setTimeout(() => {
+        setFeedback(null);
+        applyView(res.view);
+        if (res.view.state.phase === 'result') void finish(tok);
+      }, hold);
+    },
+    [applyView, finish],
+  );
+
   const submit = useCallback(
-    async (chosenIdx: number, questionId?: number) => {
+    async (payload: AnswerPayload, questionId?: number) => {
       const q = view?.question;
       if (!token || !q || pending || feedback) return;
       const qid = questionId ?? q.id;
       setPending(true);
       setNetError(null);
       try {
-        const res = await sessionApi.answer(token, qid, chosenIdx);
+        const res = await sessionApi.answer(token, qid, payload);
         setRetry(null);
-        if (res.afterAnswer) {
-          setFeedback({ state: res.afterAnswer, reveal: res.reveal, question: q });
-          const newBeats = res.afterAnswer.event?.beats ?? [];
-          if (newBeats.length) setBeats((b) => [...newBeats, ...b].slice(0, 4));
-        }
-        setTimeout(() => {
-          setFeedback(null);
-          applyView(res.view);
-          if (res.view.state.phase === 'result') void finish(token);
-        }, res.afterAnswer ? FEEDBACK_MS : 0);
+        afterLockIn(res, q, token);
       } catch (e) {
         if (e instanceof ApiError && e.status === 0) {
-          setRetry({ questionId: qid, chosenIdx });
+          setRetry({ questionId: qid, payload });
           setNetError('Mất kết nối — câu trả lời chưa được gửi.');
         } else if (e instanceof ApiError && e.status === 409) {
           // Out of sync (e.g. double tap): reload the server's truth.
@@ -241,7 +262,30 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
         setPending(false);
       }
     },
-    [token, view, pending, feedback, applyView, finish],
+    [token, view, pending, feedback, applyView, afterLockIn],
+  );
+
+  /** Matching: each pair is checked by the server; only the last one locks the question in. */
+  const tryPair = useCallback(
+    async (left: number, right: number) => {
+      const q = view?.question;
+      if (!token || !q || pending || feedback) return;
+      setPending(true);
+      setNetError(null);
+      try {
+        const res = await sessionApi.pair(token, q.id, left, right);
+        if (res.afterAnswer) afterLockIn(res, q, token);
+        else setView(res.view); // keep the timer running
+      } catch (e) {
+        if (e instanceof ApiError && e.status === 409) {
+          const cur = await sessionApi.current(token).catch(() => null);
+          if (cur) setView(cur.view);
+        } else setNetError((e as Error).message);
+      } finally {
+        setPending(false);
+      }
+    },
+    [token, view, pending, feedback, afterLockIn],
   );
 
   const submitRef = useRef(submit);
@@ -255,14 +299,14 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
     const t = setInterval(() => {
       const n = Date.now();
       setClock(n);
-      if (n >= deadline && !pending && !retry) void submitRef.current(-1);
+      if (n >= deadline && !pending && !retry) void submitRef.current({ chosenIdx: -1 });
     }, 250);
     return () => clearInterval(t);
   }, [phase, feedback, view, deadline, pending, retry]);
 
   // Auto-retry a lost answer when the connection returns.
   useEffect(() => {
-    if (online && retry && !pending) void submitRef.current(retry.chosenIdx, retry.questionId);
+    if (online && retry && !pending) void submitRef.current(retry.payload, retry.questionId);
   }, [online, retry, pending]);
 
   // One sound per event.
@@ -271,7 +315,7 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
     const ev = display?.event;
     if (!ev || ev.n === lastSfx.current) return;
     lastSfx.current = ev.n;
-    play(ev.kind === 'blocked' || ev.kind === 'buff' ? 'skill' : ev.kind);
+    play(ev.kind === 'blocked' || ev.kind === 'buff' ? 'skill' : ev.kind === 'ultimate' ? 'critical' : ev.kind === 'miss' ? 'wrong' : ev.kind);
   }, [display?.event]);
 
   const [portal, setPortal] = useState(false);
@@ -456,6 +500,10 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
             bossPhase={display.bossPhase}
             enraged={display.enraged}
             spiritBeast={spiritBeast}
+            mpRatio={display.mp / MAX_MP}
+            heroAdvance={phase === 'playing' && question?.type === 'reorder' && !feedback ? advance : 0}
+            charge={phase === 'playing' && question?.type === 'transform' && !feedback ? charge : 0}
+            bossGuard={phase === 'playing' && question?.type === 'reading' && !feedback}
           />
         )}
 
@@ -491,23 +539,22 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
               <div className={`text-xs font-bold uppercase tracking-wider ${gamified ? 'text-blue-400' : 'text-blue-600'}`}>
                 {gamified ? 'Round' : 'Question'} {question.index + 1} / {view?.totalQuestions ?? battle.totalQuestions}
               </div>
-              <h2 className="text-lg md:text-xl font-extrabold leading-snug">{question.question}</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {question.options.map((opt, i) => {
-                  const hidden = display.removed.includes(i);
-                  let cls = gamified ? 'bg-slate-950 border-slate-800 text-slate-200 hover:border-blue-500 hover:bg-blue-600/10' : 'bg-white border-slate-300 text-slate-800 hover:border-blue-500';
-                  if (feedback?.reveal) {
-                    if (i === feedback.reveal.correctIdx) cls = 'bg-emerald-500/20 border-emerald-500 text-emerald-600 ring-2 ring-emerald-500';
-                    else if (i === feedback.reveal.chosenIdx) cls = 'bg-rose-500/20 border-rose-500 text-rose-500';
-                  }
-                  return (
-                    <button key={i} onClick={() => submit(i)} disabled={!!feedback || pending || hidden} className={`p-4 rounded-xl border text-left font-semibold text-sm transition-all ${cls} ${hidden ? 'opacity-20 line-through' : ''}`}>
-                      <span className={`mr-2 ${muted2}`}>{String.fromCharCode(65 + i)}.</span>
-                      {opt}
-                    </button>
-                  );
-                })}
-              </div>
+              <h2 className="text-lg md:text-xl font-extrabold leading-snug">
+                {question.type !== 'mcq' && <span className="mr-2 text-xs align-middle px-2 py-0.5 rounded-full bg-amber-400/15 border border-amber-400/40 text-amber-300">{QUESTION_TYPES[question.type].icon} {QUESTION_TYPES[question.type].nameVi}</span>}
+                {question.question}
+              </h2>
+              <AnswerPanel
+                question={question}
+                state={display}
+                reveal={feedback?.reveal ?? null}
+                locked={!!feedback || pending}
+                pending={pending}
+                dark={gamified}
+                onSubmit={(p) => void submit(p)}
+                onPair={(l, r) => void tryPair(l, r)}
+                onCharge={setCharge}
+                onAdvance={setAdvance}
+              />
               {feedback?.reveal?.explanation && <p className={`text-xs ${muted2}`}>💡 {feedback.reveal.explanation}</p>}
               {!feedback && question.hint && <p className="text-xs text-amber-400">🐾 {question.hint}</p>}
               {pending && !feedback && <p className={`text-xs ${muted2} flex items-center gap-1`}><Loader2 className="w-3 h-3 animate-spin" /> Đang chấm…</p>}
@@ -516,7 +563,7 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
             {netError && (
               <div role="alert" className="p-3 rounded-xl border border-amber-500/40 bg-amber-500/10 text-amber-500 text-sm flex items-center justify-between gap-2">
                 <span className="flex items-center gap-2"><AlertTriangle className="w-4 h-4 shrink-0" /> {netError}</span>
-                {retry && <button onClick={() => submit(retry.chosenIdx, retry.questionId)} className="px-3 py-1 rounded-lg bg-amber-500 text-slate-950 font-bold">Thử lại</button>}
+                {retry && <button onClick={() => submit(retry.payload, retry.questionId)} className="px-3 py-1 rounded-lg bg-amber-500 text-slate-950 font-bold">Thử lại</button>}
               </div>
             )}
 

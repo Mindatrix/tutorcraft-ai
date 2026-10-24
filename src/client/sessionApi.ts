@@ -8,6 +8,8 @@ export interface SessionView {
   battleId: string;
   status: 'active' | 'finished' | 'flagged';
   totalQuestions: number;
+  /** Weighted by question format. */
+  bossMaxHp?: number;
   state: BattleState;
   question: PublicQuestion | null;
   team?: 'A' | 'B' | null;
@@ -58,8 +60,12 @@ export const sessionApi = {
   start: (body: { battleId: string; variant: number | null; nickname: string; avatar: string; studentKey: string }) =>
     call<{ token: string; view: SessionView }>('/api/session', { method: 'POST', body: JSON.stringify(body) }),
   current: (token: string) => call<{ view: SessionView }>('/api/session', { method: 'GET', token }),
-  answer: (token: string, questionId: number, chosenIdx: number) =>
-    call<ActResponse>('/api/session/answer', { method: 'POST', token, body: JSON.stringify({ questionId, chosenIdx }) }),
+  /** mcq: { chosenIdx } (-1 = timeout). Other formats: { response } — graded on the server. */
+  answer: (token: string, questionId: number, payload: { chosenIdx?: number; response?: unknown }) =>
+    call<ActResponse>('/api/session/answer', { method: 'POST', token, body: JSON.stringify({ questionId, ...payload }) }),
+  /** Matching: try one pair (right = the card's display id). */
+  pair: (token: string, questionId: number, left: number, right: number) =>
+    call<ActResponse>('/api/session/pair', { method: 'POST', token, body: JSON.stringify({ questionId, left, right }) }),
   cast: (token: string, skill: SkillId) => call<ActResponse>('/api/session/cast', { method: 'POST', token, body: JSON.stringify({ skill }) }),
   finalize: (token: string) => call<FinalizeResponse>('/api/battle-result', { method: 'POST', token, body: '{}' }),
 };

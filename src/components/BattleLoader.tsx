@@ -20,6 +20,7 @@ function parse(raw: Record<string, unknown>): ArenaBattle {
     tutorName: typeof raw.tutorName === 'string' ? raw.tutorName : '',
     classCode: typeof rawConfig.classCode === 'string' ? rawConfig.classCode : '',
     totalQuestions: Math.max(1, Number(raw.totalQuestions) || 1),
+    bossMaxHp: Number(raw.bossMaxHp) > 0 ? Number(raw.bossMaxHp) : undefined,
   };
 }
 

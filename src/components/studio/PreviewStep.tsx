@@ -1,30 +1,25 @@
 'use client';
 
 import { useState } from 'react';
-import { ArrowLeft, Loader2, Plus, Rocket, Trash2, AlertTriangle, BookOpen } from 'lucide-react';
+import { ArrowLeft, Loader2, Plus, Rocket, AlertTriangle, BookOpen } from 'lucide-react';
 import {
   BOSS_AVATARS,
   MAP_SETTINGS,
-  timeLimitFor,
+  QUESTION_TYPES,
+  QUESTION_TYPE_IDS,
+  bossHpForQuestions,
+  convertQuestion,
+  questionProblem,
+  questionType,
   type BattleEvent,
   type BossProfile,
-  type Difficulty,
   type Question,
+  type QuestionType,
   type StoryBeat,
 } from '../../engine';
 import BattleCanvas from '../BattleCanvas';
+import QuestionEditor from './QuestionEditor';
 import { field, label, type PublishedBattle, type StudioDraft } from './types';
-
-const DIFFICULTIES: Difficulty[] = ['easy', 'medium', 'hard'];
-
-/** Reasons a question can't be published, or null if it's fine. */
-function questionProblem(q: Question): string | null {
-  if (!q.question.trim()) return 'Thiếu nội dung câu hỏi';
-  const opts = q.options.map((o) => o.trim());
-  if (opts.some((o) => !o)) return 'Có đáp án để trống';
-  if (new Set(opts.map((o) => o.toLowerCase())).size !== opts.length) return 'Có đáp án trùng nhau';
-  return null;
-}
 
 export default function PreviewStep({ draft, onBack, onPublished }: { draft: StudioDraft; onBack: () => void; onPublished: (p: PublishedBattle) => void }) {
   const [boss, setBoss] = useState<BossProfile>(draft.boss);
@@ -32,8 +27,12 @@ export default function PreviewStep({ draft, onBack, onPublished }: { draft: Stu
   const [publishing, setPublishing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const [newType, setNewType] = useState<QuestionType>(draft.settings.questionTypes?.[0] ?? 'mcq');
+
+  // Boss HP weighted by format: essay ×3, reading ×2.5, matching ×2 … (mcq stays 100).
+  const weightedHp = bossHpForQuestions(questions);
   // Preview scene state — buttons fire the same events the real battle uses.
-  const bossMax = Math.max(1, questions.length) * 100;
+  const bossMax = Math.max(100, weightedHp);
   type SimEvent = { kind: BattleEvent; n: number; amount?: number; beats?: StoryBeat[] };
   const [sim, setSim] = useState<{ bossHp: number; hp: number; phase: 1 | 2; event: SimEvent | null }>({ bossHp: bossMax, hp: 100, phase: 1, event: null });
   const fire = (kind: BattleEvent, bossDelta: number, hpDelta: number, amount?: number, beats?: StoryBeat[]) =>
@@ -48,15 +47,14 @@ export default function PreviewStep({ draft, onBack, onPublished }: { draft: Stu
     });
 
   const setB = <K extends keyof BossProfile>(k: K, v: BossProfile[K]) => setBoss((b) => ({ ...b, [k]: v }));
-  const updateQ = (i: number, patch: Partial<Question>) => setQuestions((qs) => qs.map((q, j) => (j === i ? { ...q, ...patch } : q)));
-  const updateOption = (i: number, o: number, value: string) =>
-    setQuestions((qs) => qs.map((q, j) => (j === i ? { ...q, options: q.options.map((x, k) => (k === o ? value : x)) } : q)));
+  const replaceQ = (i: number, q: Question) => setQuestions((qs) => qs.map((x, j) => (j === i ? q : x)));
   const removeQ = (i: number) => setQuestions((qs) => qs.filter((_, j) => j !== i));
   const addQ = () =>
-    setQuestions((qs) => [
-      ...qs,
-      { id: qs.length + 1, question: '', options: ['', '', '', ''], correct_idx: 0, difficulty: 'medium', topic: draft.lessonTitle.slice(0, 60) || 'general', skill_tag: 'other' },
-    ]);
+    setQuestions((qs) => {
+      const blank: Question = { id: Math.max(0, ...qs.map((q) => q.id)) + 1, question: '', options: ['', '', '', ''], correct_idx: 0, difficulty: 'medium', topic: draft.lessonTitle.slice(0, 60) || 'general', skill_tag: 'other' };
+      return [...qs, newType === 'mcq' ? blank : convertQuestion(blank, newType)];
+    });
+  const typeCounts = QUESTION_TYPE_IDS.map((t) => [t, questions.filter((q) => questionType(q) === t).length] as const).filter(([, n]) => n);
 
   const problems = questions.map(questionProblem);
   const problemCount = problems.filter(Boolean).length;
@@ -84,6 +82,7 @@ export default function PreviewStep({ draft, onBack, onPublished }: { draft: Stu
             studentCount: s.studentCount,
             teamSize: s.teamSize,
             classCode: s.classCode || undefined,
+            questionTypes: Array.from(new Set(questions.map(questionType))),
             tutorName: s.tutorName || undefined,
             cefrLevel: s.cefrLevel || undefined,
             level: s.level,
@@ -209,33 +208,22 @@ export default function PreviewStep({ draft, onBack, onPublished }: { draft: Stu
 
       {/* Questions */}
       <section className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold text-blue-400">⚔️ Câu hỏi ({questions.length}) · Boss HP {(questions.length * 100).toLocaleString('en-US')}</h2>
-          <button type="button" onClick={addQ} className="text-sm flex items-center gap-1 px-3 py-1.5 rounded-lg border border-slate-700 hover:bg-slate-800"><Plus className="w-4 h-4" /> Thêm câu</button>
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <h2 className="text-lg font-bold text-blue-400">⚔️ Câu hỏi ({questions.length}) · Boss HP {weightedHp.toLocaleString('en-US')}</h2>
+            <p className="text-xs text-slate-500">
+              {typeCounts.map(([t, n]) => `${QUESTION_TYPES[t].icon} ${QUESTION_TYPES[t].nameVi} ×${n}`).join(' · ')} — HP tính theo dạng bài và độ khó (tự luận ×3, đọc hiểu ×2.5, nối cặp ×2…)
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <select aria-label="Dạng câu mới" value={newType} onChange={(e) => setNewType(e.target.value as QuestionType)} className="text-xs bg-slate-900 border border-slate-700 rounded-lg px-2 py-1.5">
+              {QUESTION_TYPE_IDS.map((t) => <option key={t} value={t}>{QUESTION_TYPES[t].icon} {QUESTION_TYPES[t].nameVi}</option>)}
+            </select>
+            <button type="button" onClick={addQ} className="text-sm flex items-center gap-1 px-3 py-1.5 rounded-lg border border-slate-700 hover:bg-slate-800"><Plus className="w-4 h-4" /> Thêm câu</button>
+          </div>
         </div>
         {questions.map((q, i) => (
-          <div key={i} className={`bg-slate-950 p-4 rounded-xl border space-y-3 ${problems[i] ? 'border-rose-500/60' : 'border-slate-800'}`}>
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="text-xs font-bold text-blue-400">Câu {i + 1}</span>
-              <select aria-label="Độ khó" value={q.difficulty} onChange={(e) => updateQ(i, { difficulty: e.target.value as Difficulty })} className="text-xs bg-slate-900 border border-slate-700 rounded-lg px-2 py-1">
-                {DIFFICULTIES.map((d) => <option key={d} value={d}>{d} · {timeLimitFor(d, draft.settings.level)}s</option>)}
-              </select>
-              <input aria-label="Chủ điểm" value={q.topic} onChange={(e) => updateQ(i, { topic: e.target.value.slice(0, 80) })} className="text-xs bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 flex-1 min-w-24" />
-              {q.is_review && <span className="text-xs px-2 py-0.5 rounded bg-sky-500/20 text-sky-400">ôn tập</span>}
-              <button type="button" onClick={() => removeQ(i)} aria-label={`Xoá câu ${i + 1}`} className="ml-auto text-slate-500 hover:text-rose-400"><Trash2 className="w-4 h-4" /></button>
-            </div>
-            <textarea aria-label={`Nội dung câu ${i + 1}`} rows={2} value={q.question} onChange={(e) => updateQ(i, { question: e.target.value.slice(0, 600) })} className={`${field} py-2`} />
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              {q.options.map((opt, o) => (
-                <label key={o} className={`flex items-center gap-2 rounded-lg border px-2 ${o === q.correct_idx ? 'border-emerald-500/60 bg-emerald-500/5' : 'border-slate-800'}`}>
-                  <input type="radio" name={`correct-${i}`} checked={o === q.correct_idx} onChange={() => updateQ(i, { correct_idx: o })} aria-label={`Đáp án đúng ${String.fromCharCode(65 + o)}`} />
-                  <span className="text-xs text-slate-500">{String.fromCharCode(65 + o)}</span>
-                  <input value={opt} onChange={(e) => updateOption(i, o, e.target.value.slice(0, 200))} aria-label={`Đáp án ${String.fromCharCode(65 + o)}`} className="flex-1 bg-transparent py-2 text-sm focus:outline-none" />
-                </label>
-              ))}
-            </div>
-            {problems[i] && <p className="text-xs text-rose-400">{problems[i]}</p>}
-          </div>
+          <QuestionEditor key={q.id} q={q} index={i} level={draft.settings.level} problem={problems[i]} onChange={(nq) => replaceQ(i, nq)} onRemove={() => removeQ(i)} />
         ))}
       </section>
 

@@ -52,6 +52,10 @@ alter table public.battle_results add column if not exists hp_remaining int chec
 -- One result per battle session: a replayed or double-submitted finish can't pay out twice.
 alter table public.battle_results add column if not exists session_id uuid;
 create unique index if not exists battle_results_session_key on public.battle_results (session_id) where session_id is not null;
+-- Written answers (essay / reading / transform / cloze / reorder) with their server grade, for tutor review.
+alter table public.battle_results add column if not exists responses jsonb not null default '[]'::jsonb;
+comment on column public.battle_results.responses is 'Per-question open answers: {question_id, type, prompt, response, score, by (exact|rules|ai|fallback), criteria{grammar,vocabulary,ideas}, feedback}';
+comment on column public.battles.questions is 'Question[] (src/engine/types.ts). type: mcq | essay | matching | transform | reorder | reading | cloze; answer keys live here and are served only by the server.';
 create index if not exists battle_results_battle_idx on public.battle_results (battle_id, gems desc);
 
 alter table public.battle_results enable row level security;

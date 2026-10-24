@@ -1,4 +1,5 @@
-import type { BattleConfig, BattleScaling, Difficulty, DifficultyLevel } from './types';
+import type { BattleConfig, BattleScaling, Difficulty, DifficultyLevel, Question } from './types';
+import { bossHpForQuestions } from './questionTypes';
 import { LEVELS, normalizeLevel } from './levels';
 
 export const MIN_DURATION = 1;
@@ -48,13 +49,19 @@ export function wrongPenalty(questions: number, level?: DifficultyLevel): number
 /**
  * `questionCount` overrides the duration formula once a battle exists — tutors can
  * delete questions in the Studio, and Boss HP must stay = Q x 100 for the real Q.
+ * With `questions`, Boss HP is weighted by format (essay ×3, reading ×2.5 …);
+ * an all-multiple-choice battle still gives exactly Q × 100.
  */
-export function computeScaling(config: Pick<BattleConfig, 'durationMinutes' | 'scenario' | 'teamSize' | 'level'>, questionCount?: number): BattleScaling {
-  const q = questionCount && questionCount > 0 ? questionCount : totalQuestions(config.durationMinutes);
+export function computeScaling(
+  config: Pick<BattleConfig, 'durationMinutes' | 'scenario' | 'teamSize' | 'level'>,
+  questionCount?: number,
+  questions?: Pick<Question, 'type' | 'difficulty'>[],
+): BattleScaling {
+  const q = questions?.length ? questions.length : questionCount && questionCount > 0 ? questionCount : totalQuestions(config.durationMinutes);
   const team = config.scenario === 'coop_raid' ? config.teamSize : 1;
   return {
     totalQuestions: q,
-    bossHp: bossHp(q, team),
+    bossHp: questions?.length ? bossHpForQuestions(questions, team) : bossHp(q, team),
     playerHp: PLAYER_MAX_HP,
     wrongPenalty: wrongPenalty(q, config.level),
   };

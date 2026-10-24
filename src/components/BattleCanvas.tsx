@@ -25,6 +25,14 @@ export interface BattleCanvasProps {
   spiritBeast?: boolean;
   /** Timing / shake / camera data; defaults to the boss type's built-in profile. */
   animation?: AnimationProfile;
+  /** 0..1 — MP bar; the hero glows brighter as mana builds up. */
+  mpRatio?: number;
+  /** 0..1 — reorder progress: the hero walks toward the boss. */
+  heroAdvance?: number;
+  /** 0..1 — transform "Charge Magic": an orb grows above the hero's sword. */
+  charge?: number;
+  /** Reading "Eye of Truth Trial": the boss holds a defensive stance until the answer is in. */
+  bossGuard?: boolean;
 }
 
 type Vec = { x: number; y: number };
@@ -76,6 +84,11 @@ export default function BattleCanvas(props: BattleCanvasProps) {
     camera: null as { start: number; zoom: number; durationMs: number; focus: 'hero' | 'boss' | 'center' } | null,
     hitstopUntil: 0,
     sceneT: 0,
+    advDisp: 0,
+    chargeDisp: 0,
+    mpDisp: 0,
+    beamStart: -1e9,
+    beamUntil: -1e9,
     phaseFlash: 0,
     reduced: false,
     size: { w: 600, h: 260 },
@@ -140,8 +153,22 @@ export default function BattleCanvas(props: BattleCanvasProps) {
       a.heroTarget = propsRef.current.hp;
     };
 
-    if (ev.kind === 'correct' || ev.kind === 'critical') {
-      const crit = ev.kind === 'critical';
+    if (ev.kind === 'miss') {
+      // Wrong matching pair: the boss parries, no HP lost.
+      a.bossFlash = t + 90;
+      burst({ x: bossPos.x - h * 0.12, y: bossPos.y - h * 0.1 }, '#94a3b8', 10, 140);
+      float({ x: bossPos.x - h * 0.1, y: bossPos.y - h * 0.3 }, '✖ BLOCK', '#cbd5e1', 18);
+      shake(3, 150);
+    } else if (ev.kind === 'correct' || ev.kind === 'critical' || ev.kind === 'ultimate') {
+      const ultimate = ev.kind === 'ultimate';
+      const crit = ev.kind === 'critical' || ultimate;
+      if (ultimate) {
+        // Ultimate Skill: a sustained energy beam from hero to boss.
+        a.beamStart = t + prof.heroAttack.windupMs;
+        a.beamUntil = a.beamStart + 750;
+        a.sparkleUntil = t + 1200;
+        a.sparkleColor = '#fde68a';
+      }
       a.heroLunge = t;
       a.inFlight += 1;
       a.projectiles.push({
@@ -152,7 +179,8 @@ export default function BattleCanvas(props: BattleCanvasProps) {
           a.hitstopUntil = now() + prof.heroAttack.hitstopMs;
           a.bossFlash = now() + 160;
           burst(bossPos, crit ? '#facc15' : '#7dd3fc', crit ? 28 : 16);
-          float({ x: bossPos.x, y: bossPos.y - h * 0.22 }, crit ? `CRITICAL! -${ev.amount ?? ''}` : `-${ev.amount ?? ''}`, crit ? '#facc15' : '#ffffff', crit ? 26 : 20);
+          float({ x: bossPos.x, y: bossPos.y - h * 0.22 }, ultimate ? `TUYỆT KỸ! -${ev.amount ?? ''}` : crit ? `CRITICAL! -${ev.amount ?? ''}` : `-${ev.amount ?? ''}`, ultimate ? '#fde68a' : crit ? '#facc15' : '#ffffff', ultimate ? 30 : crit ? 26 : 20);
+          if (ultimate) burst(bossPos, '#fef3c7', 40, 320);
           if (crit) {
             shake(prof.shake.critical.magnitude, prof.shake.critical.durationMs);
             zoom(prof.camera.critical);
@@ -275,12 +303,21 @@ export default function BattleCanvas(props: BattleCanvasProps) {
       drawMap(ctx, p.boss.map_setting, w, h, groundY, st);
 
       // Hero
-      const heroBase = { x: w * 0.22, y: groundY };
+      // Smoothly follow reorder progress / charge / MP (props jump, the scene glides).
+      a.advDisp += ((p.heroAdvance ?? 0) - a.advDisp) * Math.min(1, dt * 5);
+      a.chargeDisp += ((p.charge ?? 0) - a.chargeDisp) * Math.min(1, dt * 6);
+      a.mpDisp += ((p.mpRatio ?? 0) - a.mpDisp) * Math.min(1, dt * 4);
+      const heroBase = { x: w * 0.22 + w * 0.26 * a.advDisp, y: groundY };
+      if (a.mpDisp > 0.05) drawManaAura(ctx, heroBase.x, groundY - Math.min(h * 0.3, w * 0.14) * 0.6, Math.min(h * 0.3, w * 0.14), st, a.mpDisp);
       const heroLungeT = (t - a.heroLunge) / 450;
       const heroOffset = heroLungeT >= 0 && heroLungeT <= 1 ? Math.sin(heroLungeT * Math.PI) * w * 0.09 : 0;
       const koT = a.koStart === null ? 0 : ease((t - a.koStart) / 700);
       drawHero(ctx, heroBase.x + heroOffset, heroBase.y, Math.min(h * 0.3, w * 0.14), st, p.heroAvatar, t < a.heroFlash, p.shield, koT, heroLungeT);
       if (p.spiritBeast && koT === 0) drawSpiritBeast(ctx, heroBase.x - w * 0.09, groundY - h * 0.42, Math.min(h, w) * 0.09, st);
+      if (a.chargeDisp > 0.02 && koT === 0) {
+        const hs = Math.min(h * 0.3, w * 0.14);
+        glow(ctx, heroBase.x + heroOffset + hs * 0.35, groundY - hs * 1.25, hs * (0.06 + 0.16 * a.chargeDisp) * (1 + Math.sin(st / 120) * 0.08), '#c4b5fd', 0.55 + 0.45 * a.chargeDisp);
+      }
 
       // Boss
       const s = Math.min(h * 0.34, w * 0.17);
@@ -302,6 +339,7 @@ export default function BattleCanvas(props: BattleCanvasProps) {
         // Phase 2: the boss grows and changes palette.
         const grow = p.bossPhase === 2 ? 1.14 : 1;
         drawBoss(ctx, p.boss.boss_avatar, bx, bossBase.y, s * grow, st, t < a.bossFlash || t < a.phaseFlash, p.bossPhase === 2);
+        if (p.bossGuard && dT < 0) drawGuard(ctx, bx, bossBase.y - s * 0.75, s * grow, st);
         if (dT >= 0) drawCracks(ctx, bossBase.x, bossBase.y - s * 0.7, s, Math.min(1, dT / 0.6));
         ctx.restore();
         if (dT > 0.6 && dT - dt <= 0.6) {
@@ -324,6 +362,36 @@ export default function BattleCanvas(props: BattleCanvasProps) {
           }
         }
         drawChest(ctx, bossBase.x, a.chest.landed ? groundY : a.chest.y, s * 0.55, t);
+      }
+
+      // Ultimate Skill beam (matching: every pair connected)
+      if (t >= a.beamStart && t <= a.beamUntil) {
+        const k = (t - a.beamStart) / Math.max(1, a.beamUntil - a.beamStart);
+        const hs = Math.min(h * 0.3, w * 0.14);
+        const x1 = heroBase.x + hs * 0.35;
+        const y1 = groundY - hs * 0.9;
+        const x2 = bossBase.x;
+        const y2 = groundY - s * 0.75;
+        const width = hs * (0.12 + 0.18 * Math.sin(Math.PI * k));
+        ctx.save();
+        ctx.globalCompositeOperation = 'lighter';
+        const g = ctx.createLinearGradient(x1, y1, x2, y2);
+        g.addColorStop(0, '#fde68a');
+        g.addColorStop(0.5, '#ffffff');
+        g.addColorStop(1, '#34d399');
+        ctx.strokeStyle = g;
+        ctx.lineCap = 'round';
+        ctx.shadowColor = '#fde68a';
+        ctx.shadowBlur = 24;
+        ctx.lineWidth = width;
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+        ctx.lineWidth = width * 0.35;
+        ctx.strokeStyle = '#ffffff';
+        ctx.stroke();
+        ctx.restore();
       }
 
       // Projectiles
@@ -529,7 +597,12 @@ function drawHero(ctx: CanvasRenderingContext2D, x: number, y: number, s: number
     ctx.translate(-x, -y);
     ctx.globalAlpha = 1 - ko * 0.4;
   }
-  const bob = ko > 0 ? 0 : Math.sin(t / 300) * 2;
+  // Idle: eased bob + gentle breathing (squash & stretch from the feet).
+  const bob = ko > 0 ? 0 : Math.sin(t / 320) * 2.2;
+  const breath = ko > 0 ? 1 : 1 + Math.sin(t / 520) * 0.018;
+  ctx.translate(x, y);
+  ctx.scale(2 - breath, breath);
+  ctx.translate(-x, -y);
   // shadow
   ctx.fillStyle = 'rgba(0,0,0,0.35)';
   ctx.beginPath();
@@ -577,7 +650,21 @@ const PHASE2_BODY: Record<BossAvatar, string> = { dragon: '#4c1d95', golem: '#44
 
 function drawBoss(ctx: CanvasRenderingContext2D, avatar: BossAvatar, x: number, y: number, s: number, t: number, flash: boolean, phase2 = false) {
   const base = BOSS_COLORS[avatar] ?? BOSS_COLORS.dragon;
-  const c = phase2 ? { ...base, body: PHASE2_BODY[avatar] ?? base.body, eye: '#f43f5e' } : base;
+  // Idle blink every ~3.4 s: eyes go dark for a few frames.
+  const blink = t % 3400 < 120;
+  const tone = phase2 ? { ...base, body: PHASE2_BODY[avatar] ?? base.body, eye: '#f43f5e' } : base;
+  const c = blink ? { ...tone, eye: 'rgba(0,0,0,0)' } : tone;
+  // Idle breathing: slow vertical swell from the feet.
+  const swell = 1 + Math.sin(t / 640) * 0.022;
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(1 / Math.sqrt(swell), swell);
+  ctx.translate(-x, -y);
+  drawBossBody(ctx, avatar, x, y, s, t, flash, c);
+  ctx.restore();
+}
+
+function drawBossBody(ctx: CanvasRenderingContext2D, avatar: BossAvatar, x: number, y: number, s: number, t: number, flash: boolean, c: { body: string; accent: string; eye: string; shot: string }) {
   const body = flash ? '#ffffff' : c.body;
   const bob = Math.sin(t / 400) * s * 0.03;
   ctx.save();
@@ -868,5 +955,46 @@ function drawSpiritBeast(ctx: CanvasRenderingContext2D, x: number, y: number, s:
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.fillText('🦁', x, y + bob);
+  ctx.restore();
+}
+
+/** Mana glow around the hero: brighter and wider as MP builds; sparks orbit above 50%. */
+function drawManaAura(ctx: CanvasRenderingContext2D, x: number, y: number, s: number, t: number, mp: number) {
+  ctx.save();
+  const r = s * (0.55 + 0.35 * mp) * (1 + Math.sin(t / 260) * 0.04);
+  const g = ctx.createRadialGradient(x, y, s * 0.1, x, y, r);
+  g.addColorStop(0, `rgba(56,189,248,${0.32 * mp})`);
+  g.addColorStop(1, 'rgba(56,189,248,0)');
+  ctx.fillStyle = g;
+  ctx.beginPath();
+  ctx.arc(x, y, r, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+  if (mp >= 0.5) {
+    for (let i = 0; i < 4; i++) {
+      const ang = t / 380 + (i * Math.PI) / 2;
+      glow(ctx, x + Math.cos(ang) * r * 0.85, y + Math.sin(ang) * r * 0.5, 2.2, '#7dd3fc', 0.8);
+    }
+  }
+}
+
+/** Reading trial: a shimmering shield dome in front of the boss. */
+function drawGuard(ctx: CanvasRenderingContext2D, x: number, y: number, s: number, t: number) {
+  ctx.save();
+  const pulse = 0.5 + 0.5 * Math.sin(t / 300);
+  ctx.strokeStyle = `rgba(103,232,249,${0.45 + 0.35 * pulse})`;
+  ctx.fillStyle = `rgba(34,211,238,${0.08 + 0.06 * pulse})`;
+  ctx.lineWidth = 3;
+  ctx.shadowColor = '#22d3ee';
+  ctx.shadowBlur = 14;
+  ctx.beginPath();
+  ctx.ellipse(x, y, s * 0.95, s * 1.05, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+  ctx.font = '700 12px system-ui, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#a5f3fc';
+  ctx.fillText('🛡 THỦ THẾ NGÀN NĂM', x, y - s * 1.12);
   ctx.restore();
 }

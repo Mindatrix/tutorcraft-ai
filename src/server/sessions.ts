@@ -1,4 +1,5 @@
-import { DEMO_BATTLE_ID, gradeAnswer, needsReview, nextReview, timeLimitFor } from '../engine';
+import { DEMO_BATTLE_ID, gradeAnswer, isAnswerCorrect, needsReview, nextReview, questionTimeLimit, questionType } from '../engine';
+import { gradeOpenResponse } from './grader';
 import { loadBattleCached } from './battles';
 import { serverSupabase } from './supabase-server';
 import { MemorySessionStore, SupabaseSessionStore, type SessionStore } from './sessionStore';
@@ -13,6 +14,28 @@ function storeFor(battleId: string): SessionStore {
   if (!db) throw new SessionError(503, 'Chưa cấu hình Supabase.');
   dbStore ??= new SupabaseSessionStore(db);
   return dbStore;
+}
+
+/** Written answers + their grades, for the tutor to review (essays, reading, rewrites…). */
+function openResponses(rec: Parameters<SessionDeps['persistResult']>[0]['rec'], ctx: Parameters<SessionDeps['persistResult']>[0]['ctx']) {
+  const byId = new Map(ctx.questions.map((q) => [q.id, q]));
+  return rec.log
+    .filter((e) => e.t === 'answer' && (e.response || e.grade))
+    .map((e) => {
+      const a = e as Extract<typeof e, { t: 'answer' }>;
+      const q = byId.get(a.qid);
+      return {
+        question_id: a.qid,
+        type: q ? questionType(q) : 'mcq',
+        prompt: q?.question.slice(0, 200),
+        response: a.response?.slice(0, 2000) ?? null,
+        score: a.grade?.score ?? null,
+        by: a.grade?.by ?? null,
+        criteria: a.grade?.criteria ?? null,
+        feedback: a.grade?.feedback ?? null,
+      };
+    })
+    .slice(0, 50);
 }
 
 const persistResult: SessionDeps['persistResult'] = async ({ battle, rec, ctx, state, score, hpRemaining }) => {
@@ -39,6 +62,7 @@ const persistResult: SessionDeps['persistResult'] = async ({ battle, rec, ctx, s
       boss_defeated: score.bossDefeated,
       hp_remaining: hpRemaining,
       topics: score.topics,
+      responses: openResponses(rec, ctx),
     },
   ]);
   if (ins.error) {
@@ -52,7 +76,7 @@ const persistResult: SessionDeps['persistResult'] = async ({ battle, rec, ctx, s
   for (const a of state.answers) {
     const q = byId.get(a.questionId);
     if (!q) continue;
-    const grade = gradeAnswer(a.chosenIdx === q.correct_idx, a.timeMs, timeLimitFor(q.difficulty, battle.config.level), a.chosenIdx === -1);
+    const grade = gradeAnswer(isAnswerCorrect(q, a), a.timeMs, questionTimeLimit(q, battle.config.level), a.chosenIdx === -1);
     if (!needsReview(grade)) continue;
     rows.set(q.topic.toLowerCase(), {
       class_code: battle.config.classCode,
@@ -70,7 +94,7 @@ const persistResult: SessionDeps['persistResult'] = async ({ battle, rec, ctx, s
   return true;
 };
 
-export const sessions = createSessionService({ loadBattle: loadBattleCached, storeFor, persistResult });
+export const sessions = createSessionService({ loadBattle: loadBattleCached, storeFor, persistResult, gradeOpen: gradeOpenResponse });
 
 export const SESSION_HEADER = 'x-battle-session';
 

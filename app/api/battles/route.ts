@@ -37,7 +37,7 @@ export async function POST(req: Request) {
   }
   const questions = payload.questions.slice(0, MAX_QUESTIONS).map((q, i) => ({ ...q, id: i + 1 }));
   const boss = sanitizeBoss(body.boss, defaultBoss(topic, config.themes));
-  const scaling = computeScaling(config, questions.length);
+  const scaling = computeScaling(config, questions.length, questions); // Boss HP weighted by format
 
   const tutorName = typeof rawConfig.tutorName === 'string' ? rawConfig.tutorName.trim().slice(0, 60) : '';
   const saved = await saveBattle({

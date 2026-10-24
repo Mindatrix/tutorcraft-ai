@@ -1,4 +1,4 @@
-import type { BossProfile, DifficultyLevel, ExamMode, Question, ScenarioId, ThemeId } from '../../engine';
+import type { BossProfile, DifficultyLevel, ExamMode, Question, QuestionType, ScenarioId, ThemeId } from '../../engine';
 
 export interface StudioSettings {
   topic: string;
@@ -12,6 +12,8 @@ export interface StudioSettings {
   durationMinutes: number;
   studentCount: number;
   teamSize: number;
+  /** Lesson formats the AI should write. */
+  questionTypes: QuestionType[];
 }
 
 export interface StudioDraft {
