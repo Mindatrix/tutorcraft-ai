@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
-import { weakTopics, type TopicStat } from '../../../src/engine';
+import { teamRace, weakTopics, type TopicStat } from '../../../src/engine';
 import { clientKey, rateLimit } from '../../../src/server/rateLimit';
 import { serverSupabase } from '../../../src/server/supabase-server';
+import { loadBattleCached } from '../../../src/server/battles';
 import { SESSION_HEADER, sessionErrorResponse, sessions } from '../../../src/server/sessions';
 
 // Final scoring. The request carries ONLY the sealed session token: Gems, EXP,
@@ -33,7 +34,7 @@ export async function GET(req: Request) {
 
   const { data, error } = await db
     .from('battle_results')
-    .select('nickname, avatar, gems, accuracy, damage, topics, created_at')
+    .select('nickname, avatar, gems, accuracy, damage, topics, created_at, correct, team')
     .eq('battle_id', battleId)
     .order('gems', { ascending: false })
     .limit(200);
@@ -50,7 +51,13 @@ export async function GET(req: Request) {
     }
   }
 
+  // Team vs team (Boat Race): split by join order, oldest first.
+  const joined = [...data].sort((a, b) => String(a.created_at).localeCompare(String(b.created_at)));
+  const isRace = (await loadBattleCached(battleId).catch(() => null))?.config.scenario === 'boat_race';
+  const teams = isRace && data.length >= 2 ? teamRace(joined.map((r) => ({ nickname: r.nickname, avatar: r.avatar, correct: r.correct ?? 0, gems: r.gems ?? 0, team: r.team }))) : null;
+
   return NextResponse.json({
+    teams,
     leaderboard: data.slice(0, 10).map(({ nickname, avatar, gems, accuracy, damage }) => ({ nickname, avatar, gems, accuracy, damage })),
     participants: data.length,
     totalDamage: data.reduce((s, r) => s + (r.damage ?? 0), 0),

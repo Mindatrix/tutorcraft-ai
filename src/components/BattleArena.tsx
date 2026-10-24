@@ -8,10 +8,16 @@ import {
   SCENARIOS,
   SKILLS,
   SKILL_IDS,
+  TEAM_NAMES,
   THEMES,
+  botPlan,
+  botPosition,
+  botStepTimes,
   computeScaling,
+  raceSeed,
   rollGacha,
   themeForQuestion,
+  timeLimitFor,
   type AnswerReveal,
   type BattleConfig,
   type BattleState,
@@ -20,11 +26,13 @@ import {
   type PublicQuestion,
   type SkillId,
   type StoryBeat,
+  type TeamRace,
 } from '../engine';
 import { load, remove, save, studentKey } from '../client/storage';
 import { initSfx, play, setMuted } from '../client/sfx';
 import { ApiError, sessionApi, type FinalizeResponse, type SessionView } from '../client/sessionApi';
 import BattleCanvas from './BattleCanvas';
+import RaceTrack from './RaceTrack';
 import { useContentGuard, useWindowFocused, Watermark } from './ContentGuard';
 
 /** Wall clock for event handlers (kept out of render). */
@@ -53,6 +61,7 @@ export interface ArenaBattle {
 interface Leaderboard {
   leaderboard: { nickname: string; avatar: string; gems: number; accuracy: number }[];
   participants?: number;
+  teams?: TeamRace | null;
   totalDamage?: number;
 }
 
@@ -68,6 +77,9 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
   const tokenKey = `tc:session:${battle.id}:${variant ?? 0}`;
   const gamified = config.mode === 'gamified';
   const scenario = SCENARIOS[config.scenario];
+  const isRace = config.scenario === 'boat_race';
+  const plan = useMemo(() => botPlan(raceSeed(battle.id, variant, config.level), battle.totalQuestions, config.level), [battle.id, variant, config.level, battle.totalQuestions]);
+  const [limits, setLimits] = useState<number[]>([]); // per-question time limits seen so far (drives the bot's pace)
 
   const [phase, setPhase] = useState<'lobby' | 'playing' | 'result'>('lobby');
   const [token, setToken] = useState<string | null>(null);
@@ -108,14 +120,30 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
   const timeLeft = Math.max(0, Math.ceil((deadline - clock) / 1000));
   const freezeLeft = Math.max(0, Math.ceil((frozenUntil - clock) / 1000));
 
+  // Boat Race: the bot runs on a local race clock = time already spent answering + time spent on this question.
+  const race = useMemo(() => {
+    if (!isRace) return null;
+    const answers = display?.answers ?? [];
+    const spent = answers.reduce((n, a) => n + a.timeMs, 0);
+    const live = phase === 'playing' && !feedback && display ? Math.max(0, display.questionTime * 1000 - (deadline - clock)) : 0;
+    const elapsed = phase === 'result' ? Number.MAX_SAFE_INTEGER : spent + live;
+    const stepMs = botStepTimes(plan, plan.map((_, i) => limits[i] ?? 45));
+    const total = Math.max(1, battle.totalQuestions);
+    const botDist = botPosition(plan, stepMs, elapsed);
+    const playerCorrect = display?.correct ?? 0;
+    return { botCorrect: Math.floor(botDist + 1e-9), botPos: botDist / total, playerPos: playerCorrect / total, playerCorrect, total };
+  }, [isRace, display, phase, feedback, deadline, clock, plan, limits, battle.totalQuestions]);
+
   /** Show a new server view and restart the local countdown for its question. */
   const applyView = useCallback((v: SessionView) => {
     setView(v);
+    const q = v.question;
+    if (q) setLimits((l) => { const n = [...l]; n[q.index] = timeLimitFor(q.difficulty, config.level); return n; });
     const t = Date.now();
     setClock(t);
     setDeadline(t + v.state.questionTime * 1000);
     setFrozenUntil(0);
-  }, []);
+  }, [config.level]);
 
   const finish = useCallback(
     async (tok: string) => {
@@ -377,7 +405,22 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
         )}
 
         {/* Battle scene — stays mounted into the result screen so the boss break + chest drop can play */}
-        {gamified && phase !== 'lobby' && display && (
+        {isRace && race && phase !== 'lobby' && display && (
+          <RaceTrack
+            heroAvatar={avatar}
+            heroName={playerName}
+            playerPos={race.playerPos}
+            botPos={race.botPos}
+            playerCorrect={race.playerCorrect}
+            botCorrect={race.botCorrect}
+            total={race.total}
+            botName={`Bot Cấp ${config.level ?? 3}`}
+            finished={phase === 'result'}
+            teamName={view?.team ? TEAM_NAMES[view.team] : null}
+            teamTone={view?.team ?? null}
+          />
+        )}
+        {!isRace && gamified && phase !== 'lobby' && display && (
           <BattleCanvas
             boss={boss}
             heroAvatar={avatar}
@@ -524,9 +567,9 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
             )}
             {score && (
               <>
-                <div className="text-5xl">{!gamified ? '📋' : view?.state.outcome === 'defeat' ? '💀' : score.bossDefeated ? '🏆' : '⚔️'}</div>
+                <div className="text-5xl">{isRace && final?.race ? (final.race.result === 'win' ? '🏆' : final.race.result === 'draw' ? '🤝' : '🌊') : !gamified ? '📋' : view?.state.outcome === 'defeat' ? '💀' : score.bossDefeated ? '🏆' : '⚔️'}</div>
                 <h1 className="text-2xl md:text-3xl font-black">
-                  {!gamified ? 'Test Complete' : view?.state.outcome === 'defeat' ? 'DEFEATED!' : score.bossDefeated ? 'BOSS DEFEATED!' : 'Battle Complete!'}
+                  {isRace && final?.race ? (final.race.result === 'win' ? 'BẠN THẮNG BOT!' : final.race.result === 'draw' ? 'HÒA — CÙNG VỀ ĐÍCH!' : 'Bot về đích trước — thử lại nhé!') : !gamified ? 'Test Complete' : view?.state.outcome === 'defeat' ? 'DEFEATED!' : score.bossDefeated ? 'BOSS DEFEATED!' : 'Battle Complete!'}
                 </h1>
                 <p className={`text-sm ${muted2}`}>
                   {score.correct} / {battle.totalQuestions} correct · {Math.round(score.accuracy * 100)}% accuracy
@@ -537,7 +580,9 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
                     <Stat label="Gems" value={`+${score.gems}`} className="text-amber-400" />
                     <Stat label="EXP" value={`+${score.exp}`} className="text-blue-400" />
                     <div className="col-span-2">
-                      <Stat label="HP còn lại" value={`${final?.hpRemaining ?? 0} / ${scaling.playerHp}`} className="text-emerald-400" />
+                      {isRace && final?.race
+                        ? <Stat label="Bạn – Bot (chặng đúng)" value={`${final.race.playerDistance} – ${final.race.botDistance}`} className="text-sky-400" />
+                        : <Stat label="HP còn lại" value={`${final?.hpRemaining ?? 0} / ${scaling.playerHp}`} className="text-emerald-400" />}
                     </div>
                     {score.questGems > 0 && <div className="col-span-2 text-xs font-bold text-emerald-400">🏅 Nhiệm vụ phụ: +{score.questGems} Gems</div>}
                     {score.milestoneMultiplier > 1 && <div className="col-span-2 text-xs font-bold text-emerald-400">🎯 Expected Score reached — x{score.milestoneMultiplier} multiplier!</div>}
@@ -560,6 +605,24 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
               <div className="text-sm space-y-1">
                 <div className="font-bold flex items-center justify-center gap-1"><Users className="w-4 h-4" /> Raid progress ({board.participants} heroes)</div>
                 <Bar label="Shared Boss HP" value={Math.max(0, scaling.bossHp - board.totalDamage)} max={scaling.bossHp} gradient={theme.accent} />
+              </div>
+            )}
+            {isRace && board?.teams && board.teams.teams[0].members.length > 0 && board.teams.teams[1].members.length > 0 && (
+              <div className="rounded-2xl border border-sky-500/30 p-3 text-left space-y-2">
+                <div className="font-bold text-sm text-center">
+                  {board.teams.winner === 'draw' ? '🤝 Hai đội hoà nhau' : `🏆 ${board.teams.teams.find((t) => t.team === board.teams!.winner)?.name} dẫn đầu`}
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  {board.teams.teams.map((t) => (
+                    <div key={t.team} className={`rounded-xl p-2 border ${t.team === 'A' ? 'border-sky-500/40' : 'border-orange-500/40'}`}>
+                      <div className="text-xs font-bold">{t.name} · {t.distance.toFixed(1)} chặng/người</div>
+                      <ul className="text-xs text-slate-400 mt-1 space-y-0.5">
+                        {t.members.slice(0, 6).map((m, i) => <li key={i}>{m.avatar} {m.nickname} · {m.correct}</li>)}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-[11px] text-slate-500 text-center">Chia đội đều theo thứ tự vào phòng; điểm đội = số chặng đúng trung bình mỗi người.</p>
               </div>
             )}
             {board && board.leaderboard.length > 0 && (

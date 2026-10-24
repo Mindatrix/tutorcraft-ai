@@ -1,6 +1,7 @@
 import type { BattleConfig, BattlePayload, BossProfile, Difficulty, Question, SkillTag } from './types';
 import { BOSS_AVATAR_IDS, MAP_SETTING_IDS, sanitizeBoss } from './boss';
 import { clampDuration } from './scaling';
+import { normalizeLevel } from './levels';
 import { isScenarioId } from './scenarios';
 import { normalizeThemes } from './themes';
 
@@ -83,6 +84,7 @@ export function normalizeConfig(raw: Record<string, unknown>): BattleConfig {
     studentCount,
     teamSize: Math.min(10, Math.max(1, Math.round(Number(raw.teamSize) || (scenario === 'coop_raid' ? 4 : 1)))),
     cefrLevel: str(raw.cefrLevel, 4) ?? undefined,
+    level: normalizeLevel(raw.level),
   };
 }
 

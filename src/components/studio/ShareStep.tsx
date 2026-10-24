@@ -3,10 +3,12 @@
 import { useEffect, useState } from 'react';
 import QRCode from 'qrcode';
 import { Copy, Download, MessageCircle, Plus, RefreshCw, BarChart3, AlertTriangle } from 'lucide-react';
+import type { TeamRace } from '../../engine';
 import type { PublishedBattle } from './types';
 
 interface Diagnostics {
   participants?: number;
+  teams?: TeamRace | null;
   diagnostics: { topic: string; skill_tag: string; attempts: number; wrong: number; failRate: number }[];
   leaderboard: { nickname: string; avatar: string; gems: number; accuracy: number }[];
 }
@@ -60,15 +62,25 @@ export default function ShareStep({ battle, onNew }: { battle: PublishedBattle; 
     window.open('https://chat.zalo.me/', '_blank', 'noopener');
   };
 
-  const loadDiagnostics = async () => {
-    setDiagLoading(true);
+  const loadDiagnostics = async (silent = false) => {
+    if (!silent) setDiagLoading(true);
     try {
       const res = await fetch(`/api/battle-result?battleId=${battle.battle_id}`);
       setDiag(await res.json());
+    } catch {
+      /* keep the last board when the network blips */
     } finally {
       setDiagLoading(false);
     }
   };
+
+  // Live board for team races: refresh every 6 s while the tutor keeps this screen open.
+  useEffect(() => {
+    if (!diag?.teams) return;
+    const t = setInterval(() => void loadDiagnostics(true), 6000);
+    return () => clearInterval(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [!!diag?.teams, battle.battle_id]);
 
   return (
     <div className="space-y-5">
@@ -124,7 +136,7 @@ export default function ShareStep({ battle, onNew }: { battle: PublishedBattle; 
       <section className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3">
         <div className="flex items-center justify-between">
           <h2 className="font-bold text-rose-400 flex items-center gap-2"><BarChart3 className="w-5 h-5" /> Chẩn đoán lỗ hổng kiến thức</h2>
-          <button onClick={loadDiagnostics} className="text-sm flex items-center gap-1 text-slate-300 hover:text-white"><RefreshCw className={`w-4 h-4 ${diagLoading ? 'animate-spin' : ''}`} /> Tải</button>
+          <button onClick={() => loadDiagnostics()} className="text-sm flex items-center gap-1 text-slate-300 hover:text-white"><RefreshCw className={`w-4 h-4 ${diagLoading ? 'animate-spin' : ''}`} /> Tải</button>
         </div>
         {!diag && <p className="text-sm text-slate-500">Sau khi học sinh làm bài, bấm “Tải” để xem chủ điểm bị sai nhiều nhất và bảng xếp hạng.</p>}
         {diag && diag.diagnostics.length === 0 && <p className="text-sm text-slate-500">{diag.participants ? 'Chưa phát hiện điểm yếu.' : 'Chưa có học sinh nộp bài.'}</p>}
@@ -134,6 +146,17 @@ export default function ShareStep({ battle, onNew }: { battle: PublishedBattle; 
             <div className="h-2 bg-slate-950 rounded-full overflow-hidden mt-1"><div className="h-full bg-rose-500" style={{ width: `${d.failRate * 100}%` }} /></div>
           </div>
         ))}
+        {diag?.teams && (
+          <div className="grid grid-cols-2 gap-2 pt-2">
+            {diag.teams.teams.map((t) => (
+              <div key={t.team} className={`rounded-xl border p-3 ${t.team === 'A' ? 'border-sky-500/40' : 'border-orange-500/40'} ${diag.teams!.winner === t.team ? 'bg-emerald-500/10' : ''}`}>
+                <div className="text-sm font-bold">{diag.teams!.winner === t.team ? '🏆 ' : ''}{t.name}</div>
+                <div className="text-xs text-slate-400">{t.members.length} người · {t.distance.toFixed(1)} chặng/người</div>
+                <ul className="text-xs text-slate-300 mt-1 space-y-0.5">{t.members.map((m, i) => <li key={i}>{m.avatar} {m.nickname} · {m.correct}</li>)}</ul>
+              </div>
+            ))}
+          </div>
+        )}
         {diag && diag.leaderboard.length > 0 && (
           <ol className="text-sm space-y-1 pt-2">
             {diag.leaderboard.map((r, i) => (

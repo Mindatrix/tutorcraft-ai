@@ -9,6 +9,8 @@ import {
   SCENARIO_IDS,
   THEMES,
   THEME_IDS,
+  LEVELS,
+  LEVEL_IDS,
   computeScaling,
   timeLimitFor,
   variantCodes,
@@ -47,6 +49,7 @@ export const DEFAULT_SETTINGS: StudioSettings = {
   tutorName: '',
   classCode: '',
   cefrLevel: '',
+  level: 3,
   scenario: 'homework',
   mode: 'gamified',
   themes: ['rpg_classic'],
@@ -63,7 +66,7 @@ export default function LessonStep({ initial, onGenerated }: { initial: StudioSe
   const [error, setError] = useState<string | null>(null);
 
   const set = <K extends keyof StudioSettings>(k: K, v: StudioSettings[K]) => setS((prev) => ({ ...prev, [k]: v }));
-  const scaling = useMemo(() => computeScaling({ durationMinutes: s.durationMinutes, scenario: s.scenario, teamSize: s.teamSize }), [s.durationMinutes, s.scenario, s.teamSize]);
+  const scaling = useMemo(() => computeScaling({ durationMinutes: s.durationMinutes, scenario: s.scenario, teamSize: s.teamSize, level: s.level }), [s.durationMinutes, s.scenario, s.teamSize, s.level]);
   const variants = variantCodes(s.studentCount);
   const canGenerate = !!(s.topic.trim() || doc || lessonText.trim());
 
@@ -102,6 +105,7 @@ export default function LessonStep({ initial, onGenerated }: { initial: StudioSe
           teamSize: s.teamSize,
           classCode: s.classCode || undefined,
           cefrLevel: s.cefrLevel || undefined,
+          level: s.level,
           examType: s.scenario === 'coop_raid' ? 'group' : 'individual',
           document,
         }),
@@ -173,7 +177,7 @@ export default function LessonStep({ initial, onGenerated }: { initial: StudioSe
 
       <div>
         <span className={label}>① Kịch bản sư phạm</span>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
           {SCENARIO_IDS.map((id) => (
             <button type="button" key={id} onClick={() => set('scenario', id)} aria-pressed={s.scenario === id} className={`text-left p-3 rounded-xl border ${s.scenario === id ? 'border-blue-500 bg-blue-600/10' : 'border-slate-800 bg-slate-950 hover:border-slate-600'}`}>
               <div className="font-bold text-sm">{SCENARIOS[id].nameVi}</div>
@@ -181,6 +185,20 @@ export default function LessonStep({ initial, onGenerated }: { initial: StudioSe
             </button>
           ))}
         </div>
+      </div>
+
+      <div>
+        <span className={label}>Mức độ khó — dành cho học viên từ 5 tuổi</span>
+        <div className="grid grid-cols-5 gap-2">
+          {LEVEL_IDS.map((lv) => (
+            <button type="button" key={lv} onClick={() => set('level', lv)} aria-pressed={s.level === lv} className={`p-2 rounded-xl border text-center ${s.level === lv ? 'border-emerald-500 bg-emerald-500/10' : 'border-slate-800 bg-slate-950 hover:border-slate-600'}`}>
+              <div className="font-black text-lg">{lv}</div>
+              <div className="text-xs font-bold">{LEVELS[lv].nameVi}</div>
+              <div className="text-[10px] text-slate-400">{LEVELS[lv].cefr}</div>
+            </button>
+          ))}
+        </div>
+        <p className="text-xs text-slate-400 mt-2">Ảnh hưởng độ khó câu hỏi, thời gian mỗi câu, số lỗi được phép và độ mạnh của bot (đua thuyền).{s.cefrLevel ? '' : ` CEFR tự động: ${LEVELS[s.level].cefr}.`}</p>
       </div>
 
       <div>
@@ -217,7 +235,7 @@ export default function LessonStep({ initial, onGenerated }: { initial: StudioSe
         <div className="grid grid-cols-3 gap-2 mt-3 text-center">
           <Metric label="Số câu hỏi" value={scaling.totalQuestions} />
           <Metric label="Boss HP" value={scaling.bossHp.toLocaleString('en-US')} />
-          <Metric label="Thời gian / câu" value={`${timeLimitFor('easy')}–${timeLimitFor('hard')}s`} />
+          <Metric label="Thời gian / câu" value={`${timeLimitFor('easy', s.level)}–${timeLimitFor('hard', s.level)}s`} />
         </div>
       </div>
 

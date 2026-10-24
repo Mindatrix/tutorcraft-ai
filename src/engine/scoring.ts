@@ -36,7 +36,7 @@ export interface BattleScore {
 export function scoreBattle(
   questions: Question[],
   answers: AnswerRecord[],
-  config: Pick<BattleConfig, 'durationMinutes' | 'scenario' | 'teamSize'>,
+  config: Pick<BattleConfig, 'durationMinutes' | 'scenario' | 'teamSize' | 'level'>,
   expectedAccuracy = DEFAULT_EXPECTED_ACCURACY,
   bonusGems = 0,
 ): BattleScore {
@@ -57,7 +57,7 @@ export function scoreBattle(
     if (!q || seen.has(a.questionId)) continue; // ignore unknown or duplicate answers
     seen.add(a.questionId);
 
-    const limit = timeLimitFor(q.difficulty);
+    const limit = timeLimitFor(q.difficulty, config.level);
     const timeMs = Math.min(Math.max(0, Number(a.timeMs) || 0), (limit + 60) * 1000);
     const ok = a.chosenIdx === q.correct_idx;
 

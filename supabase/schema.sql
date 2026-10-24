@@ -75,6 +75,8 @@ create table if not exists public.battle_sessions (
   version int not null default 0
 );
 create index if not exists battle_sessions_battle_idx on public.battle_sessions (battle_id, status);
+alter table public.battle_sessions add column if not exists team text check (team in ('A','B'));
+alter table public.battle_results add column if not exists team text check (team in ('A','B'));
 alter table public.battle_sessions enable row level security;
 -- No anon policies: server only.
 

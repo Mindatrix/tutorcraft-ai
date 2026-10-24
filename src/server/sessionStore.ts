@@ -1,5 +1,5 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
-import type { BattleScore, SessionLogEntry } from '../engine';
+import type { BattleScore, RaceOutcome, SessionLogEntry, TeamId } from '../engine';
 
 export interface SessionRecord {
   id: string;
@@ -12,13 +12,17 @@ export interface SessionRecord {
   log: SessionLogEntry[];
   status: 'active' | 'finished' | 'flagged';
   flags: string[];
-  result: (BattleScore & { hpRemaining: number }) | null;
+  result: (BattleScore & { hpRemaining: number; race?: RaceOutcome | null }) | null;
   version: number;
+  /** Boat Race team (A/B), assigned by join order. */
+  team?: TeamId | null;
 }
 
 export interface SessionStore {
   create(rec: SessionRecord): Promise<void>;
   get(id: string): Promise<SessionRecord | null>;
+  /** Sessions already started for this battle (decides the next player's team). */
+  countForBattle(battleId: string): Promise<number>;
   /** Optimistic concurrency: false if someone else updated first (e.g. a double-click race). */
   update(rec: SessionRecord, expectedVersion: number): Promise<boolean>;
 }
@@ -29,6 +33,11 @@ export class MemorySessionStore implements SessionStore {
   async create(rec: SessionRecord) {
     if (this.map.size > 2000) this.map.delete(this.map.keys().next().value!);
     this.map.set(rec.id, structuredClone(rec));
+  }
+  async countForBattle(battleId: string) {
+    let n = 0;
+    for (const r of this.map.values()) if (r.battleId === battleId) n++;
+    return n;
   }
   async get(id: string) {
     const r = this.map.get(id);
@@ -55,6 +64,7 @@ type Row = {
   flags: string[];
   result: SessionRecord['result'];
   version: number;
+  team: TeamId | null;
 };
 
 export class SupabaseSessionStore implements SessionStore {
@@ -73,7 +83,14 @@ export class SupabaseSessionStore implements SessionStore {
       status: rec.status,
       flags: rec.flags,
       result: rec.result,
+      team: rec.team ?? null,
     };
+  }
+
+  async countForBattle(battleId: string) {
+    const { count, error } = await this.db.from('battle_sessions').select('id', { count: 'exact', head: true }).eq('battle_id', battleId);
+    if (error) return 0;
+    return count ?? 0;
   }
 
   async create(rec: SessionRecord) {
@@ -98,6 +115,7 @@ export class SupabaseSessionStore implements SessionStore {
       flags: r.flags ?? [],
       result: r.result,
       version: r.version,
+      team: r.team ?? null,
     };
   }
 

@@ -1,10 +1,11 @@
-import type { BossProfile, ExamMode, Question, ScenarioId, ThemeId } from '../../engine';
+import type { BossProfile, DifficultyLevel, ExamMode, Question, ScenarioId, ThemeId } from '../../engine';
 
 export interface StudioSettings {
   topic: string;
   tutorName: string;
   classCode: string;
   cefrLevel: string;
+  level: DifficultyLevel;
   scenario: ScenarioId;
   mode: ExamMode;
   themes: ThemeId[];

@@ -86,6 +86,7 @@ export default function PreviewStep({ draft, onBack, onPublished }: { draft: Stu
             classCode: s.classCode || undefined,
             tutorName: s.tutorName || undefined,
             cefrLevel: s.cefrLevel || undefined,
+            level: s.level,
             examType: s.scenario === 'coop_raid' ? 'group' : 'individual',
           },
         }),
@@ -217,7 +218,7 @@ export default function PreviewStep({ draft, onBack, onPublished }: { draft: Stu
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-xs font-bold text-blue-400">Câu {i + 1}</span>
               <select aria-label="Độ khó" value={q.difficulty} onChange={(e) => updateQ(i, { difficulty: e.target.value as Difficulty })} className="text-xs bg-slate-900 border border-slate-700 rounded-lg px-2 py-1">
-                {DIFFICULTIES.map((d) => <option key={d} value={d}>{d} · {timeLimitFor(d)}s</option>)}
+                {DIFFICULTIES.map((d) => <option key={d} value={d}>{d} · {timeLimitFor(d, draft.settings.level)}s</option>)}
               </select>
               <input aria-label="Chủ điểm" value={q.topic} onChange={(e) => updateQ(i, { topic: e.target.value.slice(0, 80) })} className="text-xs bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 flex-1 min-w-24" />
               {q.is_review && <span className="text-xs px-2 py-0.5 rounded bg-sky-500/20 text-sky-400">ôn tập</span>}

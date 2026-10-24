@@ -1,4 +1,5 @@
 export * from './types';
+export * from './levels';
 export * from './scaling';
 export * from './themes';
 export * from './scenarios';
@@ -9,6 +10,8 @@ export * from './sm2';
 export * from './schema';
 export * from './fallback';
 export * from './scoring';
+export * from './race';
+export * from './teams';
 export * from './rewards';
 export * from './demo';
 export * from './battleState';

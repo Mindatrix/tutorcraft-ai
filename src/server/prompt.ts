@@ -1,6 +1,7 @@
 import type { BattleConfig } from '../engine/types';
 import { THEMES } from '../engine/themes';
 import { SCENARIOS } from '../engine/scenarios';
+import { levelOf } from '../engine/levels';
 
 export interface PromptInput {
   topic: string;
@@ -15,7 +16,9 @@ export interface PromptInput {
 export function buildBattlePrompt(p: PromptInput): string {
   const scenario = SCENARIOS[p.config.scenario];
   const themes = p.config.themes.map((t) => `${THEMES[t].name} (${THEMES[t].genre})`).join(' + ');
-  const level = p.config.cefrLevel ? `CEFR level ${p.config.cefrLevel}` : 'a CEFR level that fits the topic (A2–C1)';
+  const lv = levelOf(p.config);
+  const pct = (n: number) => Math.round(n * 100);
+  const level = `CEFR level ${p.config.cefrLevel || lv.cefr} — difficulty level ${lv.level}/5 (${lv.nameVi}). ${lv.guidance}`;
 
   const source = p.hasInlineDocument || p.documentText
     ? `SOURCE DOCUMENT: Base every question ONLY on the attached/provided lesson material. First extract its key knowledge points into "knowledge_matrix".${
@@ -49,7 +52,7 @@ GAME DESIGN — design the boss of this arena from the lesson content:
 
 Write exactly ${p.questionCount} multiple-choice questions:
 - 4 options each, exactly one correct, plausible distractors, no duplicate options.
-- Mix difficulties: about 40% easy, 40% medium, 20% hard.
+- Mix difficulties: about ${pct(lv.mix.easy)}% easy, ${pct(lv.mix.medium)}% medium, ${pct(lv.mix.hard)}% hard.
 - "topic" = the specific grammar point or vocabulary set tested (e.g. "present perfect", "phrasal verbs: travel").
 - "skill_tag" = grammar | vocabulary | reading | listening | pronunciation | other.
 - "hint" in Vietnamese, short, does not give away the answer.

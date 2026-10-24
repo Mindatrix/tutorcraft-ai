@@ -1,7 +1,7 @@
 // Core types for the TutorCraft 3D Lego Engine.
 // Dimension 1 = Scenario, Dimension 2 = Theme, Dimension 3 = Duration.
 
-export type ScenarioId = 'homework' | 'in_class' | 'coop_raid';
+export type ScenarioId = 'homework' | 'in_class' | 'coop_raid' | 'boat_race';
 
 export type ThemeId =
   | 'minecraft'
@@ -17,6 +17,9 @@ export type ThemeId =
   | 'rpg_classic';
 
 export type Difficulty = 'easy' | 'medium' | 'hard';
+
+/** 5 teaching levels the tutor picks: 1 = Dễ … 5 = Rất khó. Default 3 (Trung bình). */
+export type DifficultyLevel = 1 | 2 | 3 | 4 | 5;
 
 /** Standard = clean academic quiz, Gamified = full RPG battle. */
 export type ExamMode = 'standard' | 'gamified';
@@ -51,6 +54,8 @@ export interface BattleConfig {
   /** Players sharing one boss in a Co-op Raid. */
   teamSize: number;
   cefrLevel?: string;
+  /** Overall difficulty level 1–5 (see levels.ts). Missing = 3. */
+  level?: DifficultyLevel;
 }
 
 export interface BattleScaling {

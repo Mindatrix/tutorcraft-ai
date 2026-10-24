@@ -29,6 +29,7 @@ const persistResult: SessionDeps['persistResult'] = async ({ battle, rec, ctx, s
       nickname: rec.nickname,
       avatar: rec.avatar,
       variant_code: rec.variant,
+      team: rec.team ?? null,
       correct: score.correct,
       answered: score.answered,
       accuracy: score.accuracy,
@@ -51,7 +52,7 @@ const persistResult: SessionDeps['persistResult'] = async ({ battle, rec, ctx, s
   for (const a of state.answers) {
     const q = byId.get(a.questionId);
     if (!q) continue;
-    const grade = gradeAnswer(a.chosenIdx === q.correct_idx, a.timeMs, timeLimitFor(q.difficulty), a.chosenIdx === -1);
+    const grade = gradeAnswer(a.chosenIdx === q.correct_idx, a.timeMs, timeLimitFor(q.difficulty, battle.config.level), a.chosenIdx === -1);
     if (!needsReview(grade)) continue;
     rows.set(q.topic.toLowerCase(), {
       class_code: battle.config.classCode,

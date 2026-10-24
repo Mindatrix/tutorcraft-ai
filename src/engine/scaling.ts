@@ -1,4 +1,5 @@
-import type { BattleConfig, BattleScaling, Difficulty } from './types';
+import type { BattleConfig, BattleScaling, Difficulty, DifficultyLevel } from './types';
+import { LEVELS, normalizeLevel } from './levels';
 
 export const MIN_DURATION = 1;
 export const MAX_DURATION = 30;
@@ -29,16 +30,18 @@ export function bossHp(questions: number, teamSize = 1): number {
   return questions * BASE_DAMAGE * Math.max(1, teamSize);
 }
 
-export function timeLimitFor(difficulty: Difficulty | undefined): number {
-  return TIME_LIMIT_BY_DIFFICULTY[difficulty ?? 'medium'] ?? TIME_LIMIT_BY_DIFFICULTY.medium;
+/** Seconds per question. `level` (1–5) scales it; level 3 / undefined = the base table. */
+export function timeLimitFor(difficulty: Difficulty | undefined, level?: DifficultyLevel): number {
+  const base = TIME_LIMIT_BY_DIFFICULTY[difficulty ?? 'medium'] ?? TIME_LIMIT_BY_DIFFICULTY.medium;
+  return Math.round(base * LEVELS[normalizeLevel(level)].timeMult);
 }
 
 /**
  * HP lost per wrong answer. A student can survive roughly 40% wrong answers
  * before being knocked out.
  */
-export function wrongPenalty(questions: number): number {
-  const allowedWrong = Math.max(1, Math.floor(questions * 0.4));
+export function wrongPenalty(questions: number, level?: DifficultyLevel): number {
+  const allowedWrong = Math.max(1, Math.floor(questions * LEVELS[normalizeLevel(level)].allowedWrong));
   return Math.ceil(PLAYER_MAX_HP / (allowedWrong + 1));
 }
 
@@ -46,14 +49,14 @@ export function wrongPenalty(questions: number): number {
  * `questionCount` overrides the duration formula once a battle exists — tutors can
  * delete questions in the Studio, and Boss HP must stay = Q x 100 for the real Q.
  */
-export function computeScaling(config: Pick<BattleConfig, 'durationMinutes' | 'scenario' | 'teamSize'>, questionCount?: number): BattleScaling {
+export function computeScaling(config: Pick<BattleConfig, 'durationMinutes' | 'scenario' | 'teamSize' | 'level'>, questionCount?: number): BattleScaling {
   const q = questionCount && questionCount > 0 ? questionCount : totalQuestions(config.durationMinutes);
   const team = config.scenario === 'coop_raid' ? config.teamSize : 1;
   return {
     totalQuestions: q,
     bossHp: bossHp(q, team),
     playerHp: PLAYER_MAX_HP,
-    wrongPenalty: wrongPenalty(q),
+    wrongPenalty: wrongPenalty(q, config.level),
   };
 }
 

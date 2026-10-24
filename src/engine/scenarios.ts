@@ -44,6 +44,16 @@ export const SCENARIOS: Record<ScenarioId, ScenarioDefinition> = {
     sharedBoss: true,
     allowRetry: false,
   },
+  boat_race: {
+    id: 'boat_race',
+    name: 'Boat Race',
+    nameVi: 'Đua thuyền',
+    style: '1v1 vs Bot · Race · Speed Bonus',
+    speedBonus: true,
+    showLeaderboard: true,
+    sharedBoss: false,
+    allowRetry: true,
+  },
 };
 
 export const SCENARIO_IDS = Object.keys(SCENARIOS) as ScenarioId[];

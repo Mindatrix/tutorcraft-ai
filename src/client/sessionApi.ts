@@ -1,6 +1,6 @@
 'use client';
 
-import type { AnswerReveal, BattleScore, BattleState, PublicQuestion, SkillId } from '../engine';
+import type { AnswerReveal, BattleScore, BattleState, PublicQuestion, RaceOutcome, SkillId } from '../engine';
 
 // Thin client for the server-authoritative battle session API.
 
@@ -10,6 +10,7 @@ export interface SessionView {
   totalQuestions: number;
   state: BattleState;
   question: PublicQuestion | null;
+  team?: 'A' | 'B' | null;
 }
 
 export interface ActResponse {
@@ -24,6 +25,7 @@ export interface FinalizeResponse {
   score: BattleScore | null;
   hpRemaining: number | null;
   saved: boolean;
+  race?: RaceOutcome | null;
   error?: string;
 }
 

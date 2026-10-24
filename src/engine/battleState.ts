@@ -44,6 +44,8 @@ export interface BattleState {
   timeLeft: number;
   selected: number | null;
   answers: AnswerRecord[];
+  /** Correct answers so far (the boat's distance in Boat Race). */
+  correct: number;
   casts: SkillCast[];
   feedback: { text: string; tone: FeedbackTone } | null;
   outcome: 'victory' | 'defeat' | null;
@@ -70,7 +72,7 @@ export type BattleAction =
   | { type: 'RESTORE'; state: BattleState };
 
 export function initialBattleState(ctx: BattleCtx): BattleState {
-  const t = timeLimitFor(ctx.questions[0]?.difficulty);
+  const t = timeLimitFor(ctx.questions[0]?.difficulty, ctx.config.level);
   return {
     phase: 'lobby',
     idx: 0,
@@ -88,6 +90,7 @@ export function initialBattleState(ctx: BattleCtx): BattleState {
     timeLeft: t,
     selected: null,
     answers: [],
+    correct: 0,
     casts: [],
     feedback: null,
     outcome: null,
@@ -124,7 +127,7 @@ function applyStory(prev: BattleState, s: BattleState, q: Question, ok: boolean,
     beats.push({ kind: 'enrage', text: `🔥 Boss cuồng nộ: “${ctx.boss.enrage_dialogue}” — Gợi ý câu sau đã mở khoá.` });
   }
 
-  const upd = advanceQuests(prev.quests, q, ok, timeMs, timeLimitFor(q.difficulty), s.hp < prev.hp, enteredPhase2);
+  const upd = advanceQuests(prev.quests, q, ok, timeMs, timeLimitFor(q.difficulty, ctx.config.level), s.hp < prev.hp, enteredPhase2);
   let mp = s.mp;
   let hp = s.hp;
   for (const done of upd.completed) {
@@ -159,7 +162,7 @@ function resolveAnswer(s: BattleState, chosen: number, ctx: BattleCtx): BattleSt
   const ok = chosen === q.correct_idx;
   const timeMs = Math.max(0, (s.questionTime - s.timeLeft) * 1000);
   const answers = [...s.answers, { questionId: q.id, chosenIdx: chosen, timeMs, shielded: !ok && s.shield }];
-  const base = { ...s, selected: chosen, answers };
+  const base = { ...s, selected: chosen, answers, correct: s.correct + (ok ? 1 : 0) };
 
   if (ctx.config.mode === 'standard') {
     return {
@@ -212,7 +215,7 @@ function resolveAnswer(s: BattleState, chosen: number, ctx: BattleCtx): BattleSt
 function next(s: BattleState, ctx: BattleCtx): BattleState {
   if (s.phase !== 'playing' || s.selected === null) return s;
   const gamified = ctx.config.mode === 'gamified';
-  if (gamified && s.hp <= 0) {
+  if (gamified && s.hp <= 0 && ctx.config.scenario !== 'boat_race') { // a race is decided by distance, not HP
     return { ...s, phase: 'result', outcome: 'defeat', event: emit(s, 'defeat') };
   }
   if (s.idx + 1 >= ctx.questions.length) {
@@ -222,7 +225,7 @@ function next(s: BattleState, ctx: BattleCtx): BattleState {
   const idx = s.idx + 1;
   const q = ctx.questions[idx];
   const buff = gamified ? miracleBuffFor(s.consecutiveWrong) : null;
-  const t = timeLimitFor(q.difficulty) + (buff?.bonusSeconds ?? 0);
+  const t = timeLimitFor(q.difficulty, ctx.config.level) + (buff?.bonusSeconds ?? 0);
   return {
     ...s,
     idx,

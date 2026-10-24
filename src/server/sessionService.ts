@@ -5,16 +5,20 @@ import {
   assessTimings,
   buildVariant,
   computeScaling,
+  raceOutcome,
+  raceSeed,
   publicQuestion,
   questGems,
   rebuildSession,
   revealFor,
   scoreBattle,
+  teamForIndex,
   type AnswerReveal,
   type AnswerTiming,
   type BattleCtx,
   type BattleScore,
   type BattleState,
+  type RaceOutcome,
   type PublicQuestion,
   type SessionLogEntry,
   type SkillId,
@@ -45,6 +49,7 @@ export interface SessionView {
   totalQuestions: number;
   state: BattleState;
   question: PublicQuestion | null;
+  team?: SessionRecord['team'];
 }
 
 export interface FinalizeResult {
@@ -53,6 +58,8 @@ export interface FinalizeResult {
   score: BattleScore | null;
   hpRemaining: number | null;
   saved: boolean;
+  /** Boat Race only: server-decided result against the bot. */
+  race?: RaceOutcome | null;
 }
 
 export interface SessionDeps {
@@ -80,6 +87,7 @@ export function createSessionService(deps: SessionDeps) {
     totalQuestions: ctx.questions.length,
     state,
     question: publicQuestion(ctx, state),
+    team: rec.team ?? null,
   });
 
   async function resolve(token: unknown) {
@@ -112,6 +120,7 @@ export function createSessionService(deps: SessionDeps) {
         flags: [],
         result: null,
         version: 0,
+        team: battle.config.scenario === 'boat_race' ? teamForIndex(await deps.storeFor(battle.id).countForBattle(battle.id)) : null,
       };
       await deps.storeFor(battle.id).create(rec);
       const ctx = contextFor(battle, variant);
@@ -156,7 +165,7 @@ export function createSessionService(deps: SessionDeps) {
     async finalize(token: unknown): Promise<FinalizeResult> {
       const { store, rec, battle, ctx } = await resolve(token);
       // Idempotent: a second submit returns the stored outcome instead of paying out twice.
-      if (rec.status === 'finished') return { flagged: false, reasons: [], score: rec.result, hpRemaining: rec.result?.hpRemaining ?? null, saved: true };
+      if (rec.status === 'finished') return { flagged: false, reasons: [], score: rec.result, hpRemaining: rec.result?.hpRemaining ?? null, saved: true, race: rec.result?.race ?? null };
       if (rec.status === 'flagged') return { flagged: true, reasons: rec.flags, score: null, hpRemaining: null, saved: false };
 
       const { state, timings } = rebuildSession(ctx, rec.startedAt, rec.log);
@@ -171,11 +180,14 @@ export function createSessionService(deps: SessionDeps) {
       // Everything below is computed from the server's own log — client numbers are never read.
       const score = scoreBattle(ctx.questions, state.answers, ctx.config, DEFAULT_EXPECTED_ACCURACY, questGems(state.quests));
       const hpRemaining = ctx.config.mode === 'gamified' ? state.hp : ctx.scaling.playerHp;
+      const race = ctx.config.scenario === 'boat_race'
+        ? raceOutcome(ctx.questions, state.answers, raceSeed(battle.id, rec.variant, ctx.config.level), ctx.config.level)
+        : null;
       const saved = await deps.persistResult({ battle, rec, ctx, state, score, hpRemaining, timings });
-      if (!(await store.update({ ...rec, status: 'finished', result: { ...score, hpRemaining } }, rec.version))) {
+      if (!(await store.update({ ...rec, status: 'finished', result: { ...score, hpRemaining, race } }, rec.version))) {
         throw new SessionError(409, 'Kết quả đã được nộp.');
       }
-      return { flagged: false, reasons: [], score, hpRemaining, saved };
+      return { flagged: false, reasons: [], score, hpRemaining, saved, race };
     },
   };
 }
