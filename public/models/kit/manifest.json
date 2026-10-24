@@ -1,0 +1,317 @@
+{
+ "version": 1,
+ "frame": "all pieces share one coordinate frame; stack at origin; scale uniformly by age",
+ "age_scale": {
+  "child": 0.78,
+  "teen": 0.9,
+  "adult": 1.0,
+  "elder": 0.96
+ },
+ "tint_materials": [
+  "M_skin",
+  "M_hair",
+  "M_primary",
+  "M_secondary",
+  "M_eye"
+ ],
+ "anchors": [
+  "head_anchor",
+  "hat_anchor",
+  "hand_R_anchor",
+  "hand_L_anchor",
+  "back_anchor",
+  "neck_anchor"
+ ],
+ "body": "body/base.glb",
+ "hair_length_extra": {
+  "shoulder": "hair/len_shoulder.glb",
+  "long": "hair/len_long.glb"
+ },
+ "skirt": "outfit/bottom_skirt.glb",
+ "decal_only_accessories": [
+  "freckles",
+  "tattoo"
+ ],
+ "accessory_aliases": {
+  "hat": "hat_cap"
+ },
+ "files": {
+  "acc/bag": {
+   "faces": 6,
+   "bytes": 1736
+  },
+  "acc/bandage": {
+   "faces": 6,
+   "bytes": 1748
+  },
+  "acc/beard": {
+   "faces": 28,
+   "bytes": 3696
+  },
+  "acc/bracelet": {
+   "faces": 20,
+   "bytes": 4108
+  },
+  "acc/camera": {
+   "faces": 14,
+   "bytes": 3552
+  },
+  "acc/cybernetic": {
+   "faces": 22,
+   "bytes": 4072
+  },
+  "acc/earring": {
+   "faces": 40,
+   "bytes": 5176
+  },
+  "acc/flower": {
+   "faces": 40,
+   "bytes": 5664
+  },
+  "acc/glasses": {
+   "faces": 26,
+   "bytes": 5548
+  },
+  "acc/hat_beanie": {
+   "faces": 60,
+   "bytes": 7632
+  },
+  "acc/hat_cap": {
+   "faces": 46,
+   "bytes": 6224
+  },
+  "acc/hat_conical": {
+   "faces": 12,
+   "bytes": 2764
+  },
+  "acc/hat_wide": {
+   "faces": 24,
+   "bytes": 4704
+  },
+  "acc/headband": {
+   "faces": 12,
+   "bytes": 2756
+  },
+  "acc/map_or_notebook": {
+   "faces": 6,
+   "bytes": 1752
+  },
+  "acc/mustache": {
+   "faces": 6,
+   "bytes": 1756
+  },
+  "acc/necklace": {
+   "faces": 10,
+   "bytes": 2428
+  },
+  "acc/pet_or_toy": {
+   "faces": 24,
+   "bytes": 3332
+  },
+  "acc/watch": {
+   "faces": 10,
+   "bytes": 2424
+  },
+  "acc/whistle": {
+   "faces": 7,
+   "bytes": 1920
+  },
+  "body/base": {
+   "faces": 238,
+   "bytes": 32348
+  },
+  "hair/afro": {
+   "faces": 26,
+   "bytes": 3612
+  },
+  "hair/bob": {
+   "faces": 44,
+   "bytes": 6564
+  },
+  "hair/braid": {
+   "faces": 122,
+   "bytes": 14072
+  },
+  "hair/bun": {
+   "faces": 50,
+   "bytes": 6472
+  },
+  "hair/buzz": {
+   "faces": 20,
+   "bytes": 2964
+  },
+  "hair/curly": {
+   "faces": 226,
+   "bytes": 25848
+  },
+  "hair/half_up": {
+   "faces": 56,
+   "bytes": 7760
+  },
+  "hair/len_long": {
+   "faces": 6,
+   "bytes": 1748
+  },
+  "hair/len_shoulder": {
+   "faces": 6,
+   "bytes": 1744
+  },
+  "hair/messy": {
+   "faces": 56,
+   "bytes": 9488
+  },
+  "hair/pigtails": {
+   "faces": 138,
+   "bytes": 17116
+  },
+  "hair/ponytail": {
+   "faces": 82,
+   "bytes": 10636
+  },
+  "hair/ponytail_low": {
+   "faces": 82,
+   "bytes": 10632
+  },
+  "hair/short_neat": {
+   "faces": 26,
+   "bytes": 3600
+  },
+  "hair/side_part": {
+   "faces": 32,
+   "bytes": 4880
+  },
+  "hair/slicked": {
+   "faces": 28,
+   "bytes": 4452
+  },
+  "hair/spiky": {
+   "faces": 61,
+   "bytes": 10776
+  },
+  "hair/straight": {
+   "faces": 44,
+   "bytes": 7024
+  },
+  "hair/topknot": {
+   "faces": 57,
+   "bytes": 7932
+  },
+  "hair/twin_buns": {
+   "faces": 74,
+   "bytes": 9008
+  },
+  "hair/wavy": {
+   "faces": 32,
+   "bytes": 4880
+  },
+  "outfit/arctic_winter": {
+   "faces": 56,
+   "bytes": 11348
+  },
+  "outfit/bottom_skirt": {
+   "faces": 10,
+   "bytes": 2428
+  },
+  "outfit/casual": {
+   "faces": 46,
+   "bytes": 9472
+  },
+  "outfit/diving": {
+   "faces": 56,
+   "bytes": 11348
+  },
+  "outfit/explorer": {
+   "faces": 64,
+   "bytes": 12960
+  },
+  "outfit/fantasy_scifi": {
+   "faces": 126,
+   "bytes": 20752
+  },
+  "outfit/football": {
+   "faces": 72,
+   "bytes": 14108
+  },
+  "outfit/formal_smart": {
+   "faces": 58,
+   "bytes": 11864
+  },
+  "outfit/life_jacket_sailing": {
+   "faces": 58,
+   "bytes": 11872
+  },
+  "outfit/regional_traditional": {
+   "faces": 56,
+   "bytes": 11188
+  },
+  "outfit/vn_traditional": {
+   "faces": 52,
+   "bytes": 10556
+  },
+  "prop/axe_hammer_tool": {
+   "faces": 13,
+   "bytes": 3376
+  },
+  "prop/broom_brush": {
+   "faces": 13,
+   "bytes": 3400
+  },
+  "prop/detector_scanner": {
+   "faces": 16,
+   "bytes": 3896
+  },
+  "prop/fan": {
+   "faces": 13,
+   "bytes": 3396
+  },
+  "prop/flashlight": {
+   "faces": 16,
+   "bytes": 3652
+  },
+  "prop/instrument": {
+   "faces": 8,
+   "bytes": 2084
+  },
+  "prop/ladle": {
+   "faces": 31,
+   "bytes": 4792
+  },
+  "prop/rolled_paper": {
+   "faces": 8,
+   "bytes": 2076
+  },
+  "prop/rope_climb": {
+   "faces": 10,
+   "bytes": 2420
+  },
+  "prop/shield": {
+   "faces": 10,
+   "bytes": 2404
+  },
+  "prop/slipper": {
+   "faces": 6,
+   "bytes": 1748
+  },
+  "prop/staff_cane": {
+   "faces": 27,
+   "bytes": 4612
+  },
+  "prop/swatter_net": {
+   "faces": 13,
+   "bytes": 3400
+  },
+  "prop/tape": {
+   "faces": 10,
+   "bytes": 2412
+  },
+  "prop/toy_bow_sword": {
+   "faces": 13,
+   "bytes": 3392
+  },
+  "prop/vacuum": {
+   "faces": 14,
+   "bytes": 3568
+  }
+ },
+ "total_bytes": 455072
+}

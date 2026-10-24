@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TutorCraft · Chọn nhân vật</title>
+<script type="importmap">
+{"imports":{"three":"https://unpkg.com/three@0.170.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.170.0/examples/jsm/"}}
+</script>
+<style>
+:root{--bg:#10131c;--panel:#181c28;--line:#272d3f;--tx:#e8ebf4;--mut:#8b93a7;--acc:#ffb547}
+*{box-sizing:border-box}html,body{margin:0;height:100%;background:var(--bg);color:var(--tx);font:14px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}
+.app{display:grid;grid-template-columns:320px 1fr 280px;height:100%}
+.side{background:var(--panel);border-right:1px solid var(--line);display:flex;flex-direction:column;min-height:0}
+.side.r{border-right:0;border-left:1px solid var(--line);padding:16px;overflow:auto}
+.hd{padding:14px 14px 8px}.hd h1{font-size:16px;margin:0 0 8px}
+select,input{width:100%;background:#0f1320;color:var(--tx);border:1px solid var(--line);border-radius:8px;padding:8px;margin-bottom:6px;font:inherit}
+.list{overflow:auto;flex:1;padding:0 8px 12px}
+.sc{margin:10px 6px 4px;color:var(--acc);font-weight:600;font-size:12px;letter-spacing:.02em}
+.ch{display:flex;gap:8px;align-items:center;padding:7px 8px;border-radius:8px;cursor:pointer}
+.ch:hover{background:#20263a}.ch.on{background:#2a3250;outline:1px solid var(--acc)}
+.dot{width:14px;height:14px;border-radius:50%;border:1px solid #0006;flex:none}
+.ch small{color:var(--mut);margin-left:auto}
+.stage{position:relative;min-width:0}
+#c{width:100%;height:100%;display:block}
+.hint{position:absolute;left:14px;bottom:12px;color:var(--mut);font-size:12px}
+.nav{position:absolute;top:12px;left:50%;transform:translateX(-50%);display:flex;gap:8px}
+.nav button{background:#20263aee;border:1px solid var(--line);color:var(--tx);border-radius:8px;padding:6px 12px;cursor:pointer}
+h2{margin:0 0 2px;font-size:20px}.sub{color:var(--mut);margin:0 0 12px}
+dl{display:grid;grid-template-columns:90px 1fr;gap:6px 8px;margin:0}dt{color:var(--mut)}dd{margin:0;word-break:break-word}
+.sw{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:6px;border:1px solid #0006}
+code{background:#0f1320;padding:1px 5px;border-radius:4px;font-size:12px}
+@media(max-width:900px){.app{grid-template-columns:1fr;grid-template-rows:220px 360px 1fr}.side{border:0}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="side">
+    <div class="hd"><h1>Chọn nhân vật</h1>
+      <select id="game"></select><input id="q" placeholder="Tìm theo tên…"></div>
+    <div class="list" id="list"></div>
+  </aside>
+  <main class="stage"><canvas id="c"></canvas>
+    <div class="nav"><button id="prev">◀</button><button id="next">▶</button><button id="spin">Xoay tự động</button></div>
+    <div class="hint">Kéo để xoay · cuộn để phóng to · phím ←/→ đổi nhân vật</div></main>
+  <aside class="side r" id="info"></aside>
+</div>
+<script type="module">
+import * as THREE from 'three';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+
+const BASE = new URL('../models/kit/', import.meta.url).href;
+const GAMES = {chess:'Cờ vua',bug:'Đập côn trùng',penalty:'Sút penalty',treasure:'Săn kho báu',boat:'Đua thuyền'};
+const AGE = {child:.78,teen:.9,adult:1,elder:.96};
+const GENDER_VN = {f:'Nữ',m:'Nam',n:'Trung tính'};
+const AGE_VN = {child:'Trẻ em',teen:'Thiếu niên',adult:'Người lớn',elder:'Người già'};
+const data = await (await fetch('./data.json')).json();
+const scById = Object.fromEntries(data.scenarios.map(s=>[s.id,s]));
+const $ = id => document.getElementById(id);
+
+// ---- scene ----
+const renderer = new THREE.WebGLRenderer({canvas:$('c'),antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+const scene = new THREE.Scene(); scene.background = new THREE.Color(0x10131c);
+const cam = new THREE.PerspectiveCamera(35,1,.05,50); cam.position.set(0,.75,2.6);
+const ctl = new OrbitControls(cam,renderer.domElement);
+ctl.target.set(0,.5,0); ctl.enableDamping = true; ctl.autoRotate = true; ctl.autoRotateSpeed = 1.2; ctl.minDistance = 1; ctl.maxDistance = 5;
+scene.add(new THREE.HemisphereLight(0xffffff,0x39405a,1.6));
+const key = new THREE.DirectionalLight(0xffffff,2.2); key.position.set(2,3,3); scene.add(key);
+const rim = new THREE.DirectionalLight(0x88aaff,1.0); rim.position.set(-3,2,-2); scene.add(rim);
+const floor = new THREE.Mesh(new THREE.CylinderGeometry(.55,.6,.03,40), new THREE.MeshStandardMaterial({color:0x242b40,roughness:1}));
+floor.position.y = -.015; scene.add(floor);
+function resize(){const r=$('c').parentElement.getBoundingClientRect();renderer.setSize(r.width,r.height,false);cam.aspect=r.width/r.height;cam.updateProjectionMatrix();}
+addEventListener('resize',resize); resize();
+renderer.setAnimationLoop(()=>{ctl.update();renderer.render(scene,cam);});
+
+// ---- assets ----
+const loader = new GLTFLoader(); const cache = new Map();
+const load = p => { if(!cache.has(p)) cache.set(p, loader.loadAsync(BASE+p+'.glb').then(g=>g.scene)); return cache.get(p); };
+async function part(p, tints){
+  const s = (await load(p)).clone(true);
+  s.traverse(o=>{ if(o.isMesh){ o.material = o.material.clone(); const c = tints[o.material.name]; if(c) o.material.color.set(c); o.material.flatShading = true; } });
+  return s;
+}
+
+// ---- build a character ----
+let current = new THREE.Group(); scene.add(current); let token = 0;
+async function build(c){
+  const my = ++token;
+  const t = {M_skin:c.skinHex, M_eye:c.eyeHex, M_hair:c.hair.hex, M_primary:c.outfit.hex, M_secondary:shade(c.outfit.hex,.65)};
+  const files = ['body/base'];
+  if (c.hair.covered) files.push('acc/hat_beanie'); else {
+    const hatted = c.acc.includes('hat') && ['hat_cap','hat_beanie'].includes(c.hat);
+    const bulky = ['curly','spiky','messy','afro','topknot','bun','twin_buns','half_up'];
+    files.push('hair/'+(hatted && bulky.includes(c.hair.style) ? 'short_neat' : c.hair.style));
+    if (c.hair.len==='shoulder' && !['bob','afro','buzz'].includes(c.hair.style)) files.push('hair/len_shoulder');
+    if (c.hair.len==='long' && !['bob','afro','buzz'].includes(c.hair.style)) files.push('hair/len_long');
+  }
+  files.push('outfit/'+c.outfit.theme); if (c.outfit.skirt) files.push('outfit/bottom_skirt');
+  if (c.prop) files.push('prop/'+c.prop);
+  const seen = new Set();
+  for (const a of c.acc){ const f = a==='hat' ? c.hat : a; if (['freckles','tattoo','instrument'].includes(a)) continue; if(!seen.has(f)){ seen.add(f); files.push('acc/'+f); } }
+  const parts = await Promise.all(files.map(f=>part(f, t).catch(()=>null)));
+  if (my !== token) return;
+  const g = new THREE.Group();
+  parts.forEach(p=>p&&g.add(p));
+  if (c.freckles || c.acc.includes('freckles')) for (const sx of [-1,1]) for (const [dx,dz] of [[0,0],[.025,.012],[-.02,.02]]){
+    const d = new THREE.Mesh(new THREE.SphereGeometry(.009,5,4), new THREE.MeshBasicMaterial({color:0x7a4a2a}));
+    d.position.set(sx*(.1+dx), .69+dz, .205); g.add(d); }
+  if (c.acc.includes('tattoo')){ const d = new THREE.Mesh(new THREE.BoxGeometry(.012,.05,.012), new THREE.MeshBasicMaterial({color:0x1d3a6b})); d.position.set(.175,.38,.045); g.add(d); }
+  g.scale.setScalar(AGE[c.age] ?? 1);
+  scene.remove(current); current = g; scene.add(g);
+}
+function shade(hex,f){const c=new THREE.Color(hex);c.multiplyScalar(f);return '#'+c.getHexString();}
+
+// ---- UI ----
+const gsel = $('game'); gsel.innerHTML = '<option value="">Tất cả game</option>'+Object.entries(GAMES).map(([k,v])=>`<option value="${k}">${v}</option>`).join('');
+let shown = []; let idx = 0;
+function renderList(){
+  const q = $('q').value.trim().toLowerCase(), gm = gsel.value;
+  shown = data.characters.filter(c=>(!gm||scById[c.sc].game===gm)&&(!q||c.name.toLowerCase().includes(q)));
+  let html='', last='';
+  shown.forEach((c,i)=>{ if(c.sc!==last){last=c.sc;const s=scById[c.sc];html+=`<div class="sc">${GAMES[s.game]} · ${s.title}</div>`;}
+    html+=`<div class="ch" data-i="${i}"><span class="dot" style="background:${c.skinHex}"></span><span class="dot" style="background:${c.outfit.hex}"></span>${c.name}<small>${AGE_VN[c.age]}</small></div>`; });
+  $('list').innerHTML = html || '<div class="sc">Không có kết quả</div>';
+}
+$('list').addEventListener('click',e=>{const el=e.target.closest('.ch');if(el)select(+el.dataset.i);});
+gsel.onchange = $('q').oninput = ()=>{renderList(); if(shown.length) select(0);};
+$('prev').onclick = ()=>select((idx-1+shown.length)%shown.length);
+$('next').onclick = ()=>select((idx+1)%shown.length);
+$('spin').onclick = ()=>{ctl.autoRotate=!ctl.autoRotate;};
+addEventListener('keydown',e=>{if(e.target.tagName==='INPUT')return;if(e.key==='ArrowRight')$('next').click();if(e.key==='ArrowLeft')$('prev').click();});
+function sw(h){return `<span class="sw" style="background:${h}"></span>`;}
+function select(i){
+  idx = i; const c = shown[i]; if(!c) return;
+  document.querySelectorAll('.ch').forEach(e=>e.classList.toggle('on',+e.dataset.i===i));
+  document.querySelector('.ch.on')?.scrollIntoView({block:'nearest'});
+  const s = scById[c.sc];
+  $('info').innerHTML = `<h2>${c.name}</h2><p class="sub">${GAMES[s.game]} · ${s.title}<br>${c.feature}</p><dl>
+    <dt>Giới tính</dt><dd>${GENDER_VN[c.gender]||'—'}</dd>
+    <dt>Độ tuổi</dt><dd>${AGE_VN[c.age]}</dd>
+    <dt>Da</dt><dd>${sw(c.skinHex)}<code>${c.skin}</code>${c.freckles?' · tàn nhang':''}</dd>
+    <dt>Mắt</dt><dd>${sw(c.eyeHex)}</dd>
+    <dt>Tóc</dt><dd>${sw(c.hair.hex)}${c.hair.style} · ${c.hair.len}${c.hair.covered?' · trùm khăn':''}</dd>
+    <dt>Trang phục</dt><dd>${sw(c.outfit.hex)}<code>${c.outfit.theme}</code><br>${c.outfit.text}</dd>
+    <dt>Đạo cụ</dt><dd>${c.propLabel?c.propLabel+' <code>'+c.prop+'</code>':'—'}</dd>
+    <dt>Phụ kiện</dt><dd>${c.acc.length?c.acc.join(', '):'—'}</dd></dl>`;
+  history.replaceState(null,'','#'+c.id);
+  build(c);
+}
+renderList();
+const start = data.characters.findIndex(c=>'#'+c.id===decodeURIComponent(location.hash));
+select(Math.max(0,start>=0?shown.findIndex(c=>'#'+c.id===decodeURIComponent(location.hash)):0));
+window.__ready = true;
+</script>
+</body>
+</html>
