@@ -3,12 +3,15 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --ink: #050816;
+  --gold: #fcd34d;
+  --glow: 99 102 241;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-body), var(--font-geist-sans), system-ui, sans-serif;
   --font-mono: var(--font-geist-mono);
 }
 
@@ -22,8 +25,10 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body), var(--font-geist-sans), system-ui, sans-serif;
 }
+
+h1, h2, h3 { font-family: var(--font-display), var(--font-body), system-ui, sans-serif; letter-spacing: -0.01em; }
 
 /* Exam content never prints (Ctrl+P / "Save as PDF" leaks). */
 @media print {
@@ -37,4 +42,52 @@ body {
   to {
     stroke-dashoffset: -12;
   }
+}
+
+/* ---- Look & feel ---- */
+.tc-aurora { position: absolute; inset: -20%; z-index: -1; filter: blur(70px); opacity: 0.55;
+  background:
+    radial-gradient(40% 40% at 20% 30%, rgb(79 70 229 / 0.9), transparent 70%),
+    radial-gradient(35% 35% at 80% 20%, rgb(236 72 153 / 0.55), transparent 70%),
+    radial-gradient(40% 40% at 60% 85%, rgb(14 165 233 / 0.6), transparent 70%);
+  animation: tc-aurora 18s ease-in-out infinite alternate; }
+@keyframes tc-aurora { to { transform: translate3d(4%, -3%, 0) rotate(6deg) scale(1.08); } }
+
+.tc-grid { position: absolute; inset: 0; z-index: -1; opacity: 0.35;
+  background-image: linear-gradient(rgb(255 255 255 / 0.06) 1px, transparent 1px), linear-gradient(90deg, rgb(255 255 255 / 0.06) 1px, transparent 1px);
+  background-size: 44px 44px; mask-image: radial-gradient(ellipse at 50% 30%, #000 20%, transparent 75%); }
+
+.tc-glass { background: linear-gradient(135deg, rgb(255 255 255 / 0.10), rgb(255 255 255 / 0.03)); border: 1px solid rgb(255 255 255 / 0.14);
+  backdrop-filter: blur(14px); box-shadow: 0 20px 60px -20px rgb(0 0 0 / 0.6), inset 0 1px 0 rgb(255 255 255 / 0.12); }
+
+.tc-gold { background: linear-gradient(180deg, #fde68a, #f59e0b); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+.tc-btn { transition: transform .18s ease, box-shadow .18s ease, filter .18s ease; }
+.tc-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 30px -10px rgb(99 102 241 / 0.8); filter: brightness(1.08); }
+.tc-btn:active { transform: translateY(0) scale(.98); }
+
+.tc-reveal { animation: tc-reveal .7s cubic-bezier(.2,.7,.2,1) both; }
+@keyframes tc-reveal { from { opacity: 0; transform: translateY(18px); } }
+
+.tc-marquee { display: flex; width: max-content; animation: tc-marquee 40s linear infinite; }
+@keyframes tc-marquee { to { transform: translateX(-50%); } }
+
+/* Scenery animation hooks */
+.tc-twinkle { animation: tc-twinkle 3.2s ease-in-out infinite; }
+@keyframes tc-twinkle { 50% { opacity: .25; } }
+.tc-float { animation: tc-float 6s ease-in-out infinite; }
+@keyframes tc-float { 50% { transform: translateY(-12px); } }
+.tc-bob { animation: tc-bob 3.6s ease-in-out infinite; }
+@keyframes tc-bob { 50% { transform: translateY(-7px) rotate(-1.2deg); } }
+.tc-drift { animation: tc-drift 24s linear infinite alternate; }
+@keyframes tc-drift { to { transform: translateX(60px); } }
+.tc-sweep { animation: tc-sweep 5s ease-in-out infinite alternate; }
+.tc-sweep-r { animation: tc-sweep 5s ease-in-out infinite alternate-reverse; }
+@keyframes tc-sweep { from { transform: rotate(-14deg); } to { transform: rotate(14deg); } }
+.tc-wave { animation: tc-wave 7s linear infinite; }
+.tc-wave-r { animation: tc-wave 11s linear infinite reverse; }
+@keyframes tc-wave { to { transform: translateX(200px); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .tc-aurora, .tc-reveal, .tc-marquee, .tc-twinkle, .tc-float, .tc-bob, .tc-drift, .tc-sweep, .tc-sweep-r, .tc-wave, .tc-wave-r { animation: none !important; }
 }

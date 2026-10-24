@@ -1,11 +1,23 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Be_Vietnam_Pro, Baloo_2 } from "next/font/google";
 import ServiceWorker from "../src/components/ServiceWorker";
 import "./globals.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin", "vietnamese"],
+});
+
+const body = Be_Vietnam_Pro({
+  variable: "--font-body",
+  subsets: ["latin", "vietnamese"],
+  weight: ["400", "500", "600", "700"],
+});
+
+const display = Baloo_2({
+  variable: "--font-display",
+  subsets: ["latin", "vietnamese"],
+  weight: ["600", "700", "800"],
 });
 
 const geistMono = Geist_Mono({
@@ -31,7 +43,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="vi"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${body.variable} ${display.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         {children}

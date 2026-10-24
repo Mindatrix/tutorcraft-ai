@@ -36,6 +36,7 @@ import AnswerPanel, { type AnswerPayload } from './AnswerPanel';
 import BattleCanvas from './BattleCanvas';
 import dynamic from 'next/dynamic';
 import RaceTrack from './RaceTrack';
+import Scenery from './scenery/Scenery';
 
 // Three.js is heavy: load it only when a Boat Race actually starts.
 const RaceScene3D = dynamic(() => import('./RaceScene3D'), { ssr: false });
@@ -382,13 +383,19 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
 
   // ---------- RENDER ----------
   const shell = gamified ? 'bg-slate-950 text-white' : 'bg-white text-slate-900';
-  const card = gamified ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200';
+  const card = gamified ? 'bg-slate-900/85 backdrop-blur border-slate-700/60' : 'bg-slate-50 border-slate-200';
   const muted2 = gamified ? 'text-slate-400' : 'text-slate-500';
   const spiritBeast = !!display?.quests.find((q) => q.id === 'spirit_beast' && q.status === 'done');
   const score = final?.score ?? null;
 
   return (
-    <div className={`tc-protected min-h-screen ${shell} px-4 py-5 md:p-8 font-sans ${phase !== 'lobby' ? 'select-none [-webkit-touch-callout:none]' : ''}`}>
+    <div className={`tc-protected relative isolate min-h-screen ${shell} px-4 py-5 md:p-8 font-sans ${phase !== 'lobby' ? 'select-none [-webkit-touch-callout:none]' : ''}`}>
+      {gamified && (
+        <>
+          <Scenery id={config.scenario} className="fixed inset-0 -z-10 h-full w-full opacity-50" />
+          <div aria-hidden className="fixed inset-0 -z-10 bg-gradient-to-b from-slate-950/60 via-slate-950/75 to-slate-950/90" />
+        </>
+      )}
       {portal && <PortalIntro onDone={() => portalDone.current?.()} />}
       {phase !== 'lobby' && <Watermark tutorName={battle.tutorName} classCode={battle.classCode} studentId={sid.slice(0, 8)} dark={gamified} />}
       {guardToast && (
