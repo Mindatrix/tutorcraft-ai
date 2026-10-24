@@ -42,7 +42,7 @@ export function Hero() {
             <span aria-hidden className="inline-block h-2 w-2 bg-emerald-400" /> Game học tiếng Anh cho gia sư
           </p>
           <h1 className="mt-5 text-5xl md:text-7xl font-extrabold leading-[1.02]">
-            Biến mỗi bài học thành <span className="tc-gold">một trận chiến.</span>
+            Biến mỗi bài học thành <span className="tc-gold">một cuộc dạo chơi.</span>
           </h1>
           <DoodleSwirl className="mt-1 h-8 w-32 text-amber-300" />
           <p className="mt-4 text-slate-300 max-w-lg text-lg leading-relaxed">TutorCraft AI sinh Boss, câu hỏi và đua thuyền từ chính bài của bạn. Chơi cùng lớp, theo mức độ từ A1 cho bé 5 tuổi.</p>

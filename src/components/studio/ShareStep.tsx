@@ -87,38 +87,39 @@ export default function ShareStep({ battle, onNew }: { battle: PublishedBattle; 
     <div className="space-y-5">
       {battle.warning && <p className="text-sm text-amber-400 flex items-center gap-2"><AlertTriangle className="w-4 h-4 shrink-0" /> {battle.warning}</p>}
 
-      <section className="bg-gradient-to-br from-blue-900/50 to-indigo-900/40 border border-blue-500/40 rounded-2xl p-6 text-center space-y-4">
-        <div className="text-sm font-bold text-blue-300 uppercase tracking-wider">Mã Đấu trường</div>
+      <section className="tc-ticket mx-auto w-full max-w-xl px-8 py-7 text-center space-y-4 shadow-[8px_8px_0_rgb(0_0_0/.4)]">
+        <div className="text-xs font-extrabold uppercase tracking-[0.2em] text-rose-500">🎟 Mã Đấu trường</div>
         {battle.code ? (
-          <button onClick={() => copy(battle.code!)} className="text-5xl md:text-6xl font-black tracking-[0.25em] text-white font-mono hover:text-amber-300" aria-label={`Mã ${battle.code}, bấm để sao chép`}>
+          <button onClick={() => copy(battle.code!)} className="font-mono text-5xl md:text-6xl font-black tracking-[0.25em] text-[#1b1448] hover:text-rose-500" aria-label={`Mã ${battle.code}, bấm để sao chép`}>
             {battle.code}
           </button>
         ) : (
-          <p className="text-sm text-slate-300">Chưa có mã ngắn (cần chạy supabase/schema.sql). Học sinh dùng link hoặc QR bên dưới.</p>
+          <p className="text-sm text-slate-600">Chưa có mã ngắn (cần chạy supabase/schema.sql). Học sinh dùng link hoặc QR bên dưới.</p>
         )}
-        <p className="text-sm text-slate-300">Học sinh vào trang chủ, nhập mã — hoặc quét QR.</p>
+        <div className="border-t-2 border-dashed border-[#1b1448]/30" />
+        <p className="text-sm text-slate-600">Học sinh vào trang chủ, nhập mã — hoặc quét QR.</p>
 
         {qr && (
           <div className="flex flex-col items-center gap-2">
             {/* eslint-disable-next-line @next/next/no-img-element -- data URL generated on the client */}
-            <img src={qr} alt={`QR tham gia đấu trường ${battle.code ?? ''}`} width={220} height={220} className="rounded-xl bg-white p-2" />
-            <a href={qr} download={`dau-truong-${battle.code ?? battle.battle_id}.png`} className="text-xs text-blue-300 hover:text-white flex items-center gap-1"><Download className="w-3.5 h-3.5" /> Tải ảnh QR</a>
+            <img src={qr} alt={`QR tham gia đấu trường ${battle.code ?? ''}`} width={220} height={220} className="border-2 border-[#1b1448] bg-white p-2" />
+            <a href={qr} download={`dau-truong-${battle.code ?? battle.battle_id}.png`} className="text-xs font-bold text-[#1b1448] underline flex items-center gap-1"><Download className="w-3.5 h-3.5" /> Tải ảnh QR</a>
           </div>
         )}
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-w-md mx-auto">
-          <button onClick={shareZalo} className="py-3 rounded-xl font-bold bg-[#0068ff] hover:bg-[#1a78ff] flex items-center justify-center gap-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-md mx-auto pt-2">
+          <button onClick={shareZalo} className="tc-sticker !bg-[#0068ff] !text-white">
             <MessageCircle className="w-5 h-5" /> Chia sẻ qua Zalo
           </button>
-          <button onClick={() => copy(joinLink, 'Đã sao chép link!')} className="py-3 rounded-xl font-bold border border-slate-600 hover:bg-slate-800 flex items-center justify-center gap-2">
+          <button onClick={() => copy(joinLink, 'Đã sao chép link!')} className="tc-sticker">
             <Copy className="w-4 h-4" /> Sao chép link
           </button>
         </div>
-        {notice && <p role="status" className="text-sm text-emerald-300">{notice}</p>}
+        {notice && <p role="status" className="text-sm font-bold text-emerald-700">{notice}</p>}
       </section>
 
       {battle.variants.length > 0 && (
-        <section className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-2">
+        <section className="border-l-4 border-slate-500 bg-white/[0.04] p-5 space-y-2">
           <h2 className="font-bold text-emerald-400">🛡️ Mã đề chống gian lận</h2>
           <p className="text-xs text-slate-400">Gửi mỗi nhóm học sinh ngồi cạnh nhau một mã đề khác — thứ tự câu hỏi và đáp án được xáo trộn.</p>
           {battle.variants.map((v) => {
@@ -134,7 +135,7 @@ export default function ShareStep({ battle, onNew }: { battle: PublishedBattle; 
         </section>
       )}
 
-      <section className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3">
+      <section className="border-l-4 border-slate-500 bg-white/[0.04] p-5 space-y-3">
         <div className="flex items-center justify-between">
           <h2 className="font-bold text-rose-400 flex items-center gap-2"><BarChart3 className="w-5 h-5" /> Chẩn đoán lỗ hổng kiến thức</h2>
           <button onClick={() => loadDiagnostics()} className="text-sm flex items-center gap-1 text-slate-300 hover:text-white"><RefreshCw className={`w-4 h-4 ${diagLoading ? 'animate-spin' : ''}`} /> Tải</button>
@@ -167,7 +168,7 @@ export default function ShareStep({ battle, onNew }: { battle: PublishedBattle; 
         )}
       </section>
 
-      <button onClick={onNew} className="w-full py-3 rounded-xl font-bold border border-slate-700 hover:bg-slate-800 flex items-center justify-center gap-2">
+      <button onClick={onNew} className="tc-sticker tc-sticker--ghost w-full">
         <Plus className="w-4 h-4" /> Tạo đấu trường mới
       </button>
     </div>

@@ -112,7 +112,7 @@ export default function PreviewStep({ draft, onBack, onPublished }: { draft: Stu
       </div>
 
       {/* Boss + arena */}
-      <section className="bg-slate-900 border border-rose-500/30 rounded-2xl p-5 space-y-4">
+      <section className="border-l-4 border-rose-400 bg-white/[0.04] p-5 space-y-4">
         <h2 className="text-lg font-bold text-rose-400">👹 Boss & Bản đồ</h2>
         {draft.settings.mode === 'gamified' ? (
           <>
@@ -194,7 +194,7 @@ export default function PreviewStep({ draft, onBack, onPublished }: { draft: Stu
 
       {/* Teaching notes */}
       {draft.teaching_notes.length > 0 && (
-        <section className="bg-slate-900 border border-amber-500/30 rounded-2xl p-5">
+        <section className="border-l-4 border-amber-400 bg-white/[0.04] p-5">
           <h2 className="text-lg font-bold text-amber-400 mb-3 flex items-center gap-2"><BookOpen className="w-5 h-5" /> Gợi ý giáo án</h2>
           <ol className="space-y-2 list-decimal list-inside text-sm text-slate-300">
             {draft.teaching_notes.map((n, i) => <li key={i}>{n}</li>)}
@@ -208,7 +208,7 @@ export default function PreviewStep({ draft, onBack, onPublished }: { draft: Stu
       )}
 
       {/* Questions */}
-      <section className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3">
+      <section className="border-l-4 border-slate-500 bg-white/[0.04] p-5 space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div>
             <h2 className="text-lg font-bold text-blue-400">⚔️ Câu hỏi ({questions.length}) · Boss HP {weightedHp.toLocaleString('en-US')}</h2>
@@ -228,9 +228,9 @@ export default function PreviewStep({ draft, onBack, onPublished }: { draft: Stu
         ))}
       </section>
 
-      <div className="sticky bottom-3 bg-slate-950/90 backdrop-blur border border-slate-800 rounded-2xl p-3 flex flex-col sm:flex-row gap-2">
-        <button type="button" onClick={onBack} className="px-4 py-3 rounded-xl border border-slate-700 hover:bg-slate-800 font-bold flex items-center justify-center gap-2"><ArrowLeft className="w-4 h-4" /> Quay lại</button>
-        <button type="button" onClick={publish} disabled={!canPublish || publishing} className="flex-1 py-3 rounded-xl font-bold bg-gradient-to-r from-rose-600 to-orange-500 hover:from-rose-500 hover:to-orange-400 disabled:opacity-50 flex items-center justify-center gap-2">
+      <div className="sticky bottom-3 border-t-2 border-amber-300/70 bg-slate-950/95 backdrop-blur p-3 flex flex-col sm:flex-row gap-2">
+        <button type="button" onClick={onBack} className="tc-sticker tc-sticker--ghost"><ArrowLeft className="w-4 h-4" /> Quay lại</button>
+        <button type="button" onClick={publish} disabled={!canPublish || publishing} className="tc-sticker tc-sticker--coral flex-1 disabled:opacity-50 disabled:pointer-events-none">
           {publishing ? <Loader2 className="w-5 h-5 animate-spin" /> : <Rocket className="w-5 h-5" />} Xuất bản Đấu trường
         </button>
       </div>

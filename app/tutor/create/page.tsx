@@ -27,7 +27,9 @@ function GameStudio({ email, signOut }: { email: string; signOut: () => void }) 
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 px-4 py-5 md:p-8 font-sans">
+    <div className="relative isolate min-h-screen overflow-hidden bg-slate-950 text-slate-100 px-4 py-5 md:p-8 font-sans">
+      <div aria-hidden className="tc-aurora" style={{ opacity: 0.35 }} />
+      <div aria-hidden className="tc-grid" />
       <div className="max-w-4xl mx-auto space-y-5">
         <header className="border-l-4 border-amber-300 bg-slate-900/80 p-5 space-y-5">
           <div>

@@ -38,5 +38,5 @@ export interface PublishedBattle {
 }
 
 export const field =
-  'w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white placeholder-slate-600 focus:outline-none focus:border-blue-500';
+  'w-full bg-transparent border-0 border-b-2 border-slate-600 px-1 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-amber-300 focus:bg-white/5';
 export const label = 'block text-sm font-semibold text-slate-300 mb-2';

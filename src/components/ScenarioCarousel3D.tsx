@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { SCENARIOS, SCENARIO_IDS } from '../engine';
 import type { ScenarioId } from '../engine';
+import Scenery from './scenery/Scenery';
 import { LOOK } from './scenarioLook';
 import Tilt from './Tilt';
 
@@ -51,12 +52,14 @@ export default function ScenarioCarousel3D({ value, onChange }: { value: Scenari
         onClick={() => pick(id, i)}
         aria-pressed={on}
         style={style}
-        className={`text-left rounded-2xl p-4 text-white bg-gradient-to-br ${l.grad} border-2 ${on ? 'border-white shadow-[0_0_0_3px_rgba(255,255,255,.25)]' : 'border-white/10'} w-[150px] h-[190px] flex flex-col justify-between shrink-0`}
+        className={`relative overflow-hidden rounded-t-[999px] bg-slate-900 text-left text-white border-[3px] ${on ? 'border-amber-300 shadow-[0_0_0_3px_rgba(252,211,77,.3)]' : 'border-slate-950'} w-[150px] h-[200px] shrink-0`}
       >
-        <span className="text-4xl" aria-hidden>{l.icon}</span>
-        <span>
-          <span className="block font-extrabold leading-tight">{sc.nameVi}</span>
-          <span className="block text-[11px] opacity-80 mt-1 leading-snug">{l.blurb}</span>
+        <Scenery id={id} className="absolute inset-0 h-full w-full" />
+        <span aria-hidden className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+        <span className="absolute left-0 right-0 top-9 text-center text-4xl drop-shadow" aria-hidden>{l.icon}</span>
+        <span className={`absolute inset-x-0 bottom-0 border-t-[3px] border-slate-950 p-2.5 text-slate-950 ${on ? 'bg-amber-300' : 'bg-slate-200'}`}>
+          <span className="block text-sm font-extrabold leading-tight">{sc.nameVi}</span>
+          <span className="mt-0.5 block text-[10px] leading-snug opacity-80">{l.blurb}</span>
         </span>
       </button>
     );
@@ -68,7 +71,7 @@ export default function ScenarioCarousel3D({ value, onChange }: { value: Scenari
     <div>
       <div className="flex justify-end gap-1 mb-1" role="group" aria-label="Kiểu hiển thị">
         {(['ring', 'strip'] as Mode[]).map((m) => (
-          <button type="button" key={m} onClick={() => setMode(m)} aria-pressed={mode === m} className={`text-xs px-2 py-1 rounded-lg border ${mode === m ? 'border-blue-500 text-blue-300' : 'border-slate-700 text-slate-400'}`}>
+          <button type="button" key={m} onClick={() => setMode(m)} aria-pressed={mode === m} className={`border-b-2 px-2 py-1 text-xs ${mode === m ? 'border-amber-300 text-amber-300' : 'border-transparent text-slate-400'}`}>
             {m === 'ring' ? 'Vòng xoay' : 'Dải ngang'}
           </button>
         ))}
@@ -103,7 +106,7 @@ export default function ScenarioCarousel3D({ value, onChange }: { value: Scenari
         </div>
       )}
 
-      <div className="mt-3 rounded-xl border border-slate-800 bg-slate-950 p-3" aria-live="polite">
+      <div className="mt-3 border-l-4 border-amber-300 bg-white/5 p-3" aria-live="polite">
         <div className="font-bold text-sm">{LOOK[value].icon} {SCENARIOS[value].nameVi}</div>
         <div className="text-xs text-slate-400">{SCENARIOS[value].style}</div>
         <ul className="mt-2 text-xs text-slate-300 list-disc pl-4 space-y-0.5">

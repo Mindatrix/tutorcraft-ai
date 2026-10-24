@@ -144,153 +144,174 @@ export default function LessonStep({ initial, onGenerated }: { initial: StudioSe
   };
 
   return (
-    <form onSubmit={generate} className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-6">
-      <div className="space-y-4">
-        <div>
-          <label className={label} htmlFor="topic">🎯 Chủ đề bài học</label>
-          <input id="topic" value={s.topic} onChange={(e) => set('topic', e.target.value)} placeholder="Ví dụ: Past Simple, Passive Voice, IELTS Writing Task 1…" className={field} />
-        </div>
-        <div>
-          <label className={label} htmlFor="lesson">📝 Dán văn bản bài học (tuỳ chọn)</label>
-          <textarea id="lesson" value={lessonText} onChange={(e) => setLessonText(e.target.value.slice(0, 30000))} rows={4} disabled={!!doc} placeholder="Dán nội dung giáo án, đoạn văn, danh sách từ vựng… AI sẽ chỉ ra đề từ nội dung này." className={`${field} disabled:opacity-40`} />
-        </div>
-        <div>
-          <span className={label}>📄 Hoặc tải tệp bài giảng</span>
-          {doc ? (
-            <div className="flex items-center justify-between gap-2 bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm">
-              <span className="truncate">{doc.name}</span>
-              <button type="button" onClick={() => setDoc(null)} aria-label="Bỏ tệp" className="text-slate-400 hover:text-white"><X className="w-4 h-4" /></button>
+    <form onSubmit={generate} className="px-1 py-2">
+      <Section n={1} title="Bài học của bạn" hint="Gõ chủ đề, dán văn bản hoặc tải tệp. Chỉ cần một trong ba.">
+        <div className="space-y-5">
+          <div>
+            <label className={label} htmlFor="topic">🎯 Chủ đề bài học</label>
+            <input id="topic" value={s.topic} onChange={(e) => set('topic', e.target.value)} placeholder="Ví dụ: Past Simple, Passive Voice, IELTS Writing Task 1…" className={field} />
+          </div>
+          <div>
+            <label className={label} htmlFor="lesson">📝 Dán văn bản bài học (tuỳ chọn)</label>
+            <textarea id="lesson" value={lessonText} onChange={(e) => setLessonText(e.target.value.slice(0, 30000))} rows={4} disabled={!!doc} placeholder="Dán nội dung giáo án, đoạn văn, danh sách từ vựng… AI sẽ chỉ ra đề từ nội dung này." className={`${field} disabled:opacity-40`} />
+          </div>
+          <div>
+            <span className={label}>📄 Hoặc tải tệp bài giảng</span>
+            {doc ? (
+              <div className="flex items-center justify-between gap-2 border-2 border-slate-600 px-4 py-3 text-sm">
+                <span className="truncate">{doc.name}</span>
+                <button type="button" onClick={() => setDoc(null)} aria-label="Bỏ tệp" className="text-slate-400 hover:text-white"><X className="w-4 h-4" /></button>
+              </div>
+            ) : (
+              <label className="flex items-center justify-center gap-2 border-2 border-dashed border-slate-600 px-4 py-4 text-sm text-slate-400 cursor-pointer hover:border-amber-300 hover:text-amber-200">
+                <Upload className="w-4 h-4" /> PDF · Ảnh giáo án (PNG/JPG) · TXT/MD — tối đa 4MB
+                <input type="file" accept=".pdf,.png,.jpg,.jpeg,.webp,.txt,.md" className="hidden" onChange={(e) => onFile(e.target.files?.[0])} />
+              </label>
+            )}
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+            <div>
+              <label className={label} htmlFor="tutor">Tên gia sư</label>
+              <input id="tutor" value={s.tutorName} onChange={(e) => set('tutorName', e.target.value.slice(0, 60))} placeholder="Hiện trong watermark" className={field} />
             </div>
-          ) : (
-            <label className="flex items-center justify-center gap-2 border border-dashed border-slate-700 rounded-xl px-4 py-4 text-sm text-slate-400 cursor-pointer hover:border-blue-500">
-              <Upload className="w-4 h-4" /> PDF · Ảnh giáo án (PNG/JPG) · TXT/MD — tối đa 4MB
-              <input type="file" accept=".pdf,.png,.jpg,.jpeg,.webp,.txt,.md" className="hidden" onChange={(e) => onFile(e.target.files?.[0])} />
-            </label>
-          )}
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <div>
-            <label className={label} htmlFor="tutor">Tên gia sư</label>
-            <input id="tutor" value={s.tutorName} onChange={(e) => set('tutorName', e.target.value.slice(0, 60))} placeholder="Hiện trong watermark" className={field} />
-          </div>
-          <div>
-            <label className={label} htmlFor="class">Mã lớp</label>
-            <input id="class" value={s.classCode} onChange={(e) => set('classCode', e.target.value)} placeholder="vd: IELTS-K12" className={field} />
-          </div>
-          <div>
-            <label className={label} htmlFor="cefr">Trình độ CEFR</label>
-            <select id="cefr" value={s.cefrLevel} onChange={(e) => set('cefrLevel', e.target.value)} className={field}>
-              <option value="">Tự động</option>
-              {['A1', 'A2', 'B1', 'B2', 'C1', 'C2'].map((l) => <option key={l} value={l}>{l}</option>)}
-            </select>
+            <div>
+              <label className={label} htmlFor="class">Mã lớp</label>
+              <input id="class" value={s.classCode} onChange={(e) => set('classCode', e.target.value)} placeholder="vd: IELTS-K12" className={field} />
+            </div>
+            <div>
+              <label className={label} htmlFor="cefr">Trình độ CEFR</label>
+              <select id="cefr" value={s.cefrLevel} onChange={(e) => set('cefrLevel', e.target.value)} className={`${field} [&>option]:bg-slate-900`}>
+                <option value="">Tự động</option>
+                {['A1', 'A2', 'B1', 'B2', 'C1', 'C2'].map((l) => <option key={l} value={l}>{l}</option>)}
+              </select>
+            </div>
           </div>
         </div>
-      </div>
+      </Section>
 
-      <div>
-        <span className={label}>① Kịch bản sư phạm</span>
+      <Section n={2} title="Chọn kiểu chơi" hint="Kéo hoặc bấm vào thẻ để chọn.">
         <ScenarioCarousel3D value={s.scenario} onChange={(id) => set('scenario', id)} />
-      </div>
+      </Section>
 
-      <div>
-        <span className={label}>Mức độ khó — dành cho học viên từ 5 tuổi</span>
-        <div className="grid grid-cols-5 gap-2">
-          {LEVEL_IDS.map((lv) => (
-            <button type="button" key={lv} onClick={() => set('level', lv)} aria-pressed={s.level === lv} className={`p-2 rounded-xl border text-center ${s.level === lv ? 'border-emerald-500 bg-emerald-500/10' : 'border-slate-800 bg-slate-950 hover:border-slate-600'}`}>
-              <div className="font-black text-lg">{lv}</div>
-              <div className="text-xs font-bold">{LEVELS[lv].nameVi}</div>
-              <div className="text-[10px] text-slate-400">{LEVELS[lv].cefr}</div>
-            </button>
-          ))}
+      <Section n={3} title="Mức độ khó" hint="Dành cho học viên từ 5 tuổi. Càng lên cao câu càng khó, thời gian mỗi câu càng ngắn, bot đua thuyền càng mạnh.">
+        <div className="flex items-end" role="group" aria-label="Mức độ khó">
+          {LEVEL_IDS.map((lv, i) => {
+            const on = s.level === lv;
+            return (
+              <button type="button" key={lv} onClick={() => set('level', lv)} aria-pressed={on} style={{ height: 78 + i * 24, background: STAIR_TONES[i] }}
+                className={`tc-stripes relative flex-1 -ml-[2px] first:ml-0 flex flex-col justify-end border-2 border-slate-950 p-2 text-left text-slate-950 transition ${on ? 'z-10 shadow-[0_0_0_4px_#fff] brightness-105' : 'opacity-55 hover:opacity-90'}`}>
+                <span className="text-[10px] font-bold opacity-70">{LEVELS[lv].cefr}</span>
+                <span className="text-sm font-extrabold leading-tight">{LEVELS[lv].nameVi}</span>
+                {on && <span aria-hidden className="absolute right-1 top-1 grid h-5 w-5 place-items-center rounded-full bg-slate-950 text-[11px] text-white">✓</span>}
+              </button>
+            );
+          })}
         </div>
-        <p className="text-xs text-slate-400 mt-2">Ảnh hưởng độ khó câu hỏi, thời gian mỗi câu, số lỗi được phép và độ mạnh của bot (đua thuyền).{s.cefrLevel ? '' : ` CEFR tự động: ${LEVELS[s.level].cefr}.`}</p>
-      </div>
+        <p className="text-xs text-slate-400 mt-3">{s.cefrLevel ? `CEFR bạn chọn: ${s.cefrLevel}.` : `CEFR tự động: ${LEVELS[s.level].cefr}.`}</p>
+      </Section>
 
-      <div>
-        <span className={label}>Chế độ bài kiểm tra</span>
-        <div className="grid grid-cols-2 gap-2">
-          {([['gamified', '⚔️ Gamified RPG Battle', 'Boss, đồ hoạ trận đấu, kỹ năng'], ['standard', '📋 Standard Academic', 'Gọn, không gây xao nhãng']] as const).map(([id, name, desc]) => (
-            <button type="button" key={id} onClick={() => set('mode', id)} aria-pressed={s.mode === id} className={`text-left p-3 rounded-xl border ${s.mode === id ? 'border-blue-500 bg-blue-600/10' : 'border-slate-800 bg-slate-950 hover:border-slate-600'}`}>
-              <div className="font-bold text-sm">{name}</div>
-              <div className="text-xs text-slate-400">{desc}</div>
-            </button>
-          ))}
+      <Section n={4} title="Chế độ và dạng bài">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {([['gamified', '⚔️ Gamified RPG Battle', 'Boss, đồ hoạ trận đấu, kỹ năng'], ['standard', '📋 Standard Academic', 'Gọn, không gây xao nhãng']] as const).map(([id, name, desc]) => {
+            const on = s.mode === id;
+            return (
+              <button type="button" key={id} onClick={() => set('mode', id)} aria-pressed={on} className={`flex items-start gap-3 border-2 p-3 text-left transition ${on ? 'border-slate-950 bg-amber-300 text-slate-950 shadow-[4px_4px_0_#000]' : 'border-slate-600 hover:border-amber-300'}`}>
+                <span aria-hidden className={`mt-1 grid h-5 w-5 shrink-0 place-items-center rounded-full border-2 ${on ? 'border-slate-950' : 'border-slate-500'}`}>{on && <span className="h-2.5 w-2.5 rounded-full bg-slate-950" />}</span>
+                <span><span className="block text-sm font-extrabold">{name}</span><span className={`block text-xs ${on ? 'text-slate-800' : 'text-slate-400'}`}>{desc}</span></span>
+              </button>
+            );
+          })}
         </div>
-      </div>
-
-      <div>
-        <span className={label}>Dạng bài — chọn 1 hoặc trộn nhiều ({s.questionTypes.length} đã chọn)</span>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+        <p className={`${label} mt-6`}>Dạng bài, chọn 1 hoặc trộn nhiều ({s.questionTypes.length} đã chọn)</p>
+        <div className="flex flex-wrap gap-3">
           {QUESTION_TYPE_IDS.map((t) => {
             const def = QUESTION_TYPES[t];
             const on = s.questionTypes.includes(t);
             return (
-              <button type="button" key={t} onClick={() => toggleType(t)} aria-pressed={on} className={`text-left p-2.5 rounded-xl border ${on ? 'border-emerald-500 bg-emerald-500/10' : 'border-slate-800 bg-slate-950 hover:border-slate-600'}`}>
-                <div className="text-sm font-bold">{def.icon} {def.nameVi} <span className="text-xs font-mono text-rose-300">×{def.weight}</span></div>
-                <div className="text-[11px] leading-tight text-slate-400">{def.blurb}</div>
+              <button type="button" key={t} onClick={() => toggleType(t)} aria-pressed={on} title={def.blurb} className={`flex items-center gap-2 border-2 px-3 py-2 text-sm font-bold transition ${on ? 'border-slate-950 bg-emerald-300 text-slate-950 shadow-[3px_3px_0_#000]' : 'border-slate-600 text-slate-200 hover:border-emerald-300'}`}>
+                <span aria-hidden>{on ? '✓' : def.icon}</span> {def.nameVi} <span className={`font-mono text-xs ${on ? 'text-rose-700' : 'text-rose-300'}`}>×{def.weight}</span>
               </button>
             );
           })}
         </div>
-        <p className="text-xs text-slate-500 mt-1">Tự luận & Đọc hiểu được AI chấm theo Rubric (gia sư chỉnh ở bước 2). Bài dài hơn nên cùng thời lượng sẽ có ít câu hơn.</p>
-      </div>
+        <p className="text-xs text-slate-500 mt-3">Tự luận và Đọc hiểu được AI chấm theo Rubric (gia sư chỉnh ở bước sau). Bài dài hơn nên cùng thời lượng sẽ có ít câu hơn.</p>
+      </Section>
 
-      <fieldset disabled={s.mode === 'standard'} className="disabled:opacity-40">
-        <span className={label}>② Thư viện Game — chọn 1 hoặc trộn nhiều theme ({s.themes.length} đã chọn)</span>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
-          {THEME_IDS.map((id) => {
-            const t = THEMES[id];
-            const on = s.themes.includes(id);
-            return (
-              <button type="button" key={id} onClick={() => toggleTheme(id)} aria-pressed={on} className={`text-left p-3 rounded-xl border ${on ? 'border-amber-500 bg-amber-500/10' : 'border-slate-800 bg-slate-950 hover:border-slate-600'}`}>
-                <div className="text-sm font-bold">{t.emoji} {t.name}</div>
-                <div className="text-xs text-slate-400">{t.genre}</div>
-              </button>
-            );
-          })}
-        </div>
-      </fieldset>
-
-      <div>
-        <label className={label} htmlFor="duration">③ Thời lượng: <span className="text-amber-400">{s.durationMinutes} phút</span></label>
-        <input id="duration" type="range" min={MIN_DURATION} max={MAX_DURATION} value={s.durationMinutes} onChange={(e) => set('durationMinutes', Number(e.target.value))} className="w-full accent-amber-500" />
-        <div className="grid grid-cols-3 gap-2 mt-3 text-center">
-          <Metric label="Số câu hỏi" value={scaling.totalQuestions} />
-          <Metric label="Boss HP (ước tính)" value={`~${Math.round((scaling.bossHp * avgWeight) / 50) * 50}`} />
-          <Metric label="Thời gian / câu" value={`${timeLimitFor('easy', s.level)}–${timeLimitFor('hard', s.level)}s`} />
-        </div>
-      </div>
-
-      <div className="grid grid-cols-2 gap-3">
-        <div>
-          <label className={label} htmlFor="students">Số học sinh</label>
-          <input id="students" type="number" min={1} max={200} value={s.studentCount} onChange={(e) => set('studentCount', Math.max(1, Number(e.target.value) || 1))} className={field} />
-        </div>
-        {s.scenario === 'coop_raid' && (
-          <div>
-            <label className={label} htmlFor="team">Thành viên mỗi tổ</label>
-            <input id="team" type="number" min={2} max={10} value={s.teamSize} onChange={(e) => set('teamSize', Math.min(10, Math.max(2, Number(e.target.value) || 2)))} className={field} />
+      <Section n={5} title="Bối cảnh game" hint={`Chọn 1 hoặc trộn nhiều (${s.themes.length} đã chọn).`}>
+        <fieldset disabled={s.mode === 'standard'} className="disabled:opacity-40">
+          <div className="flex flex-wrap gap-x-5 gap-y-4">
+            {THEME_IDS.map((id) => {
+              const t = THEMES[id];
+              const on = s.themes.includes(id);
+              return (
+                <button type="button" key={id} onClick={() => toggleTheme(id)} aria-pressed={on} className="group flex w-24 flex-col items-center gap-1.5 text-center">
+                  <span className={`grid h-16 w-16 place-items-center rounded-full border-2 text-3xl transition ${on ? 'border-slate-950 bg-amber-300 shadow-[4px_4px_0_#000] scale-105' : 'border-slate-600 bg-slate-800 group-hover:border-amber-300'}`}>{t.emoji}</span>
+                  <span className={`text-xs font-bold leading-tight ${on ? 'text-amber-300' : 'text-slate-200'}`}>{t.name}</span>
+                  <span className="text-[10px] leading-tight text-slate-500">{t.genre}</span>
+                </button>
+              );
+            })}
           </div>
-        )}
-      </div>
-      {variants.length > 0 && (
-        <p className="text-xs text-emerald-400">🛡️ Chống gian lận bật: {variants.length} mã đề ({variants[0]}–{variants[variants.length - 1]}), xáo trộn thứ tự câu hỏi và đáp án.</p>
-      )}
+        </fieldset>
+      </Section>
 
-      {loading && <ParticleThinking text="Đang soạn bài…" hint={`AI đang thiết kế Boss & ${scaling.totalQuestions} câu hỏi`} />}
-      <button type="submit" disabled={loading || !canGenerate} className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 disabled:opacity-50">
-        {loading ? <><Loader2 className="w-5 h-5 animate-spin" /> AI đang thiết kế Boss & {scaling.totalQuestions} câu hỏi…</> : <><Sparkles className="w-5 h-5 text-amber-300" /> AI sinh Đấu trường RPG</>}
-      </button>
-      {error && <p role="alert" className="text-sm text-rose-400 flex items-center gap-2"><AlertTriangle className="w-4 h-4" /> {error}</p>}
+      <Section n={6} title="Thời lượng và lớp học" last>
+        <label className={label} htmlFor="duration">Thời lượng: <span className="text-amber-300">{s.durationMinutes} phút</span></label>
+        <input id="duration" type="range" min={MIN_DURATION} max={MAX_DURATION} value={s.durationMinutes} onChange={(e) => set('durationMinutes', Number(e.target.value))} className="w-full accent-amber-400" />
+        <div className="mt-5 flex flex-wrap justify-center gap-6">
+          <Metric label="Số câu hỏi" value={scaling.totalQuestions} color="#fb923c" />
+          <Metric label="Boss HP (ước tính)" value={`~${Math.round((scaling.bossHp * avgWeight) / 50) * 50}`} color="#ec4899" />
+          <Metric label="Thời gian / câu" value={`${timeLimitFor('easy', s.level)}–${timeLimitFor('hard', s.level)}s`} color="#38bdf8" />
+        </div>
+        <div className="mt-6 grid grid-cols-2 gap-5">
+          <div>
+            <label className={label} htmlFor="students">Số học sinh</label>
+            <input id="students" type="number" min={1} max={200} value={s.studentCount} onChange={(e) => set('studentCount', Math.max(1, Number(e.target.value) || 1))} className={field} />
+          </div>
+          {s.scenario === 'coop_raid' && (
+            <div>
+              <label className={label} htmlFor="team">Thành viên mỗi tổ</label>
+              <input id="team" type="number" min={2} max={10} value={s.teamSize} onChange={(e) => set('teamSize', Math.min(10, Math.max(2, Number(e.target.value) || 2)))} className={field} />
+            </div>
+          )}
+        </div>
+        {variants.length > 0 && (
+          <p className="mt-4 text-xs text-emerald-400">🛡️ Chống gian lận bật: {variants.length} mã đề ({variants[0]}–{variants[variants.length - 1]}), xáo trộn thứ tự câu hỏi và đáp án.</p>
+        )}
+      </Section>
+
+      <div className="mt-10">
+        {loading && <ParticleThinking text="Đang soạn bài…" hint={`AI đang thiết kế Boss & ${scaling.totalQuestions} câu hỏi`} />}
+        <button type="submit" disabled={loading || !canGenerate} className="tc-sticker w-full !py-4 !text-lg disabled:opacity-50 disabled:pointer-events-none">
+          {loading ? <><Loader2 className="w-5 h-5 animate-spin" /> AI đang thiết kế Boss & {scaling.totalQuestions} câu hỏi…</> : <><Sparkles className="w-5 h-5" /> AI sinh Đấu trường RPG</>}
+        </button>
+        {error && <p role="alert" className="mt-3 text-sm text-rose-400 flex items-center gap-2"><AlertTriangle className="w-4 h-4" /> {error}</p>}
+      </div>
     </form>
   );
 }
 
-function Metric({ label: l, value }: { label: string; value: string | number }) {
+const STAIR_TONES = ['#6ee7b7', '#bef264', '#fcd34d', '#fb923c', '#fb7185'];
+
+function Section({ n, title, hint, last = false, children }: { n: number; title: string; hint?: string; last?: boolean; children: React.ReactNode }) {
   return (
-    <div className="bg-slate-950 border border-slate-800 rounded-xl p-2">
-      <div className="text-xs text-slate-500">{l}</div>
-      <div className="font-black text-amber-400">{value}</div>
+    <section className={`relative pl-14 ${last ? '' : 'pb-10'}`}>
+      {!last && <span aria-hidden className="absolute bottom-0 left-[19px] top-11 border-l-2 border-dashed border-slate-700" />}
+      <span aria-hidden className="absolute left-0 top-0 grid h-10 w-10 place-items-center rounded-full border-2 border-slate-950 bg-amber-300 font-display text-lg font-extrabold text-slate-950 shadow-[3px_3px_0_rgb(0_0_0/.6)]">{n}</span>
+      <h2 className="font-display text-2xl font-extrabold leading-tight text-white">{title}</h2>
+      {hint && <p className="mt-0.5 text-sm text-slate-400">{hint}</p>}
+      <div className="mt-4">{children}</div>
+    </section>
+  );
+}
+
+function Metric({ label: l, value, color }: { label: string; value: string | number; color: string }) {
+  return (
+    <div className="grid h-28 w-28 place-items-center rounded-full border-[6px] bg-slate-900 text-center" style={{ borderColor: color }}>
+      <div>
+        <div className="font-display text-2xl font-extrabold leading-none" style={{ color }}>{value}</div>
+        <div className="mx-auto mt-1 max-w-[5.5rem] text-[10px] leading-tight text-slate-300">{l}</div>
+      </div>
     </div>
   );
 }

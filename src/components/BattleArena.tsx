@@ -383,7 +383,7 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
 
   // ---------- RENDER ----------
   const shell = gamified ? 'bg-slate-950 text-white' : 'bg-white text-slate-900';
-  const card = gamified ? 'bg-slate-900/85 backdrop-blur border-slate-700/60' : 'bg-slate-50 border-slate-200';
+  const card = gamified ? '!border-0 !border-l-4 !border-amber-300/70 bg-slate-900/85 backdrop-blur' : 'bg-slate-50 border-slate-200';
   const muted2 = gamified ? 'text-slate-400' : 'text-slate-500';
   const spiritBeast = !!display?.quests.find((q) => q.id === 'spirit_beast' && q.status === 'done');
   const score = final?.score ?? null;
@@ -431,6 +431,12 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
         {/* Lobby */}
         {phase === 'lobby' && (
           <div className={`border rounded-2xl p-6 space-y-5 ${card}`}>
+            {gamified && (
+              <div className="flex items-center gap-4">
+                <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-full border-[3px] border-amber-300 shadow-[4px_4px_0_rgb(0_0_0/.5)]"><Scenery id={config.scenario} className="h-full w-full" /></div>
+                <span aria-hidden className="text-5xl">{theme.emoji}</span>
+              </div>
+            )}
             <div>
               <div className={`text-xs font-bold uppercase tracking-wider ${gamified ? 'text-blue-400' : 'text-blue-600'}`}>
                 {scenario.name} · {scenario.style}
@@ -468,7 +474,7 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
               </div>
             </div>
 
-            <button onClick={start} disabled={starting} className="w-full py-4 rounded-xl font-bold text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 disabled:opacity-60 flex items-center justify-center gap-2">
+            <button onClick={start} disabled={starting} className="tc-sticker w-full !py-4 !text-lg disabled:opacity-60 disabled:pointer-events-none">
               {starting && <Loader2 className="w-5 h-5 animate-spin" />} {gamified ? '⚔️ Enter Battle' : 'Start Test'}
             </button>
             {netError && <p role="alert" className="text-sm text-rose-400">{netError}</p>}
@@ -652,10 +658,10 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
                   {gamified ? ` · Best combo x${score.maxCombo}` : ''}
                 </p>
                 {gamified && (
-                  <div className="grid grid-cols-2 gap-3 max-w-sm mx-auto">
-                    <Stat label="Gems" value={`+${score.gems}`} className="text-amber-400" />
-                    <Stat label="EXP" value={`+${score.exp}`} className="text-blue-400" />
-                    <div className="col-span-2">
+                  <div className="flex flex-wrap items-center justify-center gap-6 max-w-sm mx-auto">
+                    <Ring label="Gems" value={`+${score.gems}`} color="#fbbf24" />
+                    <Ring label="EXP" value={`+${score.exp}`} color="#60a5fa" />
+                    <div className="w-full">
                       {isRace && final?.race
                         ? <Stat label="Bạn – Bot (chặng đúng)" value={`${final.race.playerDistance} – ${final.race.botDistance}`} className="text-sky-400" />
                         : <Stat label="HP còn lại" value={`${final?.hpRemaining ?? 0} / ${scaling.playerHp}`} className="text-emerald-400" />}
@@ -668,7 +674,7 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
                 {gamified && score.bossDefeated && (
                   <div>
                     {!loot ? (
-                      <button onClick={openChest} className="px-5 py-3 rounded-xl font-bold bg-amber-500 text-slate-950 hover:bg-amber-400 inline-flex items-center gap-2"><Gift className="w-5 h-5" /> Open Gacha Chest</button>
+                      <button onClick={openChest} className="tc-sticker"><Gift className="w-5 h-5" /> Open Gacha Chest</button>
                     ) : (
                       <div className="text-sm font-bold">Loot Dropped! {loot.emoji} {loot.name} <span className={`uppercase text-xs ${muted2}`}>({loot.rarity})</span></div>
                     )}
@@ -684,13 +690,13 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
               </div>
             )}
             {isRace && board?.teams && board.teams.teams[0].members.length > 0 && board.teams.teams[1].members.length > 0 && (
-              <div className="rounded-2xl border border-sky-500/30 p-3 text-left space-y-2">
+              <div className="border-l-4 border-sky-400 bg-white/5 p-3 text-left space-y-2">
                 <div className="font-bold text-sm text-center">
                   {board.teams.winner === 'draw' ? '🤝 Hai đội hoà nhau' : `🏆 ${board.teams.teams.find((t) => t.team === board.teams!.winner)?.name} dẫn đầu`}
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   {board.teams.teams.map((t) => (
-                    <div key={t.team} className={`rounded-xl p-2 border ${t.team === 'A' ? 'border-sky-500/40' : 'border-orange-500/40'}`}>
+                    <div key={t.team} className={`border-t-4 bg-white/5 p-2 ${t.team === 'A' ? 'border-sky-400' : 'border-orange-400'}`}>
                       <div className="text-xs font-bold">{t.name} · {t.distance.toFixed(1)} chặng/người</div>
                       <ul className="text-xs text-slate-400 mt-1 space-y-0.5">
                         {t.members.slice(0, 6).map((m, i) => <li key={i}>{m.avatar} {m.nickname} · {m.correct}</li>)}
@@ -706,8 +712,8 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
                 <div className="font-bold text-sm mb-2 flex items-center gap-1"><Trophy className="w-4 h-4 text-amber-400" /> Leaderboard</div>
                 <ol className="space-y-1">
                   {board.leaderboard.map((r, i) => (
-                    <li key={i} className={`flex items-center justify-between text-sm rounded-lg px-3 py-1.5 ${gamified ? 'bg-slate-950' : 'bg-white'}`}>
-                      <span>{i + 1}. {r.avatar} {r.nickname}</span>
+                    <li key={i} className={`flex items-center justify-between border-b border-dashed py-1.5 text-sm ${gamified ? 'border-slate-600' : 'border-slate-300'}`}>
+                      <span className="flex items-center gap-2"><span className={`grid h-6 w-6 place-items-center rounded-full text-xs font-extrabold ${i === 0 ? 'bg-amber-300 text-slate-950' : 'bg-slate-700 text-white'}`}>{i + 1}</span>{r.avatar} {r.nickname}</span>
                       <span className="font-mono text-amber-500">{r.gems} 💎</span>
                     </li>
                   ))}
@@ -715,7 +721,7 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
               </div>
             )}
             {final && (scenario.allowRetry || battle.id === 'demo') && (
-              <button onClick={start} className="w-full max-w-sm mx-auto py-3 rounded-xl font-bold text-white bg-gradient-to-r from-emerald-600 to-teal-600 flex items-center justify-center gap-2">
+              <button onClick={start} className="tc-sticker w-full max-w-sm mx-auto !bg-emerald-300">
                 <RotateCcw className="w-5 h-5" /> Play Again
               </button>
             )}
@@ -729,13 +735,24 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
 function Bar({ label, value, max, gradient }: { label: string; value: number; max: number; gradient: string }) {
   const pct = max ? Math.max(0, Math.min(100, (value / max) * 100)) : 0;
   return (
-    <div className="bg-slate-900 border border-red-500/30 rounded-2xl p-3 space-y-2">
+    <div className="border-l-4 border-rose-400 bg-slate-900/85 p-3 space-y-2">
       <div className="flex justify-between items-center text-xs font-bold gap-2">
-        <span className="text-red-400 truncate">{label}</span>
-        <span className="text-slate-400 shrink-0">{Math.round(value).toLocaleString('en-US')} / {max.toLocaleString('en-US')}</span>
+        <span className="text-rose-300 truncate">{label}</span>
+        <span className="bg-slate-950 px-2 py-0.5 text-slate-200 shrink-0">{Math.round(value).toLocaleString('en-US')} / {max.toLocaleString('en-US')}</span>
       </div>
-      <div className="w-full bg-slate-950 h-3 rounded-full overflow-hidden border border-slate-800">
-        <div className={`bg-gradient-to-r ${gradient} h-full transition-all duration-500`} style={{ width: `${pct}%` }} />
+      <div className="w-full bg-slate-950 h-4 overflow-hidden border-2 border-slate-950">
+        <div className={`tc-stripes bg-gradient-to-r ${gradient} h-full transition-all duration-500`} style={{ width: `${pct}%` }} />
+      </div>
+    </div>
+  );
+}
+
+function Ring({ label, value, color }: { label: string; value: string; color: string }) {
+  return (
+    <div className="grid h-28 w-28 place-items-center rounded-full border-[7px] bg-slate-900 text-center" style={{ borderColor: color }}>
+      <div>
+        <div className="font-display text-2xl font-extrabold leading-none" style={{ color }}>{value}</div>
+        <div className="mt-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">{label}</div>
       </div>
     </div>
   );
@@ -743,8 +760,8 @@ function Bar({ label, value, max, gradient }: { label: string; value: number; ma
 
 function Stat({ label, value, className }: { label: string; value: string; className: string }) {
   return (
-    <div className="bg-slate-950 border border-slate-800 rounded-xl p-3">
-      <div className="text-xs text-slate-500 font-bold uppercase">{label}</div>
+    <div className="border-l-4 border-slate-500 bg-white/5 px-3 py-2 text-left">
+      <div className="text-xs text-slate-400 font-bold uppercase">{label}</div>
       <div className={`text-xl font-black ${className}`}>{value}</div>
     </div>
   );

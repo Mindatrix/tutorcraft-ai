@@ -71,7 +71,7 @@ export default function BattleLoader({ battleId, code }: { battleId?: string; co
   if (error) {
     return (
       <div className="min-h-screen bg-slate-950 text-white flex items-center justify-center p-4">
-        <div className="text-center space-y-3 max-w-md bg-slate-900 p-8 rounded-2xl border border-slate-800">
+        <div className="text-center space-y-3 max-w-md border-l-4 border-rose-400 bg-slate-900 p-8">
           <div className="text-4xl">{error === 'offline' ? '📴' : '⚠️'}</div>
           <h1 className="text-xl font-bold text-rose-400">
             {error === 'offline' ? 'Không kết nối được máy chủ' : 'Không tìm thấy đấu trường'}
@@ -81,7 +81,7 @@ export default function BattleLoader({ battleId, code }: { battleId?: string; co
               ? 'Kiểm tra kết nối mạng rồi thử lại.'
               : 'Mã đấu trường không tồn tại hoặc đã bị xóa. Hãy kiểm tra lại mã với Gia sư của bạn!'}
           </p>
-          <Link href="/" className="inline-block mt-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 font-bold text-sm">Nhập mã khác</Link>
+          <Link href="/" className="tc-sticker mt-2 !py-2.5 !text-sm">Nhập mã khác</Link>
         </div>
       </div>
     );
