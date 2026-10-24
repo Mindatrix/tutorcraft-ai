@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import ParticleThinking from '../ParticleThinking';
 import { Sparkles, Loader2, Upload, AlertTriangle, X } from 'lucide-react';
 import {
   MAX_DURATION,
@@ -255,6 +256,7 @@ export default function LessonStep({ initial, onGenerated }: { initial: StudioSe
         <p className="text-xs text-emerald-400">🛡️ Chống gian lận bật: {variants.length} mã đề ({variants[0]}–{variants[variants.length - 1]}), xáo trộn thứ tự câu hỏi và đáp án.</p>
       )}
 
+      {loading && <ParticleThinking text="Đang soạn bài…" hint={`AI đang thiết kế Boss & ${scaling.totalQuestions} câu hỏi`} />}
       <button type="submit" disabled={loading || !canGenerate} className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 disabled:opacity-50">
         {loading ? <><Loader2 className="w-5 h-5 animate-spin" /> AI đang thiết kế Boss & {scaling.totalQuestions} câu hỏi…</> : <><Sparkles className="w-5 h-5 text-amber-300" /> AI sinh Đấu trường RPG</>}
       </button>
