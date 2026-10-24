@@ -18,7 +18,9 @@ import {
   rollGacha,
   themeForQuestion,
   QUESTION_TYPES,
+  GAME_MODES,
   questionTimeLimit,
+  resolveGameMode,
   type AnswerReveal,
   type BattleConfig,
   type BattleState,
@@ -37,9 +39,10 @@ import BattleCanvas from './BattleCanvas';
 import dynamic from 'next/dynamic';
 import RaceTrack from './RaceTrack';
 import Scenery from './scenery/Scenery';
+import ModeStage, { StageFrame } from './modes/ModeStage';
 
 // Three.js is heavy: load it only when a Boat Race actually starts.
-const RaceScene3D = dynamic(() => import('./RaceScene3D'), { ssr: false });
+const KayakRush = dynamic(() => import('./modes/KayakRush'), { ssr: false });
 const PortalIntro = dynamic(() => import('./PortalIntro'), { ssr: false });
 const RaceSceneUnity = dynamic(() => import('./RaceSceneUnity'), { ssr: false });
 import { useContentGuard, useWindowFocused, Watermark } from './ContentGuard';
@@ -89,6 +92,8 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
   const gamified = config.mode === 'gamified';
   const scenario = SCENARIOS[config.scenario];
   const isRace = config.scenario === 'boat_race';
+  // 3D game world (visual only; null = classic 2D canvas for battles saved before worlds existed).
+  const world = resolveGameMode(config);
   const plan = useMemo(() => botPlan(raceSeed(battle.id, variant, config.level), battle.totalQuestions, config.level), [battle.id, variant, config.level, battle.totalQuestions]);
   // Renderer ladder: Unity WebGL build → Three.js scene → 2D lanes.
   const [renderer, setRenderer] = useState<'unity' | 'three' | '2d'>('unity');
@@ -483,7 +488,11 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
 
         {/* Battle scene — stays mounted into the result screen so the boss break + chest drop can play */}
         {isRace && race && renderer === 'unity' && phase !== 'lobby' && display && <RaceSceneUnity playerPos={race.playerPos} botPos={race.botPos} result={final?.race?.result ?? null} onUnavailable={noUnity} />}
-        {isRace && race && renderer === 'three' && phase !== 'lobby' && display && <RaceScene3D playerPos={race.playerPos} botPos={race.botPos} onUnavailable={no3d} />}
+        {isRace && race && renderer === 'three' && phase !== 'lobby' && display && (
+          <StageFrame tone="#5eead4">
+            <KayakRush playerPos={race.playerPos} botPos={race.botPos} heroName={playerName} botName={`Bot Cấp ${config.level ?? 3}`} event={display.event} finished={phase === 'result'} result={final?.race?.result ?? null} onUnavailable={no3d} />
+          </StageFrame>
+        )}
         {isRace && race && phase !== 'lobby' && display && (
           <RaceTrack compact={scene3d}
             heroAvatar={avatar}
@@ -499,26 +508,59 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
             teamTone={view?.team ?? null}
           />
         )}
-        {!isRace && gamified && phase !== 'lobby' && display && (
-          <BattleCanvas
-            boss={boss}
-            heroAvatar={avatar}
-            heroName={playerName}
-            bossHp={display.bossHp}
-            bossMax={scaling.bossHp}
-            hp={display.hp}
-            hpMax={scaling.playerHp}
-            shield={display.shield}
-            event={display.event}
-            bossPhase={display.bossPhase}
-            enraged={display.enraged}
-            spiritBeast={spiritBeast}
-            mpRatio={display.mp / MAX_MP}
-            heroAdvance={phase === 'playing' && question?.type === 'reorder' && !feedback ? advance : 0}
-            charge={phase === 'playing' && question?.type === 'transform' && !feedback ? charge : 0}
-            bossGuard={phase === 'playing' && question?.type === 'reading' && !feedback}
-          />
-        )}
+        {!isRace && gamified && phase !== 'lobby' && display && (() => {
+          const canvas2d = (
+            <BattleCanvas
+              boss={world && world !== 'kayak_rush' ? { ...boss, map_setting: GAME_MODES[world].fallbackMap } : boss}
+              heroAvatar={avatar}
+              heroName={playerName}
+              bossHp={display.bossHp}
+              bossMax={scaling.bossHp}
+              hp={display.hp}
+              hpMax={scaling.playerHp}
+              shield={display.shield}
+              event={display.event}
+              bossPhase={display.bossPhase}
+              enraged={display.enraged}
+              spiritBeast={spiritBeast}
+              mpRatio={display.mp / MAX_MP}
+              heroAdvance={phase === 'playing' && question?.type === 'reorder' && !feedback ? advance : 0}
+              charge={phase === 'playing' && question?.type === 'transform' && !feedback ? charge : 0}
+              bossGuard={phase === 'playing' && question?.type === 'reading' && !feedback}
+            />
+          );
+          if (!world || world === 'kayak_rush') return canvas2d;
+          return (
+            <ModeStage
+              mode={world}
+              fallback={canvas2d}
+              scene={{
+                boss,
+                heroName: playerName,
+                topic: battle.topic,
+                bossHp: display.bossHp,
+                bossMax: scaling.bossHp,
+                hp: display.hp,
+                hpMax: scaling.playerHp,
+                shield: display.shield,
+                event: display.event,
+                bossPhase: display.bossPhase,
+                enraged: display.enraged,
+                qIndex: question?.index ?? display.idx,
+                qTotal: view?.totalQuestions ?? battle.totalQuestions,
+                results: display.answers.map((a) => (a.damage ?? 0) > 0),
+                combo: display.combo,
+                finished: phase === 'result',
+                outcome: display.outcome,
+                question: question ? { type: question.type, topic: question.topic, options: question.options, hub: question.hub } : null,
+                removed: display.removed,
+                // Answering from inside the scene goes through the same server call as the answer buttons.
+                onPickOption: phase === 'playing' && question?.type === 'mcq' && !feedback && !pending ? (i) => void submit({ chosenIdx: i }) : undefined,
+                onFocusQuestion: () => document.getElementById('tc-question')?.scrollIntoView({ behavior: 'smooth', block: 'center' }),
+              }}
+            />
+          );
+        })()}
 
         {/* Story beats: boss transformation, enrage taunts, quest completions */}
         {gamified && phase === 'playing' && beats.length > 0 && (
@@ -548,7 +590,7 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
               </div>
             </div>
 
-            <div className={`border rounded-2xl p-5 space-y-5 ${card} transition ${focused ? '' : 'blur-md'}`} onCopy={(e) => e.preventDefault()}>
+            <div id="tc-question" className={`border rounded-2xl p-5 space-y-5 ${card} transition ${focused ? '' : 'blur-md'}`} onCopy={(e) => e.preventDefault()}>
               <div className={`text-xs font-bold uppercase tracking-wider ${gamified ? 'text-blue-400' : 'text-blue-600'}`}>
                 {gamified ? 'Round' : 'Question'} {question.index + 1} / {view?.totalQuestions ?? battle.totalQuestions}
               </div>

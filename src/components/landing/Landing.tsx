@@ -1,5 +1,7 @@
+import Image from 'next/image';
 import Link from 'next/link';
-import { SCENARIOS, SCENARIO_IDS, LEVELS, LEVEL_IDS } from '../../engine';
+import { GAME_MODES, SCENARIOS, SCENARIO_IDS, LEVELS, LEVEL_IDS, type GameMode } from '../../engine';
+import { BEVEL_CLIP } from '../modes/gfx';
 import { QUESTION_TYPES, QUESTION_TYPE_IDS } from '../../engine/questionTypes';
 import { LOOK } from '../scenarioLook';
 import Tilt from '../Tilt';
@@ -31,6 +33,7 @@ export function Hero() {
         </Link>
         <div className="flex items-center gap-6 text-sm">
           <a href="#games" className="hidden md:block hover:text-amber-300">Kiểu chơi</a>
+          <a href="#worlds" className="hidden md:block hover:text-amber-300">Thế giới 3D</a>
           <a href="#how" className="hidden md:block hover:text-amber-300">Cách dùng</a>
           <Link href="/tutor/create" className="tc-sticker !py-2 !px-4 !text-sm !shadow-[3px_3px_0_#1b1448]">Gia sư đăng nhập</Link>
         </div>
@@ -97,7 +100,7 @@ export function Games() {
       <DoodleStar className="absolute right-[8%] top-10 h-14 w-14 text-rose-400" />
       <DoodleBook className="absolute left-[3%] top-[34%] hidden lg:block h-14 w-16 text-indigo-300" />
       <div className="max-w-6xl mx-auto relative">
-        <p className="text-xs tracking-widest text-slate-500">01 / 04</p>
+        <p className="text-xs tracking-widest text-slate-500">01 / 05</p>
         <h2 className="text-4xl md:text-6xl font-extrabold mt-1 leading-[1.05]">Bốn kiểu chơi,<br /><span className="text-orange-500">một</span> <span className="text-rose-500">bài học.</span></h2>
         <p className="mt-3 max-w-xl text-slate-600">Rê chuột để thẻ nghiêng theo. Gia sư chọn kiểu chơi ngay khi tạo trận.</p>
         <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-14">
@@ -124,11 +127,52 @@ export function Games() {
   );
 }
 
+const WORLD_ORDER: GameMode[] = ['multiverse_portal', 'kayak_rush', 'cosmic_card', 'dino_island', 'ai_agent_world'];
+const WORLD_TONES = ['#c4b5fd', '#5eead4', '#fcd34d', '#86efac', '#7dd3fc'];
+
+export function Worlds() {
+  return (
+    <section id="worlds" className="relative overflow-hidden bg-[#120b33] px-4 py-20 text-white">
+      <DoodleSwirl className="absolute right-[6%] top-12 hidden h-16 w-24 text-fuchsia-300/60 md:block" />
+      <div className="max-w-6xl mx-auto relative">
+        <p className="text-xs tracking-widest text-indigo-300">02 / 05</p>
+        <h2 className="text-4xl md:text-6xl font-extrabold mt-1 leading-[1.05]">Năm thế giới <span className="tc-gold">3D</span>,<br />chơi ngay trên trình duyệt.</h2>
+        <p className="mt-3 max-w-xl text-slate-300">Gia sư chọn thế giới khi tạo trận. Điện thoại yếu tự chuyển sang bản 2D nhẹ; đáp án và điểm luôn chấm trên máy chủ.</p>
+        <div className="mt-12 grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-6">
+          {WORLD_ORDER.map((id, i) => {
+            const m = GAME_MODES[id];
+            return (
+              <article key={id} className={`group ${i < 2 ? 'lg:col-span-3' : 'lg:col-span-2'}`}>
+                <div style={{ filter: 'drop-shadow(6px 6px 0 #000)' }}>
+                  <div className="p-[3px]" style={{ clipPath: BEVEL_CLIP, background: WORLD_TONES[i] }}>
+                    <div className="relative aspect-[4/3] overflow-hidden bg-slate-900" style={{ clipPath: BEVEL_CLIP }}>
+                      <Image src={`/modes/${id}.webp`} alt={`${m.name}: ảnh trong game`} fill sizes="(min-width:1024px) 50vw, (min-width:640px) 50vw, 100vw" className="object-cover transition-transform duration-700 group-hover:scale-105" />
+                      <span className="absolute left-5 top-3 bg-black/65 px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-widest">{m.status === 'upgraded' ? 'Nâng cấp' : 'Mới'}</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-4 flex items-start gap-3">
+                  <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full border-[3px] text-xl" style={{ borderColor: WORLD_TONES[i] }} aria-hidden>{m.icon}</span>
+                  <div>
+                    <h3 className="text-xl font-extrabold leading-tight">{m.name}</h3>
+                    <p className="text-xs font-bold uppercase tracking-wider" style={{ color: WORLD_TONES[i] }}>{m.genre}</p>
+                    <p className="mt-1 text-sm text-slate-300">{m.blurb}</p>
+                  </div>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export function How() {
   return (
     <section id="how" style={{ background: CREAM, color: INK }} className="relative overflow-hidden px-4 pb-28">
       <div className="max-w-6xl mx-auto relative">
-        <p className="text-xs tracking-widest text-slate-500">02 / 04</p>
+        <p className="text-xs tracking-widest text-slate-500">03 / 05</p>
         <h2 className="text-4xl md:text-6xl font-extrabold mt-1">Ba bước là <span className="text-sky-500">có trận.</span></h2>
 
         <div className="relative mt-14">
@@ -177,7 +221,7 @@ export function Numbers() {
     <section style={{ background: SKY, color: INK }} className="relative">
       <div style={{ background: CREAM }}><Wave fill={SKY} /></div>
       <div className="relative max-w-6xl mx-auto px-4 pb-6 pt-4 text-center">
-        <p className="text-xs tracking-widest text-slate-500">03 / 04</p>
+        <p className="text-xs tracking-widest text-slate-500">04 / 05</p>
         <h2 className="text-4xl md:text-5xl font-extrabold mt-1">Vài con số <span className="text-pink-500">đáng nhớ</span></h2>
         <ul className="mt-12 flex flex-wrap justify-center gap-10">
           {items.map((it) => (
@@ -202,7 +246,7 @@ export function Footer() {
       <div className="max-w-6xl mx-auto px-4 pb-10 pt-6">
         <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="text-xs tracking-widest text-indigo-300">04 / 04</p>
+            <p className="text-xs tracking-widest text-indigo-300">05 / 05</p>
             <h2 className="mt-1 text-4xl md:text-6xl font-extrabold leading-[1.05]">Sẵn sàng mở<br /><span className="tc-gold">trận đầu tiên?</span></h2>
           </div>
           <Link href="/tutor/create" className="tc-sticker self-start md:self-auto !shadow-[5px_5px_0_#fb7185]">Mở Game Studio →</Link>

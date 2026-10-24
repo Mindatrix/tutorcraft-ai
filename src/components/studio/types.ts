@@ -1,4 +1,4 @@
-import type { BossProfile, DifficultyLevel, ExamMode, Question, QuestionType, ScenarioId, ThemeId } from '../../engine';
+import type { BossProfile, DifficultyLevel, ExamMode, Question, QuestionType, ScenarioId, ThemeId, GameMode } from '../../engine';
 
 export interface StudioSettings {
   topic: string;
@@ -16,6 +16,8 @@ export interface StudioSettings {
   questionTypes: QuestionType[];
   /** Exact number of questions; 0 / missing = automatic from the duration. */
   questionCount?: number;
+  /** 3D game world; null = classic 2D canvas. Boat Race always plays Kayak Rush. */
+  gameMode?: GameMode | null;
 }
 
 export interface StudioDraft {

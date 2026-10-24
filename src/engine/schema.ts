@@ -5,6 +5,7 @@ import { normalizeLevel } from './levels';
 import { isScenarioId } from './scenarios';
 import { normalizeThemes } from './themes';
 import { clampQuestionCount } from './questionCount';
+import { normalizeGameMode } from './gameModes';
 import { QUESTION_TYPE_IDS, isQuestionType, normalizeQuestionTypes, questionType, sanitizeTypedFields } from './questionTypes';
 
 const DIFFICULTIES: Difficulty[] = ['easy', 'medium', 'hard'];
@@ -131,6 +132,7 @@ export function normalizeConfig(raw: Record<string, unknown>): BattleConfig {
     questionTypes: normalizeQuestionTypes(raw.questionTypes),
     questionCount: normalizeQuestionCount(raw.questionCount),
     typeCounts: normalizeTypeCounts(raw.typeCounts),
+    gameMode: normalizeGameMode(raw.gameMode, scenario),
   };
 }
 

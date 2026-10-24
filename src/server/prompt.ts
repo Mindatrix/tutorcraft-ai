@@ -1,6 +1,7 @@
 import type { BattleConfig } from '../engine/types';
 import { THEMES } from '../engine/themes';
 import { SCENARIOS } from '../engine/scenarios';
+import { GAME_MODES, resolveGameMode } from '../engine/gameModes';
 import { levelOf } from '../engine/levels';
 import { configTypes, planQuestionTypes } from '../engine/questionTypes';
 import { planFromCounts } from '../engine/questionCount';
@@ -21,6 +22,8 @@ export function buildBattlePrompt(p: PromptInput): string {
   const themes = p.config.themes.map((t) => `${THEMES[t].name} (${THEMES[t].genre})`).join(' + ');
   const lv = levelOf(p.config);
   const pct = (n: number) => Math.round(n * 100);
+  const mode = resolveGameMode(p.config);
+  const world = mode ? `\nGAME WORLD: ${GAME_MODES[mode].name} — ${GAME_MODES[mode].promptHint}. Flavor the boss, map name and dialogue to fit this world (questions stay academic).` : '';
   const level = `CEFR level ${p.config.cefrLevel || lv.cefr} — difficulty level ${lv.level}/5 (${lv.nameVi}). ${lv.guidance}`;
 
   const source = p.hasInlineDocument || p.documentText
@@ -38,7 +41,7 @@ export function buildBattlePrompt(p: PromptInput): string {
 LESSON TOPIC: "${p.topic}"
 TARGET: ${level}, age-appropriate, accurate terminology.
 SCENARIO: ${scenario.name} — ${scenario.style}.
-GAME THEME: ${themes}. Keep question text academic; the game layer is added by the app.
+GAME THEME: ${themes}. Keep question text academic; the game layer is added by the app.${world}
 ${source}
 ${review}
 

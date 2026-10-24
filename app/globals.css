@@ -118,5 +118,14 @@ h1, h2, h3 { font-family: var(--font-display), var(--font-body), system-ui, sans
 .tc-doodle { fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
 .tc-spin-slow { animation: tc-spin 40s linear infinite; }
 @keyframes tc-spin { to { transform: rotate(360deg); } }
+
+/* Floating damage / feedback text over the 3D worlds. */
+@keyframes tc-pop {
+  0% { opacity: 0; transform: translateY(10px) scale(.6); }
+  14% { opacity: 1; transform: translateY(0) scale(1.15); }
+  28% { transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-38px) scale(1); }
+}
+.tc-pop { animation: tc-pop 1.3s ease-out forwards; }
 .tc-band { transform: rotate(-1.4deg); }
 @media (prefers-reduced-motion: reduce) { .tc-spin-slow { animation: none !important; } }

@@ -1,4 +1,4 @@
-import { Footer, Formats, Games, Hero, How, Numbers } from '../src/components/landing/Landing';
+import { Footer, Formats, Games, Hero, How, Numbers, Worlds } from '../src/components/landing/Landing';
 
 export default function Home() {
   return (
@@ -6,6 +6,7 @@ export default function Home() {
       <Hero />
       <Formats />
       <Games />
+      <Worlds />
       <How />
       <Numbers />
       <Footer />

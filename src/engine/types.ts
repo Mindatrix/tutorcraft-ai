@@ -3,6 +3,19 @@
 
 export type ScenarioId = 'homework' | 'in_class' | 'coop_raid' | 'boat_race';
 
+/**
+ * The 5 official game worlds (see gameModes.ts). Visual skin only — scoring stays on the server.
+ * Cancelled: WASTELAND (Wasteland Survival), DUNGEON (Dungeon Labyrinth), MAGIC_TOWER (Magic Tower 1v1).
+ */
+export const GameMode = {
+  KAYAK_RUSH_3D: 'kayak_rush',
+  MULTIVERSE_PORTAL_RPG: 'multiverse_portal',
+  COSMIC_CARD_BATTLER: 'cosmic_card',
+  DINO_ISLAND_RUN_2D: 'dino_island',
+  AI_AGENT_WORLD_3D: 'ai_agent_world',
+} as const;
+export type GameMode = (typeof GameMode)[keyof typeof GameMode];
+
 export type ThemeId =
   | 'minecraft'
   | 'chess'
@@ -137,6 +150,8 @@ export interface BattleConfig {
   questionCount?: number;
   /** Exact per-format counts the tutor asked for, e.g. {mcq:5, cloze:3}. */
   typeCounts?: Partial<Record<QuestionType, number>>;
+  /** 3D game world. Missing = classic 2D canvas (battles saved before worlds existed). */
+  gameMode?: GameMode;
 }
 
 export interface BattleScaling {
