@@ -135,8 +135,9 @@ export function normalizeQuestionTypes(raw: unknown): QuestionType[] {
   return list.length ? Array.from(new Set(list)) : ['mcq'];
 }
 
-export function configTypes(config: Pick<BattleConfig, 'questionTypes'>): QuestionType[] {
-  return normalizeQuestionTypes(config.questionTypes);
+export function configTypes(config: Pick<BattleConfig, 'questionTypes'> & Partial<Pick<BattleConfig, 'typeCounts'>>): QuestionType[] {
+  const counted = config.typeCounts ? (Object.keys(config.typeCounts) as QuestionType[]) : [];
+  return normalizeQuestionTypes(counted.length ? counted : config.questionTypes);
 }
 
 // ---------------------------------------------------------------------------

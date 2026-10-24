@@ -14,6 +14,8 @@ export interface StudioSettings {
   teamSize: number;
   /** Lesson formats the AI should write. */
   questionTypes: QuestionType[];
+  /** Exact number of questions; 0 / missing = automatic from the duration. */
+  questionCount?: number;
 }
 
 export interface StudioDraft {

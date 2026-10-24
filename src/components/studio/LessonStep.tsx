@@ -18,6 +18,9 @@ import {
   QUESTION_TYPES,
   QUESTION_TYPE_IDS,
   plannedQuestionCount,
+  clampQuestionCount,
+  MIN_QUESTIONS,
+  MAX_QUESTIONS,
   type QuestionType,
 } from '../../engine';
 import { field, label, type StudioDraft, type StudioSettings } from './types';
@@ -62,6 +65,7 @@ export const DEFAULT_SETTINGS: StudioSettings = {
   studentCount: 1,
   teamSize: 4,
   questionTypes: ['mcq'],
+  questionCount: 0,
 };
 
 export default function LessonStep({ initial, onGenerated }: { initial: StudioSettings; onGenerated: (d: StudioDraft) => void }) {
@@ -72,7 +76,7 @@ export default function LessonStep({ initial, onGenerated }: { initial: StudioSe
   const [error, setError] = useState<string | null>(null);
 
   const set = <K extends keyof StudioSettings>(k: K, v: StudioSettings[K]) => setS((prev) => ({ ...prev, [k]: v }));
-  const plannedCount = plannedQuestionCount(s.durationMinutes, s.questionTypes);
+  const plannedCount = s.questionCount ? clampQuestionCount(s.questionCount) : plannedQuestionCount(s.durationMinutes, s.questionTypes);
   // Estimate only: the real Boss HP is weighted by each question's format in step 2.
   const scaling = useMemo(() => computeScaling({ durationMinutes: s.durationMinutes, scenario: s.scenario, teamSize: s.teamSize, level: s.level }, plannedCount), [s.durationMinutes, s.scenario, s.teamSize, s.level, plannedCount]);
   const avgWeight = s.questionTypes.reduce((n, t) => n + QUESTION_TYPES[t].weight, 0) / Math.max(1, s.questionTypes.length);
@@ -118,6 +122,7 @@ export default function LessonStep({ initial, onGenerated }: { initial: StudioSe
           cefrLevel: s.cefrLevel || undefined,
           level: s.level,
           questionTypes: s.questionTypes,
+          questionCount: s.questionCount || undefined,
           examType: s.scenario === 'coop_raid' ? 'group' : 'individual',
           document,
         }),
@@ -258,6 +263,9 @@ export default function LessonStep({ initial, onGenerated }: { initial: StudioSe
       <Section n={6} title="Thời lượng và lớp học" last>
         <label className={label} htmlFor="duration">Thời lượng: <span className="text-amber-300">{s.durationMinutes} phút</span></label>
         <input id="duration" type="range" min={MIN_DURATION} max={MAX_DURATION} value={s.durationMinutes} onChange={(e) => set('durationMinutes', Number(e.target.value))} className="w-full accent-amber-400" />
+        <label className={`${label} mt-5 block`} htmlFor="qcount">Số câu (để trống = tự tính theo thời lượng)</label>
+        <input id="qcount" type="number" inputMode="numeric" min={MIN_QUESTIONS} max={MAX_QUESTIONS} placeholder={`Tự động: ${plannedQuestionCount(s.durationMinutes, s.questionTypes)} câu`} value={s.questionCount || ''} onChange={(e) => set('questionCount', e.target.value === '' ? 0 : Math.min(MAX_QUESTIONS, Math.max(0, Math.round(Number(e.target.value)))))} className={field} />
+        <p className="mt-1 text-xs text-slate-400">Mẹo: gõ “20 câu” hoặc “5 trắc nghiệm, 3 điền từ” ngay ở ô chủ đề, hệ thống sẽ tự hiểu.</p>
         <div className="mt-5 flex flex-wrap justify-center gap-6">
           <Metric label="Số câu hỏi" value={scaling.totalQuestions} color="#fb923c" />
           <Metric label="Boss HP (ước tính)" value={`~${Math.round((scaling.bossHp * avgWeight) / 50) * 50}`} color="#ec4899" />

@@ -23,4 +23,5 @@ export * from './anticheat';
 export * from './session';
 export * from './normalize';
 export * from './questionTypes';
+export * from './questionCount';
 export * from './grading';

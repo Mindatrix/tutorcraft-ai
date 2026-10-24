@@ -133,6 +133,10 @@ export interface BattleConfig {
   level?: DifficultyLevel;
   /** Question formats the tutor asked the AI for. Missing = ['mcq']. */
   questionTypes?: QuestionType[];
+  /** Exact number of questions the tutor asked for (2–45). Missing = derived from duration. */
+  questionCount?: number;
+  /** Exact per-format counts the tutor asked for, e.g. {mcq:5, cloze:3}. */
+  typeCounts?: Partial<Record<QuestionType, number>>;
 }
 
 export interface BattleScaling {

@@ -7,6 +7,7 @@ import {
     averageWeight,
     plannedQuestionCount,
     normalizeConfig,
+    parseRequestedCounts,
     reviewSlots,
     validateBattlePayload,
     variantCodes,
@@ -96,11 +97,17 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: (e as Error).message }, { status: 400 });
     }
 
-    const config = normalizeConfig(body);
+    // Counts typed in the topic ("20 câu", "5 trắc nghiệm, 3 điền từ") beat the Studio field.
+    const asked = parseRequestedCounts(topic);
+    const config = normalizeConfig({
+        ...body,
+        questionCount: asked.total ?? body.questionCount,
+        typeCounts: asked.perType ?? body.typeCounts,
+    });
     const classCode = typeof body.classCode === 'string' && body.classCode.trim() ? body.classCode.trim().slice(0, 40) : 'default';
     const types = configTypes(config);
     // Mixed formats take longer per question, so fewer of them fit the same duration.
-    const Q = plannedQuestionCount(config.durationMinutes, types);
+    const Q = config.questionCount ?? plannedQuestionCount(config.durationMinutes, types);
 
     const reviewTopics = await dueReviewTopics(classCode);
     const reviewCount = reviewSlots(Q, reviewTopics.length ? Q : 0);

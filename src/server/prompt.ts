@@ -3,6 +3,7 @@ import { THEMES } from '../engine/themes';
 import { SCENARIOS } from '../engine/scenarios';
 import { levelOf } from '../engine/levels';
 import { configTypes, planQuestionTypes } from '../engine/questionTypes';
+import { planFromCounts } from '../engine/questionCount';
 import type { QuestionType } from '../engine/types';
 
 export interface PromptInput {
@@ -53,7 +54,7 @@ GAME DESIGN — design the boss of this arena from the lesson content:
 - "enrage_dialogue": one Vietnamese line when the student misses 3 in a row: a short taunt PLUS a genuinely useful study tip for this lesson (no answers).
 
 Write exactly ${p.questionCount} questions.
-${typeInstructions(configTypes(p.config), p.questionCount)}
+${typeInstructions(configTypes(p.config), p.questionCount, p.config.typeCounts)}
 For EVERY question:
 - Mix difficulties: about ${pct(lv.mix.easy)}% easy, ${pct(lv.mix.medium)}% medium, ${pct(lv.mix.hard)}% hard.
 - "topic" = the specific grammar point or vocabulary set tested (e.g. "present perfect", "phrasal verbs: travel").
@@ -75,8 +76,8 @@ const TYPE_SPECS: Record<QuestionType, string> = {
 };
 
 /** Exact format per question (a numbered plan) + the spec of each format used. */
-function typeInstructions(types: QuestionType[], count: number): string {
-  const plan = planQuestionTypes(types, count);
+function typeInstructions(types: QuestionType[], count: number, counts?: BattleConfig['typeCounts']): string {
+  const plan = counts ? planFromCounts(counts, count) : planQuestionTypes(types, count);
   const used = Array.from(new Set(plan));
   return `Set "type" on every question. EVERY question object must contain ALL fields of the schema: fill the ones its format uses, and send "" / [] / -1 / 0 for the others.
 Follow this plan EXACTLY, in this order (question number → type):

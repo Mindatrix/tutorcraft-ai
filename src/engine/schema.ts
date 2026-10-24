@@ -1,10 +1,11 @@
-import type { BattleConfig, BattlePayload, BossProfile, Difficulty, Question, SkillTag } from './types';
+import type { BattleConfig, BattlePayload, BossProfile, Difficulty, Question, QuestionType, SkillTag } from './types';
 import { BOSS_AVATAR_IDS, MAP_SETTING_IDS, sanitizeBoss } from './boss';
 import { clampDuration } from './scaling';
 import { normalizeLevel } from './levels';
 import { isScenarioId } from './scenarios';
 import { normalizeThemes } from './themes';
-import { QUESTION_TYPE_IDS, normalizeQuestionTypes, questionType, sanitizeTypedFields } from './questionTypes';
+import { clampQuestionCount } from './questionCount';
+import { QUESTION_TYPE_IDS, isQuestionType, normalizeQuestionTypes, questionType, sanitizeTypedFields } from './questionTypes';
 
 const DIFFICULTIES: Difficulty[] = ['easy', 'medium', 'hard'];
 const SKILL_TAGS: SkillTag[] = ['grammar', 'vocabulary', 'reading', 'listening', 'pronunciation', 'other'];
@@ -99,6 +100,21 @@ export function validateBattlePayload(raw: unknown, minQuestions = 1, bossFallba
 }
 
 /** Build a safe BattleConfig from untrusted request JSON. */
+function normalizeQuestionCount(v: unknown): number | undefined {
+  const n = Number(v);
+  return Number.isFinite(n) && n > 0 ? clampQuestionCount(n) : undefined;
+}
+
+function normalizeTypeCounts(v: unknown): Partial<Record<QuestionType, number>> | undefined {
+  if (!v || typeof v !== 'object') return undefined;
+  const out: Partial<Record<QuestionType, number>> = {};
+  for (const [k, val] of Object.entries(v as Record<string, unknown>)) {
+    const n = Math.round(Number(val));
+    if (isQuestionType(k) && Number.isFinite(n) && n > 0) out[k] = Math.min(45, n);
+  }
+  return Object.keys(out).length ? out : undefined;
+}
+
 export function normalizeConfig(raw: Record<string, unknown>): BattleConfig {
   const studentCount = Math.min(200, Math.max(1, Math.round(Number(raw.studentCount) || 1)));
   const scenario = isScenarioId(raw.scenario) ? raw.scenario : 'homework';
@@ -113,6 +129,8 @@ export function normalizeConfig(raw: Record<string, unknown>): BattleConfig {
     cefrLevel: str(raw.cefrLevel, 4) ?? undefined,
     level: normalizeLevel(raw.level),
     questionTypes: normalizeQuestionTypes(raw.questionTypes),
+    questionCount: normalizeQuestionCount(raw.questionCount),
+    typeCounts: normalizeTypeCounts(raw.typeCounts),
   };
 }
 
