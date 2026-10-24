@@ -42,3 +42,6 @@ next-env.d.ts
 
 # compiled unit tests
 /.test-build/
+
+# Unity WebGL build output (rebuild: Unity > TutorCraft > Build WebGL). The app falls back to Three.js when absent.
+/public/unity/
