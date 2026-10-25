@@ -79,6 +79,11 @@ export interface Question {
   explanation?: string;
   /** True when injected from the spaced-repetition review pool. */
   is_review?: boolean;
+  /**
+   * True when the AI did not deliver this one and it was topped up from the local question bank
+   * (general English, not from the tutor's lesson). The Studio flags it for review.
+   */
+  from_bank?: boolean;
 
   // --- essay & reading (AI rubric grading) ---
   /** Tutor's grading guidelines for the AI. Never shown to students. */

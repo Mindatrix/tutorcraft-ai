@@ -81,6 +81,11 @@ create table if not exists public.battle_sessions (
 create index if not exists battle_sessions_battle_idx on public.battle_sessions (battle_id, status);
 alter table public.battle_sessions add column if not exists team text check (team in ('A','B'));
 alter table public.battle_results add column if not exists team text check (team in ('A','B'));
+-- false = the match is over but its row is not in battle_results yet (final submit never
+-- arrived, or the insert failed). The server retries: on the next submit from the student's
+-- browser, after other submits, and from /api/cron/retry-results.
+alter table public.battle_sessions add column if not exists result_saved boolean;
+create index if not exists battle_sessions_unsaved_idx on public.battle_sessions (updated_at) where result_saved = false;
 alter table public.battle_sessions enable row level security;
 -- No anon policies: server only.
 

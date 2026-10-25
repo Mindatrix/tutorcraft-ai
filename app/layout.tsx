@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Be_Vietnam_Pro, Baloo_2 } from "next/font/google";
 import ServiceWorker from "../src/components/ServiceWorker";
+import ResultOutbox from "../src/components/ResultOutbox";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -48,6 +49,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-full flex flex-col">
         {children}
         <ServiceWorker />
+        <ResultOutbox />
       </body>
     </html>
   );

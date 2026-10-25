@@ -219,12 +219,44 @@ test('proxy: per-IP burst limit, cross-site POST block, size cap', async () => {
   const mk = (path: string, init: { method?: string; headers?: Record<string, string> } = {}) =>
     new NextRequest(`http://localhost:3000${path}`, { method: init.method ?? 'GET', headers: { host: 'localhost:3000', 'x-forwarded-for': '203.0.113.9', ...(init.headers ?? {}) } });
 
+  // One session token hammering the scoring route is throttled…
   let blocked = 0;
   for (let i = 0; i < 20; i++) {
-    const r = proxy(mk('/api/battle-result', { method: 'POST' }));
+    const r = proxy(mk('/api/battle-result', { method: 'POST', headers: { 'x-battle-session': 'tok-flood-1' } }));
     if (r.status === 429) blocked++;
   }
-  assert.ok(blocked >= 8, `expected scoring-route throttling, got ${blocked} blocked`);
+  assert.ok(blocked >= 8, `expected per-token scoring throttling, got ${blocked} blocked`);
+  // …but a class of 45 students behind one school IP can all join and submit.
+  const school = { 'x-forwarded-for': '203.0.113.77' };
+  for (let s = 0; s < 45; s++) {
+    assert.notEqual(proxy(mk('/api/session', { method: 'POST', headers: school })).status, 429, `join #${s + 1}`);
+    assert.notEqual(proxy(mk('/api/battle-result', { method: 'POST', headers: { ...school, 'x-battle-session': `tok-student-${s}` } })).status, 429, `submit #${s + 1}`);
+  }
+  // A single IP flooding joins is still cut off.
+  let joinBlocked = 0;
+  for (let i = 0; i < 200; i++) if (proxy(mk('/api/session', { method: 'POST', headers: { 'x-forwarded-for': '203.0.113.78' } })).status === 429) joinBlocked++;
+  assert.ok(joinBlocked >= 40, `join flood throttled (${joinBlocked})`);
   assert.equal(proxy(mk('/api/session', { method: 'POST', headers: { origin: 'https://evil.example', 'x-forwarded-for': '198.51.100.1' } })).status, 403);
   assert.equal(proxy(mk('/api/battles', { method: 'POST', headers: { 'content-length': String(50 * 1024 * 1024), 'x-forwarded-for': '198.51.100.2' } })).status, 413);
+});
+
+import { rateLimitShared } from '../src/server/rateLimit';
+
+test('rateLimitShared falls back to the in-memory limiter when Supabase is not configured', async () => {
+  const saved = { u: process.env.NEXT_PUBLIC_SUPABASE_URL, k: process.env.SUPABASE_SERVICE_ROLE_KEY, a: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY };
+  delete process.env.NEXT_PUBLIC_SUPABASE_URL;
+  delete process.env.SUPABASE_SERVICE_ROLE_KEY;
+  delete process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  try {
+    const key = `t-shared-${Date.now()}`;
+    assert.equal((await rateLimitShared(key, 2, 60_000)).ok, true);
+    assert.equal((await rateLimitShared(key, 2, 60_000)).ok, true);
+    const third = await rateLimitShared(key, 2, 60_000);
+    assert.equal(third.ok, false);
+    assert.ok(third.retryAfterSec >= 1);
+  } finally {
+    if (saved.u !== undefined) process.env.NEXT_PUBLIC_SUPABASE_URL = saved.u;
+    if (saved.k !== undefined) process.env.SUPABASE_SERVICE_ROLE_KEY = saved.k;
+    if (saved.a !== undefined) process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = saved.a;
+  }
 });

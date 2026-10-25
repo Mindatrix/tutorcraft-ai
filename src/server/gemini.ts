@@ -37,6 +37,13 @@ export interface GeminiAttempt {
   error?: string;
 }
 
+/** A failed Gemini call; `status` is the HTTP status (429 = quota / rate limit). */
+export class GeminiError extends Error {
+  constructor(message: string, public status = 0) {
+    super(message);
+  }
+}
+
 /** One structured-JSON Gemini call with a hard timeout. Shared by generation and grading. */
 export async function callGeminiJson(
   model: string,
@@ -67,7 +74,7 @@ async function callModel(model: string, prompt: string, doc: InlineDocument | nu
       }),
     });
     const body = await res.json().catch(() => null);
-    if (!res.ok) throw new Error(body?.error?.message || `HTTP ${res.status}`);
+    if (!res.ok) throw new GeminiError(body?.error?.message || `HTTP ${res.status}`, res.status);
     const text: string | undefined = body?.candidates?.[0]?.content?.parts?.[0]?.text;
     if (!text) throw new Error('Empty response');
     return JSON.parse(text);

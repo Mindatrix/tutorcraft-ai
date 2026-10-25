@@ -1,0 +1,13 @@
+{
+  "$comment": "Viết bởi scripts/publish-unity-build.mjs — bản Unity WebGL trên CDN (Supabase Storage). Đặt NEXT_PUBLIC_UNITY_BUILD_URL=/unity/boatrace/Build để dùng bản cục bộ.",
+  "version": "110f56ba3ca7",
+  "baseUrl": "https://zzkwcjakdoprxurtapen.supabase.co/storage/v1/object/public/unity-builds/boatrace/110f56ba3ca7",
+  "gzip": true,
+  "files": {
+    "loader": "boatrace.loader.js",
+    "framework": "boatrace.framework.js.gz",
+    "data": "boatrace.data.gz",
+    "code": "boatrace.wasm.gz"
+  },
+  "bytes": 13978309
+}

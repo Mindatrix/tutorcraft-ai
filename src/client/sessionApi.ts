@@ -27,6 +27,8 @@ export interface FinalizeResponse {
   score: BattleScore | null;
   hpRemaining: number | null;
   saved: boolean;
+  /** Kept on the server and queued for writing; nothing for the student to redo. */
+  pending?: boolean;
   race?: RaceOutcome | null;
   error?: string;
 }

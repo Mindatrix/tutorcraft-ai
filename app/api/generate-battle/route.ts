@@ -2,7 +2,10 @@ import { NextResponse } from 'next/server';
 import {
     computeScaling,
     defaultBoss,
-    fallbackPayload,
+    bankFillReport,
+    fillFromBank,
+    FALLBACK_TEACHING_NOTES,
+    planQuestionTypes,
     configTypes,
     averageWeight,
     plannedQuestionCount,
@@ -11,39 +14,19 @@ import {
     reviewSlots,
     validateBattlePayload,
     variantCodes,
+    type BankFill,
     type BattlePayload,
     type Question,
+    type QuestionType,
 } from '../../../src/engine';
-import { generateWithFailSafe, type InlineDocument } from '../../../src/server/gemini';
+import { generateWithFailSafe } from '../../../src/server/gemini';
+import { DocumentError, parseDocument, type DocumentInput } from '../../../src/server/documents';
 import { buildBattlePrompt } from '../../../src/server/prompt';
-import { rateLimit } from '../../../src/server/rateLimit';
+import { rateLimitShared } from '../../../src/server/rateLimit';
 import { serverSupabase } from '../../../src/server/supabase-server';
 import { UNAUTHORIZED, requireTutor } from '../../../src/server/auth';
 
 const RATE_LIMIT = 5; // generations per IP per minute
-const MAX_DOC_BYTES = 4 * 1024 * 1024;
-const MAX_DOC_TEXT = 30_000;
-const INLINE_MIME = ['application/pdf', 'image/png', 'image/jpeg', 'image/webp'];
-
-interface DocumentInput {
-    name?: string;
-    mimeType?: string;
-    data?: string; // base64 for PDF / images
-    text?: string; // extracted client-side for .txt / .md
-}
-
-function parseDocument(doc: DocumentInput | undefined): { inline: InlineDocument | null; text?: string } {
-    if (!doc) return { inline: null };
-    if (typeof doc.text === 'string' && doc.text.trim()) {
-        return { inline: null, text: doc.text.slice(0, MAX_DOC_TEXT) };
-    }
-    if (typeof doc.data === 'string' && doc.mimeType && INLINE_MIME.includes(doc.mimeType)) {
-        if (doc.data.length * 0.75 > MAX_DOC_BYTES) throw new Error('Tài liệu quá lớn (tối đa 4MB).');
-        return { inline: { mimeType: doc.mimeType, data: doc.data } };
-    }
-    throw new Error('Định dạng tài liệu chưa hỗ trợ. Dùng PDF, ảnh (PNG/JPG/WEBP) hoặc TXT/MD.');
-}
-
 async function dueReviewTopics(classCode: string): Promise<string[]> {
     const db = serverSupabase();
     if (!db) return [];
@@ -69,7 +52,7 @@ export async function POST(req: Request) {
     const tutor = await requireTutor(req);
     if (!tutor) return NextResponse.json(UNAUTHORIZED, { status: 401 });
 
-    const limit = rateLimit(`gen:${tutor.id}`, RATE_LIMIT, 60_000);
+    const limit = await rateLimitShared(`gen:${tutor.id}`, RATE_LIMIT, 60_000);
     if (!limit.ok) {
         return NextResponse.json(
             { error: `Quá nhiều yêu cầu. Thử lại sau ${limit.retryAfterSec}s.` },
@@ -90,15 +73,18 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: 'Cần nhập chủ đề hoặc tải lên tài liệu.' }, { status: 400 });
     }
 
-    let parsedDoc: ReturnType<typeof parseDocument>;
+    let parsedDoc: Awaited<ReturnType<typeof parseDocument>>;
     try {
-        parsedDoc = parseDocument(doc);
+        // Long text / Word files are split into sections; the topic steers which ones the AI sees.
+        parsedDoc = await parseDocument(doc, topic);
     } catch (e) {
-        return NextResponse.json({ error: (e as Error).message }, { status: 400 });
+        if (e instanceof DocumentError) return NextResponse.json({ error: e.message }, { status: 400 });
+        throw e;
     }
 
-    // Counts typed in the topic ("20 câu", "5 trắc nghiệm, 3 điền từ") beat the Studio field.
-    const asked = parseRequestedCounts(topic);
+    // Counts typed in the topic ("20 câu", "5 trắc nghiệm, 3 điền từ") beat the Studio field —
+    // except for a Studio "refill" call, which asks for exactly the questions to replace.
+    const asked = body.refill === true ? {} as ReturnType<typeof parseRequestedCounts> : parseRequestedCounts(topic);
     const config = normalizeConfig({
         ...body,
         questionCount: asked.total ?? body.questionCount,
@@ -117,6 +103,7 @@ export async function POST(req: Request) {
         config,
         questionCount: Q,
         documentText: parsedDoc.text,
+        documentSections: parsedDoc.info && parsedDoc.info.chunks > 1 ? { shown: parsedDoc.info.usedChunks, total: parsedDoc.info.chunks } : undefined,
         hasInlineDocument: !!parsedDoc.inline,
         reviewTopics,
         reviewCount,
@@ -128,19 +115,30 @@ export async function POST(req: Request) {
     const minQuestions = Math.max(1, Math.ceil(Q * 0.8));
     const ai = await generateWithFailSafe(prompt, parsedDoc.inline, (raw) => validateBattlePayload(raw, minQuestions, bossFallback), Math.round(Q * averageWeight(types)));
 
+    // The format plan the AI was given; bank top-ups follow it so the mix stays as requested.
+    const plan: QuestionType[] = config.typeCounts
+        ? (Object.entries(config.typeCounts) as [QuestionType, number][]).flatMap(([t, n]) => Array<QuestionType>(n).fill(t))
+        : planQuestionTypes(types, Q);
+
     let payload: BattlePayload;
     let provider: string;
+    let fill: BankFill | null = null;
     if (ai.result) {
         payload = ai.result;
         provider = ai.model!;
         if (payload.questions.length < Q) {
-            // Top up the last few from the local bank so Q always matches the duration formula.
-            const extra = fallbackPayload(Q - payload.questions.length, topic, types).questions;
+            // Top up from the local bank so the count still matches — and say so to the tutor:
+            // these are general-English questions, not from their lesson (flagged from_bank).
+            const fromAi = payload.questions.length;
+            const extra = fillFromBank(payload.questions, Q, plan, topic || 'fallback');
             payload.questions.push(...extra);
+            fill = bankFillReport(Q, fromAi, extra, 'ai_short');
         }
     } else {
-        payload = fallbackPayload(Q, topic || 'fallback', types);
+        const bank = fillFromBank([], Q, plan, topic || 'fallback');
+        payload = { teaching_notes: FALLBACK_TEACHING_NOTES, questions: bank };
         provider = 'Local Cached Template';
+        fill = bankFillReport(Q, 0, bank, 'ai_failed');
     }
     const boss = payload.boss ?? bossFallback;
 
@@ -170,6 +168,9 @@ export async function POST(req: Request) {
         attempts: ai.attempts,
         execution_time: `${((Date.now() - startTime) / 1000).toFixed(1)}s`,
         review_topics: reviewCount ? reviewTopics : [],
+        // Non-null when some questions came from the local bank instead of the AI.
+        fill,
+        document_info: parsedDoc.info,
         db_warning: saved.warning,
         teaching_notes: payload.teaching_notes,
         knowledge_matrix: payload.knowledge_matrix,

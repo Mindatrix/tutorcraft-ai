@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { ArrowLeft, Loader2, Plus, Rocket, AlertTriangle, BookOpen } from 'lucide-react';
+import { ArrowLeft, Loader2, Plus, Rocket, AlertTriangle, BookOpen, RefreshCw, FileText } from 'lucide-react';
 import {
   BOSS_AVATARS,
   MAP_SETTINGS,
@@ -29,6 +29,44 @@ export default function PreviewStep({ draft, onBack, onPublished }: { draft: Stu
   const [error, setError] = useState<string | null>(null);
 
   const [newType, setNewType] = useState<QuestionType>(draft.settings.questionTypes?.[0] ?? 'mcq');
+  const [refilling, setRefilling] = useState(false);
+  const [refillMsg, setRefillMsg] = useState<string | null>(null);
+
+  // Questions the AI did not write (topped up from the general bank) — the tutor must know.
+  const bankIdx = questions.flatMap((q, i) => (q.from_bank ? [i] : []));
+  /** Ask the AI again for exactly the bank questions (same formats), and swap them in. */
+  const refill = async () => {
+    if (!draft.request || !bankIdx.length) return;
+    setRefilling(true);
+    setRefillMsg(null);
+    try {
+      const counts: Partial<Record<QuestionType, number>> = {};
+      for (const i of bankIdx) counts[questionType(questions[i])] = (counts[questionType(questions[i])] ?? 0) + 1;
+      const res = await authFetch('/api/generate-battle', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...draft.request, refill: true, questionCount: bankIdx.length, typeCounts: counts, questionTypes: Object.keys(counts) }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'AI chưa trả lời được');
+      const fresh = ((data.questions ?? []) as Question[]).filter((q) => !q.from_bank);
+      if (!fresh.length) throw new Error('AI vẫn chưa tạo được câu mới — thử lại sau ít phút, hoặc tự sửa các câu này.');
+      // Matched by question id (not position) and only while still untouched, so edits the
+      // tutor made during the ~10 s wait are kept.
+      const assign = new Map<number, Question>();
+      for (const i of bankIdx) {
+        const j = fresh.findIndex((f) => questionType(f) === questionType(questions[i])); // same format first
+        const pick = j >= 0 ? fresh.splice(j, 1)[0] : fresh.shift();
+        if (pick) assign.set(questions[i].id, pick);
+      }
+      setQuestions((qs) => qs.map((q) => (q.from_bank && assign.has(q.id) ? { ...assign.get(q.id)!, id: q.id, from_bank: undefined } : q)));
+      setRefillMsg(assign.size === bankIdx.length ? `✓ AI đã viết lại cả ${assign.size} câu.` : `AI viết lại được ${assign.size}/${bankIdx.length} câu — các câu còn lại vẫn từ ngân hàng.`);
+    } catch (e) {
+      setRefillMsg((e as Error).message);
+    } finally {
+      setRefilling(false);
+    }
+  };
 
   // Boss HP weighted by format: essay ×3, reading ×2.5, matching ×2 … (mcq stays 100).
   const weightedHp = bossHpForQuestions(questions);
@@ -111,6 +149,41 @@ export default function PreviewStep({ draft, onBack, onPublished }: { draft: Stu
           {draft.review_topics.length > 0 && <div className="text-xs text-sky-400">🔁 Ôn tập lặp lại: {draft.review_topics.join(', ')}</div>}
         </div>
       </div>
+
+      {draft.document_info && (draft.document_info.truncated || draft.document_info.chunks > 1) && (
+        <div className="flex items-start gap-2 px-4 py-3 border border-sky-500/30 bg-sky-500/10 rounded-xl text-sky-300 text-sm">
+          <FileText className="w-4 h-4 mt-0.5 shrink-0" />
+          <div>
+            Tài liệu “{draft.document_info.name}” dài {draft.document_info.chars.toLocaleString('en-US')} ký tự
+            {draft.document_info.source === 'docx' ? ' (đọc từ Word)' : ''} — đã chia thành {draft.document_info.chunks} đoạn
+            {draft.document_info.truncated
+              ? `, AI dùng ${draft.document_info.usedChunks} đoạn liên quan nhất tới chủ đề và rải đều khắp tài liệu (≈${draft.document_info.usedChars.toLocaleString('en-US')} ký tự). Muốn tập trung một phần cụ thể, hãy ghi rõ trong ô Chủ đề (vd: “Unit 3 — Passive”).`
+              : ', AI đọc toàn bộ và rải câu hỏi đều qua các đoạn.'}
+          </div>
+        </div>
+      )}
+
+      {(draft.fill || bankIdx.length > 0) && (
+        <div role="alert" className="px-4 py-3 border-2 border-amber-400/70 bg-amber-500/10 rounded-xl text-amber-200 text-sm space-y-2">
+          <div className="flex items-start gap-2">
+            <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0 text-amber-400" />
+            <div>
+              {draft.fill?.reason === 'ai_failed'
+                ? <><b>AI không phản hồi được</b> — toàn bộ {draft.fill.fromBank} câu đang lấy từ <b>ngân hàng câu hỏi chung</b> (tiếng Anh tổng quát, không theo bài học của bạn).</>
+                : draft.fill
+                  ? <><b>AI chỉ tạo được {draft.fill.fromAi}/{draft.fill.requested} câu hợp lệ.</b> {draft.fill.fromBank} câu còn lại được bù từ <b>ngân hàng câu hỏi chung</b>, không theo bài học của bạn.</>
+                  : <>Còn câu lấy từ ngân hàng câu hỏi chung.</>}
+              {' '}Các câu này có viền vàng và nhãn “⚠ ngân hàng dự phòng”{bankIdx.length ? ` (câu ${bankIdx.map((i) => i + 1).join(', ')})` : ''}. Hãy sửa, xoá, hoặc nhờ AI viết lại trước khi xuất bản.
+            </div>
+          </div>
+          {bankIdx.length > 0 && draft.request && (
+            <button type="button" onClick={refill} disabled={refilling} className="text-sm flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-amber-400/60 hover:bg-amber-500/20 disabled:opacity-50">
+              {refilling ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />} Nhờ AI viết lại {bankIdx.length} câu này
+            </button>
+          )}
+          {refillMsg && <p role="status" className="text-xs">{refillMsg}</p>}
+        </div>
+      )}
 
       {/* Boss + arena */}
       <section className="border-l-4 border-rose-400 bg-white/[0.04] p-5 space-y-4">

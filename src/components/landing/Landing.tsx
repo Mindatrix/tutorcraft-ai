@@ -256,7 +256,7 @@ export function Footer() {
           <div><h3 className="font-display text-lg font-extrabold text-amber-300">Học sinh</h3><ul className="mt-2 space-y-1 text-slate-300"><li><a href="#top" className="hover:text-white">Nhập mã đấu trường</a></li><li><Link href="/student" className="hover:text-white">Chơi thử trận demo</Link></li></ul></div>
           <div><h3 className="font-display text-lg font-extrabold text-amber-300">TutorCraft AI</h3><p className="mt-2 text-slate-300">Game học tiếng Anh cho gia sư, từ bé 5 tuổi.</p></div>
         </div>
-        <p className="mt-10 text-xs text-slate-400">© TutorCraft AI</p>
+        <p className="mt-10 text-xs text-slate-400">© TutorCraft AI · <Link href="/credits" className="underline hover:text-white">Ghi công</Link></p>
       </div>
     </footer>
   );

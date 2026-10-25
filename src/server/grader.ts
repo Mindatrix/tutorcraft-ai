@@ -1,5 +1,5 @@
 import { gradeOpenFallback, normalizeText, questionType, rubricScore, wordCount, type Grade, type Question } from '../engine';
-import { PRIMARY_MODEL, SECONDARY_MODEL, callGeminiJson } from './gemini';
+import { GeminiError, PRIMARY_MODEL, SECONDARY_MODEL, callGeminiJson } from './gemini';
 
 // AI rubric grading for essay / reading answers (Grammar · Vocabulary · Ideas).
 // Falls back to the rule-based grader if the AI is missing, slow or returns junk,
@@ -16,8 +16,17 @@ const GRADE_SCHEMA = {
   required: ['grammar', 'vocabulary', 'ideas', 'feedback'],
 } as const;
 
-/** Grading must feel instant in a game: one fast attempt, then the rule-based grader. */
+/** Grading must feel instant in a game: total AI budget per answer, then the rule-based grader. */
 const AI_TIMEOUT_MS = Number(process.env.GEMINI_GRADE_TIMEOUT_MS) || 9000;
+/** Below this much budget left, a second model is not worth trying. */
+const MIN_SECOND_TRY_MS = 3500;
+
+// A whole class hands in essays within seconds; the free tier allows ~15 calls/min per model.
+// A model that answers 429 (quota) is skipped for a short while, so the next students go
+// straight to the other model (separate quota) instead of wasting a call.
+const cooldownUntil = new Map<string, number>();
+const COOLDOWN_MS = 20_000;
+const isCooling = (model: string) => (cooldownUntil.get(model) ?? 0) > Date.now();
 
 function buildPrompt(q: Question, answer: string): string {
   const reading = questionType(q) === 'reading';
@@ -51,17 +60,24 @@ export async function gradeOpenResponse(q: Question, input: unknown): Promise<Gr
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) return fallback;
 
-  for (const model of [PRIMARY_MODEL, SECONDARY_MODEL].slice(0, 1)) {
+  const started = Date.now();
+  const models = [PRIMARY_MODEL, SECONDARY_MODEL].filter((m, i, a) => a.indexOf(m) === i);
+  // Models not in cooldown first; if both are cooling, still try them in order.
+  const order = [...models.filter((m) => !isCooling(m)), ...models.filter(isCooling)];
+  for (const model of order) {
+    const left = AI_TIMEOUT_MS - (Date.now() - started);
+    if (left < (model === order[0] ? 1000 : MIN_SECOND_TRY_MS)) break;
     try {
-      const raw = (await callGeminiJson(model, buildPrompt(q, text), { schema: GRADE_SCHEMA, timeoutMs: AI_TIMEOUT_MS, apiKey, temperature: 0.2 })) as Record<string, unknown>;
+      const raw = (await callGeminiJson(model, buildPrompt(q, text), { schema: GRADE_SCHEMA, timeoutMs: left, apiKey, temperature: 0.2 })) as Record<string, unknown>;
       const criteria = { grammar: clampPct(raw.grammar), vocabulary: clampPct(raw.vocabulary), ideas: clampPct(raw.ideas) };
       let score = rubricScore(q, criteria, words);
       // Guard rail: a few words can't be an excellent essay, whatever the model says.
       if (words < Math.max(3, (q.min_words ?? 0) * 0.3)) score = Math.min(score, 0.3);
       const feedback = typeof raw.feedback === 'string' ? raw.feedback.trim().slice(0, 300) : undefined;
       return { score, by: 'ai', criteria, feedback };
-    } catch {
-      // timeout / quota / bad JSON → rule-based grade below
+    } catch (e) {
+      // quota → cool this model down and try the other one; timeout / bad JSON → next / fallback
+      if (e instanceof GeminiError && (e.status === 429 || e.status === 503)) cooldownUntil.set(model, Date.now() + COOLDOWN_MS);
     }
   }
   return fallback;

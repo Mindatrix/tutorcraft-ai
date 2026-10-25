@@ -1,11 +1,12 @@
 import { normalizeBattleCode } from '../../../src/engine';
 import { loadBattleByCode } from '../../../src/server/battles';
-import { clientKey, rateLimit } from '../../../src/server/rateLimit';
+import { clientKey, rateLimit, rateLimitShared } from '../../../src/server/rateLimit';
 import { SESSION_HEADER, sessionErrorResponse, sessions } from '../../../src/server/sessions';
 
 /** Start a battle session. Returns an AES-256-GCM sealed token and the first question (no answer). */
 export async function POST(req: Request) {
-  const limit = rateLimit(`session-start:${clientKey(req)}`, 20, 60_000);
+  // 150/min per IP: a whole class joins from one school Wi-Fi at once.
+  const limit = await rateLimitShared(`session-start:${clientKey(req)}`, 150, 60_000);
   if (!limit.ok) return Response.json({ error: `Quá nhiều yêu cầu. Thử lại sau ${limit.retryAfterSec}s.` }, { status: 429, headers: { 'Retry-After': String(limit.retryAfterSec) } });
 
   let body: Record<string, unknown>;
@@ -29,7 +30,7 @@ export async function POST(req: Request) {
 /** Resume: current state + current question for a session token. */
 export async function GET(req: Request) {
   const token = req.headers.get(SESSION_HEADER);
-  const limit = rateLimit(`session-get:${clientKey(req)}`, 60, 60_000);
+  const limit = rateLimit(`session-get:${clientKey(req)}`, 300, 60_000);
   if (!limit.ok) return Response.json({ error: 'Too many requests' }, { status: 429 });
   try {
     return Response.json({ view: await sessions.current(token) }, { headers: { 'Cache-Control': 'no-store' } });

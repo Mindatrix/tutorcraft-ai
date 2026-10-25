@@ -1,9 +1,12 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { unityBuild, type UnityBuild } from '../config/unityBuild';
 
-// Boat Race scene built in Unity (unity/BoatRace3D → public/unity/boatrace, WebGL).
+// Boat Race scene built in Unity (unity/BoatRace3D, WebGL).
 // The engine decides the race; Unity only draws it. Positions are sent as "player,bot" in 0..1.
+// The build is NOT part of the web deployment: it is served gzipped from a CDN
+// (scripts/publish-unity-build.mjs → src/config/unityBuild.json) and unzipped here.
 // Falls back (onUnavailable) when the build is missing or WebGL/WASM can't start.
 
 interface UnityInstance {
@@ -17,7 +20,18 @@ declare global {
   }
 }
 
-const BASE = '/unity/boatrace/Build/boatrace';
+/** Download one build file, gunzip it in the browser if needed, and hand Unity a blob: URL. */
+async function fetchPart(build: UnityBuild, file: string, type: string, onBytes: (n: number) => void, signal: AbortSignal): Promise<string> {
+  const url = `${build.baseUrl}/${file}`;
+  const res = await fetch(url, { signal });
+  if (!res.ok || !res.body) throw new Error(`missing ${file}`);
+  let stream: ReadableStream<Uint8Array> = res.body.pipeThrough(
+    new TransformStream<Uint8Array, Uint8Array>({ transform: (chunk, c) => { onBytes(chunk.length); c.enqueue(chunk); } }),
+  );
+  if (build.gzip && file.endsWith('.gz')) stream = stream.pipeThrough(new DecompressionStream('gzip') as unknown as TransformStream<Uint8Array, Uint8Array>);
+  const blob = await new Response(stream).blob();
+  return URL.createObjectURL(new Blob([blob], { type }));
+}
 
 interface Props {
   playerPos: number;
@@ -35,33 +49,53 @@ export default function RaceSceneUnity({ playerPos, botPos, result, onUnavailabl
   useEffect(() => {
     let cancelled = false;
     let script: HTMLScriptElement | null = null;
+    const blobs: string[] = [];
+    const abort = new AbortController();
     const canvas = canvasRef.current;
     if (!canvas) return;
 
     (async () => {
       try {
-        const head = await fetch(`${BASE}.loader.js`, { method: 'HEAD' });
-        if (!head.ok) throw new Error('missing build');
+        const build = unityBuild();
+        if (!build) throw new Error('no build configured');
+        if (build.gzip && typeof DecompressionStream === 'undefined') throw new Error('no DecompressionStream'); // old Safari → 3D fallback
         await new Promise<void>((resolve, reject) => {
           script = document.createElement('script');
-          script.src = `${BASE}.loader.js`;
+          script.src = `${build.baseUrl}/${build.files.loader}`;
           script.onload = () => resolve();
           script.onerror = () => reject(new Error('loader failed'));
           document.body.appendChild(script);
         });
         if (cancelled || !window.createUnityInstance) return;
+
+        // Download (≈70% of the bar), then Unity starts up (the rest).
+        let got = 0;
+        const onBytes = (n: number) => {
+          got += n;
+          if (!cancelled && build.bytes) setProgress(Math.min(0.7, (got / build.bytes) * 0.7));
+        };
+        const [dataUrl, codeUrl, frameworkUrl] = await Promise.all([
+          fetchPart(build, build.files.data, 'application/octet-stream', onBytes, abort.signal),
+          fetchPart(build, build.files.code, 'application/wasm', onBytes, abort.signal),
+          fetchPart(build, build.files.framework, 'application/javascript', onBytes, abort.signal),
+        ]);
+        blobs.push(dataUrl, codeUrl, frameworkUrl);
+        if (cancelled) return;
         const inst = await window.createUnityInstance(
           canvas,
           {
-            dataUrl: `${BASE}.data`,
-            frameworkUrl: `${BASE}.framework.js`,
-            codeUrl: `${BASE}.wasm`,
+            dataUrl,
+            frameworkUrl,
+            codeUrl,
             streamingAssetsUrl: 'StreamingAssets',
             companyName: 'TutorCraft',
             productName: 'BoatRace3D',
-            productVersion: '1.0',
+            productVersion: build.version,
+            // blob: URLs change every load — Unity's IndexedDB cache would only pile up copies.
+            // The HTTP cache (1 year, immutable versioned paths) does the caching instead.
+            cacheControl: () => 'no-store',
           },
-          (p) => !cancelled && setProgress(p),
+          (p) => !cancelled && setProgress(0.7 + p * 0.3),
         );
         if (cancelled) {
           void inst.Quit();
@@ -76,9 +110,11 @@ export default function RaceSceneUnity({ playerPos, botPos, result, onUnavailabl
 
     return () => {
       cancelled = true;
+      abort.abort();
       const inst = unity.current;
       unity.current = null;
-      if (inst) void inst.Quit().catch(() => {});
+      if (inst) void inst.Quit().catch(() => {}).finally(() => blobs.forEach((u) => URL.revokeObjectURL(u)));
+      else blobs.forEach((u) => URL.revokeObjectURL(u));
       script?.remove();
     };
   }, [onUnavailable]);

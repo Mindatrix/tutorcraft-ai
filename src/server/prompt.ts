@@ -12,6 +12,8 @@ export interface PromptInput {
   config: BattleConfig;
   questionCount: number;
   documentText?: string;
+  /** Set when a long text document was split: how many sections the prompt carries. */
+  documentSections?: { shown: number; total: number };
   hasInlineDocument: boolean;
   reviewTopics: string[];
   reviewCount: number;
@@ -26,8 +28,13 @@ export function buildBattlePrompt(p: PromptInput): string {
   const world = mode ? `\nGAME WORLD: ${GAME_MODES[mode].name} — ${GAME_MODES[mode].promptHint}. Flavor the boss, map name and dialogue to fit this world (questions stay academic).` : '';
   const level = `CEFR level ${p.config.cefrLevel || lv.cefr} — difficulty level ${lv.level}/5 (${lv.nameVi}). ${lv.guidance}`;
 
+  const sections = p.documentSections
+    ? `\nThe document is given as ${p.documentSections.shown} numbered sections${p.documentSections.shown < p.documentSections.total ? ` (selected from ${p.documentSections.total}: the ones most relevant to the topic plus an even spread; the rest are omitted)` : ''}. Spread the questions across ALL given sections in document order — do not take everything from the first section. If the lesson topic names a unit/part, focus on the sections that match it.`
+    : p.hasInlineDocument
+      ? '\nCover the whole attached document evenly (all pages/units), not only its beginning.'
+      : '';
   const source = p.hasInlineDocument || p.documentText
-    ? `SOURCE DOCUMENT: Base every question ONLY on the attached/provided lesson material. First extract its key knowledge points into "knowledge_matrix".${
+    ? `SOURCE DOCUMENT: Base every question ONLY on the attached/provided lesson material. First extract its key knowledge points into "knowledge_matrix".${sections}${
         p.documentText ? `\n--- DOCUMENT START ---\n${p.documentText}\n--- DOCUMENT END ---` : ''
       }`
     : 'No document provided: write original questions on the lesson topic.';

@@ -45,13 +45,14 @@ interface Props {
 
 export default function QuestionEditor({ q, index, level, problem, onChange, onRemove }: Props) {
   const type = questionType(q);
-  const set = (patch: Partial<Question>) => onChange({ ...q, ...patch });
+  // Editing a bank question makes it the tutor's own: the "ngân hàng" badge goes away.
+  const set = (patch: Partial<Question>) => onChange({ ...q, ...patch, from_bank: undefined });
 
   return (
-    <div className={`bg-slate-950 p-4 rounded-xl border space-y-3 ${problem ? 'border-rose-500/60' : 'border-slate-800'}`}>
+    <div className={`bg-slate-950 p-4 rounded-xl border space-y-3 ${problem ? 'border-rose-500/60' : q.from_bank ? 'border-amber-500/60 border-dashed' : 'border-slate-800'}`}>
       <div className="flex flex-wrap items-center gap-2">
         <span className="text-xs font-bold text-blue-400">Câu {index + 1}</span>
-        <select aria-label="Dạng bài" value={type} onChange={(e) => onChange(convertQuestion(q, e.target.value as QuestionType))} className={`${small} font-bold text-amber-300`}>
+        <select aria-label="Dạng bài" value={type} onChange={(e) => onChange({ ...convertQuestion(q, e.target.value as QuestionType), from_bank: undefined })} className={`${small} font-bold text-amber-300`}>
           {QUESTION_TYPE_IDS.map((t) => (
             <option key={t} value={t}>{QUESTION_TYPES[t].icon} {QUESTION_TYPES[t].nameVi} · ×{QUESTION_TYPES[t].weight} HP</option>
           ))}
@@ -62,6 +63,7 @@ export default function QuestionEditor({ q, index, level, problem, onChange, onR
         <input aria-label="Chủ điểm" value={q.topic} onChange={(e) => set({ topic: e.target.value.slice(0, 80) })} className={`${small} flex-1 min-w-24`} />
         <span className="text-xs text-rose-300 font-mono" title="Phần Boss HP của câu này">{questionShare(q)} HP</span>
         {q.is_review && <span className="text-xs px-2 py-0.5 rounded bg-sky-500/20 text-sky-400">ôn tập</span>}
+        {q.from_bank && <span className="text-xs px-2 py-0.5 rounded bg-amber-500/20 text-amber-300" title="AI không tạo đủ câu: câu này lấy từ ngân hàng câu hỏi chung, không theo bài học của bạn. Sửa nội dung, xoá, hoặc bấm “Nhờ AI viết lại”.">⚠ ngân hàng dự phòng</span>}
         <button type="button" onClick={onRemove} aria-label={`Xoá câu ${index + 1}`} className="ml-auto text-slate-500 hover:text-rose-400"><Trash2 className="w-4 h-4" /></button>
       </div>
 

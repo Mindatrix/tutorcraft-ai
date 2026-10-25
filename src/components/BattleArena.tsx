@@ -31,7 +31,7 @@ import {
   type StoryBeat,
   type TeamRace,
 } from '../engine';
-import { load, remove, save, studentKey } from '../client/storage';
+import { dropResult, load, queueResult, remove, save, studentKey } from '../client/storage';
 import { initSfx, play, setMuted } from '../client/sfx';
 import { ApiError, sessionApi, type ActResponse, type FinalizeResponse, type SessionView } from '../client/sessionApi';
 import AnswerPanel, { type AnswerPayload } from './AnswerPanel';
@@ -180,12 +180,17 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
         const res = await sessionApi.finalize(tok);
         setFinal(res);
         remove(tokenKey);
+        // Not written to the database yet: keep the token so ResultOutbox re-sends it.
+        if (res.pending) queueResult(tok, battle.id);
+        else dropResult(tok);
         if (!res.flagged && scenario.showLeaderboard) {
           const r = await fetch(`/api/battle-result?battleId=${encodeURIComponent(battle.id)}`).catch(() => null);
           if (r?.ok) setBoard(await r.json());
         }
       } catch (e) {
-        setFinalError(e instanceof ApiError && e.status === 0 ? 'Mất kết nối — bấm “Nộp lại” khi có mạng.' : (e as Error).message);
+        const transient = e instanceof ApiError && (e.status === 0 || e.status === 408 || e.status === 429 || e.status >= 500);
+        if (transient) queueResult(tok, battle.id);
+        setFinalError(transient ? 'Chưa gửi được kết quả (mất kết nối hoặc máy chủ bận). Kết quả đã được giữ lại trên máy này và sẽ tự gửi khi có mạng — bạn cũng có thể bấm “Nộp lại”.' : (e as Error).message);
       }
     },
     [tokenKey, scenario.showLeaderboard, battle.id],
@@ -713,6 +718,9 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
                   </div>
                 )}
                 <div className={`text-xs ${muted2}`}>✅ Điểm do máy chủ tính từ nhật ký trận đấu{final?.saved ? ' · đã lưu' : ''}</div>
+                {final?.pending && (
+                  <p role="status" className="text-xs font-semibold text-amber-400">⏳ Chưa ghi được vào sổ điểm của lớp — hệ thống đang tự gửi lại, bạn không cần chơi lại.</p>
+                )}
                 {gamified && score.bossDefeated && (
                   <div>
                     {!loot ? (

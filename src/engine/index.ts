@@ -9,6 +9,8 @@ export * from './variants';
 export * from './sm2';
 export * from './schema';
 export * from './fallback';
+export * from './docx';
+export * from './chunking';
 export * from './scoring';
 export * from './race';
 export * from './teams';

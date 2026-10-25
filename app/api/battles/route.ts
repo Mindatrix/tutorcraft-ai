@@ -10,14 +10,14 @@ import {
   variantCodes,
 } from '../../../src/engine';
 import { demoLoadedBattle, loadBattle, loadBattleByCode, publicBattle, saveBattle } from '../../../src/server/battles';
-import { clientKey, rateLimit } from '../../../src/server/rateLimit';
+import { clientKey, rateLimit, rateLimitShared } from '../../../src/server/rateLimit';
 import { UNAUTHORIZED, ensureTutorProfile, requireTutor } from '../../../src/server/auth';
 
 /** Publish a battle the tutor reviewed and edited in the Studio. */
 export async function POST(req: Request) {
   const tutor = await requireTutor(req);
   if (!tutor) return NextResponse.json(UNAUTHORIZED, { status: 401 });
-  const limit = rateLimit(`publish:${tutor.id}`, 10, 60_000);
+  const limit = await rateLimitShared(`publish:${tutor.id}`, 10, 60_000);
   if (!limit.ok) return NextResponse.json({ error: `Quá nhiều yêu cầu. Thử lại sau ${limit.retryAfterSec}s.` }, { status: 429 });
 
   let body: Record<string, unknown>;
@@ -65,7 +65,7 @@ export async function POST(req: Request) {
 /** Public battle info by short code (?code=ABC123) or id (?id=uuid) for the student lobby. */
 export async function GET(req: Request) {
   const params = new URL(req.url).searchParams;
-  const limit = rateLimit(`lookup:${clientKey(req)}`, 60, 60_000);
+  const limit = rateLimit(`lookup:${clientKey(req)}`, 300, 60_000);
   if (!limit.ok) return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
 
   const id = params.get('id');

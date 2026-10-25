@@ -1,4 +1,4 @@
-import type { BossProfile, DifficultyLevel, ExamMode, Question, QuestionType, ScenarioId, ThemeId, GameMode } from '../../engine';
+import type { BankFill, BossProfile, DifficultyLevel, ExamMode, Question, QuestionType, ScenarioId, ThemeId, GameMode } from '../../engine';
 
 export interface StudioSettings {
   topic: string;
@@ -31,6 +31,22 @@ export interface StudioDraft {
   execution_time: string;
   attempts: { model: string; ok: boolean; ms: number; error?: string }[];
   review_topics: string[];
+  /** Set when some questions were topped up from the local bank (AI short / failed). */
+  fill?: BankFill | null;
+  /** How a long document was cut down for the AI (chunked + selected). */
+  document_info?: DocumentInfo | null;
+  /** The generate request, kept so the Studio can ask the AI again for replacements. */
+  request?: Record<string, unknown>;
+}
+
+export interface DocumentInfo {
+  name: string;
+  chars: number;
+  chunks: number;
+  usedChunks: number;
+  usedChars: number;
+  truncated: boolean;
+  source: 'text' | 'docx' | 'inline';
 }
 
 export interface PublishedBattle {

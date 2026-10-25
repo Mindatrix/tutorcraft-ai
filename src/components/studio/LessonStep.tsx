@@ -22,36 +22,63 @@ import {
   MIN_QUESTIONS,
   MAX_QUESTIONS,
   DEFAULT_BOSS_MODE,
+  DOC_MAX_CHARS,
+  DOCX_MIME,
+  extractDocxText,
+  isDocx,
   type QuestionType,
 } from '../../engine';
 import { field, label, type StudioDraft, type StudioSettings } from './types';
 import { authFetch } from '../../client/supabaseBrowser';
 import WorldPicker from './WorldPicker';
+import { canInflateInBrowser, inflateRawBrowser } from '../../client/inflate';
 
 const TEXT_TYPES = ['text/plain', 'text/markdown'];
 const INLINE_TYPES = ['application/pdf', 'image/png', 'image/jpeg', 'image/webp'];
 const MAX_FILE_BYTES = 4 * 1024 * 1024;
+/** Word files are unzipped in the browser and only their text is sent, so they may be bigger. */
+const MAX_DOCX_BYTES = 25 * 1024 * 1024;
 
 interface UploadedDoc {
   name: string;
   mimeType: string;
   data?: string;
   text?: string;
+  source?: 'docx';
+  /** Characters of text read from the file (shown to the tutor). */
+  chars?: number;
 }
 
-function readFile(file: File): Promise<UploadedDoc> {
-  const mimeType = file.type || (file.name.endsWith('.md') ? 'text/markdown' : '');
-  if (TEXT_TYPES.includes(mimeType)) return file.text().then((text) => ({ name: file.name, mimeType, text }));
-  if (!INLINE_TYPES.includes(mimeType)) {
-    return Promise.reject(new Error('Chỉ hỗ trợ PDF, ảnh (PNG/JPG/WEBP) hoặc TXT/MD. Với DOCX, hãy lưu thành PDF.'));
-  }
-  if (file.size > MAX_FILE_BYTES) return Promise.reject(new Error('Tệp tối đa 4MB.'));
-  return new Promise((resolve, reject) => {
+const toBase64 = (file: File) =>
+  new Promise<string>((resolve, reject) => {
     const r = new FileReader();
-    r.onload = () => resolve({ name: file.name, mimeType, data: String(r.result).split(',')[1] ?? '' });
+    r.onload = () => resolve(String(r.result).split(',')[1] ?? '');
     r.onerror = () => reject(new Error('Không đọc được tệp.'));
     r.readAsDataURL(file);
   });
+
+async function readFile(file: File): Promise<UploadedDoc> {
+  const mimeType = file.type || (file.name.endsWith('.md') ? 'text/markdown' : file.name.endsWith('.txt') ? 'text/plain' : '');
+  if (TEXT_TYPES.includes(mimeType)) {
+    const text = (await file.text()).slice(0, DOC_MAX_CHARS);
+    return { name: file.name, mimeType, text, chars: text.length };
+  }
+  if (isDocx(file.name, mimeType)) {
+    if (canInflateInBrowser()) {
+      if (file.size > MAX_DOCX_BYTES) throw new Error('Tệp Word tối đa 25MB.');
+      const text = (await extractDocxText(new Uint8Array(await file.arrayBuffer()), inflateRawBrowser)).slice(0, DOC_MAX_CHARS);
+      return { name: file.name, mimeType: 'text/plain', text, source: 'docx', chars: text.length };
+    }
+    // Older browser: let the server unzip it.
+    if (file.size > MAX_FILE_BYTES) throw new Error('Trình duyệt này chỉ gửi được tệp Word tối đa 4MB — hãy cập nhật trình duyệt hoặc lưu thành PDF.');
+    return { name: file.name, mimeType: DOCX_MIME, data: await toBase64(file) };
+  }
+  if (/\.doc$/i.test(file.name) || mimeType === 'application/msword') {
+    throw new Error('Tệp .doc đời cũ chưa đọc được — mở bằng Word và “Lưu thành” .docx hoặc PDF.');
+  }
+  if (!INLINE_TYPES.includes(mimeType)) throw new Error('Chỉ hỗ trợ PDF, Word (.docx), ảnh (PNG/JPG/WEBP) hoặc TXT/MD.');
+  if (file.size > MAX_FILE_BYTES) throw new Error('Tệp PDF/ảnh tối đa 4MB.');
+  return { name: file.name, mimeType, data: await toBase64(file) };
 }
 
 export const DEFAULT_SETTINGS: StudioSettings = {
@@ -77,6 +104,7 @@ export default function LessonStep({ initial, onGenerated }: { initial: StudioSe
   const [lessonText, setLessonText] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [reading, setReading] = useState(false);
 
   const set = <K extends keyof StudioSettings>(k: K, v: StudioSettings[K]) => setS((prev) => ({ ...prev, [k]: v }));
   const plannedCount = s.questionCount ? clampQuestionCount(s.questionCount) : plannedQuestionCount(s.durationMinutes, s.questionTypes);
@@ -94,10 +122,13 @@ export default function LessonStep({ initial, onGenerated }: { initial: StudioSe
   const onFile = async (file: File | undefined) => {
     setError(null);
     if (!file) return;
+    setReading(true);
     try {
       setDoc(await readFile(file));
     } catch (e) {
       setError((e as Error).message);
+    } finally {
+      setReading(false);
     }
   };
 
@@ -109,27 +140,28 @@ export default function LessonStep({ initial, onGenerated }: { initial: StudioSe
     // Pasted lesson text is sent as a text document; an uploaded file takes priority.
     const document = doc ?? (lessonText.trim() ? { name: 'Bài học', mimeType: 'text/plain', text: lessonText } : undefined);
     try {
+      const request = {
+        draft: true,
+        topic: s.topic,
+        scenario: s.scenario,
+        mode: s.mode,
+        themes: s.themes,
+        durationMinutes: s.durationMinutes,
+        studentCount: s.studentCount,
+        teamSize: s.teamSize,
+        classCode: s.classCode || undefined,
+        cefrLevel: s.cefrLevel || undefined,
+        level: s.level,
+        questionTypes: s.questionTypes,
+        questionCount: s.questionCount || undefined,
+        gameMode: s.gameMode ?? undefined,
+        examType: s.scenario === 'coop_raid' ? 'group' : 'individual',
+        document,
+      };
       const res = await authFetch('/api/generate-battle', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          draft: true,
-          topic: s.topic,
-          scenario: s.scenario,
-          mode: s.mode,
-          themes: s.themes,
-          durationMinutes: s.durationMinutes,
-          studentCount: s.studentCount,
-          teamSize: s.teamSize,
-          classCode: s.classCode || undefined,
-          cefrLevel: s.cefrLevel || undefined,
-          level: s.level,
-          questionTypes: s.questionTypes,
-          questionCount: s.questionCount || undefined,
-          gameMode: s.gameMode ?? undefined,
-          examType: s.scenario === 'coop_raid' ? 'group' : 'individual',
-          document,
-        }),
+        body: JSON.stringify(request),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Không thể tạo đấu trường');
@@ -144,6 +176,9 @@ export default function LessonStep({ initial, onGenerated }: { initial: StudioSe
         execution_time: data.execution_time,
         attempts: data.attempts ?? [],
         review_topics: data.review_topics ?? [],
+        fill: data.fill ?? null,
+        document_info: data.document_info ?? null,
+        request,
       });
     } catch (err) {
       setError((err as Error).message);
@@ -162,19 +197,19 @@ export default function LessonStep({ initial, onGenerated }: { initial: StudioSe
           </div>
           <div>
             <label className={label} htmlFor="lesson">📝 Dán văn bản bài học (tuỳ chọn)</label>
-            <textarea id="lesson" value={lessonText} onChange={(e) => setLessonText(e.target.value.slice(0, 30000))} rows={4} disabled={!!doc} placeholder="Dán nội dung giáo án, đoạn văn, danh sách từ vựng… AI sẽ chỉ ra đề từ nội dung này." className={`${field} disabled:opacity-40`} />
+            <textarea id="lesson" value={lessonText} onChange={(e) => setLessonText(e.target.value.slice(0, DOC_MAX_CHARS))} rows={4} disabled={!!doc} placeholder="Dán nội dung giáo án, đoạn văn, danh sách từ vựng… AI sẽ chỉ ra đề từ nội dung này." className={`${field} disabled:opacity-40`} />
           </div>
           <div>
             <span className={label}>📄 Hoặc tải tệp bài giảng</span>
             {doc ? (
               <div className="flex items-center justify-between gap-2 border-2 border-slate-600 px-4 py-3 text-sm">
-                <span className="truncate">{doc.name}</span>
+                <span className="truncate">{doc.name}{doc.chars ? <span className="text-slate-400"> · {doc.chars.toLocaleString('en-US')} ký tự{doc.chars > 32000 ? ' — tài liệu dài, sẽ được chia đoạn' : ''}</span> : null}</span>
                 <button type="button" onClick={() => setDoc(null)} aria-label="Bỏ tệp" className="text-slate-400 hover:text-white"><X className="w-4 h-4" /></button>
               </div>
             ) : (
               <label className="flex items-center justify-center gap-2 border-2 border-dashed border-slate-600 px-4 py-4 text-sm text-slate-400 cursor-pointer hover:border-amber-300 hover:text-amber-200">
-                <Upload className="w-4 h-4" /> PDF · Ảnh giáo án (PNG/JPG) · TXT/MD — tối đa 4MB
-                <input type="file" accept=".pdf,.png,.jpg,.jpeg,.webp,.txt,.md" className="hidden" onChange={(e) => onFile(e.target.files?.[0])} />
+                {reading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />} PDF · Word (.docx) · Ảnh giáo án (PNG/JPG) · TXT/MD
+                <input type="file" accept=".pdf,.docx,.png,.jpg,.jpeg,.webp,.txt,.md,application/vnd.openxmlformats-officedocument.wordprocessingml.document" className="hidden" onChange={(e) => { void onFile(e.target.files?.[0]); e.target.value = ''; }} />
               </label>
             )}
           </div>

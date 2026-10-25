@@ -12,6 +12,12 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // build output, previews and the Unity WebGL bundle (minified, not our source)
+    ".test-build/**",
+    "tc_preview/**",
+    ".preview-tmp/**",
+    "unity/**",
+    "public/**",
   ]),
 ]);
 

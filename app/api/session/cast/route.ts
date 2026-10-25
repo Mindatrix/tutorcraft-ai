@@ -5,7 +5,7 @@ import { SESSION_HEADER, sessionErrorResponse, sessions } from '../../../../src/
 export async function POST(req: Request) {
   const token = req.headers.get(SESSION_HEADER) ?? '';
   const byToken = rateLimit(`cast-token:${token.slice(-24)}`, 60, 60_000);
-  const byIp = rateLimit(`cast-ip:${clientKey(req)}`, 200, 60_000);
+  const byIp = rateLimit(`cast-ip:${clientKey(req)}`, 1000, 60_000);
   if (!byToken.ok || !byIp.ok) return Response.json({ error: 'Quá nhiều yêu cầu.' }, { status: 429 });
 
   let body: Record<string, unknown>;

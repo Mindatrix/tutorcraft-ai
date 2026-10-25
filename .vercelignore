@@ -1,0 +1,7 @@
+# The Unity WebGL build (45 MB) is served from a CDN, not from the deployment:
+# see scripts/publish-unity-build.mjs and src/config/unityBuild.ts
+public/unity
+unity
+.test-build
+tc_preview
+.preview-tmp

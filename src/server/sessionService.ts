@@ -73,14 +73,19 @@ export interface FinalizeResult {
   score: BattleScore | null;
   hpRemaining: number | null;
   saved: boolean;
+  /** true = the result is kept on the server and will be written later (retry queue). */
+  pending?: boolean;
   /** Boat Race only: server-decided result against the bot. */
   race?: RaceOutcome | null;
 }
 
+/** 'skipped' = intentionally not stored (demo battle / no database). */
+export type PersistOutcome = boolean | 'skipped';
+
 export interface SessionDeps {
   loadBattle: (id: string) => Promise<LoadedBattle | null>;
   storeFor: (battleId: string) => SessionStore;
-  persistResult: (input: { battle: LoadedBattle; rec: SessionRecord; ctx: BattleCtx; state: BattleState; score: BattleScore; hpRemaining: number; timings: AnswerTiming[] }) => Promise<boolean>;
+  persistResult: (input: { battle: LoadedBattle; rec: SessionRecord; ctx: BattleCtx; state: BattleState; score: BattleScore; hpRemaining: number; timings: AnswerTiming[] }) => Promise<PersistOutcome>;
   /** Essay / reading grader (AI rubric). Defaults to the rule-based grader. */
   gradeOpen?: (q: Question, text: string) => Promise<Grade>;
   now?: () => number;
@@ -250,7 +255,10 @@ export function createSessionService(deps: SessionDeps) {
 
       const res = appendEntry(ctx, rec.startedAt, rec.log, entry);
       if (!res.ok) throw new SessionError(res.status, res.reason);
-      const updated: SessionRecord = { ...rec, log: [...rec.log, entry] };
+      // The last answer ends the match: from now on the result must reach battle_results even if
+      // the student's browser never sends the final submit (picked up by retryPending).
+      const over = res.rebuilt.state.phase === 'result';
+      const updated: SessionRecord = { ...rec, log: [...rec.log, entry], ...(over ? { resultSaved: false } : {}) };
       if (!(await store.update(updated, rec.version))) throw new SessionError(409, 'Thao tác bị trùng — hãy thử lại.');
 
       const reveal: AnswerReveal | null = res.afterAnswer ? revealFor(ctx, res.afterAnswer, grade) : null;
@@ -263,32 +271,74 @@ export function createSessionService(deps: SessionDeps) {
 
     async finalize(token: unknown): Promise<FinalizeResult> {
       const { store, rec, battle, ctx } = await resolve(token);
-      // Idempotent: a second submit returns the stored outcome instead of paying out twice.
-      if (rec.status === 'finished') return { flagged: false, reasons: [], score: rec.result, hpRemaining: rec.result?.hpRemaining ?? null, saved: true, race: rec.result?.race ?? null };
-      if (rec.status === 'flagged') return { flagged: true, reasons: rec.flags, score: null, hpRemaining: null, saved: false };
+      return finalizeRecord(store, rec, battle, ctx);
+    },
 
-      const { state, timings } = rebuildSession(ctx, rec.startedAt, rec.log);
-      if (state.phase !== 'result') throw new SessionError(409, 'Trận đấu chưa kết thúc.');
-
-      const verdict = assessTimings(timings);
-      if (verdict.flagged) {
-        await store.update({ ...rec, status: 'flagged', flags: verdict.reasons }, rec.version);
-        return { flagged: true, reasons: verdict.reasons, score: null, hpRemaining: null, saved: false };
+    /**
+     * Retry queue on the server: writes results that are over but not in battle_results yet
+     * (insert failed, or the final submit never arrived). Safe to run anywhere, any time:
+     * every step is idempotent and goes through the same anti-cheat checks.
+     */
+    async retryPending(limit = 10, idleMs = 2 * 60_000): Promise<{ tried: number; saved: number; flagged: number }> {
+      const out = { tried: 0, saved: 0, flagged: 0 };
+      const store = deps.storeFor('');
+      for (const rec of await store.listPending(limit, idleMs)) {
+        out.tried += 1;
+        try {
+          const battle = await deps.loadBattle(rec.battleId);
+          if (!battle) continue;
+          const res = await finalizeRecord(store, rec, battle, contextFor(battle, rec.variant, rec.id));
+          if (res.saved) out.saved += 1;
+          if (res.flagged) out.flagged += 1;
+        } catch {
+          /* not finished yet / raced with the student's own submit: next sweep */
+        }
       }
-
-      // Everything below is computed from the server's own log — client numbers are never read.
-      const score = scoreBattle(ctx.questions, state.answers, ctx.config, DEFAULT_EXPECTED_ACCURACY, questGems(state.quests));
-      const hpRemaining = ctx.config.mode === 'gamified' ? state.hp : ctx.scaling.playerHp;
-      const race = ctx.config.scenario === 'boat_race'
-        ? raceOutcome(ctx.questions, state.answers, raceSeed(battle.id, rec.variant, ctx.config.level), ctx.config.level)
-        : null;
-      const saved = await deps.persistResult({ battle, rec, ctx, state, score, hpRemaining, timings });
-      if (!(await store.update({ ...rec, status: 'finished', result: { ...score, hpRemaining, race } }, rec.version))) {
-        throw new SessionError(409, 'Kết quả đã được nộp.');
-      }
-      return { flagged: false, reasons: [], score, hpRemaining, saved, race };
+      return out;
     },
   };
+
+  /** Score from the server's own log and write it (once). Re-entrant: retries a failed save. */
+  async function finalizeRecord(store: SessionStore, rec: SessionRecord, battle: LoadedBattle, ctx: BattleCtx): Promise<FinalizeResult> {
+    if (rec.status === 'flagged') return { flagged: true, reasons: rec.flags, score: null, hpRemaining: null, saved: false };
+
+    const { state, timings } = rebuildSession(ctx, rec.startedAt, rec.log);
+    if (rec.status === 'finished') {
+      // Idempotent: a second submit returns the stored outcome instead of paying out twice —
+      // but if the first write failed, this is the retry.
+      const stored = { flagged: false, reasons: [], score: rec.result, hpRemaining: rec.result?.hpRemaining ?? null, race: rec.result?.race ?? null };
+      // resultSaved: true = written · null = never stored (demo battle) · false = retry now.
+      if (rec.resultSaved !== false || !rec.result) return { ...stored, saved: rec.resultSaved === true };
+      const outcome = await deps.persistResult({ battle, rec, ctx, state, score: rec.result, hpRemaining: rec.result.hpRemaining, timings });
+      if (outcome === true) await store.update({ ...rec, resultSaved: true }, rec.version).catch(() => false);
+      return { ...stored, saved: outcome === true, pending: outcome === false };
+    }
+
+    if (state.phase !== 'result') throw new SessionError(409, 'Trận đấu chưa kết thúc.');
+
+    const verdict = assessTimings(timings);
+    if (verdict.flagged) {
+      await store.update({ ...rec, status: 'flagged', flags: verdict.reasons, resultSaved: null }, rec.version);
+      return { flagged: true, reasons: verdict.reasons, score: null, hpRemaining: null, saved: false };
+    }
+
+    // Everything below is computed from the server's own log — client numbers are never read.
+    const score = scoreBattle(ctx.questions, state.answers, ctx.config, DEFAULT_EXPECTED_ACCURACY, questGems(state.quests));
+    const hpRemaining = ctx.config.mode === 'gamified' ? state.hp : ctx.scaling.playerHp;
+    const race = ctx.config.scenario === 'boat_race'
+      ? raceOutcome(ctx.questions, state.answers, raceSeed(battle.id, rec.variant, ctx.config.level), ctx.config.level)
+      : null;
+    const outcome = await deps.persistResult({ battle, rec, ctx, state, score, hpRemaining, timings });
+    const finished: SessionRecord = { ...rec, status: 'finished', result: { ...score, hpRemaining, race }, resultSaved: outcome === 'skipped' ? null : outcome };
+    if (!(await store.update(finished, rec.version))) {
+      // Raced with another submit (double tap, or the server's retry sweep): report what won.
+      const now2 = await store.get(rec.id);
+      if (now2?.status === 'finished') return finalizeRecord(store, now2, battle, ctx);
+      throw new SessionError(409, 'Kết quả đã được nộp.');
+    }
+    if (outcome === false) console.error(`battle result for session ${rec.id} not saved yet — queued for retry`);
+    return { flagged: false, reasons: [], score, hpRemaining, saved: outcome === true, pending: outcome === false, race };
+  }
 }
 
 export type SessionService = ReturnType<typeof createSessionService>;

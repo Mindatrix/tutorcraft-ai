@@ -38,37 +38,44 @@ function openResponses(rec: Parameters<SessionDeps['persistResult']>[0]['rec'], 
     .slice(0, 50);
 }
 
-const persistResult: SessionDeps['persistResult'] = async ({ battle, rec, ctx, state, score, hpRemaining }) => {
-  if (battle.id === DEMO_BATTLE_ID) return false;
-  const db = serverSupabase();
-  if (!db) return false;
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-  const ins = await db.from('battle_results').insert([
-    {
-      battle_id: battle.id,
-      session_id: rec.id,
-      class_code: battle.config.classCode,
-      student_key: rec.studentKey,
-      nickname: rec.nickname,
-      avatar: rec.avatar,
-      variant_code: rec.variant,
-      team: rec.team ?? null,
-      correct: score.correct,
-      answered: score.answered,
-      accuracy: score.accuracy,
-      gems: score.gems,
-      exp: score.exp,
-      damage: score.damage,
-      boss_defeated: score.bossDefeated,
-      hp_remaining: hpRemaining,
-      topics: score.topics,
-      responses: openResponses(rec, ctx),
-    },
-  ]);
-  if (ins.error) {
-    console.error('battle_results insert failed:', ins.error.message);
-    return false;
+const persistResult: SessionDeps['persistResult'] = async ({ battle, rec, ctx, state, score, hpRemaining }) => {
+  if (battle.id === DEMO_BATTLE_ID) return 'skipped';
+  const db = serverSupabase();
+  if (!db) return 'skipped';
+
+  const row = {
+    battle_id: battle.id,
+    session_id: rec.id,
+    class_code: battle.config.classCode,
+    student_key: rec.studentKey,
+    nickname: rec.nickname,
+    avatar: rec.avatar,
+    variant_code: rec.variant,
+    team: rec.team ?? null,
+    correct: score.correct,
+    answered: score.answered,
+    accuracy: score.accuracy,
+    gems: score.gems,
+    exp: score.exp,
+    damage: score.damage,
+    boss_defeated: score.bossDefeated,
+    hp_remaining: hpRemaining,
+    topics: score.topics,
+    responses: openResponses(rec, ctx),
+  };
+  // Short in-request retries for blips; anything longer is left to the retry queue
+  // (session.resultSaved = false → retryPending / the student's next submit).
+  let saved = false;
+  for (let attempt = 0; attempt < 3 && !saved; attempt++) {
+    if (attempt) await sleep(250 * 3 ** (attempt - 1));
+    const ins = await db.from('battle_results').insert([row]).then((r) => r, (e: unknown) => ({ error: { code: '', message: String(e) } }));
+    // 23505 = unique session_id: an earlier attempt already got through.
+    if (!ins.error || ins.error.code === '23505') saved = true;
+    else console.error(`battle_results insert failed (try ${attempt + 1}/3):`, ins.error.message);
   }
+  if (!saved) return false;
 
   // Spaced repetition: wrong or hesitant answers (graded on SERVER time) go into the weak matrix.
   const byId = new Map(ctx.questions.map((q) => [q.id, q]));

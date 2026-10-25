@@ -1,5 +1,7 @@
 import type { BattlePayload, Question, QuestionType } from './types';
 import { hashString, mulberry32, seededShuffle } from './variants';
+import { normalizeForCompare } from './normalize';
+import { questionType } from './questionTypes';
 
 // Local cached template payload — used when both Gemini attempts fail,
 // so a tutor always gets a playable battle. CEFR A2–B2 general English.
@@ -136,3 +138,51 @@ export function fallbackPayload(count: number, seedText = 'fallback', types: Que
 }
 
 export const FALLBACK_BANK_SIZE = BANK.length;
+
+export interface BankFill {
+  /** Questions requested from the AI. */
+  requested: number;
+  /** Valid questions the AI delivered. */
+  fromAi: number;
+  /** Questions taken from the local bank to reach the count. */
+  fromBank: number;
+  /** ai_short = the AI returned too few valid questions; ai_failed = no usable AI answer at all. */
+  reason: 'ai_short' | 'ai_failed';
+  /** Formats of the bank questions, e.g. { mcq: 2, cloze: 1 }. */
+  types: Partial<Record<QuestionType, number>>;
+}
+
+const bankKey = (q: Pick<Question, 'question' | 'options'>) => normalizeForCompare(`${q.question}|${q.options.join('|')}`);
+
+/**
+ * Top `existing` up to `target` questions from the local bank, preferring the formats the AI
+ * under-delivered against `plan`. Never repeats a question; every added one has from_bank = true.
+ */
+export function fillFromBank(existing: Question[], target: number, plan: QuestionType[], seedText = 'fallback'): Question[] {
+  const need = target - existing.length;
+  if (need <= 0) return [];
+  const have = new Map<QuestionType, number>();
+  for (const q of existing) have.set(questionType(q), (have.get(questionType(q)) ?? 0) + 1);
+  const wanted = new Map<QuestionType, number>();
+  for (const t of plan) wanted.set(t, (wanted.get(t) ?? 0) + 1);
+  const missing = [...wanted].filter(([t, n]) => (have.get(t) ?? 0) < n).map(([t]) => t);
+  const types = missing.length ? missing : Array.from(new Set(plan.length ? plan : (['mcq'] as QuestionType[])));
+
+  const seen = new Set(existing.map(bankKey));
+  const out: Question[] = [];
+  for (const q of fallbackPayload(Math.max(need * 3, 12), seedText, types).questions) {
+    const k = bankKey(q);
+    if (seen.has(k)) continue;
+    seen.add(k);
+    out.push({ ...q, from_bank: true });
+    if (out.length >= need) break;
+  }
+  return out;
+}
+
+export function bankFillReport(requested: number, fromAi: number, bank: Question[], reason: BankFill['reason']): BankFill | null {
+  if (!bank.length) return null;
+  const types: Partial<Record<QuestionType, number>> = {};
+  for (const q of bank) types[questionType(q)] = (types[questionType(q)] ?? 0) + 1;
+  return { requested, fromAi, fromBank: bank.length, reason, types };
+}

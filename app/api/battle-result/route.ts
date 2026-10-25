@@ -1,6 +1,6 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, after } from 'next/server';
 import { teamRace, weakTopics, type TopicStat } from '../../../src/engine';
-import { clientKey, rateLimit } from '../../../src/server/rateLimit';
+import { clientKey, rateLimitShared } from '../../../src/server/rateLimit';
 import { requireTutor } from '../../../src/server/auth';
 import { serverSupabase } from '../../../src/server/supabase-server';
 import { loadBattleCached } from '../../../src/server/battles';
@@ -12,12 +12,17 @@ import { SESSION_HEADER, sessionErrorResponse, sessions } from '../../../src/ser
 
 export async function POST(req: Request) {
   const token = req.headers.get(SESSION_HEADER) ?? '';
-  const byIp = rateLimit(`result-ip:${clientKey(req)}`, 10, 60_000);
-  const byToken = rateLimit(`result-token:${token.slice(-24)}`, 5, 60_000);
+  // Both counters in one round trip (class on one IP → 150/min; one student → 5/min).
+  const [byIp, byToken] = await Promise.all([
+    rateLimitShared(`result-ip:${clientKey(req)}`, 150, 60_000),
+    rateLimitShared(`result-token:${token.slice(-24)}`, 5, 60_000),
+  ]);
   if (!byIp.ok || !byToken.ok) return NextResponse.json({ error: 'Too many submissions' }, { status: 429 });
 
   try {
     const res = await sessions.finalize(token);
+    // The database is reachable again: drain a few results that are still waiting (retry queue).
+    if (res.saved) after(() => sessions.retryPending(3).then(() => undefined, () => undefined));
     if (res.flagged) {
       return NextResponse.json({ ...res, error: 'Kết quả bị từ chối: phát hiện tốc độ trả lời bất thường.' }, { status: 422 });
     }

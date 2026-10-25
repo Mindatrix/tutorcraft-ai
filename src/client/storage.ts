@@ -1,6 +1,6 @@
 'use client';
 
-// Safe localStorage helpers + offline result queue (auto-sync on reconnect).
+// Safe localStorage helpers + the battle-result outbox (auto re-send on reconnect).
 
 export function load<T>(key: string, fallback: T): T {
   try {
@@ -27,52 +27,60 @@ export function remove(key: string): void {
   }
 }
 
-const QUEUE_KEY = 'tc:pending-results';
+// Result outbox: finished battles whose result has not been confirmed as saved.
+// Only the sealed session token is kept — the server rebuilds the score from its own log,
+// so re-sending is safe (finalize is idempotent) and cannot be used to change the score.
+const OUTBOX_KEY = 'tc:result-outbox';
+const TOKEN_TTL_MS = 24 * 60 * 60 * 1000; // same as the server's SESSION_TTL_MS
 
-export interface PendingResult {
-  id: string;
-  body: Record<string, unknown>;
+export interface OutboxItem {
+  token: string;
+  battleId: string;
+  queuedAt: number;
+  tries: number;
+  nextAt: number;
 }
 
-export async function submitResult<T>(body: Record<string, unknown>): Promise<{ data: T | null; queued: boolean }> {
-  try {
-    const res = await fetch('/api/battle-result', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    });
-    if (res.ok) return { data: (await res.json()) as T, queued: false };
-    if (res.status >= 400 && res.status < 500 && res.status !== 429) return { data: null, queued: false };
-  } catch {
-    /* offline — fall through to queue */
-  }
-  const queue = load<PendingResult[]>(QUEUE_KEY, []);
-  queue.push({ id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`, body });
-  save(QUEUE_KEY, queue.slice(-20));
-  return { data: null, queued: true };
+export function outboxItems(): OutboxItem[] {
+  return load<OutboxItem[]>(OUTBOX_KEY, []).filter((i) => i && typeof i.token === 'string' && Date.now() - i.queuedAt < TOKEN_TTL_MS);
 }
 
-/** Retry queued submissions. Call on mount and on the `online` event. */
-export async function flushQueue(): Promise<number> {
-  const queue = load<PendingResult[]>(QUEUE_KEY, []);
-  if (!queue.length) return 0;
-  const left: PendingResult[] = [];
+export function queueResult(token: string, battleId: string): void {
+  const items = outboxItems().filter((i) => i.token !== token);
+  items.push({ token, battleId, queuedAt: Date.now(), tries: 0, nextAt: Date.now() + 5_000 });
+  save(OUTBOX_KEY, items.slice(-20));
+  window.dispatchEvent(new Event('tc:outbox'));
+}
+
+export function dropResult(token: string): void {
+  save(OUTBOX_KEY, outboxItems().filter((i) => i.token !== token));
+}
+
+/**
+ * Re-send queued results. `send` returns 'done' (saved, flagged, or rejected for good)
+ * or 'retry'. Backoff: 5s, 15s, 45s … capped at 10 min.
+ */
+export async function flushResults(send: (item: OutboxItem) => Promise<'done' | 'retry'>, force = false): Promise<{ sent: number; left: number }> {
+  const items = outboxItems();
+  const keep: OutboxItem[] = [];
   let sent = 0;
-  for (const item of queue) {
-    try {
-      const res = await fetch('/api/battle-result', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(item.body),
-      });
-      if (res.ok || (res.status >= 400 && res.status < 500 && res.status !== 429)) sent += 1;
-      else left.push(item);
-    } catch {
-      left.push(item);
+  for (const item of items) {
+    if (!force && item.nextAt > Date.now()) {
+      keep.push(item);
+      continue;
     }
+    const verdict = await send(item).catch(() => 'retry' as const);
+    if (verdict === 'done') {
+      sent += 1;
+      continue;
+    }
+    const tries = item.tries + 1;
+    keep.push({ ...item, tries, nextAt: Date.now() + Math.min(600_000, 5_000 * 3 ** Math.min(tries, 6)) });
   }
-  save(QUEUE_KEY, left);
-  return sent;
+  // Another tab may have queued something meanwhile: merge by token.
+  const latest = outboxItems().filter((i) => !items.some((o) => o.token === i.token));
+  save(OUTBOX_KEY, [...keep, ...latest]);
+  return { sent, left: keep.length + latest.length };
 }
 
 export function studentKey(): string {

@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 
 // Front-line protection for every /api route (Next 16 "proxy", formerly middleware):
-//  - sliding-window rate limits per IP and per battle-session token
+//  - sliding-window rate limits per IP (class-sized, see below) and per battle-session token
 //  - stricter limits on the expensive / scoring routes
 //  - request size cap and a cross-site POST block
 // Route handlers keep their own limits too (defence in depth).
@@ -10,13 +10,18 @@ import { NextResponse, type NextRequest } from 'next/server';
 
 type Rule = { limit: number; windowMs: number };
 
-const GLOBAL_IP: Rule = { limit: 240, windowMs: 60_000 };
+// Per-IP limits are sized for a whole class behind ONE school / tutoring-centre Wi-Fi (NAT):
+// ~60 students share an IP. Abuse is held back per battle-session token (one per student)
+// and by the per-tutor limits in the route handlers.
+const GLOBAL_IP: Rule = { limit: 1500, windowMs: 60_000 };
 const PER_TOKEN: Rule = { limit: 150, windowMs: 60_000 };
-const ROUTE_RULES: { prefix: string; method?: string; rule: Rule }[] = [
-  { prefix: '/api/generate-battle', method: 'POST', rule: { limit: 6, windowMs: 60_000 } },
-  { prefix: '/api/battle-result', method: 'POST', rule: { limit: 12, windowMs: 60_000 } },
-  { prefix: '/api/battles', method: 'POST', rule: { limit: 12, windowMs: 60_000 } },
-  { prefix: '/api/session', method: 'POST', rule: { limit: 180, windowMs: 60_000 } },
+const ROUTE_RULES: { path: string; exact?: boolean; method?: string; scope: 'ip' | 'token'; rule: Rule }[] = [
+  { path: '/api/generate-battle', method: 'POST', scope: 'ip', rule: { limit: 12, windowMs: 60_000 } },
+  { path: '/api/battles', method: 'POST', scope: 'ip', rule: { limit: 30, windowMs: 60_000 } },
+  // Joining a battle (the start of a session), not the answers under /api/session/*.
+  { path: '/api/session', exact: true, method: 'POST', scope: 'ip', rule: { limit: 150, windowMs: 60_000 } },
+  { path: '/api/battle-result', method: 'POST', scope: 'ip', rule: { limit: 150, windowMs: 60_000 } },
+  { path: '/api/battle-result', method: 'POST', scope: 'token', rule: { limit: 10, windowMs: 60_000 } },
 ];
 const MAX_BODY_BYTES = 6 * 1024 * 1024;
 
@@ -75,11 +80,12 @@ export function proxy(req: NextRequest) {
   }
 
   for (const r of ROUTE_RULES) {
-    if (pathname.startsWith(r.prefix) && (!r.method || r.method === req.method)) {
-      wait = check(`route:${r.prefix}:${ip}`, r.rule, now);
-      if (wait) return tooMany(wait, r.prefix);
-      break;
-    }
+    const hit = r.exact ? pathname === r.path : pathname === r.path || pathname.startsWith(`${r.path}/`);
+    if (!hit || (r.method && r.method !== req.method)) continue;
+    if (r.scope === 'token' && !token) continue; // no token: the route answers 401 anyway
+    const who = r.scope === 'token' ? `tok:${token!.slice(-32)}` : `ip:${ip}`;
+    wait = check(`route:${r.path}:${r.scope}:${who}`, r.rule, now);
+    if (wait) return tooMany(wait, r.path);
   }
   return NextResponse.next();
 }
