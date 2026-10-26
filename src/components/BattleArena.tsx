@@ -117,7 +117,10 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
   const [feedback, setFeedback] = useState<Feedback | null>(null);
   const [pending, setPending] = useState(false);
   const [netError, setNetError] = useState<string | null>(null);
-  const [retry, setRetry] = useState<{ questionId: number; payload: AnswerPayload } | null>(null);
+  // network = lost connection (auto re-send with backoff); otherwise only the "Thử lại" button re-sends.
+  const [retry, setRetry] = useState<{ questionId: number; payload: AnswerPayload; network: boolean; attempts: number } | null>(null);
+  // The session is gone for good (expired token, battle deleted): no more automatic requests.
+  const [halted, setHalted] = useState<string | null>(null);
   const [charge, setCharge] = useState(0);
   const [advance, setAdvance] = useState(0);
   const [deadline, setDeadline] = useState(0);
@@ -256,10 +259,20 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
     [applyView, finish],
   );
 
+  /** The server no longer knows this session (expired / battle removed): stop and offer a fresh start. */
+  const haltSession = useCallback(
+    (message: string) => {
+      remove(tokenKey);
+      setRetry(null);
+      setHalted(message || 'Phiên đấu không còn hiệu lực.');
+    },
+    [tokenKey],
+  );
+
   const submit = useCallback(
     async (payload: AnswerPayload, questionId?: number) => {
       const q = view?.question;
-      if (!token || !q || pending || feedback) return;
+      if (!token || !q || pending || feedback || halted) return;
       const qid = questionId ?? q.id;
       setPending(true);
       setNetError(null);
@@ -269,27 +282,31 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
         afterLockIn(res, q, token);
       } catch (e) {
         if (e instanceof ApiError && e.status === 0) {
-          setRetry({ questionId: qid, payload });
+          setRetry((r) => ({ questionId: qid, payload, network: true, attempts: (r?.attempts ?? 0) + 1 }));
           setNetError('Mất kết nối — câu trả lời chưa được gửi.');
         } else if (e instanceof ApiError && e.status === 409) {
           // Out of sync (e.g. double tap): reload the server's truth.
           const cur = await sessionApi.current(token).catch(() => null);
           if (cur) applyView(cur.view);
+        } else if (e instanceof ApiError && (e.status === 401 || e.status === 404)) {
+          haltSession(e.message);
         } else {
+          // Any other refusal (429, 5xx…): never loop — the student re-sends with "Thử lại".
+          setRetry({ questionId: qid, payload, network: false, attempts: 1 });
           setNetError((e as Error).message);
         }
       } finally {
         setPending(false);
       }
     },
-    [token, view, pending, feedback, applyView, afterLockIn],
+    [token, view, pending, feedback, halted, applyView, afterLockIn, haltSession],
   );
 
   /** Matching: each pair is checked by the server; only the last one locks the question in. */
   const tryPair = useCallback(
     async (left: number, right: number) => {
       const q = view?.question;
-      if (!token || !q || pending || feedback) return;
+      if (!token || !q || pending || feedback || halted) return;
       setPending(true);
       setNetError(null);
       try {
@@ -300,12 +317,13 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
         if (e instanceof ApiError && e.status === 409) {
           const cur = await sessionApi.current(token).catch(() => null);
           if (cur) setView(cur.view);
-        } else setNetError((e as Error).message);
+        } else if (e instanceof ApiError && (e.status === 401 || e.status === 404)) haltSession(e.message);
+        else setNetError((e as Error).message);
       } finally {
         setPending(false);
       }
     },
-    [token, view, pending, feedback, afterLockIn],
+    [token, view, pending, feedback, halted, afterLockIn, haltSession],
   );
 
   const submitRef = useRef(submit);
@@ -315,19 +333,21 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
 
   // Local countdown display; the server keeps its own clock and has the final say on timeouts.
   useEffect(() => {
-    if (phase !== 'playing' || feedback || !view?.question) return;
+    if (phase !== 'playing' || feedback || !view?.question || halted) return;
     const t = setInterval(() => {
       const n = Date.now();
       setClock(n);
       if (n >= deadline && !pending && !retry) void submitRef.current({ chosenIdx: -1 });
     }, 250);
     return () => clearInterval(t);
-  }, [phase, feedback, view, deadline, pending, retry]);
+  }, [phase, feedback, view, deadline, pending, retry, halted]);
 
-  // Auto-retry a lost answer when the connection returns.
+  // Auto-retry a lost answer once online, backing off 1 s, 2 s, 4 s … 30 s (server down ≠ hammer it).
   useEffect(() => {
-    if (online && retry && !pending) void submitRef.current(retry.payload, retry.questionId);
-  }, [online, retry, pending]);
+    if (!online || !retry?.network || pending || halted) return;
+    const t = setTimeout(() => void submitRef.current(retry.payload, retry.questionId), Math.min(30_000, 1000 * 2 ** Math.max(0, retry.attempts - 1)));
+    return () => clearTimeout(t);
+  }, [online, retry, pending, halted]);
 
   // One sound per event.
   const lastSfx = useRef<number | null>(null);
@@ -370,7 +390,7 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
   };
 
   const cast = async (skill: SkillId) => {
-    if (!token || pending || feedback) return;
+    if (!token || pending || feedback || halted) return;
     setPending(true);
     try {
       const res = await sessionApi.cast(token, skill);
@@ -380,7 +400,8 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
         setDeadline((d) => d + 30_000);
       }
     } catch (e) {
-      setNetError((e as Error).message);
+      if (e instanceof ApiError && (e.status === 401 || e.status === 404)) haltSession(e.message);
+      else setNetError((e as Error).message);
     } finally {
       setPending(false);
     }
@@ -634,7 +655,14 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
               {pending && !feedback && <p className={`text-xs ${muted2} flex items-center gap-1`}><Loader2 className="w-3 h-3 animate-spin" /> Đang chấm…</p>}
             </div>
 
-            {netError && (
+            {halted && (
+              <div role="alert" className="p-3 rounded-xl border border-rose-500/40 bg-rose-500/10 text-rose-400 text-sm flex items-center justify-between gap-2">
+                <span className="flex items-center gap-2"><AlertTriangle className="w-4 h-4 shrink-0" /> {halted} Trận này không thể chơi tiếp.</span>
+                <button onClick={() => window.location.reload()} className="px-3 py-1 rounded-lg bg-rose-500 text-white font-bold shrink-0">Vào lại</button>
+              </div>
+            )}
+
+            {netError && !halted && (
               <div role="alert" className="p-3 rounded-xl border border-amber-500/40 bg-amber-500/10 text-amber-500 text-sm flex items-center justify-between gap-2">
                 <span className="flex items-center gap-2"><AlertTriangle className="w-4 h-4 shrink-0" /> {netError}</span>
                 {retry && <button onClick={() => submit(retry.payload, retry.questionId)} className="px-3 py-1 rounded-lg bg-amber-500 text-slate-950 font-bold">Thử lại</button>}
