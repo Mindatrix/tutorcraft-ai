@@ -43,6 +43,52 @@
      "river_buoy",
      "river_birds",
      "char_sunny_boy"
+    ],
+    "subtitles": [
+     {
+      "en": "Wear your life jacket and hold your paddle tight! We are about to start.",
+      "vi": "Mặc áo phao, nắm chắc mái chèo! Chúng ta sắp xuất phát.",
+      "parts": [
+       "Mặc áo phao, nắm chắc ",
+       [
+        "paddle",
+        "mái chèo",
+        1
+       ],
+       "! Chúng ta sắp ",
+       [
+        "start",
+        "xuất phát",
+        0
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "All the paddlers are ready. Go!",
+      "vi": "Mọi tay chèo đã sẵn sàng. Chèo đi!",
+      "parts": [
+       "Mọi ",
+       [
+        "paddler",
+        "tay chèo",
+        2
+       ],
+       " đã ",
+       [
+        "ready",
+        "sẵn sàng",
+        0
+       ],
+       ". ",
+       [
+        "Go",
+        "Chèo đi",
+        0
+       ],
+       "!"
+      ]
+     }
     ]
    },
    {
@@ -67,6 +113,52 @@
      "kayak_log_spinning",
      "river_driftwood",
      "river_log_fallen"
+    ],
+    "subtitles": [
+     {
+      "en": "The log is spinning! Dodge to the left.",
+      "vi": "Khúc gỗ đang xoay! Né sang bên trái.",
+      "parts": [
+       "Khúc ",
+       [
+        "log",
+        "gỗ",
+        1
+       ],
+       " đang ",
+       [
+        "spin",
+        "xoay",
+        1
+       ],
+       "! ",
+       [
+        "Dodge",
+        "Né",
+        2
+       ],
+       " sang bên ",
+       [
+        "left",
+        "trái",
+        0
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "Quick, now dodge to the right!",
+      "vi": "Nhanh lên, giờ né sang bên phải!",
+      "parts": [
+       "Nhanh lên, giờ né sang bên ",
+       [
+        "right",
+        "phải",
+        0
+       ],
+       "!"
+      ]
+     }
     ]
    },
    {
@@ -91,6 +183,46 @@
      "river_reed",
      "river_sign",
      "river_lilypad"
+    ],
+    "subtitles": [
+     {
+      "en": "Follow the sign to find a shortcut through the reeds.",
+      "vi": "Đi theo biển báo để tìm đường tắt qua rừng lau.",
+      "parts": [
+       "Đi theo ",
+       [
+        "sign",
+        "biển báo",
+        1
+       ],
+       " để tìm ",
+       [
+        "shortcut",
+        "đường tắt",
+        2
+       ],
+       " qua rừng ",
+       [
+        "reed",
+        "lau",
+        2
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "This channel is very narrow, so paddle slowly.",
+      "vi": "Lạch này rất hẹp, chèo chậm thôi.",
+      "parts": [
+       "Lạch này rất ",
+       [
+        "narrow",
+        "hẹp",
+        2
+       ],
+       ", chèo chậm thôi."
+      ]
+     }
     ]
    },
    {
@@ -115,6 +247,45 @@
      "river_rock_large",
      "river_rock_medium",
      "water_foam"
+    ],
+    "subtitles": [
+     {
+      "en": "Rapids ahead! Watch out for hidden rocks.",
+      "vi": "Ghềnh nước phía trước! Coi chừng đá ngầm.",
+      "parts": [
+       [
+        "Rapids",
+        "Ghềnh nước",
+        2
+       ],
+       " phía trước! Coi chừng ",
+       [
+        "rock",
+        "đá",
+        0
+       ],
+       " ngầm."
+      ]
+     },
+     {
+      "en": "The water splashes up, so be careful!",
+      "vi": "Nước bắn tung tóe, hãy thật cẩn thận!",
+      "parts": [
+       "Nước ",
+       [
+        "splash",
+        "bắn tung tóe",
+        2
+       ],
+       ", hãy thật ",
+       [
+        "careful",
+        "cẩn thận",
+        1
+       ],
+       "!"
+      ]
+     }
     ]
    },
    {
@@ -138,6 +309,46 @@
      "river_bridge",
      "river_birds",
      "camp_bunting"
+    ],
+    "subtitles": [
+     {
+      "en": "Under the hanging bridge, the crowd cheers!",
+      "vi": "Dưới cầu treo, khán giả reo hò!",
+      "parts": [
+       "Dưới ",
+       [
+        "bridge",
+        "cầu",
+        1
+       ],
+       " treo, khán giả ",
+       [
+        "cheer",
+        "reo hò",
+        1
+       ],
+       "!"
+      ]
+     },
+     {
+      "en": "The crowd shouts, Faster!",
+      "vi": "Đông người xem hét to: nhanh hơn!",
+      "parts": [
+       "Đông ",
+       [
+        "crowd",
+        "người xem",
+        2
+       ],
+       " hét to: ",
+       [
+        "faster",
+        "nhanh hơn",
+        2
+       ],
+       "!"
+      ]
+     }
     ]
    },
    {
@@ -165,6 +376,46 @@
      "river_dock",
      "anim_cheer",
      "river_buoy"
+    ],
+    "subtitles": [
+     {
+      "en": "The finish line is right ahead, and the first to cross it wins!",
+      "vi": "Vạch đích ở ngay trước mặt, về nhất là thắng!",
+      "parts": [
+       "Vạch ",
+       [
+        "finish line",
+        "đích",
+        3
+       ],
+       " ở ngay trước mặt, về nhất là ",
+       [
+        "win",
+        "thắng",
+        1
+       ],
+       "!"
+      ]
+     },
+     {
+      "en": "A champion deserves a medal.",
+      "vi": "Một nhà vô địch xứng đáng nhận huy chương.",
+      "parts": [
+       "Một ",
+       [
+        "champion",
+        "nhà vô địch",
+        2
+       ],
+       " xứng đáng nhận ",
+       [
+        "medal",
+        "huy chương",
+        2
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -184,6 +435,27 @@
     ],
     "assets": [
      "kayak_boat"
+    ],
+    "subtitles": [
+     {
+      "en": "One lap of honor around the lake for both teams.",
+      "vi": "Một vòng danh dự quanh hồ cho cả hai đội.",
+      "parts": [
+       "Một ",
+       [
+        "lap",
+        "vòng",
+        1
+       ],
+       " ",
+       [
+        "honor",
+        "danh dự",
+        3
+       ],
+       " quanh hồ cho cả hai đội."
+      ]
+     }
     ]
    },
    {
@@ -204,6 +476,27 @@
     ],
     "assets": [
      "river_sign"
+    ],
+    "subtitles": [
+     {
+      "en": "Miss Van Anh asks, How do you feel? I feel very happy!",
+      "vi": "Cô Vân Anh hỏi: Em thấy sao? Em cảm thấy rất vui!",
+      "parts": [
+       "Cô Vân Anh hỏi: Em thấy sao? Em ",
+       [
+        "feel",
+        "cảm thấy",
+        1
+       ],
+       " rất ",
+       [
+        "happy",
+        "vui",
+        0
+       ],
+       "!"
+      ]
+     }
     ]
    }
   ],
@@ -612,6 +905,45 @@
      "kayak_paddle",
      "kayak_boat",
      "river_buoy"
+    ],
+    "subtitles": [
+     {
+      "en": "Put on your helmet and life jacket.",
+      "vi": "Đội mũ bảo hiểm và mặc áo phao.",
+      "parts": [
+       "Đội ",
+       [
+        "helmet",
+        "mũ bảo hiểm",
+        2
+       ],
+       " và mặc ",
+       [
+        "life jacket",
+        "áo phao",
+        3
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "Safety comes first: check your paddle again.",
+      "vi": "An toàn là trên hết: kiểm tra lại mái chèo.",
+      "parts": [
+       [
+        "Safety",
+        "An toàn",
+        1
+       ],
+       " là trên hết: ",
+       [
+        "check",
+        "kiểm tra",
+        1
+       ],
+       " lại mái chèo."
+      ]
+     }
     ]
    },
    {
@@ -633,6 +965,40 @@
     "assets": [
      "water_foam",
      "river_rock_medium"
+    ],
+    "subtitles": [
+     {
+      "en": "The first rapid has small waves, so hold on!",
+      "vi": "Ghềnh đầu tiên có sóng nhỏ, bám chắc nhé!",
+      "parts": [
+       "Ghềnh đầu tiên có ",
+       [
+        "wave",
+        "sóng",
+        1
+       ],
+       " nhỏ, ",
+       [
+        "hold on",
+        "bám chắc",
+        3
+       ],
+       " nhé!"
+      ]
+     },
+     {
+      "en": "We slide down gently.",
+      "vi": "Chúng ta trượt xuống nhẹ nhàng.",
+      "parts": [
+       "Chúng ta trượt ",
+       [
+        "down",
+        "xuống",
+        0
+       ],
+       " nhẹ nhàng."
+      ]
+     }
     ]
    },
    {
@@ -659,6 +1025,52 @@
      "water_foam",
      "river_waterfall",
      "river_waterfall_pool"
+    ],
+    "subtitles": [
+     {
+      "en": "Three small waterfalls: each step is a drop.",
+      "vi": "Ba bậc thác nhỏ: mỗi bậc là một cú rơi.",
+      "parts": [
+       "Ba bậc ",
+       [
+        "waterfall",
+        "thác",
+        2
+       ],
+       " nhỏ: mỗi ",
+       [
+        "step",
+        "bậc",
+        1
+       ],
+       " là một cú ",
+       [
+        "drop",
+        "rơi",
+        2
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "You are so brave! Below is a calm pool.",
+      "vi": "Em thật dũng cảm! Phía dưới là một vũng nước êm.",
+      "parts": [
+       "Em thật ",
+       [
+        "brave",
+        "dũng cảm",
+        2
+       ],
+       "! Phía dưới là một ",
+       [
+        "pool",
+        "vũng nước",
+        3
+       ],
+       " êm."
+      ]
+     }
     ]
    },
    {
@@ -681,6 +1093,45 @@
     "assets": [
      "river_log_fallen",
      "river_tree_pine"
+    ],
+    "subtitles": [
+     {
+      "en": "A big pine tree has fallen and blocks the river.",
+      "vi": "Một cây thông lớn đổ xuống chắn cả dòng sông.",
+      "parts": [
+       "Một ",
+       [
+        "tree",
+        "cây",
+        0
+       ],
+       " thông lớn đổ xuống ",
+       [
+        "block",
+        "chắn",
+        2
+       ],
+       " cả dòng sông."
+      ]
+     },
+     {
+      "en": "Push together: one, two, three!",
+      "vi": "Đẩy cùng nhau nào, một, hai, ba!",
+      "parts": [
+       [
+        "Push",
+        "Đẩy",
+        1
+       ],
+       " ",
+       [
+        "together",
+        "cùng nhau",
+        1
+       ],
+       " nào, một, hai, ba!"
+      ]
+     }
     ]
    },
    {
@@ -703,6 +1154,45 @@
     "assets": [
      "river_cave",
      "camp_lantern"
+    ],
+    "subtitles": [
+     {
+      "en": "The cave is very low, so duck!",
+      "vi": "Hang đá rất thấp, hãy cúi xuống!",
+      "parts": [
+       [
+        "Cave",
+        "Hang",
+        1
+       ],
+       " đá rất ",
+       [
+        "low",
+        "thấp",
+        1
+       ],
+       ", hãy ",
+       [
+        "duck",
+        "cúi xuống",
+        2
+       ],
+       "!"
+      ]
+     },
+     {
+      "en": "In the dark cave, you can only hear the water.",
+      "vi": "Trong hang tối, chỉ có tiếng nước chảy.",
+      "parts": [
+       "Trong hang ",
+       [
+        "dark",
+        "tối",
+        1
+       ],
+       ", chỉ có tiếng nước chảy."
+      ]
+     }
     ]
    },
    {
@@ -724,6 +1214,40 @@
     "assets": [
      "kayak_finish_arch",
      "anim_cheer"
+    ],
+    "subtitles": [
+     {
+      "en": "There is the finish line! We are safe.",
+      "vi": "Vạch đích kia rồi! Chúng ta đã an toàn.",
+      "parts": [
+       "Vạch ",
+       [
+        "finish",
+        "đích",
+        1
+       ],
+       " kia rồi! Chúng ta đã ",
+       [
+        "safe",
+        "an toàn",
+        1
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "The whole team feels so proud.",
+      "vi": "Cả đội thấy thật tự hào.",
+      "parts": [
+       "Cả đội thấy thật ",
+       [
+        "proud",
+        "tự hào",
+        2
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -743,6 +1267,27 @@
     ],
     "assets": [
      "water_foam"
+    ],
+    "subtitles": [
+     {
+      "en": "The water turns into a whirlpool, so escape now!",
+      "vi": "Nước cuốn thành xoáy, hãy thoát ngay!",
+      "parts": [
+       "Nước cuốn thành ",
+       [
+        "whirlpool",
+        "xoáy",
+        3
+       ],
+       ", hãy ",
+       [
+        "escape",
+        "thoát",
+        3
+       ],
+       " ngay!"
+      ]
+     }
     ]
    },
    {
@@ -763,6 +1308,27 @@
     ],
     "assets": [
      "river_sign"
+    ],
+    "subtitles": [
+     {
+      "en": "Rule one: always wear your life jacket.",
+      "vi": "Luật một: luôn luôn mặc áo phao.",
+      "parts": [
+       "Luật một: ",
+       [
+        "always",
+        "luôn luôn",
+        2
+       ],
+       " ",
+       [
+        "wear",
+        "mặc",
+        1
+       ],
+       " áo phao."
+      ]
+     }
     ]
    }
   ],
@@ -1163,6 +1729,46 @@
      "river_cliff",
      "hdri_sunset",
      "backdrop_mountain_valley"
+    ],
+    "subtitles": [
+     {
+      "en": "The canyon entrance glows at sunset.",
+      "vi": "Cửa hẻm núi sáng rực lúc hoàng hôn.",
+      "parts": [
+       "Cửa ",
+       [
+        "canyon",
+        "hẻm núi",
+        2
+       ],
+       " sáng rực lúc ",
+       [
+        "sunset",
+        "hoàng hôn",
+        2
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "Tall mountains rise on both sides as you paddle into the valley with your signal light.",
+      "vi": "Hai bên là núi cao, em cầm đèn hiệu chèo vào thung lũng.",
+      "parts": [
+       "Hai bên là ",
+       [
+        "mountain",
+        "núi",
+        1
+       ],
+       " cao, em cầm đèn hiệu chèo vào ",
+       [
+        "valley",
+        "thung lũng",
+        3
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -1183,6 +1789,40 @@
     ],
     "assets": [
      "river_cliff"
+    ],
+    "subtitles": [
+     {
+      "en": "An echo comes from the cliff, so listen.",
+      "vi": "Có tiếng vọng từ vách đá, hãy lắng nghe.",
+      "parts": [
+       "Có tiếng ",
+       [
+        "echo",
+        "vọng",
+        2
+       ],
+       " từ vách đá, hãy ",
+       [
+        "listen",
+        "lắng nghe",
+        1
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "Then repeat the question correctly.",
+      "vi": "Rồi nhắc lại câu hỏi cho đúng.",
+      "parts": [
+       "Rồi ",
+       [
+        "repeat",
+        "nhắc lại",
+        2
+       ],
+       " câu hỏi cho đúng."
+      ]
+     }
     ]
    },
    {
@@ -1204,6 +1844,33 @@
     ],
     "assets": [
      "river_rock_large"
+    ],
+    "subtitles": [
+     {
+      "en": "A sharp turn! Go left, then right.",
+      "vi": "Một khúc cua gắt! Bẻ trái rồi phải.",
+      "parts": [
+       "Một khúc cua ",
+       [
+        "sharp",
+        "gắt",
+        2
+       ],
+       "! Bẻ ",
+       [
+        "left",
+        "trái",
+        0
+       ],
+       " rồi ",
+       [
+        "right",
+        "phải",
+        0
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -1225,6 +1892,34 @@
     "assets": [
      "camp_lantern",
      "fx_fire"
+    ],
+    "subtitles": [
+     {
+      "en": "Light the three beacons in the canyon.",
+      "vi": "Thắp ba đèn hiệu giữa hẻm.",
+      "parts": [
+       "Thắp ba ",
+       [
+        "beacon",
+        "đèn hiệu",
+        3
+       ],
+       " giữa hẻm."
+      ]
+     },
+     {
+      "en": "You need three correct answers to light them all.",
+      "vi": "Em cần đúng ba câu để thắp đủ lửa.",
+      "parts": [
+       "Em cần đúng ",
+       [
+        "three",
+        "ba",
+        0
+       ],
+       " câu để thắp đủ lửa."
+      ]
+     }
     ]
    },
    {
@@ -1246,6 +1941,40 @@
     "assets": [
      "camp_lantern",
      "river_birds"
+    ],
+    "subtitles": [
+     {
+      "en": "The bats make the canyon very dark.",
+      "vi": "Đàn dơi làm hẻm thật tối.",
+      "parts": [
+       "Đàn ",
+       [
+        "bat",
+        "dơi",
+        1
+       ],
+       " làm hẻm thật ",
+       [
+        "dark",
+        "tối",
+        1
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "Follow the beacon light.",
+      "vi": "Hãy đi theo ánh đèn hiệu nhé.",
+      "parts": [
+       "Hãy ",
+       [
+        "follow",
+        "đi theo",
+        1
+       ],
+       " ánh đèn hiệu nhé."
+      ]
+     }
     ]
    },
    {
@@ -1268,6 +1997,40 @@
      "kayak_finish_arch",
      "hdri_sunset",
      "anim_cheer"
+    ],
+    "subtitles": [
+     {
+      "en": "Golden light shines on the water as you reach the finish.",
+      "vi": "Ánh vàng chiếu lên mặt nước khi em về đích.",
+      "parts": [
+       "Ánh ",
+       [
+        "golden",
+        "vàng",
+        2
+       ],
+       " chiếu lên mặt nước khi em về ",
+       [
+        "finish",
+        "đích",
+        1
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "A beautiful photo to remember forever.",
+      "vi": "Một bức ảnh đẹp để nhớ mãi.",
+      "parts": [
+       "Một bức ",
+       [
+        "photo",
+        "ảnh",
+        1
+       ],
+       " đẹp để nhớ mãi."
+      ]
+     }
     ]
    },
    {
@@ -1287,6 +2050,26 @@
     ],
     "assets": [
      "hdri_night"
+    ],
+    "subtitles": [
+     {
+      "en": "The first star appears in the evening sky.",
+      "vi": "Ngôi sao đầu tiên hiện lên trong buổi chiều tối.",
+      "parts": [
+       [
+        "First star",
+        "Ngôi sao đầu tiên",
+        2
+       ],
+       " hiện lên trong buổi ",
+       [
+        "evening",
+        "chiều tối",
+        2
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -1307,6 +2090,27 @@
     ],
     "assets": [
      "hdri_sunset"
+    ],
+    "subtitles": [
+     {
+      "en": "The sky is orange and so beautiful.",
+      "vi": "Bầu trời màu cam thật đẹp.",
+      "parts": [
+       "Bầu trời màu ",
+       [
+        "orange",
+        "cam",
+        1
+       ],
+       " thật ",
+       [
+        "beautiful",
+        "đẹp",
+        1
+       ],
+       "."
+      ]
+     }
     ]
    }
   ],
@@ -1702,6 +2506,46 @@
      "kayak_boat",
      "char_skater_boy",
      "char_boy_1"
+    ],
+    "subtitles": [
+     {
+      "en": "The team divides the legs of the relay.",
+      "vi": "Cả đội chia nhau từng chặng của cuộc tiếp sức.",
+      "parts": [
+       "Cả ",
+       [
+        "team",
+        "đội",
+        1
+       ],
+       " chia nhau từng chặng của cuộc ",
+       [
+        "relay",
+        "tiếp sức",
+        2
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "Whoever has a turn takes the baton.",
+      "vi": "Mỗi người đến lượt sẽ nhận gậy tiếp sức.",
+      "parts": [
+       "Mỗi người đến ",
+       [
+        "turn",
+        "lượt",
+        2
+       ],
+       " sẽ nhận ",
+       [
+        "baton",
+        "gậy tiếp sức",
+        4
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -1732,6 +2576,46 @@
      "river_birds",
      "river_boat_row",
      "village_horse_a"
+    ],
+    "subtitles": [
+     {
+      "en": "Leg one at the village dock: pass the baton to the next teammate!",
+      "vi": "Chặng một ở bến làng: chuyền gậy cho bạn kế tiếp!",
+      "parts": [
+       "Chặng một ở bến ",
+       [
+        "village",
+        "làng",
+        1
+       ],
+       ": ",
+       [
+        "pass",
+        "chuyền",
+        2
+       ],
+       " gậy cho bạn ",
+       [
+        "next",
+        "kế tiếp",
+        2
+       ],
+       "!"
+      ]
+     },
+     {
+      "en": "You must be very quick!",
+      "vi": "Phải thật nhanh nhé!",
+      "parts": [
+       "Phải thật ",
+       [
+        "quick",
+        "nhanh",
+        1
+       ],
+       " nhé!"
+      ]
+     }
     ]
    },
    {
@@ -1759,6 +2643,40 @@
      "food_apple",
      "fish_basket",
      "river_buoy"
+    ],
+    "subtitles": [
+     {
+      "en": "At the floating market, avoid every boat.",
+      "vi": "Ở chợ nổi, hãy tránh mọi ghe.",
+      "parts": [
+       "Ở chợ nổi, hãy ",
+       [
+        "avoid",
+        "tránh",
+        2
+       ],
+       " mọi ",
+       [
+        "boat",
+        "ghe",
+        0
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "The fruit seller waves at you.",
+      "vi": "Cô bán trái cây vẫy chào em.",
+      "parts": [
+       "Cô bán ",
+       [
+        "fruit",
+        "trái cây",
+        1
+       ],
+       " vẫy chào em."
+      ]
+     }
     ]
    },
    {
@@ -1783,6 +2701,46 @@
     "assets": [
      "river_bridge",
      "village_horse_b"
+    ],
+    "subtitles": [
+     {
+      "en": "The villagers play drums and cheer!",
+      "vi": "Dân làng đánh trống và cổ vũ!",
+      "parts": [
+       "Dân ",
+       [
+        "village",
+        "làng",
+        1
+       ],
+       " đánh ",
+       [
+        "drum",
+        "trống",
+        1
+       ],
+       " và ",
+       [
+        "cheer",
+        "cổ vũ",
+        1
+       ],
+       "!"
+      ]
+     },
+     {
+      "en": "Paddling under the bridge is so much fun.",
+      "vi": "Chèo dưới cầu thật vui.",
+      "parts": [
+       "Chèo dưới ",
+       [
+        "bridge",
+        "cầu",
+        1
+       ],
+       " thật vui."
+      ]
+     }
     ]
    },
    {
@@ -1804,6 +2762,40 @@
     "assets": [
      "river_lilypad",
      "river_reed"
+    ],
+    "subtitles": [
+     {
+      "en": "The pink lotus field: do not hit the big leaves.",
+      "vi": "Đồng sen hồng, đừng đụng lá lớn.",
+      "parts": [
+       "Đồng ",
+       [
+        "lotus",
+        "sen",
+        2
+       ],
+       " hồng, đừng đụng ",
+       [
+        "leaf",
+        "lá",
+        1
+       ],
+       " lớn."
+      ]
+     },
+     {
+      "en": "Paddle slowly past every pink flower.",
+      "vi": "Chèo thật chậm qua từng bông hồng.",
+      "parts": [
+       "Chèo thật chậm qua từng bông ",
+       [
+        "pink",
+        "hồng",
+        1
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -1825,6 +2817,40 @@
     "assets": [
      "kayak_finish_arch",
      "anim_cheer"
+    ],
+    "subtitles": [
+     {
+      "en": "The whole team crosses the finish together!",
+      "vi": "Cả đội cùng nhau về đích!",
+      "parts": [
+       "Cả đội ",
+       [
+        "together",
+        "cùng nhau",
+        1
+       ],
+       " về ",
+       [
+        "finish",
+        "đích",
+        1
+       ],
+       "!"
+      ]
+     },
+     {
+      "en": "Let us celebrate the festival!",
+      "vi": "Hãy ăn mừng ngày hội nào!",
+      "parts": [
+       "Hãy ",
+       [
+        "celebrate",
+        "ăn mừng",
+        3
+       ],
+       " ngày hội nào!"
+      ]
+     }
     ]
    },
    {
@@ -1844,6 +2870,27 @@
     ],
     "assets": [
      "kayak_boat"
+    ],
+    "subtitles": [
+     {
+      "en": "An extra leg to catch up: you still have a chance!",
+      "vi": "Thêm một chặng bù để gỡ lại, còn cơ hội!",
+      "parts": [
+       "Thêm một chặng ",
+       [
+        "extra",
+        "bù",
+        2
+       ],
+       " để gỡ lại, còn ",
+       [
+        "chance",
+        "cơ hội",
+        2
+       ],
+       "!"
+      ]
+     }
     ]
    },
    {
@@ -1864,6 +2911,26 @@
     ],
     "assets": [
      "river_sign"
+    ],
+    "subtitles": [
+     {
+      "en": "Thank you, friend, for helping the team.",
+      "vi": "Cảm ơn bạn đã giúp cả đội.",
+      "parts": [
+       [
+        "Thank you",
+        "Cảm ơn",
+        0
+       ],
+       " ",
+       [
+        "friend",
+        "bạn",
+        1
+       ],
+       " đã giúp cả đội."
+      ]
+     }
     ]
    }
   ],
@@ -2261,6 +3328,39 @@
      "camp_lantern",
      "kayak_boat",
      "hdri_night"
+    ],
+    "subtitles": [
+     {
+      "en": "Light the lantern on the front of your kayak.",
+      "vi": "Thắp đèn lồng gắn ở mũi kayak.",
+      "parts": [
+       "Thắp ",
+       [
+        "lantern",
+        "đèn lồng",
+        2
+       ],
+       " gắn ở mũi kayak."
+      ]
+     },
+     {
+      "en": "The moon rises and the festival is about to begin.",
+      "vi": "Trăng lên, lễ hội sắp bắt đầu.",
+      "parts": [
+       [
+        "Moon",
+        "Trăng",
+        0
+       ],
+       " lên, ",
+       [
+        "festival",
+        "lễ hội",
+        2
+       ],
+       " sắp bắt đầu."
+      ]
+     }
     ]
    },
    {
@@ -2282,6 +3382,39 @@
     "assets": [
      "kayak_paddle",
      "fx_spark"
+    ],
+    "subtitles": [
+     {
+      "en": "Fireworks burst and we start!",
+      "vi": "Pháo hoa nổ, chúng ta xuất phát!",
+      "parts": [
+       [
+        "Fireworks",
+        "Pháo hoa",
+        2
+       ],
+       " nổ, chúng ta ",
+       [
+        "start",
+        "xuất phát",
+        0
+       ],
+       "!"
+      ]
+     },
+     {
+      "en": "The sky is bright with colors.",
+      "vi": "Bầu trời rực sáng đủ màu sắc.",
+      "parts": [
+       "Bầu trời ",
+       [
+        "bright",
+        "rực sáng",
+        2
+       ],
+       " đủ màu sắc."
+      ]
+     }
     ]
    },
    {
@@ -2303,6 +3436,40 @@
     "assets": [
      "camp_lantern",
      "water_normal"
+    ],
+    "subtitles": [
+     {
+      "en": "Lanterns float thickly on the river.",
+      "vi": "Đèn lồng trôi dày đặc trên sông.",
+      "parts": [
+       "Đèn lồng ",
+       [
+        "float",
+        "trôi",
+        2
+       ],
+       " dày đặc trên sông."
+      ]
+     },
+     {
+      "en": "Paddle gently and carefully.",
+      "vi": "Chèo thật nhẹ nhàng và cẩn thận.",
+      "parts": [
+       "Chèo thật ",
+       [
+        "gently",
+        "nhẹ nhàng",
+        3
+       ],
+       " và ",
+       [
+        "careful",
+        "cẩn thận",
+        1
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -2323,6 +3490,40 @@
     ],
     "assets": [
      "river_boat_row"
+    ],
+    "subtitles": [
+     {
+      "en": "The referee's dragon boat gives a riddle.",
+      "vi": "Thuyền rồng của trọng tài ra một câu đố.",
+      "parts": [
+       "Thuyền ",
+       [
+        "dragon",
+        "rồng",
+        1
+       ],
+       " của trọng tài ra một ",
+       [
+        "riddle",
+        "câu đố",
+        3
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "Answer correctly and the boat opens the way.",
+      "vi": "Đáp đúng thì thuyền mở lối.",
+      "parts": [
+       "Đáp đúng thì ",
+       [
+        "boat",
+        "thuyền",
+        0
+       ],
+       " mở lối."
+      ]
+     }
     ]
    },
    {
@@ -2344,6 +3545,46 @@
     "assets": [
      "river_bridge",
      "camp_string_lights"
+    ],
+    "subtitles": [
+     {
+      "en": "Under the bridge full of lights, the crowd cheers.",
+      "vi": "Dưới cầu treo đầy đèn, khán giả reo hò.",
+      "parts": [
+       "Dưới ",
+       [
+        "bridge",
+        "cầu",
+        1
+       ],
+       " treo đầy ",
+       [
+        "lights",
+        "đèn",
+        1
+       ],
+       ", khán giả ",
+       [
+        "cheer",
+        "reo hò",
+        1
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "You paddle through countless lights.",
+      "vi": "Em chèo qua giữa muôn ánh đèn.",
+      "parts": [
+       "Em chèo qua giữa muôn ",
+       [
+        "lights",
+        "ánh đèn",
+        1
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -2366,6 +3607,40 @@
      "kayak_finish_arch",
      "camp_lantern",
      "anim_cheer"
+    ],
+    "subtitles": [
+     {
+      "en": "You release your lantern with a wish.",
+      "vi": "Em thả đèn lồng cùng một điều ước.",
+      "parts": [
+       "Em thả đèn lồng cùng một ",
+       [
+        "wish",
+        "điều ước",
+        1
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "The lantern flies up and everyone is happy.",
+      "vi": "Chiếc đèn bay lên cao, ai cũng vui.",
+      "parts": [
+       "Chiếc đèn ",
+       [
+        "fly",
+        "bay",
+        1
+       ],
+       " lên cao, ai cũng ",
+       [
+        "happy",
+        "vui",
+        0
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -2385,6 +3660,27 @@
     ],
     "assets": [
      "hdri_night"
+    ],
+    "subtitles": [
+     {
+      "en": "Paddle one round under the full moon.",
+      "vi": "Chèo một vòng dưới trăng tròn.",
+      "parts": [
+       "Chèo một ",
+       [
+        "round",
+        "vòng",
+        1
+       ],
+       " dưới ",
+       [
+        "full moon",
+        "trăng tròn",
+        3
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -2405,6 +3701,26 @@
     ],
     "assets": [
      "camp_lantern"
+    ],
+    "subtitles": [
+     {
+      "en": "I wish for my whole family to stay healthy.",
+      "vi": "Em ước cả gia đình luôn khỏe mạnh.",
+      "parts": [
+       [
+        "I wish",
+        "Em ước",
+        2
+       ],
+       " cả ",
+       [
+        "family",
+        "gia đình",
+        1
+       ],
+       " luôn khỏe mạnh."
+      ]
+     }
     ]
    }
   ],
@@ -2800,6 +4116,52 @@
      "mv_world_castle",
      "mv_hero_scarlet",
      "mv_npc_druid_elf"
+    ],
+    "subtitles": [
+     {
+      "en": "Scarlet reaches the castle gate in the fog.",
+      "vi": "Scarlet đến cổng lâu đài trong sương mù.",
+      "parts": [
+       "Scarlet đến ",
+       [
+        "gate",
+        "cổng",
+        0
+       ],
+       " ",
+       [
+        "castle",
+        "lâu đài",
+        1
+       ],
+       " trong ",
+       [
+        "fog",
+        "sương mù",
+        2
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "The healer gives you an herb to heal yourself.",
+      "vi": "Thầy thuốc đưa cho bạn một nhành thảo dược để chữa lành.",
+      "parts": [
+       "Thầy thuốc đưa cho bạn một nhành ",
+       [
+        "herb",
+        "thảo dược",
+        3
+       ],
+       " để ",
+       [
+        "heal",
+        "chữa lành",
+        2
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -2824,6 +4186,52 @@
     "assets": [
      "mv_world_castle",
      "mv_world_enchanted_candidate"
+    ],
+    "subtitles": [
+     {
+      "en": "Each correct word saves a page from the ghosts.",
+      "vi": "Mỗi từ đúng sẽ cứu một trang sách khỏi bóng ma.",
+      "parts": [
+       "Mỗi ",
+       [
+        "word",
+        "từ",
+        0
+       ],
+       " đúng sẽ ",
+       [
+        "save",
+        "cứu",
+        1
+       ],
+       " một ",
+       [
+        "page",
+        "trang sách",
+        2
+       ],
+       " khỏi bóng ma."
+      ]
+     },
+     {
+      "en": "The colored glass makes the hallway look like an enchanted forest.",
+      "vi": "Ánh kính màu làm hành lang như một khu rừng phù phép.",
+      "parts": [
+       "Ánh kính màu làm hành lang như một ",
+       [
+        "forest",
+        "khu rừng",
+        1
+       ],
+       " ",
+       [
+        "enchanted",
+        "phù phép",
+        4
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -2848,6 +4256,45 @@
     "assets": [
      "mv_boss",
      "mv_minion_shadow"
+    ],
+    "subtitles": [
+     {
+      "en": "The Rift Lord appears! Raise your shield.",
+      "vi": "Chúa Tể Vết Nứt xuất hiện! Giơ khiên lên.",
+      "parts": [
+       [
+        "Boss",
+        "Chúa Tể",
+        1
+       ],
+       " Vết Nứt xuất hiện! Giơ ",
+       [
+        "shield",
+        "khiên",
+        1
+       ],
+       " lên."
+      ]
+     },
+     {
+      "en": "Use the right answer to attack through the mist.",
+      "vi": "Dùng đáp án đúng để tấn công qua làn sương.",
+      "parts": [
+       "Dùng đáp án đúng để ",
+       [
+        "attack",
+        "tấn công",
+        1
+       ],
+       " qua làn ",
+       [
+        "mist",
+        "sương",
+        3
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -2869,6 +4316,40 @@
     "assets": [
      "mv_boss",
      "fx_spark"
+    ],
+    "subtitles": [
+     {
+      "en": "The lord is angry and stronger: this is phase two.",
+      "vi": "Chúa Tể tức giận và mạnh hơn: đây là pha hai.",
+      "parts": [
+       "Chúa Tể ",
+       [
+        "angry",
+        "tức giận",
+        1
+       ],
+       " và mạnh hơn: đây là ",
+       [
+        "phase",
+        "pha",
+        3
+       ],
+       " hai."
+      ]
+     },
+     {
+      "en": "Now he is very strong, but do not be afraid!",
+      "vi": "Giờ hắn rất mạnh, đừng sợ!",
+      "parts": [
+       "Giờ hắn rất ",
+       [
+        "strong",
+        "mạnh",
+        1
+       ],
+       ", đừng sợ!"
+      ]
+     }
     ]
    },
    {
@@ -2893,6 +4374,44 @@
     "assets": [
      "mv_world_cyberpunk",
      "mv_wall_breach"
+    ],
+    "subtitles": [
+     {
+      "en": "The crack opens! Scarlet jumps into the portal.",
+      "vi": "Vết nứt mở ra! Scarlet nhảy vào cổng.",
+      "parts": [
+       [
+        "Crack",
+        "Vết nứt",
+        2
+       ],
+       " mở ra! Scarlet ",
+       [
+        "jump",
+        "nhảy",
+        0
+       ],
+       " vào ",
+       [
+        "portal",
+        "cổng",
+        2
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "Chase the lord and do not let him escape.",
+      "vi": "Đuổi theo Chúa Tể, đừng để hắn thoát.",
+      "parts": [
+       [
+        "Chase",
+        "Đuổi theo",
+        2
+       ],
+       " Chúa Tể, đừng để hắn thoát."
+      ]
+     }
     ]
    },
    {
@@ -2917,6 +4436,46 @@
      "mv_world_castle",
      "anim_cheer",
      "char_kid_dancer"
+    ],
+    "subtitles": [
+     {
+      "en": "The bell rings: victory! The book is back.",
+      "vi": "Chuông ngân: chiến thắng! Cuốn sách đã về.",
+      "parts": [
+       "Chuông ngân: ",
+       [
+        "victory",
+        "chiến thắng",
+        2
+       ],
+       "! Cuốn ",
+       [
+        "book",
+        "sách",
+        0
+       ],
+       " đã về."
+      ]
+     },
+     {
+      "en": "The princess returns to the castle amid cheers.",
+      "vi": "Công chúa trở về lâu đài trong tiếng reo vui.",
+      "parts": [
+       "Công ",
+       [
+        "princess",
+        "chúa",
+        2
+       ],
+       " ",
+       [
+        "return",
+        "trở về",
+        2
+       ],
+       " lâu đài trong tiếng reo vui."
+      ]
+     }
     ]
    },
    {
@@ -2936,6 +4495,27 @@
     ],
     "assets": [
      "mv_world_castle"
+    ],
+    "subtitles": [
+     {
+      "en": "Fight the fog soldiers among the shelves in the library.",
+      "vi": "Đánh bọn lính sương giữa các kệ sách trong thư viện.",
+      "parts": [
+       "Đánh bọn lính sương giữa các ",
+       [
+        "shelf",
+        "kệ sách",
+        2
+       ],
+       " trong ",
+       [
+        "library",
+        "thư viện",
+        1
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -2955,6 +4535,26 @@
     ],
     "assets": [
      "mv_world_castle"
+    ],
+    "subtitles": [
+     {
+      "en": "Once upon a time, there was a brave hero.",
+      "vi": "Ngày xửa ngày xưa, có một anh hùng dũng cảm.",
+      "parts": [
+       [
+        "Once upon a time",
+        "Ngày xửa ngày xưa",
+        3
+       ],
+       ", có một ",
+       [
+        "hero",
+        "anh hùng",
+        2
+       ],
+       " dũng cảm."
+      ]
+     }
     ]
    }
   ],
@@ -3348,6 +4948,46 @@
      "mv_world_cyberpunk",
      "mv_hero_scarlet",
      "mv_ruin_building"
+    ],
+    "subtitles": [
+     {
+      "en": "Land in the neon city and fix the first sign.",
+      "vi": "Đáp xuống thành phố đèn neon: sửa bảng hiệu đầu tiên.",
+      "parts": [
+       "Đáp xuống ",
+       [
+        "city",
+        "thành phố",
+        1
+       ],
+       " ",
+       [
+        "neon",
+        "đèn neon",
+        3
+       ],
+       ": sửa ",
+       [
+        "sign",
+        "bảng hiệu",
+        1
+       ],
+       " đầu tiên."
+      ]
+     },
+     {
+      "en": "Each building has a missing letter.",
+      "vi": "Mỗi tòa nhà có một chữ bị mất.",
+      "parts": [
+       "Mỗi ",
+       [
+        "building",
+        "tòa nhà",
+        2
+       ],
+       " có một chữ bị mất."
+      ]
+     }
     ]
    },
    {
@@ -3368,6 +5008,39 @@
     ],
     "assets": [
      "mv_world_cyberpunk"
+    ],
+    "subtitles": [
+     {
+      "en": "Jump across the roofs, avoiding the rain and the drones.",
+      "vi": "Nhảy qua các mái nhà, tránh mưa và máy bay không người lái.",
+      "parts": [
+       [
+        "Jump",
+        "Nhảy",
+        0
+       ],
+       " qua các mái nhà, tránh ",
+       [
+        "rain",
+        "mưa",
+        0
+       ],
+       " và máy bay không người lái."
+      ]
+     },
+     {
+      "en": "Careful, the roof is very slippery!",
+      "vi": "Cẩn thận, mái nhà trơn lắm!",
+      "parts": [
+       "Cẩn thận, ",
+       [
+        "roof",
+        "mái nhà",
+        2
+       ],
+       " trơn lắm!"
+      ]
+     }
     ]
    },
    {
@@ -3388,6 +5061,39 @@
     ],
     "assets": [
      "mv_boss"
+    ],
+    "subtitles": [
+     {
+      "en": "The guard robot raises its shield to block the way.",
+      "vi": "Người máy bảo vệ giơ khiên chắn đường.",
+      "parts": [
+       [
+        "Robot",
+        "Người máy",
+        1
+       ],
+       " bảo vệ giơ ",
+       [
+        "shield",
+        "khiên",
+        1
+       ],
+       " chắn đường."
+      ]
+     },
+     {
+      "en": "Answer correctly to break the shield.",
+      "vi": "Trả lời đúng để phá vỡ tấm khiên.",
+      "parts": [
+       "Trả lời đúng để ",
+       [
+        "break",
+        "phá vỡ",
+        2
+       ],
+       " tấm khiên."
+      ]
+     }
     ]
    },
    {
@@ -3409,6 +5115,45 @@
     "assets": [
      "mv_boss",
      "fx_spark"
+    ],
+    "subtitles": [
+     {
+      "en": "At the top of the tower, thunder crashes!",
+      "vi": "Lên đỉnh tháp, sấm nổ vang!",
+      "parts": [
+       "Lên ",
+       [
+        "top",
+        "đỉnh",
+        1
+       ],
+       " ",
+       [
+        "tower",
+        "tháp",
+        2
+       ],
+       ", ",
+       [
+        "thunder",
+        "sấm",
+        3
+       ],
+       " nổ vang!"
+      ]
+     },
+     {
+      "en": "The lord roars: You will never make it!",
+      "vi": "Chúa Tể gầm lên: Ngươi không qua nổi đâu!",
+      "parts": [
+       [
+        "Lord",
+        "Chúa Tể",
+        3
+       ],
+       " gầm lên: Ngươi không qua nổi đâu!"
+      ]
+     }
     ]
    },
    {
@@ -3430,6 +5175,40 @@
     "assets": [
      "mv_boss",
      "mv_world_desert"
+    ],
+    "subtitles": [
+     {
+      "en": "Answer five questions in a row to lock the portal with a chain.",
+      "vi": "Trả lời liền năm câu đúng để khóa cổng bằng một chuỗi.",
+      "parts": [
+       "Trả lời liền năm câu đúng để ",
+       [
+        "lock",
+        "khóa",
+        2
+       ],
+       " cổng bằng một ",
+       [
+        "chain",
+        "chuỗi",
+        3
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "Keep the combo going for twenty seconds!",
+      "vi": "Giữ chuỗi liên tiếp trong hai mươi giây!",
+      "parts": [
+       "Giữ ",
+       [
+        "combo",
+        "chuỗi liên tiếp",
+        3
+       ],
+       " trong hai mươi giây!"
+      ]
+     }
     ]
    },
    {
@@ -3451,6 +5230,40 @@
     "assets": [
      "mv_world_cyberpunk",
      "anim_cheer"
+    ],
+    "subtitles": [
+     {
+      "en": "All the lights are back on the signs!",
+      "vi": "Mọi ánh đèn sáng lại trên các bảng hiệu!",
+      "parts": [
+       "Mọi ",
+       [
+        "light",
+        "ánh đèn",
+        1
+       ],
+       " sáng lại trên các ",
+       [
+        "sign",
+        "bảng hiệu",
+        1
+       ],
+       "!"
+      ]
+     },
+     {
+      "en": "The whole city cheers and thanks the heroes.",
+      "vi": "Cả thành phố reo hò cảm ơn các anh hùng.",
+      "parts": [
+       "Cả ",
+       [
+        "city",
+        "thành phố",
+        1
+       ],
+       " reo hò cảm ơn các anh hùng."
+      ]
+     }
     ]
    },
    {
@@ -3470,6 +5283,26 @@
     ],
     "assets": [
      "mv_world_cyberpunk"
+    ],
+    "subtitles": [
+     {
+      "en": "Fly after the Purple Crow in your flying car and chase it fast!",
+      "vi": "Bay theo Quạ Tím bằng xe bay, đuổi thật nhanh!",
+      "parts": [
+       [
+        "Fly",
+        "Bay",
+        1
+       ],
+       " theo Quạ Tím bằng xe bay, ",
+       [
+        "chase",
+        "đuổi",
+        2
+       ],
+       " thật nhanh!"
+      ]
+     }
     ]
    },
    {
@@ -3490,6 +5323,33 @@
     ],
     "assets": [
      "mv_world_cyberpunk"
+    ],
+    "subtitles": [
+     {
+      "en": "This sign hangs in front of a small shop: Open or Welcome?",
+      "vi": "Bảng này treo trước một cửa hàng nhỏ: Mở cửa hay Chào mừng?",
+      "parts": [
+       "Bảng này treo trước một ",
+       [
+        "shop",
+        "cửa hàng",
+        1
+       ],
+       " nhỏ: ",
+       [
+        "Open",
+        "Mở cửa",
+        1
+       ],
+       " hay ",
+       [
+        "Welcome",
+        "Chào mừng",
+        1
+       ],
+       "?"
+      ]
+     }
     ]
    }
   ],
@@ -3878,6 +5738,39 @@
     "assets": [
      "mv_world_desert",
      "mv_hero_scarlet"
+    ],
+    "subtitles": [
+     {
+      "en": "Sand is flying everywhere! A strong storm is blowing.",
+      "vi": "Cát bay mù mịt! Gió bão thổi mạnh.",
+      "parts": [
+       [
+        "Sand",
+        "Cát",
+        0
+       ],
+       " bay mù mịt! Gió ",
+       [
+        "storm",
+        "bão",
+        2
+       ],
+       " thổi mạnh."
+      ]
+     },
+     {
+      "en": "Cover your face and walk toward the ruins in the desert.",
+      "vi": "Che mặt và đi về phía tàn tích giữa sa mạc.",
+      "parts": [
+       "Che mặt và đi về phía tàn tích giữa ",
+       [
+        "desert",
+        "sa mạc",
+        1
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -3906,6 +5799,39 @@
      "mv_world_desert",
      "ground_sand_slab",
      "mv_world_ruin_candidate"
+    ],
+    "subtitles": [
+     {
+      "en": "The ancient stone statue asks a riddle.",
+      "vi": "Tượng đá cổ hỏi một câu đố.",
+      "parts": [
+       [
+        "Statue",
+        "Tượng",
+        2
+       ],
+       " đá cổ hỏi một ",
+       [
+        "riddle",
+        "câu đố",
+        3
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "Answer correctly to open the temple door.",
+      "vi": "Trả lời đúng để mở cửa ngôi đền.",
+      "parts": [
+       "Trả lời đúng để mở cửa ngôi ",
+       [
+        "temple",
+        "đền",
+        2
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -3926,6 +5852,40 @@
     ],
     "assets": [
      "mv_world_desert"
+    ],
+    "subtitles": [
+     {
+      "en": "Put the words of the sentence in the right order.",
+      "vi": "Sắp xếp đúng thứ tự các từ trong câu.",
+      "parts": [
+       "Sắp xếp đúng ",
+       [
+        "order",
+        "thứ tự",
+        1
+       ],
+       " các từ trong câu."
+      ]
+     },
+     {
+      "en": "Each time you are right, a stair appears for you to climb.",
+      "vi": "Mỗi lần đúng, một bậc thang hiện ra để leo.",
+      "parts": [
+       "Mỗi lần đúng, một bậc ",
+       [
+        "stairs",
+        "thang",
+        1
+       ],
+       " hiện ra để ",
+       [
+        "climb",
+        "leo",
+        1
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -3950,6 +5910,46 @@
     "assets": [
      "mv_boss",
      "mv_npc_druid_elf"
+    ],
+    "subtitles": [
+     {
+      "en": "The Grammar Stone glows when you answer correctly.",
+      "vi": "Đá Ngữ Pháp phát sáng khi bạn trả lời đúng.",
+      "parts": [
+       "Đá ",
+       [
+        "grammar",
+        "Ngữ Pháp",
+        3
+       ],
+       " ",
+       [
+        "glow",
+        "phát sáng",
+        2
+       ],
+       " khi bạn trả lời đúng."
+      ]
+     },
+     {
+      "en": "Drink water at the oasis to heal.",
+      "vi": "Uống nước ở ốc đảo để hồi sức.",
+      "parts": [
+       "Uống nước ở ",
+       [
+        "oasis",
+        "ốc đảo",
+        3
+       ],
+       " để ",
+       [
+        "heal",
+        "hồi sức",
+        2
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -3970,6 +5970,33 @@
     "assets": [
      "mv_boss",
      "fx_spark"
+    ],
+    "subtitles": [
+     {
+      "en": "A giant sand scorpion appears!",
+      "vi": "Bọ cạp cát khổng lồ xuất hiện!",
+      "parts": [
+       [
+        "Scorpion",
+        "Bọ cạp",
+        2
+       ],
+       " cát khổng lồ xuất hiện!"
+      ]
+     },
+     {
+      "en": "Hit its weak point with the right answer.",
+      "vi": "Đánh vào điểm yếu của nó bằng đáp án đúng.",
+      "parts": [
+       "Đánh vào ",
+       [
+        "weak point",
+        "điểm yếu",
+        3
+       ],
+       " của nó bằng đáp án đúng."
+      ]
+     }
     ]
    },
    {
@@ -3994,6 +6021,40 @@
      "mv_world_desert",
      "anim_cheer",
      "mini_large_island"
+    ],
+    "subtitles": [
+     {
+      "en": "We win! The oasis is peaceful again.",
+      "vi": "Chúng ta thắng! Ốc đảo lại bình yên.",
+      "parts": [
+       "Chúng ta ",
+       [
+        "win",
+        "thắng",
+        0
+       ],
+       "! Ốc đảo lại ",
+       [
+        "peaceful",
+        "bình yên",
+        3
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "Under the palm tree, the whole team rests.",
+      "vi": "Dưới bóng cây cọ, cả đội nghỉ ngơi.",
+      "parts": [
+       "Dưới bóng ",
+       [
+        "palm tree",
+        "cây cọ",
+        2
+       ],
+       ", cả đội nghỉ ngơi."
+      ]
+     }
     ]
    },
    {
@@ -4013,6 +6074,26 @@
     ],
     "assets": [
      "mv_world_desert"
+    ],
+    "subtitles": [
+     {
+      "en": "Ride a camel and chase the Purple Crow!",
+      "vi": "Cưỡi lạc đà đuổi theo Quạ Tím!",
+      "parts": [
+       [
+        "Ride",
+        "Cưỡi",
+        2
+       ],
+       " ",
+       [
+        "camel",
+        "lạc đà",
+        1
+       ],
+       " đuổi theo Quạ Tím!"
+      ]
+     }
     ]
    },
    {
@@ -4032,6 +6113,26 @@
     ],
     "assets": [
      "mv_world_desert"
+    ],
+    "subtitles": [
+     {
+      "en": "Carve a grammatically correct sentence onto the new stone.",
+      "vi": "Khắc một câu đúng ngữ pháp lên bia đá.",
+      "parts": [
+       [
+        "Carve",
+        "Khắc",
+        3
+       ],
+       " một ",
+       [
+        "sentence",
+        "câu",
+        1
+       ],
+       " đúng ngữ pháp lên bia đá."
+      ]
+     }
     ]
    }
   ],
@@ -4416,6 +6517,40 @@
     ],
     "assets": [
      "mv_world_castle"
+    ],
+    "subtitles": [
+     {
+      "en": "You stand on a piece of the castle that is floating.",
+      "vi": "Bạn đứng trên mảnh lâu đài đang trôi.",
+      "parts": [
+       "Bạn đứng trên mảnh lâu đài đang ",
+       [
+        "float",
+        "trôi",
+        2
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "A bridge of light connects to the next piece.",
+      "vi": "Một cây cầu ánh sáng nối sang mảnh kế tiếp.",
+      "parts": [
+       "Một ",
+       [
+        "bridge",
+        "cây cầu",
+        1
+       ],
+       " ",
+       [
+        "light",
+        "ánh sáng",
+        1
+       ],
+       " nối sang mảnh kế tiếp."
+      ]
+     }
     ]
    },
    {
@@ -4439,6 +6574,46 @@
     "assets": [
      "mv_world_cyberpunk",
      "char_crimson_kick"
+    ],
+    "subtitles": [
+     {
+      "en": "Jump through the portal to switch to a new world.",
+      "vi": "Nhảy qua cổng để đổi sang thế giới mới.",
+      "parts": [
+       "Nhảy qua ",
+       [
+        "portal",
+        "cổng",
+        2
+       ],
+       " để ",
+       [
+        "switch",
+        "đổi",
+        3
+       ],
+       " sang thế giới mới."
+      ]
+     },
+     {
+      "en": "A nice kick opens the way into the neon world.",
+      "vi": "Một cú đá đẹp mở đường vào thế giới neon.",
+      "parts": [
+       "Một cú ",
+       [
+        "kick",
+        "đá",
+        1
+       ],
+       " đẹp mở đường vào ",
+       [
+        "world",
+        "thế giới",
+        1
+       ],
+       " neon."
+      ]
+     }
     ]
    },
    {
@@ -4464,6 +6639,46 @@
      "mv_world_castle",
      "mv_world_cyberpunk",
      "mv_minion_shadow"
+    ],
+    "subtitles": [
+     {
+      "en": "Which portal is true and which is false?",
+      "vi": "Cổng nào thật, cổng nào giả?",
+      "parts": [
+       "Cổng nào ",
+       [
+        "true",
+        "thật",
+        2
+       ],
+       ", cổng nào ",
+       [
+        "false",
+        "giả",
+        2
+       ],
+       "?"
+      ]
+     },
+     {
+      "en": "The Purple Crow sets traps in the shadows.",
+      "vi": "Quạ Tím đặt bẫy trong bóng tối.",
+      "parts": [
+       "Quạ Tím đặt ",
+       [
+        "trap",
+        "bẫy",
+        3
+       ],
+       " trong ",
+       [
+        "shadow",
+        "bóng tối",
+        2
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -4487,6 +6702,40 @@
     "assets": [
      "mv_boss",
      "mv_weapon_runecrossbow"
+    ],
+    "subtitles": [
+     {
+      "en": "The lord keeps the balance between two worlds.",
+      "vi": "Chúa Tể giữ thăng bằng giữa hai thế giới.",
+      "parts": [
+       "Chúa Tể giữ ",
+       [
+        "balance",
+        "thăng bằng",
+        3
+       ],
+       " giữa hai thế giới."
+      ]
+     },
+     {
+      "en": "Fire runes with the crossbow; only the right answer will hit.",
+      "vi": "Bắn ký tự phép bằng nỏ, đúng đáp án mới trúng.",
+      "parts": [
+       "Bắn ",
+       [
+        "rune",
+        "ký tự phép",
+        3
+       ],
+       " bằng ",
+       [
+        "crossbow",
+        "nỏ",
+        3
+       ],
+       ", đúng đáp án mới trúng."
+      ]
+     }
     ]
    },
    {
@@ -4508,6 +6757,40 @@
     "assets": [
      "mv_boss",
      "fx_spark"
+    ],
+    "subtitles": [
+     {
+      "en": "A portal storm! Raise your shield.",
+      "vi": "Bão cổng! Giơ khiên lên che chắn.",
+      "parts": [
+       "Bão cổng! Giơ ",
+       [
+        "shield",
+        "khiên",
+        1
+       ],
+       " lên che chắn."
+      ]
+     },
+     {
+      "en": "Many small portals fire spells, so dodge!",
+      "vi": "Có rất nhiều cổng nhỏ bắn phép, hãy né!",
+      "parts": [
+       "Có ",
+       [
+        "many",
+        "rất nhiều",
+        1
+       ],
+       " cổng nhỏ bắn phép, hãy ",
+       [
+        "dodge",
+        "né",
+        2
+       ],
+       "!"
+      ]
+     }
     ]
    },
    {
@@ -4530,6 +6813,39 @@
      "mv_world_castle",
      "mv_world_cyberpunk",
      "anim_cheer"
+    ],
+    "subtitles": [
+     {
+      "en": "Close the last portal!",
+      "vi": "Đóng cổng cuối cùng lại!",
+      "parts": [
+       [
+        "Close",
+        "Đóng",
+        1
+       ],
+       " cổng cuối cùng lại!"
+      ]
+     },
+     {
+      "en": "The two worlds separate and everyone is safe.",
+      "vi": "Hai thế giới tách ra và mọi người an toàn.",
+      "parts": [
+       "Hai thế giới ",
+       [
+        "separate",
+        "tách ra",
+        3
+       ],
+       " và mọi người ",
+       [
+        "safe",
+        "an toàn",
+        1
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -4553,6 +6869,32 @@
     "assets": [
      "mv_world_castle",
      "mini_floating_island"
+    ],
+    "subtitles": [
+     {
+      "en": "Collect every piece left around the island.",
+      "vi": "Nhặt từng mảnh vỡ còn sót quanh hòn đảo.",
+      "parts": [
+       [
+        "Collect",
+        "Nhặt",
+        2
+       ],
+       " từng ",
+       [
+        "piece",
+        "mảnh vỡ",
+        1
+       ],
+       " còn sót quanh ",
+       [
+        "island",
+        "hòn đảo",
+        1
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -4573,6 +6915,27 @@
     ],
     "assets": [
      "mv_world_cyberpunk"
+    ],
+    "subtitles": [
+     {
+      "en": "Which worlds did you visit and see?",
+      "vi": "Em đã ghé thăm và nhìn thấy những thế giới nào?",
+      "parts": [
+       "Em đã ",
+       [
+        "visited",
+        "ghé thăm",
+        2
+       ],
+       " và ",
+       [
+        "saw",
+        "nhìn thấy",
+        1
+       ],
+       " những thế giới nào?"
+      ]
+     }
     ]
    }
   ],
@@ -4970,6 +7333,46 @@
      "char_grovaen_female",
      "char_tpose_boy",
      "char_wanderer"
+    ],
+    "subtitles": [
+     {
+      "en": "The teams gather at the heart of the multiverse.",
+      "vi": "Các đội tập hợp ở trái tim đa vũ trụ.",
+      "parts": [
+       "Các ",
+       [
+        "team",
+        "đội",
+        1
+       ],
+       " ",
+       [
+        "gather",
+        "tập hợp",
+        2
+       ],
+       " ở trái tim đa vũ trụ."
+      ]
+     },
+     {
+      "en": "The final begins, and everyone is a hero!",
+      "vi": "Trận chung kết bắt đầu, mỗi người là một anh hùng!",
+      "parts": [
+       "Trận ",
+       [
+        "final",
+        "chung kết",
+        2
+       ],
+       " bắt đầu, mỗi người là một ",
+       [
+        "hero",
+        "anh hùng",
+        1
+       ],
+       "!"
+      ]
+     }
     ]
    },
    {
@@ -4991,6 +7394,40 @@
     "assets": [
      "mv_boss",
      "mv_world_castle"
+    ],
+    "subtitles": [
+     {
+      "en": "The fog covers your eyes: find the truth.",
+      "vi": "Sương mù che mắt: hãy tìm sự thật.",
+      "parts": [
+       "Sương mù che mắt: hãy tìm ",
+       [
+        "truth",
+        "sự thật",
+        3
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "In the fog, can you see the way?",
+      "vi": "Trong sương mù, em có nhìn thấy đường không?",
+      "parts": [
+       "Trong ",
+       [
+        "fog",
+        "sương mù",
+        2
+       ],
+       ", em có ",
+       [
+        "see",
+        "nhìn thấy",
+        1
+       ],
+       " đường không?"
+      ]
+     }
     ]
    },
    {
@@ -5012,6 +7449,45 @@
     "assets": [
      "mv_boss",
      "mv_world_cyberpunk"
+    ],
+    "subtitles": [
+     {
+      "en": "Neon thunder crashes, so react fast!",
+      "vi": "Sấm neon nổ vang, phải phản ứng thật nhanh!",
+      "parts": [
+       [
+        "Thunder",
+        "Sấm",
+        3
+       ],
+       " neon nổ vang, phải ",
+       [
+        "react",
+        "phản ứng",
+        3
+       ],
+       " thật ",
+       [
+        "fast",
+        "nhanh",
+        1
+       ],
+       "!"
+      ]
+     },
+     {
+      "en": "Each correct answer is a fast ray of light through the storm.",
+      "vi": "Mỗi câu đúng là một tia sáng nhanh xuyên qua cơn bão.",
+      "parts": [
+       "Mỗi câu đúng là một tia sáng ",
+       [
+        "fast",
+        "nhanh",
+        1
+       ],
+       " xuyên qua cơn bão."
+      ]
+     }
     ]
    },
    {
@@ -5037,6 +7513,46 @@
      "mv_boss",
      "mv_world_desert",
      "mv_npc_druid_elf"
+    ],
+    "subtitles": [
+     {
+      "en": "Sand blows everywhere: stay calm and use the right order.",
+      "vi": "Cát bay mù: giữ bình tĩnh và sắp xếp đúng thứ tự.",
+      "parts": [
+       "Cát bay mù: giữ ",
+       [
+        "calm",
+        "bình tĩnh",
+        2
+       ],
+       " và sắp xếp đúng ",
+       [
+        "order",
+        "thứ tự",
+        1
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "The whole team helps one another heal.",
+      "vi": "Cả đội giúp nhau hồi sức.",
+      "parts": [
+       "Cả ",
+       [
+        "team",
+        "đội",
+        1
+       ],
+       " giúp nhau ",
+       [
+        "heal",
+        "hồi sức",
+        2
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -5062,6 +7578,34 @@
      "mv_boss",
      "fx_spark",
      "mv_boss_verdant"
+    ],
+    "subtitles": [
+     {
+      "en": "The whole class fights the Fusion Boss together!",
+      "vi": "Cả lớp cùng nhau đánh Boss Hợp Thể!",
+      "parts": [
+       "Cả lớp ",
+       [
+        "together",
+        "cùng nhau",
+        1
+       ],
+       " đánh Boss Hợp Thể!"
+      ]
+     },
+     {
+      "en": "Every correct answer from all of you lowers the shared health bar.",
+      "vi": "Mỗi đáp án đúng của mọi bạn làm thanh máu chung giảm.",
+      "parts": [
+       "Mỗi đáp án đúng của ",
+       [
+        "all",
+        "mọi",
+        1
+       ],
+       " bạn làm thanh máu chung giảm."
+      ]
+     }
     ]
    },
    {
@@ -5091,6 +7635,40 @@
      "anim_cheer",
      "mini_floating_island",
      "char_kid_dancer"
+    ],
+    "subtitles": [
+     {
+      "en": "The multiverse is peaceful again!",
+      "vi": "Đa vũ trụ lại yên bình!",
+      "parts": [
+       "Đa vũ trụ lại ",
+       [
+        "peaceful",
+        "yên bình",
+        3
+       ],
+       "!"
+      ]
+     },
+     {
+      "en": "The heroes receive an award and celebrate together.",
+      "vi": "Các anh hùng nhận giải thưởng và cùng ăn mừng.",
+      "parts": [
+       "Các anh hùng nhận ",
+       [
+        "award",
+        "giải thưởng",
+        3
+       ],
+       " và cùng ",
+       [
+        "celebrate",
+        "ăn mừng",
+        3
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -5110,6 +7688,21 @@
     ],
     "assets": [
      "mv_boss"
+    ],
+    "subtitles": [
+     {
+      "en": "The Purple Crow turns into a giant bird!",
+      "vi": "Quạ Tím hóa thành một con chim khổng lồ!",
+      "parts": [
+       "Quạ Tím hóa thành một con chim ",
+       [
+        "giant",
+        "khổng lồ",
+        2
+       ],
+       "!"
+      ]
+     }
     ]
    },
    {
@@ -5130,6 +7723,33 @@
     ],
     "assets": [
      "mv_world_castle"
+    ],
+    "subtitles": [
+     {
+      "en": "I promise to always protect words.",
+      "vi": "Tôi hứa luôn bảo vệ ngôn từ.",
+      "parts": [
+       "Tôi ",
+       [
+        "promise",
+        "hứa",
+        2
+       ],
+       " ",
+       [
+        "always",
+        "luôn",
+        2
+       ],
+       " ",
+       [
+        "protect",
+        "bảo vệ",
+        3
+       ],
+       " ngôn từ."
+      ]
+     }
     ]
    }
   ],
@@ -5542,6 +8162,45 @@
      "mini_camp_hero",
      "char_hiker_girl",
      "ground_grass_platform"
+    ],
+    "subtitles": [
+     {
+      "en": "Arrive at camp! You open the first toolbox.",
+      "vi": "Đến trại! Em mở rương công cụ đầu tiên.",
+      "parts": [
+       "Đến ",
+       [
+        "camp",
+        "trại",
+        0
+       ],
+       "! Em ",
+       [
+        "open",
+        "mở",
+        1
+       ],
+       " rương công cụ đầu tiên."
+      ]
+     },
+     {
+      "en": "The counselor hands you a map and a backpack.",
+      "vi": "Trưởng trại đưa em bản đồ và chiếc ba lô.",
+      "parts": [
+       [
+        "Counselor",
+        "Trưởng trại",
+        3
+       ],
+       " đưa em bản đồ và chiếc ",
+       [
+        "backpack",
+        "ba lô",
+        2
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -5572,6 +8231,46 @@
      "camp_tarp",
      "anim_kneel_work",
      "camp_tent_green"
+    ],
+    "subtitles": [
+     {
+      "en": "Drive the pegs into the ground with a hammer.",
+      "vi": "Đóng cọc xuống đất bằng búa.",
+      "parts": [
+       "Đóng ",
+       [
+        "peg",
+        "cọc",
+        3
+       ],
+       " xuống đất bằng ",
+       [
+        "hammer",
+        "búa",
+        2
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "Set the frame, then cover it with the tarp: the tent is really strong!",
+      "vi": "Dựng khung rồi phủ bạt: lều thật chắc!",
+      "parts": [
+       "Dựng khung rồi ",
+       [
+        "cover",
+        "phủ",
+        2
+       ],
+       " bạt: lều thật ",
+       [
+        "strong",
+        "chắc",
+        1
+       ],
+       "!"
+      ]
+     }
     ]
    },
    {
@@ -5609,6 +8308,52 @@
      "camp_tripod",
      "ground_cobble_circle",
      "camp_fire_starter"
+    ],
+    "subtitles": [
+     {
+      "en": "Pick dry wood and avoid wet wood.",
+      "vi": "Nhặt củi khô, tránh củi ướt.",
+      "parts": [
+       "Nhặt ",
+       [
+        "wood",
+        "củi",
+        0
+       ],
+       " ",
+       [
+        "dry",
+        "khô",
+        1
+       ],
+       ", tránh củi ",
+       [
+        "wet",
+        "ướt",
+        1
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "Strike the flint: a small spark will become fire.",
+      "vi": "Đánh đá lửa: một tia lửa nhỏ sẽ thành lửa.",
+      "parts": [
+       "Đánh đá lửa: một ",
+       [
+        "spark",
+        "tia lửa",
+        2
+       ],
+       " nhỏ sẽ thành ",
+       [
+        "fire",
+        "lửa",
+        0
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -5644,6 +8389,46 @@
      "anim_cook",
      "camp_skewer_meat",
      "camp_skewer_veg"
+    ],
+    "subtitles": [
+     {
+      "en": "Put the meat and vegetables on the grill and remember to turn them.",
+      "vi": "Xiên thịt và rau lên vỉ nướng, đừng quên xoay.",
+      "parts": [
+       "Xiên thịt và rau lên ",
+       [
+        "grill",
+        "vỉ nướng",
+        2
+       ],
+       ", đừng quên ",
+       [
+        "turn",
+        "xoay",
+        2
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "Everyone is hungry and every dish is delicious!",
+      "vi": "Ai cũng đói, món nào cũng ngon!",
+      "parts": [
+       "Ai cũng ",
+       [
+        "hungry",
+        "đói",
+        1
+       ],
+       ", món nào cũng ",
+       [
+        "delicious",
+        "ngon",
+        3
+       ],
+       "!"
+      ]
+     }
     ]
    },
    {
@@ -5671,6 +8456,51 @@
      "camp_cup",
      "camp_bottle",
      "river_pebbles"
+    ],
+    "subtitles": [
+     {
+      "en": "Take lake water and filter it through sand.",
+      "vi": "Lấy nước hồ và lọc qua cát.",
+      "parts": [
+       "Lấy nước hồ và ",
+       [
+        "filter",
+        "lọc",
+        3
+       ],
+       " qua ",
+       [
+        "sand",
+        "cát",
+        1
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "Only after boiling is it clean water to drink.",
+      "vi": "Đun sôi xong mới thành nước sạch để uống.",
+      "parts": [
+       [
+        "Boil",
+        "Đun sôi",
+        3
+       ],
+       " xong mới thành nước ",
+       [
+        "clean",
+        "sạch",
+        1
+       ],
+       " để ",
+       [
+        "drink",
+        "uống",
+        1
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -5698,6 +8528,45 @@
      "river_fern",
      "camp_lantern",
      "hdri_sunset"
+    ],
+    "subtitles": [
+     {
+      "en": "The squirrels have taken the sausage bag!",
+      "vi": "Đàn sóc lấy mất túi xúc xích!",
+      "parts": [
+       "Đàn ",
+       [
+        "squirrel",
+        "sóc",
+        2
+       ],
+       " lấy mất túi ",
+       [
+        "sausage",
+        "xúc xích",
+        2
+       ],
+       "!"
+      ]
+     },
+     {
+      "en": "Follow the footprints to find the bag again.",
+      "vi": "Lần theo dấu chân để tìm lại túi.",
+      "parts": [
+       [
+        "Follow",
+        "Lần theo",
+        1
+       ],
+       " dấu chân để ",
+       [
+        "find",
+        "tìm",
+        1
+       ],
+       " lại túi."
+      ]
+     }
     ]
    },
    {
@@ -5719,6 +8588,32 @@
     "assets": [
      "camp_marshmallow_stick",
      "camp_firepit"
+    ],
+    "subtitles": [
+     {
+      "en": "Marshmallows are both sweet and soft.",
+      "vi": "Kẹo dẻo vừa ngọt vừa mềm.",
+      "parts": [
+       [
+        "Marshmallow",
+        "Kẹo dẻo",
+        3
+       ],
+       " vừa ",
+       [
+        "sweet",
+        "ngọt",
+        1
+       ],
+       " vừa ",
+       [
+        "soft",
+        "mềm",
+        2
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -5740,6 +8635,33 @@
     "assets": [
      "camp_lantern",
      "river_sign"
+    ],
+    "subtitles": [
+     {
+      "en": "Today is the first day and I am very happy.",
+      "vi": "Hôm nay là ngày đầu tiên, em rất vui.",
+      "parts": [
+       "Hôm ",
+       [
+        "today",
+        "nay",
+        0
+       ],
+       " là ngày ",
+       [
+        "first",
+        "đầu tiên",
+        1
+       ],
+       ", em rất ",
+       [
+        "happy",
+        "vui",
+        0
+       ],
+       "."
+      ]
+     }
     ]
    }
   ],
@@ -6172,6 +9094,45 @@
      "camp_table",
      "camp_string_lights",
      "river_sign"
+    ],
+    "subtitles": [
+     {
+      "en": "Each recipe card lists the ingredients and every step.",
+      "vi": "Mỗi thẻ công thức có nguyên liệu và từng bước.",
+      "parts": [
+       "Mỗi thẻ ",
+       [
+        "recipe",
+        "công thức",
+        3
+       ],
+       " có ",
+       [
+        "ingredient",
+        "nguyên liệu",
+        4
+       ],
+       " và từng ",
+       [
+        "step",
+        "bước",
+        1
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "First, get everything ready neatly.",
+      "vi": "Đầu tiên, chuẩn bị mọi thứ thật gọn gàng.",
+      "parts": [
+       [
+        "First",
+        "Đầu tiên",
+        1
+       ],
+       ", chuẩn bị mọi thứ thật gọn gàng."
+      ]
+     }
     ]
    },
    {
@@ -6211,6 +9172,46 @@
      "village_cart",
      "village_cow",
      "ground_cobble_path_b"
+    ],
+    "subtitles": [
+     {
+      "en": "At the camp market, you can catch fish or pick vegetables.",
+      "vi": "Ở chợ trại, em có thể bắt cá hay hái rau.",
+      "parts": [
+       "Ở chợ trại, em có thể bắt ",
+       [
+        "fish",
+        "cá",
+        0
+       ],
+       " hay hái ",
+       [
+        "vegetable",
+        "rau",
+        2
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "You trade corn with the next camp.",
+      "vi": "Em đổi bắp với trại bên cạnh.",
+      "parts": [
+       "Em ",
+       [
+        "trade",
+        "đổi",
+        3
+       ],
+       " ",
+       [
+        "corn",
+        "bắp",
+        2
+       ],
+       " với trại bên cạnh."
+      ]
+     }
     ]
    },
    {
@@ -6238,6 +9239,50 @@
      "camp_table",
      "food_meat_raw",
      "camp_well"
+    ],
+    "subtitles": [
+     {
+      "en": "Wash, cut, then skewer in the right order.",
+      "vi": "Rửa, cắt rồi xiên theo đúng thứ tự.",
+      "parts": [
+       [
+        "Wash",
+        "Rửa",
+        1
+       ],
+       ", ",
+       [
+        "cut",
+        "cắt",
+        1
+       ],
+       " rồi xiên theo đúng thứ tự."
+      ]
+     },
+     {
+      "en": "Slice thinly and mix well.",
+      "vi": "Thái mỏng và trộn đều.",
+      "parts": [
+       [
+        "Slice",
+        "Thái",
+        2
+       ],
+       " mỏng và ",
+       [
+        "mix",
+        "trộn",
+        2
+       ],
+       " ",
+       [
+        "well",
+        "đều",
+        2
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -6264,6 +9309,34 @@
      "camp_matchbox",
      "fx_fire",
      "fx_smoke"
+    ],
+    "subtitles": [
+     {
+      "en": "The wind blows out the fire! The whole camp relights it together.",
+      "vi": "Gió thổi tắt lửa! Cả trại cùng nhóm lại.",
+      "parts": [
+       "Gió thổi tắt lửa! Cả trại cùng ",
+       [
+        "relight",
+        "nhóm lại",
+        3
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "The fire is warm again and everyone smiles.",
+      "vi": "Ngọn lửa ấm lại, ai cũng cười.",
+      "parts": [
+       "Ngọn lửa ",
+       [
+        "warm",
+        "ấm",
+        1
+       ],
+       " lại, ai cũng cười."
+      ]
+     }
     ]
    },
    {
@@ -6296,6 +9369,45 @@
      "anim_cook",
      "camp_skewer_fish",
      "camp_skewer_veg"
+    ],
+    "subtitles": [
+     {
+      "en": "Grill the fish until golden, and remember to flip it.",
+      "vi": "Nướng cá vàng ươm và nhớ lật mặt.",
+      "parts": [
+       [
+        "Grill",
+        "Nướng",
+        2
+       ],
+       " cá vàng ươm và nhớ ",
+       [
+        "flip",
+        "lật",
+        3
+       ],
+       " mặt."
+      ]
+     },
+     {
+      "en": "The smell spreads through camp, and the fish is golden.",
+      "vi": "Mùi thơm bay khắp trại, cá đã vàng.",
+      "parts": [
+       "Mùi ",
+       [
+        "smell",
+        "thơm",
+        2
+       ],
+       " bay khắp trại, cá đã ",
+       [
+        "golden",
+        "vàng",
+        2
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -6322,6 +9434,46 @@
      "food_bread",
      "camp_cup",
      "hdri_sunset"
+    ],
+    "subtitles": [
+     {
+      "en": "Chef Marco tastes it: yummy!",
+      "vi": "Chef Marco nếm thử: ngon tuyệt!",
+      "parts": [
+       "Chef Marco ",
+       [
+        "taste",
+        "nếm",
+        2
+       ],
+       " thử: ",
+       [
+        "yummy",
+        "ngon tuyệt",
+        3
+       ],
+       "!"
+      ]
+     },
+     {
+      "en": "This is the best dish on the table, so present it nicely.",
+      "vi": "Đây là món ngon nhất bàn tiệc, hãy bày thật đẹp.",
+      "parts": [
+       "Đây là món ",
+       [
+        "best",
+        "ngon nhất",
+        2
+       ],
+       " bàn tiệc, hãy ",
+       [
+        "present",
+        "bày",
+        3
+       ],
+       " thật đẹp."
+      ]
+     }
     ]
    },
    {
@@ -6343,6 +9495,32 @@
     "assets": [
      "food_apple",
      "camp_grill"
+    ],
+    "subtitles": [
+     {
+      "en": "Dessert: grill bananas and apples.",
+      "vi": "Tráng miệng: nướng chuối và táo.",
+      "parts": [
+       [
+        "Dessert",
+        "Tráng miệng",
+        3
+       ],
+       ": nướng ",
+       [
+        "banana",
+        "chuối",
+        1
+       ],
+       " và ",
+       [
+        "apple",
+        "táo",
+        1
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -6363,6 +9541,33 @@
     ],
     "assets": [
      "river_sign"
+    ],
+    "subtitles": [
+     {
+      "en": "Write a menu for tomorrow's breakfast.",
+      "vi": "Viết thực đơn cho bữa sáng ngày mai.",
+      "parts": [
+       "Viết ",
+       [
+        "menu",
+        "thực đơn",
+        3
+       ],
+       " cho bữa ",
+       [
+        "breakfast",
+        "sáng",
+        2
+       ],
+       " ",
+       [
+        "tomorrow",
+        "ngày mai",
+        1
+       ],
+       "."
+      ]
+     }
     ]
    }
   ],
@@ -6782,6 +9987,46 @@
      "river_sign",
      "hdri_cloudy",
      "char_grass_kid"
+    ],
+    "subtitles": [
+     {
+      "en": "The forecast says a storm is coming!",
+      "vi": "Bản tin dự báo: bão sắp đến!",
+      "parts": [
+       "Bản tin ",
+       [
+        "forecast",
+        "dự báo",
+        3
+       ],
+       ": ",
+       [
+        "storm",
+        "bão",
+        2
+       ],
+       " sắp đến!"
+      ]
+     },
+     {
+      "en": "The whole camp makes a plan to stay safe.",
+      "vi": "Cả trại lên kế hoạch để giữ an toàn.",
+      "parts": [
+       "Cả trại ",
+       [
+        "plan",
+        "lên kế hoạch",
+        2
+       ],
+       " để giữ ",
+       [
+        "safe",
+        "an toàn",
+        1
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -6811,6 +10056,51 @@
      "camp_tarp",
      "anim_kneel_work",
      "camp_tent_damaged"
+    ],
+    "subtitles": [
+     {
+      "en": "Tie the ropes tight so the tent stays strong against the wind.",
+      "vi": "Buộc dây thật chặt để lều vững trước gió.",
+      "parts": [
+       [
+        "Tie",
+        "Buộc",
+        1
+       ],
+       " dây thật ",
+       [
+        "tight",
+        "chặt",
+        2
+       ],
+       " để lều ",
+       [
+        "strong",
+        "vững",
+        1
+       ],
+       " trước ",
+       [
+        "wind",
+        "gió",
+        1
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "Tighten the cover and add rope to be sure.",
+      "vi": "Siết bạt và thêm dây cho chắc.",
+      "parts": [
+       "Siết bạt và thêm ",
+       [
+        "rope",
+        "dây",
+        1
+       ],
+       " cho chắc."
+      ]
+     }
     ]
    },
    {
@@ -6836,6 +10126,45 @@
      "river_woodpile",
      "river_firewood",
      "river_shed"
+    ],
+    "subtitles": [
+     {
+      "en": "Cover the stove and carry the dry wood inside.",
+      "vi": "Che bếp lại, mang củi khô vào kho.",
+      "parts": [
+       [
+        "Cover",
+        "Che",
+        2
+       ],
+       " bếp lại, ",
+       [
+        "carry",
+        "mang",
+        2
+       ],
+       " củi ",
+       [
+        "dry",
+        "khô",
+        1
+       ],
+       " vào kho."
+      ]
+     },
+     {
+      "en": "Wood kept inside will not get wet.",
+      "vi": "Củi để bên trong sẽ không bị ướt.",
+      "parts": [
+       "Củi để ",
+       [
+        "inside",
+        "bên trong",
+        2
+       ],
+       " sẽ không bị ướt."
+      ]
+     }
     ]
    },
    {
@@ -6861,6 +10190,45 @@
      "camp_water_filter",
      "camp_bottle",
      "camp_bucket"
+    ],
+    "subtitles": [
+     {
+      "en": "Hang the storm lanterns to have light in the storm.",
+      "vi": "Treo đèn bão để có ánh sáng trong bão.",
+      "parts": [
+       "Treo đèn ",
+       [
+        "lantern",
+        "bão",
+        2
+       ],
+       " để có ",
+       [
+        "light",
+        "ánh sáng",
+        1
+       ],
+       " trong ",
+       [
+        "storm",
+        "bão",
+        2
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "Fill the bottles with clean water before the heavy rain.",
+      "vi": "Đổ đầy bình nước sạch trước khi mưa to.",
+      "parts": [
+       [
+        "Fill",
+        "Đổ đầy",
+        2
+       ],
+       " bình nước sạch trước khi mưa to."
+      ]
+     }
     ]
    },
    {
@@ -6886,6 +10254,46 @@
      "river_bush",
      "river_stump",
      "decal_footprint_mud"
+    ],
+    "subtitles": [
+     {
+      "en": "Little Tom's backpack is lost! Let us search together.",
+      "vi": "Ba lô Bé Tôm bị lạc! Mình cùng tìm nhé.",
+      "parts": [
+       "Ba lô Bé Tôm bị ",
+       [
+        "lost",
+        "lạc",
+        2
+       ],
+       "! Mình cùng ",
+       [
+        "search",
+        "tìm",
+        2
+       ],
+       " nhé."
+      ]
+     },
+     {
+      "en": "Where is the backpack? There it is: found!",
+      "vi": "Ba lô ở đâu nhỉ? Kia rồi, tìm thấy!",
+      "parts": [
+       "Ba lô ",
+       [
+        "where",
+        "ở đâu",
+        0
+       ],
+       " nhỉ? Kia rồi, ",
+       [
+        "found",
+        "tìm thấy",
+        2
+       ],
+       "!"
+      ]
+     }
     ]
    },
    {
@@ -6910,6 +10318,40 @@
      "camp_firepit",
      "hdri_noon",
      "anim_cheer"
+    ],
+    "subtitles": [
+     {
+      "en": "The rain stops and a rainbow appears!",
+      "vi": "Mưa tạnh, cầu vồng hiện ra!",
+      "parts": [
+       "Mưa tạnh, ",
+       [
+        "rainbow",
+        "cầu vồng",
+        2
+       ],
+       " hiện ra!"
+      ]
+     },
+     {
+      "en": "The whole camp checks the tents and feels so proud.",
+      "vi": "Cả trại kiểm tra lều và thấy thật tự hào.",
+      "parts": [
+       "Cả trại ",
+       [
+        "check",
+        "kiểm tra",
+        1
+       ],
+       " lều và thấy thật ",
+       [
+        "proud",
+        "tự hào",
+        2
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -6931,6 +10373,26 @@
     "assets": [
      "camp_sleeping_bag",
      "camp_rope"
+    ],
+    "subtitles": [
+     {
+      "en": "Hang the wet sleeping bags around the fire so they dry quickly.",
+      "vi": "Treo túi ngủ ướt quanh lửa cho mau khô.",
+      "parts": [
+       [
+        "Hang",
+        "Treo",
+        2
+       ],
+       " túi ngủ ",
+       [
+        "wet",
+        "ướt",
+        1
+       ],
+       " quanh lửa cho mau khô."
+      ]
+     }
     ]
    },
    {
@@ -6951,6 +10413,33 @@
     ],
     "assets": [
      "camp_lantern"
+    ],
+    "subtitles": [
+     {
+      "en": "Will tomorrow be sunny or cloudy?",
+      "vi": "Ngày mai trời nắng hay nhiều mây?",
+      "parts": [
+       "Ngày ",
+       [
+        "tomorrow",
+        "mai",
+        1
+       ],
+       " trời ",
+       [
+        "sunny",
+        "nắng",
+        2
+       ],
+       " hay ",
+       [
+        "cloudy",
+        "nhiều mây",
+        2
+       ],
+       "?"
+      ]
+     }
     ]
    }
   ],
@@ -7365,6 +10854,40 @@
      "camp_tent_stage",
      "hdri_night",
      "tree_fort"
+    ],
+    "subtitles": [
+     {
+      "en": "Light the lanterns along the path in the dark night.",
+      "vi": "Thắp đèn lồng dọc lối đi trong đêm tối.",
+      "parts": [
+       "Thắp ",
+       [
+        "lantern",
+        "đèn lồng",
+        2
+       ],
+       " dọc lối đi trong đêm ",
+       [
+        "dark",
+        "tối",
+        1
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "Each lantern lit makes the night less dark.",
+      "vi": "Mỗi ngọn đèn sáng lên làm đêm bớt tối.",
+      "parts": [
+       "Mỗi ngọn đèn sáng lên làm ",
+       [
+        "night",
+        "đêm",
+        0
+       ],
+       " bớt tối."
+      ]
+     }
     ]
    },
    {
@@ -7388,6 +10911,40 @@
      "river_woodpile",
      "river_firewood",
      "camp_firepit"
+    ],
+    "subtitles": [
+     {
+      "en": "Each tent adds a bundle of wood to the big fire.",
+      "vi": "Mỗi lều góp một bó củi cho đống lửa lớn.",
+      "parts": [
+       "Mỗi lều góp một bó ",
+       [
+        "wood",
+        "củi",
+        0
+       ],
+       " cho đống lửa lớn."
+      ]
+     },
+     {
+      "en": "A big fire needs the whole camp to share the work.",
+      "vi": "Một đống lửa lớn cần cả trại cùng góp.",
+      "parts": [
+       "Một đống lửa ",
+       [
+        "big",
+        "lớn",
+        0
+       ],
+       " cần cả trại ",
+       [
+        "share",
+        "cùng góp",
+        2
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -7413,6 +10970,46 @@
      "camp_bench",
      "camp_chair",
      "ground_cobble_path_a"
+    ],
+    "subtitles": [
+     {
+      "en": "Carry the benches and place them in a circle.",
+      "vi": "Khiêng ghế dài xếp thành vòng tròn.",
+      "parts": [
+       "Khiêng ",
+       [
+        "bench",
+        "ghế dài",
+        3
+       ],
+       " xếp thành ",
+       [
+        "circle",
+        "vòng tròn",
+        2
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "Everyone sits down around the fire.",
+      "vi": "Mọi người ngồi xuống quanh bếp lửa.",
+      "parts": [
+       "Mọi người ",
+       [
+        "sit",
+        "ngồi",
+        1
+       ],
+       " xuống ",
+       [
+        "around",
+        "quanh",
+        2
+       ],
+       " bếp lửa."
+      ]
+     }
     ]
    },
    {
@@ -7437,6 +11034,40 @@
      "surv_map",
      "camp_lantern",
      "river_stump"
+    ],
+    "subtitles": [
+     {
+      "en": "Find the five pieces of the star map hidden around camp.",
+      "vi": "Tìm năm mảnh bản đồ sao giấu khắp trại.",
+      "parts": [
+       "Tìm năm ",
+       [
+        "piece",
+        "mảnh",
+        1
+       ],
+       " bản đồ ",
+       [
+        "star",
+        "sao",
+        0
+       ],
+       " giấu khắp trại."
+      ]
+     },
+     {
+      "en": "This map points to tonight's sky.",
+      "vi": "Bản đồ này chỉ lên bầu trời đêm nay.",
+      "parts": [
+       "Bản đồ này chỉ lên ",
+       [
+        "sky",
+        "bầu trời",
+        1
+       ],
+       " đêm nay."
+      ]
+     }
     ]
    },
    {
@@ -7460,6 +11091,52 @@
     "assets": [
      "hdri_night",
      "camp_table"
+    ],
+    "subtitles": [
+     {
+      "en": "Through the telescope you see the Fishing Boat constellation.",
+      "vi": "Qua kính thiên văn em thấy chòm sao Thuyền Câu.",
+      "parts": [
+       "Qua kính ",
+       [
+        "telescope",
+        "thiên văn",
+        3
+       ],
+       " em thấy ",
+       [
+        "constellation",
+        "chòm sao",
+        4
+       ],
+       " Thuyền Câu."
+      ]
+     },
+     {
+      "en": "The stars shine together and tell a story.",
+      "vi": "Các ngôi sao cùng tỏa sáng và kể một câu chuyện.",
+      "parts": [
+       "Các ",
+       [
+        "star",
+        "ngôi sao",
+        0
+       ],
+       " cùng ",
+       [
+        "shine",
+        "tỏa sáng",
+        2
+       ],
+       " và kể một ",
+       [
+        "story",
+        "câu chuyện",
+        1
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -7488,6 +11165,45 @@
      "fx_spark",
      "anim_cheer",
      "char_nomad_boy"
+    ],
+    "subtitles": [
+     {
+      "en": "The campfire blazes and the whole camp sings together.",
+      "vi": "Lửa trại bùng lên, cả trại hát cùng nhau.",
+      "parts": [
+       [
+        "Campfire",
+        "Lửa trại",
+        3
+       ],
+       " bùng lên, cả trại ",
+       [
+        "sing",
+        "hát",
+        1
+       ],
+       " ",
+       [
+        "together",
+        "cùng nhau",
+        1
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "Everyone is happy by the fire.",
+      "vi": "Ai cũng vui bên lửa.",
+      "parts": [
+       "Ai cũng ",
+       [
+        "happy",
+        "vui",
+        0
+       ],
+       " bên lửa."
+      ]
+     }
     ]
    },
    {
@@ -7507,6 +11223,26 @@
     ],
     "assets": [
      "camp_marshmallow_stick"
+    ],
+    "subtitles": [
+     {
+      "en": "Toast the marshmallows until lightly golden.",
+      "vi": "Nướng kẹo dẻo đến khi vàng nhẹ.",
+      "parts": [
+       [
+        "Toast",
+        "Nướng",
+        3
+       ],
+       " ",
+       [
+        "marshmallow",
+        "kẹo dẻo",
+        3
+       ],
+       " đến khi vàng nhẹ."
+      ]
+     }
     ]
    },
    {
@@ -7527,6 +11263,27 @@
     ],
     "assets": [
      "hdri_night"
+    ],
+    "subtitles": [
+     {
+      "en": "See a shooting star and wish for the future.",
+      "vi": "Thấy sao băng, hãy ước một điều cho tương lai.",
+      "parts": [
+       "Thấy sao băng, hãy ",
+       [
+        "wish",
+        "ước",
+        1
+       ],
+       " một điều cho ",
+       [
+        "future",
+        "tương lai",
+        3
+       ],
+       "."
+      ]
+     }
     ]
    }
   ],
@@ -7936,6 +11693,39 @@
      "river_dock",
      "char_hiker_girl",
      "char_female_a"
+    ],
+    "subtitles": [
+     {
+      "en": "Pack your backpack: bring only what you need.",
+      "vi": "Xếp ba lô: chỉ mang thứ em cần thôi.",
+      "parts": [
+       [
+        "Pack",
+        "Xếp",
+        1
+       ],
+       " ba lô: chỉ mang thứ em ",
+       [
+        "need",
+        "cần",
+        1
+       ],
+       " thôi."
+      ]
+     },
+     {
+      "en": "The backpack should not be too heavy.",
+      "vi": "Ba lô không nên quá nặng.",
+      "parts": [
+       "Ba lô không nên quá ",
+       [
+        "heavy",
+        "nặng",
+        2
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -7965,6 +11755,46 @@
      "river_sign",
      "river_tree_pine",
      "mini_ganga_valley"
+    ],
+    "subtitles": [
+     {
+      "en": "Read the map and compass: the direction is north.",
+      "vi": "Đọc bản đồ và la bàn: hướng bắc.",
+      "parts": [
+       "Đọc ",
+       [
+        "map",
+        "bản đồ",
+        1
+       ],
+       " và ",
+       [
+        "compass",
+        "la bàn",
+        3
+       ],
+       ": hướng ",
+       [
+        "north",
+        "bắc",
+        2
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "At the fork, turn the right way.",
+      "vi": "Đến ngã ba, hãy rẽ đúng hướng.",
+      "parts": [
+       "Đến ngã ba, hãy ",
+       [
+        "turn",
+        "rẽ",
+        1
+       ],
+       " đúng hướng."
+      ]
+     }
     ]
    },
    {
@@ -7989,6 +11819,44 @@
      "river_bridge",
      "camp_axe",
      "river_log_fallen"
+    ],
+    "subtitles": [
+     {
+      "en": "The wooden bridge has a broken board.",
+      "vi": "Cầu gỗ gãy một tấm ván.",
+      "parts": [
+       [
+        "Bridge",
+        "Cầu",
+        1
+       ],
+       " gỗ gãy một tấm ",
+       [
+        "board",
+        "ván",
+        2
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "Once it is fixed, the whole camp crosses the stream safely.",
+      "vi": "Sửa xong, cả trại qua suối an toàn.",
+      "parts": [
+       [
+        "Fix",
+        "Sửa",
+        2
+       ],
+       " xong, cả trại ",
+       [
+        "cross",
+        "qua",
+        2
+       ],
+       " suối an toàn."
+      ]
+     }
     ]
    },
    {
@@ -8016,6 +11884,46 @@
      "camp_bucket",
      "river_rock_medium",
      "river_waterfall_pool"
+    ],
+    "subtitles": [
+     {
+      "en": "Take water from the river, then filter and boil it.",
+      "vi": "Lấy nước từ sông rồi lọc và đun sôi.",
+      "parts": [
+       "Lấy nước từ ",
+       [
+        "river",
+        "sông",
+        1
+       ],
+       " rồi ",
+       [
+        "filter",
+        "lọc",
+        3
+       ],
+       " và ",
+       [
+        "boil",
+        "đun sôi",
+        3
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "Upstream water is safe after boiling.",
+      "vi": "Nước thượng nguồn thì an toàn sau khi đun.",
+      "parts": [
+       "Nước thượng nguồn thì ",
+       [
+        "safe",
+        "an toàn",
+        1
+       ],
+       " sau khi đun."
+      ]
+     }
     ]
    },
    {
@@ -8042,6 +11950,40 @@
      "camp_pan",
      "food_apple",
      "food_bread"
+    ],
+    "subtitles": [
+     {
+      "en": "Set up the new camp by the lake on the mountain.",
+      "vi": "Dựng trại mới bên hồ trên núi.",
+      "parts": [
+       "Dựng trại ",
+       [
+        "new",
+        "mới",
+        1
+       ],
+       " bên ",
+       [
+        "lake",
+        "hồ",
+        1
+       ],
+       " trên núi."
+      ]
+     },
+     {
+      "en": "A great lunch by the lake.",
+      "vi": "Bữa trưa ngon tuyệt bên hồ.",
+      "parts": [
+       "Bữa ",
+       [
+        "lunch",
+        "trưa",
+        1
+       ],
+       " ngon tuyệt bên hồ."
+      ]
+     }
     ]
    },
    {
@@ -8068,6 +12010,45 @@
      "river_dock",
      "hdri_sunset",
      "river_duck"
+    ],
+    "subtitles": [
+     {
+      "en": "Row the little boat and watch the sunset.",
+      "vi": "Chèo thuyền nhỏ ngắm hoàng hôn.",
+      "parts": [
+       [
+        "Row",
+        "Chèo",
+        2
+       ],
+       " thuyền nhỏ ngắm ",
+       [
+        "sunset",
+        "hoàng hôn",
+        2
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "The view is so beautiful you forget your paddle.",
+      "vi": "Cảnh đẹp đến mức quên cả mái chèo.",
+      "parts": [
+       "Cảnh ",
+       [
+        "beautiful",
+        "đẹp",
+        1
+       ],
+       " đến mức quên cả ",
+       [
+        "paddle",
+        "mái chèo",
+        1
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -8088,6 +12069,27 @@
     "assets": [
      "fish_rod",
      "fish_bobber"
+    ],
+    "subtitles": [
+     {
+      "en": "Try to catch a few fish for dinner.",
+      "vi": "Cố bắt vài con cá cho bữa tối.",
+      "parts": [
+       "Cố ",
+       [
+        "catch",
+        "bắt",
+        1
+       ],
+       " vài con ",
+       [
+        "fish",
+        "cá",
+        0
+       ],
+       " cho bữa tối."
+      ]
+     }
     ]
    },
    {
@@ -8108,6 +12110,32 @@
     ],
     "assets": [
      "river_sign"
+    ],
+    "subtitles": [
+     {
+      "en": "Dear Mom, I miss you, see you soon!",
+      "vi": "Gửi mẹ, con nhớ mẹ, hẹn gặp lại!",
+      "parts": [
+       [
+        "Dear",
+        "Gửi",
+        1
+       ],
+       " mẹ, con ",
+       [
+        "miss you",
+        "nhớ mẹ",
+        2
+       ],
+       ", hẹn ",
+       [
+        "see you",
+        "gặp lại",
+        2
+       ],
+       "!"
+      ]
+     }
     ]
    }
   ],
@@ -8542,6 +12570,45 @@
      "fish_rod_wood",
      "fish_rod_holder",
      "fish_boat_chair"
+    ],
+    "subtitles": [
+     {
+      "en": "Get in the boat, put on your life jacket and take your rod.",
+      "vi": "Xuống thuyền, mặc áo phao và nhận cần câu.",
+      "parts": [
+       "Xuống ",
+       [
+        "boat",
+        "thuyền",
+        0
+       ],
+       ", mặc áo ",
+       [
+        "life jacket",
+        "phao",
+        3
+       ],
+       " và nhận ",
+       [
+        "rod",
+        "cần câu",
+        1
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "Paddle out to the middle of the lake at dawn.",
+      "vi": "Chèo ra giữa hồ lúc bình minh.",
+      "parts": [
+       [
+        "Paddle",
+        "Chèo",
+        1
+       ],
+       " ra giữa hồ lúc bình minh."
+      ]
+     }
     ]
    },
    {
@@ -8569,6 +12636,45 @@
      "fish_tilapia",
      "fish_climbing_perch",
      "anim_cast"
+    ],
+    "subtitles": [
+     {
+      "en": "Cast the rod far and watch the float.",
+      "vi": "Quăng cần thật xa, nhìn phao nổi.",
+      "parts": [
+       [
+        "Cast",
+        "Quăng",
+        2
+       ],
+       " cần thật xa, nhìn ",
+       [
+        "float",
+        "phao",
+        2
+       ],
+       " nổi."
+      ]
+     },
+     {
+      "en": "The float sinks: a fish bites! Pull the rod up!",
+      "vi": "Phao chìm: có cá cắn! Kéo cần lên!",
+      "parts": [
+       "Phao chìm: có cá ",
+       [
+        "bite",
+        "cắn",
+        2
+       ],
+       "! ",
+       [
+        "Pull",
+        "Kéo",
+        1
+       ],
+       " cần lên!"
+      ]
+     }
     ]
    },
    {
@@ -8594,6 +12700,45 @@
      "fish_carp",
      "fish_crucian",
      "fish_tackle_box"
+    ],
+    "subtitles": [
+     {
+      "en": "Try worm bait or shrimp bait?",
+      "vi": "Thử mồi giun hay mồi tôm?",
+      "parts": [
+       "Thử mồi ",
+       [
+        "worm",
+        "giun",
+        2
+       ],
+       " hay mồi ",
+       [
+        "shrimp",
+        "tôm",
+        2
+       ],
+       "?"
+      ]
+     },
+     {
+      "en": "Which bait do carp like more? Try changing it!",
+      "vi": "Mồi nào cá chép thích hơn? Hãy đổi thử!",
+      "parts": [
+       [
+        "Bait",
+        "Mồi",
+        2
+       ],
+       " nào cá chép thích hơn? Hãy ",
+       [
+        "change",
+        "đổi",
+        2
+       ],
+       " thử!"
+      ]
+     }
     ]
    },
    {
@@ -8619,6 +12764,46 @@
      "fish_snakehead",
      "fish_net",
      "river_rock_large"
+    ],
+    "subtitles": [
+     {
+      "en": "The deep spot near the rocks has strong grass carp.",
+      "vi": "Khúc sâu gần bãi đá có cá trắm khỏe.",
+      "parts": [
+       "Khúc ",
+       [
+        "deep",
+        "sâu",
+        1
+       ],
+       " gần bãi đá có cá trắm ",
+       [
+        "strong",
+        "khỏe",
+        1
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "The fish is heavy, so use the net; it is really heavy.",
+      "vi": "Cá nặng, dùng vợt giúp em, nó thật nặng.",
+      "parts": [
+       "Cá nặng, dùng ",
+       [
+        "net",
+        "vợt",
+        1
+       ],
+       " giúp em, nó thật ",
+       [
+        "heavy",
+        "nặng",
+        2
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -8652,6 +12837,46 @@
      "fish_basket",
      "fish_cod",
      "fish_box"
+    ],
+    "subtitles": [
+     {
+      "en": "Back at the dock, how many kilograms does the fish weigh?",
+      "vi": "Về bến cân cá được mấy ký?",
+      "parts": [
+       "Về bến ",
+       [
+        "weigh",
+        "cân",
+        2
+       ],
+       " cá được mấy ",
+       [
+        "kilogram",
+        "ký",
+        3
+       ],
+       "?"
+      ]
+     },
+     {
+      "en": "Write the record in the notebook, then release the fish into the lake.",
+      "vi": "Ghi kỷ lục vào sổ rồi thả cá về hồ.",
+      "parts": [
+       "Ghi ",
+       [
+        "record",
+        "kỷ lục",
+        3
+       ],
+       " vào sổ rồi ",
+       [
+        "release",
+        "thả",
+        3
+       ],
+       " cá về hồ."
+      ]
+     }
     ]
    },
    {
@@ -8678,6 +12903,45 @@
      "hdri_noon",
      "anim_pull_fish",
      "anim_cheer"
+    ],
+    "subtitles": [
+     {
+      "en": "At sunrise you may meet the legend, the Royal Salmon.",
+      "vi": "Bình minh lên, có thể gặp huyền thoại Cá Hồi Hoàng Gia.",
+      "parts": [
+       [
+        "Sunrise",
+        "Bình minh",
+        3
+       ],
+       " lên, có thể gặp ",
+       [
+        "legend",
+        "huyền thoại",
+        3
+       ],
+       " Cá Hồi Hoàng Gia."
+      ]
+     },
+     {
+      "en": "This rare fish shines like gold.",
+      "vi": "Cá hiếm này lấp lánh như vàng.",
+      "parts": [
+       "Cá ",
+       [
+        "rare",
+        "hiếm",
+        3
+       ],
+       " này ",
+       [
+        "shine",
+        "lấp lánh",
+        2
+       ],
+       " như vàng."
+      ]
+     }
     ]
    },
    {
@@ -8699,6 +12963,33 @@
     "assets": [
      "fish_walking_catfish",
      "river_dock"
+    ],
+    "subtitles": [
+     {
+      "en": "Catfish lie under the wooden dock, near the bottom.",
+      "vi": "Cá trê nằm dưới bến gỗ, sát đáy.",
+      "parts": [
+       "Cá ",
+       [
+        "catfish",
+        "trê",
+        3
+       ],
+       " nằm ",
+       [
+        "under",
+        "dưới",
+        1
+       ],
+       " bến gỗ, sát ",
+       [
+        "bottom",
+        "đáy",
+        3
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -8720,6 +13011,33 @@
     ],
     "assets": [
      "fish_record_board"
+    ],
+    "subtitles": [
+     {
+      "en": "This fish has scales and very long fins.",
+      "vi": "Cá này có vảy và vây thật dài.",
+      "parts": [
+       "Cá này có ",
+       [
+        "scale",
+        "vảy",
+        3
+       ],
+       " và ",
+       [
+        "fin",
+        "vây",
+        3
+       ],
+       " thật ",
+       [
+        "long",
+        "dài",
+        1
+       ],
+       "."
+      ]
+     }
     ]
    }
   ],
@@ -9156,6 +13474,46 @@
      "rod_cand_4",
      "rod_cand_5",
      "char_female_b"
+    ],
+    "subtitles": [
+     {
+      "en": "The contest opens: every team gets a number.",
+      "vi": "Khai mạc cuộc thi: mỗi đội nhận một số.",
+      "parts": [
+       "Khai mạc ",
+       [
+        "contest",
+        "cuộc thi",
+        2
+       ],
+       ": mỗi ",
+       [
+        "team",
+        "đội",
+        1
+       ],
+       " nhận một ",
+       [
+        "number",
+        "số",
+        1
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "Draw your lucky number and start!",
+      "vi": "Bốc thăm may mắn rồi xuất phát!",
+      "parts": [
+       "Bốc thăm may mắn rồi ",
+       [
+        "start",
+        "xuất phát",
+        0
+       ],
+       "!"
+      ]
+     }
     ]
    },
    {
@@ -9193,6 +13551,46 @@
      "river_buoy",
      "fish_bass",
      "fish_floating_dock"
+    ],
+    "subtitles": [
+     {
+      "en": "Score three hundred points to qualify.",
+      "vi": "Đạt ba trăm điểm để vào vòng sau.",
+      "parts": [
+       "Đạt ba trăm ",
+       [
+        "points",
+        "điểm",
+        2
+       ],
+       " để ",
+       [
+        "qualify",
+        "vào vòng sau",
+        3
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "Every fish you catch adds to your score.",
+      "vi": "Mỗi con cá em bắt là thêm điểm.",
+      "parts": [
+       "Mỗi con cá em ",
+       [
+        "catch",
+        "bắt",
+        1
+       ],
+       " là thêm ",
+       [
+        "score",
+        "điểm",
+        2
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -9230,6 +13628,40 @@
      "river_boat_row",
      "fish_silver_carp",
      "fish_rod_fiberglass"
+    ],
+    "subtitles": [
+     {
+      "en": "In the middle of the river the current is stronger, so keep steady.",
+      "vi": "Ra giữa sông, dòng chảy mạnh hơn, hãy giữ vững.",
+      "parts": [
+       "Ra giữa sông, ",
+       [
+        "current",
+        "dòng chảy",
+        2
+       ],
+       " mạnh hơn, hãy giữ ",
+       [
+        "steady",
+        "vững",
+        3
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "Basa and silver carp swim around the referee boat.",
+      "vi": "Cá basa và cá tra bơi quanh thuyền trọng tài.",
+      "parts": [
+       "Cá basa và cá tra bơi quanh thuyền ",
+       [
+        "referee",
+        "trọng tài",
+        4
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -9257,6 +13689,40 @@
      "fish_rainbow_trout",
      "river_boat_aluminium",
      "fish_rod_carbon"
+    ],
+    "subtitles": [
+     {
+      "en": "The champion's boat asks: can you beat me?",
+      "vi": "Thuyền vô địch hỏi: em có thể đánh bại tôi không?",
+      "parts": [
+       "Thuyền vô địch hỏi: em có thể ",
+       [
+        "beat",
+        "đánh bại",
+        2
+       ],
+       " tôi không?"
+      ]
+     },
+     {
+      "en": "This is a big challenge against the champion.",
+      "vi": "Đây là một thử thách lớn với nhà vô địch.",
+      "parts": [
+       "Đây là một ",
+       [
+        "challenge",
+        "thử thách",
+        3
+       ],
+       " lớn với ",
+       [
+        "champion",
+        "nhà vô địch",
+        2
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -9286,6 +13752,46 @@
      "fish_rod",
      "anim_pull_fish",
      "fish_basket"
+    ],
+    "subtitles": [
+     {
+      "en": "The final is at the deep part of the river: the final begins!",
+      "vi": "Chung kết ở khúc sông sâu: chung kết bắt đầu!",
+      "parts": [
+       "Chung kết ở khúc sông ",
+       [
+        "deep",
+        "sâu",
+        1
+       ],
+       ": ",
+       [
+        "final",
+        "chung kết",
+        2
+       ],
+       " bắt đầu!"
+      ]
+     },
+     {
+      "en": "The catfish is rare, so hold your rod tight!",
+      "vi": "Cá lăng hiếm, giữ chặt cần nhé!",
+      "parts": [
+       "Cá lăng ",
+       [
+        "rare",
+        "hiếm",
+        3
+       ],
+       ", ",
+       [
+        "hold",
+        "giữ",
+        1
+       ],
+       " chặt cần nhé!"
+      ]
+     }
     ]
    },
    {
@@ -9314,6 +13820,39 @@
      "river_dock",
      "anim_cheer",
      "fish_rod_gold"
+    ],
+    "subtitles": [
+     {
+      "en": "The trophy ceremony for the winner.",
+      "vi": "Lễ trao cúp cho người thắng.",
+      "parts": [
+       "Lễ trao ",
+       [
+        "trophy",
+        "cúp",
+        3
+       ],
+       " cho ",
+       [
+        "winner",
+        "người thắng",
+        2
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "Congratulations to the whole team and the MVP!",
+      "vi": "Chúc mừng cả đội và MVP!",
+      "parts": [
+       [
+        "Congratulations",
+        "Chúc mừng",
+        3
+       ],
+       " cả đội và MVP!"
+      ]
+     }
     ]
    },
    {
@@ -9334,6 +13873,27 @@
     ],
     "assets": [
      "fish_climbing_perch"
+    ],
+    "subtitles": [
+     {
+      "en": "A fun prize for the smallest fish: so funny.",
+      "vi": "Giải vui cho con cá nhỏ nhất: thật buồn cười.",
+      "parts": [
+       "Giải vui cho con cá ",
+       [
+        "small",
+        "nhỏ",
+        1
+       ],
+       " nhất: thật ",
+       [
+        "funny",
+        "buồn cười",
+        2
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -9354,6 +13914,33 @@
     ],
     "assets": [
      "river_sign"
+    ],
+    "subtitles": [
+     {
+      "en": "We are proud thanks to teamwork; see you next year.",
+      "vi": "Chúng em tự hào nhờ tinh thần đồng đội, hẹn năm sau.",
+      "parts": [
+       "Chúng em ",
+       [
+        "proud",
+        "tự hào",
+        2
+       ],
+       " nhờ ",
+       [
+        "teamwork",
+        "tinh thần đồng đội",
+        4
+       ],
+       ", hẹn ",
+       [
+        "next year",
+        "năm sau",
+        3
+       ],
+       "."
+      ]
+     }
     ]
    }
   ],
@@ -9784,6 +14371,52 @@
      "river_cliff",
      "mini_ganga_valley",
      "river_waterfall"
+    ],
+    "subtitles": [
+     {
+      "en": "Read the current map: where is it fast and where is it slow?",
+      "vi": "Đọc bản đồ dòng chảy: chỗ nào nhanh, chỗ nào chậm?",
+      "parts": [
+       "Đọc bản đồ ",
+       [
+        "current",
+        "dòng chảy",
+        2
+       ],
+       ": chỗ nào ",
+       [
+        "fast",
+        "nhanh",
+        1
+       ],
+       ", chỗ nào ",
+       [
+        "slow",
+        "chậm",
+        1
+       ],
+       "?"
+      ]
+     },
+     {
+      "en": "Pick a pool near the waterfall.",
+      "vi": "Chọn một vũng nước gần thác.",
+      "parts": [
+       "Chọn một ",
+       [
+        "pool",
+        "vũng",
+        3
+       ],
+       " nước gần ",
+       [
+        "waterfall",
+        "thác",
+        2
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -9810,6 +14443,40 @@
      "river_rock_large",
      "river_buoy",
      "river_waterfall_pool"
+    ],
+    "subtitles": [
+     {
+      "en": "Drop the anchor so the boat stays still in the rapids.",
+      "vi": "Thả neo để thuyền đứng yên giữa nước xiết.",
+      "parts": [
+       "Thả ",
+       [
+        "anchor",
+        "neo",
+        3
+       ],
+       " để thuyền ",
+       [
+        "stay",
+        "đứng yên",
+        2
+       ],
+       " giữa nước xiết."
+      ]
+     },
+     {
+      "en": "Keep your balance and do not stand up!",
+      "vi": "Giữ thăng bằng nhé, đừng đứng dậy!",
+      "parts": [
+       "Giữ ",
+       [
+        "balance",
+        "thăng bằng",
+        3
+       ],
+       " nhé, đừng đứng dậy!"
+      ]
+     }
     ]
    },
    {
@@ -9837,6 +14504,46 @@
      "fish_rod",
      "anim_pull_fish",
      "fx_bubbles"
+    ],
+    "subtitles": [
+     {
+      "en": "In the white foam pool, the catfish pulls very hard.",
+      "vi": "Trong vũng bọt trắng, cá nheo kéo rất mạnh.",
+      "parts": [
+       "Trong vũng ",
+       [
+        "foam",
+        "bọt",
+        3
+       ],
+       " trắng, cá nheo ",
+       [
+        "pull",
+        "kéo",
+        1
+       ],
+       " rất mạnh."
+      ]
+     },
+     {
+      "en": "The catfish has long whiskers and is really strong.",
+      "vi": "Cá nheo có râu dài thật khỏe.",
+      "parts": [
+       "Cá nheo có ",
+       [
+        "whiskers",
+        "râu",
+        4
+       ],
+       " dài thật ",
+       [
+        "strong",
+        "khỏe",
+        1
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -9863,6 +14570,46 @@
      "fish_hemibagrus",
      "fish_bait",
      "water_normal"
+    ],
+    "subtitles": [
+     {
+      "en": "The blue pool is very deep, so wait a long time.",
+      "vi": "Vũng xanh rất sâu, hãy chờ thật lâu.",
+      "parts": [
+       "Vũng xanh rất ",
+       [
+        "deep",
+        "sâu",
+        1
+       ],
+       ", hãy ",
+       [
+        "wait",
+        "chờ",
+        1
+       ],
+       " thật lâu."
+      ]
+     },
+     {
+      "en": "The rare catfish only bites when you are patient.",
+      "vi": "Cá lăng hiếm chỉ cắn khi em kiên nhẫn.",
+      "parts": [
+       "Cá lăng ",
+       [
+        "rare",
+        "hiếm",
+        3
+       ],
+       " chỉ cắn khi em ",
+       [
+        "patient",
+        "kiên nhẫn",
+        3
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -9886,6 +14633,46 @@
      "fish_eel",
      "river_rock_medium",
      "fish_net"
+    ],
+    "subtitles": [
+     {
+      "en": "The eel hides in a rock crack.",
+      "vi": "Cá chình ẩn trong khe đá.",
+      "parts": [
+       "Cá ",
+       [
+        "eel",
+        "chình",
+        3
+       ],
+       " ",
+       [
+        "hide",
+        "ẩn",
+        2
+       ],
+       " trong khe ",
+       [
+        "rock",
+        "đá",
+        0
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "Its body is slippery, so be careful it does not slip away!",
+      "vi": "Thân nó trơn, cẩn thận kẻo tuột!",
+      "parts": [
+       "Thân nó ",
+       [
+        "slippery",
+        "trơn",
+        3
+       ],
+       ", cẩn thận kẻo tuột!"
+      ]
+     }
     ]
    },
    {
@@ -9910,6 +14697,46 @@
      "fish_hemibagrus",
      "hdri_noon",
      "anim_cheer"
+    ],
+    "subtitles": [
+     {
+      "en": "You join the club to protect the river.",
+      "vi": "Em vào câu lạc bộ để bảo vệ dòng sông.",
+      "parts": [
+       "Em vào câu lạc bộ để ",
+       [
+        "protect",
+        "bảo vệ",
+        3
+       ],
+       " ",
+       [
+        "river",
+        "dòng sông",
+        1
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "I promise to protect nature.",
+      "vi": "Em hứa bảo vệ thiên nhiên.",
+      "parts": [
+       "Em ",
+       [
+        "promise",
+        "hứa",
+        2
+       ],
+       " bảo vệ thiên ",
+       [
+        "nature",
+        "nhiên",
+        3
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -9929,6 +14756,27 @@
     ],
     "assets": [
      "fish_rainbow_trout"
+    ],
+    "subtitles": [
+     {
+      "en": "Rainbow trout jump upstream over the falls.",
+      "vi": "Cá hồi vân nhảy ngược dòng qua thác.",
+      "parts": [
+       "Cá hồi vân ",
+       [
+        "jump",
+        "nhảy",
+        1
+       ],
+       " ",
+       [
+        "upstream",
+        "ngược dòng",
+        4
+       ],
+       " qua thác."
+      ]
+     }
     ]
    },
    {
@@ -9949,6 +14797,32 @@
     ],
     "assets": [
      "river_sign"
+    ],
+    "subtitles": [
+     {
+      "en": "Do not litter; please keep the river clean.",
+      "vi": "Đừng xả rác, xin hãy giữ sạch dòng sông.",
+      "parts": [
+       [
+        "Do not",
+        "Đừng",
+        1
+       ],
+       " xả rác, ",
+       [
+        "please",
+        "xin hãy",
+        1
+       ],
+       " ",
+       [
+        "keep clean",
+        "giữ sạch",
+        2
+       ],
+       " dòng sông."
+      ]
+     }
     ]
    }
   ],
@@ -10365,6 +15239,46 @@
      "river_boat_aluminium",
      "hdri_night",
      "fish_dock_lamp"
+    ],
+    "subtitles": [
+     {
+      "en": "Light the lantern at the bow under the moon.",
+      "vi": "Thắp đèn lồng ở mũi thuyền dưới trăng.",
+      "parts": [
+       "Thắp ",
+       [
+        "lantern",
+        "đèn lồng",
+        2
+       ],
+       " ở mũi thuyền dưới ",
+       [
+        "moon",
+        "trăng",
+        0
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "The float glows pale green in the night.",
+      "vi": "Phao phát sáng xanh nhạt trong đêm.",
+      "parts": [
+       "Phao ",
+       [
+        "glow",
+        "phát sáng",
+        2
+       ],
+       " xanh nhạt trong ",
+       [
+        "night",
+        "đêm",
+        0
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -10392,6 +15306,40 @@
      "fish_reel",
      "anim_cast",
      "fish_unknown"
+    ],
+    "subtitles": [
+     {
+      "en": "A flash on the water: a fish is biting!",
+      "vi": "Ánh chớp trên mặt nước: có cá cắn!",
+      "parts": [
+       "Ánh ",
+       [
+        "flash",
+        "chớp",
+        3
+       ],
+       " trên mặt nước: có cá ",
+       [
+        "bite",
+        "cắn",
+        2
+       ],
+       "!"
+      ]
+     },
+     {
+      "en": "Stay quiet so the basa does not get startled.",
+      "vi": "Hãy im lặng để cá basa không giật mình.",
+      "parts": [
+       "Hãy ",
+       [
+        "quiet",
+        "im lặng",
+        2
+       ],
+       " để cá basa không giật mình."
+      ]
+     }
     ]
    },
    {
@@ -10413,6 +15361,40 @@
     "assets": [
      "fish_bait",
      "fish_tackle_box"
+    ],
+    "subtitles": [
+     {
+      "en": "Shrimp bait has a smell fish like.",
+      "vi": "Mồi tôm có mùi cá thích.",
+      "parts": [
+       "Mồi ",
+       [
+        "shrimp",
+        "tôm",
+        2
+       ],
+       " có ",
+       [
+        "smell",
+        "mùi",
+        2
+       ],
+       " cá thích."
+      ]
+     },
+     {
+      "en": "You must choose the right bait for night fish.",
+      "vi": "Em phải chọn mồi đúng cho cá đêm.",
+      "parts": [
+       "Em phải ",
+       [
+        "choose",
+        "chọn",
+        2
+       ],
+       " mồi đúng cho cá đêm."
+      ]
+     }
     ]
    },
    {
@@ -10437,6 +15419,39 @@
      "camp_lantern",
      "hdri_night",
      "surv_compass"
+    ],
+    "subtitles": [
+     {
+      "en": "Fog covers the moon and all the lights go out!",
+      "vi": "Sương che trăng, đèn tắt hết!",
+      "parts": [
+       [
+        "Fog",
+        "Sương",
+        2
+       ],
+       " che trăng, đèn tắt hết!"
+      ]
+     },
+     {
+      "en": "Look at the stars to find the right direction.",
+      "vi": "Nhìn sao để tìm đúng hướng.",
+      "parts": [
+       "Nhìn ",
+       [
+        "star",
+        "sao",
+        0
+       ],
+       " để tìm đúng ",
+       [
+        "direction",
+        "hướng",
+        3
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -10460,6 +15475,46 @@
      "fish_walking_catfish",
      "fish_snakehead",
      "river_reed"
+    ],
+    "subtitles": [
+     {
+      "en": "Catfish and snakehead come out to feed along the bank.",
+      "vi": "Cá trê và cá lóc ra kiếm ăn ven bờ.",
+      "parts": [
+       "Cá ",
+       [
+        "catfish",
+        "trê",
+        3
+       ],
+       " và cá ",
+       [
+        "snakehead",
+        "lóc",
+        4
+       ],
+       " ra kiếm ăn ven bờ."
+      ]
+     },
+     {
+      "en": "Fish close to the shore, where reeds grow thick.",
+      "vi": "Câu sát bờ, nơi lau mọc dày.",
+      "parts": [
+       "Câu sát ",
+       [
+        "shore",
+        "bờ",
+        2
+       ],
+       ", nơi ",
+       [
+        "reed",
+        "lau",
+        2
+       ],
+       " mọc dày."
+      ]
+     }
     ]
    },
    {
@@ -10485,6 +15540,40 @@
      "fish_net",
      "anim_pull_fish",
      "anim_cheer"
+    ],
+    "subtitles": [
+     {
+      "en": "At midnight, the river surface lights up.",
+      "vi": "Lúc nửa đêm, mặt sông sáng lên.",
+      "parts": [
+       "Lúc ",
+       [
+        "midnight",
+        "nửa đêm",
+        3
+       ],
+       ", mặt sông sáng lên."
+      ]
+     },
+     {
+      "en": "A big school of fish swims by: who wins?",
+      "vi": "Một đàn cá lớn bơi tới, ai thắng?",
+      "parts": [
+       "Một ",
+       [
+        "school of fish",
+        "đàn cá",
+        3
+       ],
+       " lớn bơi tới, ai ",
+       [
+        "win",
+        "thắng",
+        1
+       ],
+       "?"
+      ]
+     }
     ]
    },
    {
@@ -10504,6 +15593,27 @@
     ],
     "assets": [
      "fish_eel"
+    ],
+    "subtitles": [
+     {
+      "en": "The slippery eel leaves its hole at night.",
+      "vi": "Cá chình trơn ra khỏi hang ban đêm.",
+      "parts": [
+       "Cá ",
+       [
+        "eel",
+        "chình",
+        3
+       ],
+       " ",
+       [
+        "slippery",
+        "trơn",
+        3
+       ],
+       " ra khỏi hang ban đêm."
+      ]
+     }
     ]
    },
    {
@@ -10524,6 +15634,33 @@
     ],
     "assets": [
      "hdri_night"
+    ],
+    "subtitles": [
+     {
+      "en": "Two lines of poetry about silver moonlight and the calm river.",
+      "vi": "Hai câu thơ về ánh trăng bạc và dòng sông êm.",
+      "parts": [
+       "Hai câu thơ về ",
+       [
+        "moonlight",
+        "ánh trăng",
+        3
+       ],
+       " ",
+       [
+        "silver",
+        "bạc",
+        2
+       ],
+       " và dòng sông ",
+       [
+        "calm",
+        "êm",
+        2
+       ],
+       "."
+      ]
+     }
     ]
    }
   ],
@@ -10933,6 +16070,46 @@
      "river_cabin",
      "fish_king_salmon",
      "mini_indus_basin"
+    ],
+    "subtitles": [
+     {
+      "en": "The old notebook tells a legend about a giant fish.",
+      "vi": "Cuốn sổ cũ ghi về một huyền thoại: con cá khổng lồ.",
+      "parts": [
+       "Cuốn sổ cũ ghi về một ",
+       [
+        "legend",
+        "huyền thoại",
+        3
+       ],
+       ": con cá ",
+       [
+        "giant",
+        "khổng lồ",
+        2
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "Every page is an old clue.",
+      "vi": "Mỗi trang là một manh mối cũ.",
+      "parts": [
+       "Mỗi trang là một ",
+       [
+        "clue",
+        "manh mối",
+        3
+       ],
+       " ",
+       [
+        "old",
+        "cũ",
+        1
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -10964,6 +16141,40 @@
      "river_boat_row",
      "fish_basket",
      "char_wanderer"
+    ],
+    "subtitles": [
+     {
+      "en": "At the fishing village dock, trade fish for special fly bait.",
+      "vi": "Ở bến làng chài, em đổi cá lấy mồi ruồi.",
+      "parts": [
+       "Ở bến làng chài, em ",
+       [
+        "trade",
+        "đổi",
+        3
+       ],
+       " cá lấy mồi ",
+       [
+        "fly",
+        "ruồi",
+        3
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "The fishing village folk show you the way.",
+      "vi": "Người làng chài chỉ đường cho em.",
+      "parts": [
+       "Người ",
+       [
+        "village",
+        "làng",
+        1
+       ],
+       " chài chỉ đường cho em."
+      ]
+     }
     ]
    },
    {
@@ -10992,6 +16203,39 @@
      "river_boat_aluminium",
      "hdri_noon",
      "mini_clear_river"
+    ],
+    "subtitles": [
+     {
+      "en": "The mountain lake has clear water: the Fish King rests here at noon.",
+      "vi": "Hồ giữa núi nước trong: Vua Cá nghỉ trưa ở đây.",
+      "parts": [
+       "Hồ giữa núi nước ",
+       [
+        "clear",
+        "trong",
+        2
+       ],
+       ": Vua Cá ",
+       [
+        "rest",
+        "nghỉ",
+        2
+       ],
+       " trưa ở đây."
+      ]
+     },
+     {
+      "en": "Follow the trout's shadow to learn the second clue.",
+      "vi": "Theo bóng cá hồi vân để biết manh mối hai.",
+      "parts": [
+       [
+        "Follow",
+        "Theo",
+        1
+       ],
+       " bóng cá hồi vân để biết manh mối hai."
+      ]
+     }
     ]
    },
    {
@@ -11016,6 +16260,40 @@
      "river_boat_row",
      "kayak_paddle",
      "river_cliff"
+    ],
+    "subtitles": [
+     {
+      "en": "Granny Sharp-Nose's boat wants to race you!",
+      "vi": "Thuyền Bà Mũi Nhọn muốn đua với em!",
+      "parts": [
+       "Thuyền Bà Mũi Nhọn muốn ",
+       [
+        "race",
+        "đua",
+        2
+       ],
+       " với em!"
+      ]
+     },
+     {
+      "en": "Answer correctly to get ahead of your rival.",
+      "vi": "Trả lời đúng để vượt lên trước đối thủ.",
+      "parts": [
+       "Trả lời đúng để vượt lên ",
+       [
+        "ahead",
+        "trước",
+        3
+       ],
+       " ",
+       [
+        "rival",
+        "đối thủ",
+        3
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -11040,6 +16318,40 @@
      "river_cave",
      "fish_rod",
      "surv_letter"
+    ],
+    "subtitles": [
+     {
+      "en": "The gold rod glows in front of the cave.",
+      "vi": "Cần vàng sáng lên trước hang.",
+      "parts": [
+       "Cần ",
+       [
+        "gold",
+        "vàng",
+        1
+       ],
+       " sáng lên trước ",
+       [
+        "cave",
+        "hang",
+        1
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "Read the time on the old clock to know when the Fish King comes out.",
+      "vi": "Đọc giờ trên đồng hồ cổ để biết Vua Cá ra lúc nào.",
+      "parts": [
+       "Đọc ",
+       [
+        "time",
+        "giờ",
+        1
+       ],
+       " trên đồng hồ cổ để biết Vua Cá ra lúc nào."
+      ]
+     }
     ]
    },
    {
@@ -11070,6 +16382,40 @@
      "anim_pull_fish",
      "anim_cheer",
      "fish_golden_carp"
+    ],
+    "subtitles": [
+     {
+      "en": "At sunset the Fish King appears!",
+      "vi": "Hoàng hôn: Vua Cá Hồi hiện ra!",
+      "parts": [
+       "Hoàng hôn: ",
+       [
+        "king",
+        "Vua",
+        1
+       ],
+       " Cá Hồi hiện ra!"
+      ]
+     },
+     {
+      "en": "Take a photo, then let it go back to the river.",
+      "vi": "Chụp ảnh rồi thả nó về sông.",
+      "parts": [
+       "Chụp ",
+       [
+        "photo",
+        "ảnh",
+        1
+       ],
+       " rồi ",
+       [
+        "let go",
+        "thả",
+        3
+       ],
+       " nó về sông."
+      ]
+     }
     ]
    },
    {
@@ -11089,6 +16435,27 @@
     ],
     "assets": [
      "fish_rainbow_trout"
+    ],
+    "subtitles": [
+     {
+      "en": "The baby salmon follow behind with the Fish King's family.",
+      "vi": "Đàn cá hồi con theo sau cùng gia đình Vua Cá.",
+      "parts": [
+       "Đàn cá hồi ",
+       [
+        "baby",
+        "con",
+        0
+       ],
+       " theo sau cùng ",
+       [
+        "family",
+        "gia đình",
+        1
+       ],
+       " Vua Cá."
+      ]
+     }
     ]
    },
    {
@@ -11109,6 +16476,32 @@
     ],
     "assets": [
      "surv_letter"
+    ],
+    "subtitles": [
+     {
+      "en": "Finally, we saw the Fish King. It was amazing!",
+      "vi": "Cuối cùng, chúng em thấy Vua Cá thật tuyệt vời!",
+      "parts": [
+       [
+        "Finally",
+        "Cuối cùng",
+        3
+       ],
+       ", ",
+       [
+        "we",
+        "chúng em",
+        0
+       ],
+       " thấy Vua Cá thật ",
+       [
+        "amazing",
+        "tuyệt vời",
+        3
+       ],
+       "!"
+      ]
+     }
     ]
    }
   ],
@@ -11533,6 +16926,40 @@
      "surv_flag",
      "anim_rope_rub",
      "surv_pen_wall_window"
+    ],
+    "subtitles": [
+     {
+      "en": "Cut the rope and run fast!",
+      "vi": "Cắt dây thừng rồi chạy thật nhanh!",
+      "parts": [
+       "Cắt ",
+       [
+        "rope",
+        "dây thừng",
+        1
+       ],
+       " rồi ",
+       [
+        "run",
+        "chạy",
+        0
+       ],
+       " thật nhanh!"
+      ]
+     },
+     {
+      "en": "The Seekers get a map, so we must escape!",
+      "vi": "Đội Săn Tìm nhận bản đồ, mình phải trốn thoát!",
+      "parts": [
+       "Đội Săn Tìm nhận bản đồ, mình phải ",
+       [
+        "escape",
+        "trốn thoát",
+        3
+       ],
+       "!"
+      ]
+     }
     ]
    },
    {
@@ -11566,6 +16993,46 @@
      "river_fern",
      "river_moss_rock",
      "mini_clear_river"
+    ],
+    "subtitles": [
+     {
+      "en": "Find a clear stream and pour clean water into the bottle.",
+      "vi": "Tìm suối trong, lấy nước sạch đổ vào bình.",
+      "parts": [
+       "Tìm ",
+       [
+        "stream",
+        "suối",
+        2
+       ],
+       " trong, lấy nước ",
+       [
+        "clean",
+        "sạch",
+        1
+       ],
+       " đổ vào ",
+       [
+        "bottle",
+        "bình",
+        2
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "Dirty water must not be drunk.",
+      "vi": "Nước bẩn thì không được uống.",
+      "parts": [
+       "Nước ",
+       [
+        "dirty",
+        "bẩn",
+        1
+       ],
+       " thì không được uống."
+      ]
+     }
     ]
    },
    {
@@ -11599,6 +17066,52 @@
      "river_branch",
      "river_rock_small",
      "surv_container_blue"
+    ],
+    "subtitles": [
+     {
+      "en": "Gather sticks and sharp stones.",
+      "vi": "Gom gậy và đá nhọn.",
+      "parts": [
+       "Gom ",
+       [
+        "stick",
+        "gậy",
+        1
+       ],
+       " và ",
+       [
+        "stone",
+        "đá",
+        1
+       ],
+       " ",
+       [
+        "sharp",
+        "nhọn",
+        2
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "Use them to build a tripwire trap.",
+      "vi": "Dùng chúng để dựng bẫy dây.",
+      "parts": [
+       "Dùng chúng để ",
+       [
+        "build",
+        "dựng",
+        1
+       ],
+       " ",
+       [
+        "trap",
+        "bẫy",
+        3
+       ],
+       " dây."
+      ]
+     }
     ]
    },
    {
@@ -11628,6 +17141,40 @@
      "river_cave",
      "river_moss_rock",
      "river_cliff"
+    ],
+    "subtitles": [
+     {
+      "en": "Solve the secret letter to find the cave entrance.",
+      "vi": "Giải mật thư để tìm lối vào hang.",
+      "parts": [
+       "Giải mật thư để tìm lối vào ",
+       [
+        "cave",
+        "hang",
+        1
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "Go north, then turn left.",
+      "vi": "Đi bắc, rồi rẽ trái.",
+      "parts": [
+       "Đi ",
+       [
+        "north",
+        "bắc",
+        2
+       ],
+       ", rồi rẽ ",
+       [
+        "left",
+        "trái",
+        0
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -11664,6 +17211,45 @@
      "surv_barrel",
      "river_boat_row",
      "surv_net_launcher_a"
+    ],
+    "subtitles": [
+     {
+      "en": "Wipe away your footprints on the sand and mud.",
+      "vi": "Xóa dấu chân trên cát và bùn.",
+      "parts": [
+       "Xóa ",
+       [
+        "footprint",
+        "dấu chân",
+        3
+       ],
+       " trên ",
+       [
+        "sand",
+        "cát",
+        1
+       ],
+       " và ",
+       [
+        "mud",
+        "bùn",
+        2
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "Hide well so you are not caught.",
+      "vi": "Trốn thật kỹ kẻo bị bắt.",
+      "parts": [
+       [
+        "Hide",
+        "Trốn",
+        2
+       ],
+       " thật kỹ kẻo bị bắt."
+      ]
+     }
     ]
    },
    {
@@ -11693,6 +17279,46 @@
      "river_birds",
      "anim_cheer",
      "anim_sad"
+    ],
+    "subtitles": [
+     {
+      "en": "The drum sounds at sunset: free your teammates!",
+      "vi": "Trống vang lúc hoàng hôn: giải cứu đồng đội!",
+      "parts": [
+       "Trống vang lúc hoàng hôn: ",
+       [
+        "free",
+        "giải cứu",
+        2
+       ],
+       " đồng đội!"
+      ]
+     },
+     {
+      "en": "The whole team is so brave, and the team with the most players left wins!",
+      "vi": "Cả đội thật dũng cảm, đội còn nhiều người nhất thắng!",
+      "parts": [
+       "Cả ",
+       [
+        "team",
+        "đội",
+        1
+       ],
+       " thật ",
+       [
+        "brave",
+        "dũng cảm",
+        2
+       ],
+       ", đội còn nhiều người nhất ",
+       [
+        "win",
+        "thắng",
+        1
+       ],
+       "!"
+      ]
+     }
     ]
    },
    {
@@ -11716,6 +17342,32 @@
      "hdri_night",
      "surv_flashlight",
      "water_normal"
+    ],
+    "subtitles": [
+     {
+      "en": "The fog is thick, so move quietly and carefully.",
+      "vi": "Sương dày, hãy đi thật khẽ và cẩn thận.",
+      "parts": [
+       [
+        "Fog",
+        "Sương",
+        2
+       ],
+       " dày, hãy đi thật ",
+       [
+        "quiet",
+        "khẽ",
+        2
+       ],
+       " và ",
+       [
+        "careful",
+        "cẩn thận",
+        1
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -11740,6 +17392,33 @@
      "camp_firepit",
      "camp_lantern",
      "anim_wave"
+    ],
+    "subtitles": [
+     {
+      "en": "Around the campfire, each of you picks a word to remember: fire, friend.",
+      "vi": "Quanh lửa trại, mỗi bạn chọn một từ để nhớ: lửa, bạn.",
+      "parts": [
+       "Quanh lửa ",
+       [
+        "camp",
+        "trại",
+        0
+       ],
+       ", mỗi bạn chọn một từ để nhớ: ",
+       [
+        "fire",
+        "lửa",
+        0
+       ],
+       ", ",
+       [
+        "friend",
+        "bạn",
+        1
+       ],
+       "."
+      ]
+     }
     ]
    }
   ],
@@ -12209,6 +17888,51 @@
      "river_moss_rock",
      "water_foam",
      "river_waterfall"
+    ],
+    "subtitles": [
+     {
+      "en": "The waterfall is loud and the rocks are wet.",
+      "vi": "Tiếng thác ầm ầm, mặt đá ướt.",
+      "parts": [
+       "Tiếng ",
+       [
+        "waterfall",
+        "thác",
+        2
+       ],
+       " ",
+       [
+        "loud",
+        "ầm ầm",
+        2
+       ],
+       ", mặt đá ",
+       [
+        "wet",
+        "ướt",
+        1
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "Climb slowly through the mist.",
+      "vi": "Leo thật chậm giữa làn sương.",
+      "parts": [
+       [
+        "Climb",
+        "Leo",
+        1
+       ],
+       " thật chậm giữa làn ",
+       [
+        "mist",
+        "sương",
+        3
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -12238,6 +17962,40 @@
      "camp_bottle",
      "river_rock_large",
      "river_waterfall_pool"
+    ],
+    "subtitles": [
+     {
+      "en": "Drink fresh water from the rock crack, not stagnant pond water.",
+      "vi": "Uống nước sạch từ khe đá, đừng uống nước ao đọng.",
+      "parts": [
+       "Uống nước ",
+       [
+        "fresh",
+        "sạch",
+        2
+       ],
+       " từ khe đá, đừng uống nước ",
+       [
+        "pond",
+        "ao",
+        3
+       ],
+       " đọng."
+      ]
+     },
+     {
+      "en": "Every drop of water is precious.",
+      "vi": "Từng giọt nước đều quý.",
+      "parts": [
+       "Từng ",
+       [
+        "drop",
+        "giọt",
+        2
+       ],
+       " nước đều quý."
+      ]
+     }
     ]
    },
    {
@@ -12268,6 +18026,46 @@
      "river_branch",
      "river_fence",
      "surv_container_red"
+    ],
+    "subtitles": [
+     {
+      "en": "Build a branch fence at the end of the hanging bridge.",
+      "vi": "Dựng hàng rào cành ở đầu cầu treo.",
+      "parts": [
+       "Dựng ",
+       [
+        "fence",
+        "hàng rào",
+        3
+       ],
+       " cành ở đầu ",
+       [
+        "bridge",
+        "cầu",
+        1
+       ],
+       " treo."
+      ]
+     },
+     {
+      "en": "Slow the Seekers down with tree branches.",
+      "vi": "Làm chậm Đội Săn Tìm bằng cành cây.",
+      "parts": [
+       "Làm ",
+       [
+        "slow",
+        "chậm",
+        1
+       ],
+       " Đội Săn Tìm bằng cành ",
+       [
+        "branch",
+        "cây",
+        2
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -12293,6 +18091,40 @@
      "river_cave",
      "river_cliff",
      "river_moss_rock"
+    ],
+    "subtitles": [
+     {
+      "en": "Read the three stone tablets to piece together the path.",
+      "vi": "Đọc ba tấm bia đá để ghép ra lối đi.",
+      "parts": [
+       "Đọc ba tấm bia ",
+       [
+        "stone",
+        "đá",
+        1
+       ],
+       " để ghép ra lối đi."
+      ]
+     },
+     {
+      "en": "The entrance is behind the waterfall; go through the curtain of water.",
+      "vi": "Lối vào ở phía sau thác, đi xuyên qua màn nước.",
+      "parts": [
+       "Lối vào ở ",
+       [
+        "behind",
+        "phía sau",
+        3
+       ],
+       " thác, đi ",
+       [
+        "through",
+        "xuyên qua",
+        3
+       ],
+       " màn nước."
+      ]
+     }
     ]
    },
    {
@@ -12318,6 +18150,45 @@
      "decal_footprint_mud",
      "surv_crate",
      "surv_capture_net"
+    ],
+    "subtitles": [
+     {
+      "en": "A rainbow appears, and the wet rocks need drying.",
+      "vi": "Cầu vồng hiện lên, đá ướt cần lau khô.",
+      "parts": [
+       [
+        "Rainbow",
+        "Cầu vồng",
+        2
+       ],
+       " hiện lên, đá ướt cần lau ",
+       [
+        "dry",
+        "khô",
+        1
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "Wipe the wet footprints and sneak to the top.",
+      "vi": "Xóa dấu chân ướt, rón rén lên tầng cao.",
+      "parts": [
+       "Xóa dấu chân ướt, ",
+       [
+        "sneak",
+        "rón rén",
+        3
+       ],
+       " lên ",
+       [
+        "top",
+        "tầng cao",
+        1
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -12343,6 +18214,45 @@
      "surv_binoculars",
      "hdri_sunset",
      "anim_cheer"
+    ],
+    "subtitles": [
+     {
+      "en": "The rainbow fades: the last minute to rescue.",
+      "vi": "Cầu vồng tắt: phút cuối giải cứu.",
+      "parts": [
+       "Cầu vồng tắt: phút ",
+       [
+        "last",
+        "cuối",
+        1
+       ],
+       " ",
+       [
+        "rescue",
+        "giải cứu",
+        3
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "Count the whole team: whoever is complete is the winner.",
+      "vi": "Đếm cả đội, ai về đủ là người thắng.",
+      "parts": [
+       [
+        "Count",
+        "Đếm",
+        1
+       ],
+       " cả đội, ai về đủ là ",
+       [
+        "winner",
+        "người thắng",
+        2
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -12364,6 +18274,27 @@
     "assets": [
      "river_cave",
      "surv_flashlight"
+    ],
+    "subtitles": [
+     {
+      "en": "In the dark cave, there is only a torch.",
+      "vi": "Trong hang tối, chỉ có chiếc đèn pin.",
+      "parts": [
+       "Trong hang ",
+       [
+        "dark",
+        "tối",
+        1
+       ],
+       ", chỉ có chiếc ",
+       [
+        "torch",
+        "đèn pin",
+        2
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -12386,6 +18317,32 @@
     "assets": [
      "camp_firepit",
      "anim_wave"
+    ],
+    "subtitles": [
+     {
+      "en": "First I climbed up; then I ran; finally I escaped.",
+      "vi": "Đầu tiên, em trèo lên; sau đó em chạy; cuối cùng em thoát.",
+      "parts": [
+       [
+        "First",
+        "Đầu tiên",
+        1
+       ],
+       ", em trèo lên; ",
+       [
+        "then",
+        "sau đó",
+        1
+       ],
+       " em chạy; ",
+       [
+        "finally",
+        "cuối cùng",
+        3
+       ],
+       " em thoát."
+      ]
+     }
     ]
    }
   ],
@@ -12836,6 +18793,39 @@
      "hdri_night",
      "watchtower",
      "char_gamer_boy"
+    ],
+    "subtitles": [
+     {
+      "en": "Under the moon, everyone escapes the wooden pen.",
+      "vi": "Dưới trăng, mọi người thoát chuồng gỗ.",
+      "parts": [
+       "Dưới ",
+       [
+        "moon",
+        "trăng",
+        0
+       ],
+       ", mọi người thoát chuồng gỗ."
+      ]
+     },
+     {
+      "en": "Fireflies glow like tiny lanterns.",
+      "vi": "Đom đóm sáng như những chiếc đèn lồng nhỏ.",
+      "parts": [
+       [
+        "Firefly",
+        "Đom đóm",
+        3
+       ],
+       " sáng như những chiếc ",
+       [
+        "lantern",
+        "đèn lồng",
+        2
+       ],
+       " nhỏ."
+      ]
+     }
     ]
    },
    {
@@ -12861,6 +18851,40 @@
      "camp_bottle",
      "water_normal",
      "river_reed"
+    ],
+    "subtitles": [
+     {
+      "en": "The stream reflects the moon and the clear water shows its bottom.",
+      "vi": "Suối phản chiếu trăng, nước trong thấy đáy.",
+      "parts": [
+       "Suối ",
+       [
+        "reflect",
+        "phản chiếu",
+        3
+       ],
+       " trăng, nước ",
+       [
+        "clear",
+        "trong",
+        2
+       ],
+       " thấy đáy."
+      ]
+     },
+     {
+      "en": "The moonlight makes the stream shine.",
+      "vi": "Ánh trăng làm dòng suối thêm lấp lánh.",
+      "parts": [
+       "Ánh trăng làm dòng suối thêm ",
+       [
+        "shine",
+        "lấp lánh",
+        2
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -12891,6 +18915,45 @@
      "river_branch",
      "river_tree_pine",
      "surv_sentinel"
+    ],
+    "subtitles": [
+     {
+      "en": "Gather sticks and stones for a tripwire around the path.",
+      "vi": "Gom gậy và đá dựng bẫy dây quanh lối mòn.",
+      "parts": [
+       "Gom gậy và đá dựng ",
+       [
+        "tripwire",
+        "bẫy dây",
+        4
+       ],
+       " quanh ",
+       [
+        "path",
+        "lối mòn",
+        2
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "A small bell on the wire rings when someone steps over it.",
+      "vi": "Chuông nhỏ treo trên dây sẽ kêu khi ai bước qua.",
+      "parts": [
+       [
+        "Bell",
+        "Chuông",
+        2
+       ],
+       " nhỏ treo trên dây sẽ kêu khi ai ",
+       [
+        "step",
+        "bước",
+        1
+       ],
+       " qua."
+      ]
+     }
     ]
    },
    {
@@ -12916,6 +18979,40 @@
      "surv_compass",
      "river_tree_pine",
      "river_butterfly"
+    ],
+    "subtitles": [
+     {
+      "en": "The secret letter only glows when a firefly flies past.",
+      "vi": "Mật thư chỉ sáng lên khi đom đóm bay qua.",
+      "parts": [
+       "Mật thư chỉ ",
+       [
+        "glow",
+        "sáng lên",
+        2
+       ],
+       " khi đom đóm bay qua."
+      ]
+     },
+     {
+      "en": "Go to the oldest and tallest tree.",
+      "vi": "Đi tới cái cây cổ và cao nhất.",
+      "parts": [
+       "Đi tới cái cây ",
+       [
+        "old",
+        "cổ",
+        1
+       ],
+       " và ",
+       [
+        "tall",
+        "cao",
+        1
+       ],
+       " nhất."
+      ]
+     }
     ]
    },
    {
@@ -12941,6 +19038,44 @@
      "decal_footprint_mud",
      "surv_capture_net",
      "river_tree_pine"
+    ],
+    "subtitles": [
+     {
+      "en": "Pine needles on the ground hide your footprints.",
+      "vi": "Lá kim rải dưới đất che dấu chân.",
+      "parts": [
+       [
+        "Leaf",
+        "Lá",
+        1
+       ],
+       " ",
+       [
+        "needle",
+        "kim",
+        3
+       ],
+       " rải dưới đất che dấu chân."
+      ]
+     },
+     {
+      "en": "Climb the pine tree very quietly.",
+      "vi": "Leo cây thông thật khẽ.",
+      "parts": [
+       [
+        "Climb",
+        "Leo",
+        1
+       ],
+       " cây thông thật ",
+       [
+        "quiet",
+        "khẽ",
+        2
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -12965,6 +19100,39 @@
      "surv_flashlight",
      "hdri_night",
      "anim_cheer"
+    ],
+    "subtitles": [
+     {
+      "en": "Midnight: the bell rings.",
+      "vi": "Nửa đêm: tiếng chuông vang lên.",
+      "parts": [
+       [
+        "Midnight",
+        "Nửa đêm",
+        3
+       ],
+       ": tiếng ",
+       [
+        "bell",
+        "chuông",
+        2
+       ],
+       " vang lên."
+      ]
+     },
+     {
+      "en": "Count the people under the stars.",
+      "vi": "Đếm người dưới ánh sao.",
+      "parts": [
+       "Đếm người dưới ánh ",
+       [
+        "stars",
+        "sao",
+        1
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -12985,6 +19153,27 @@
     ],
     "assets": [
      "hdri_night"
+    ],
+    "subtitles": [
+     {
+      "en": "Each shooting star is a wish in the sky.",
+      "vi": "Mỗi sao băng là một điều ước dưới bầu trời.",
+      "parts": [
+       "Mỗi ",
+       [
+        "shooting star",
+        "sao băng",
+        3
+       ],
+       " là một điều ước dưới ",
+       [
+        "sky",
+        "bầu trời",
+        1
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -13006,6 +19195,27 @@
     "assets": [
      "camp_lantern",
      "water_normal"
+    ],
+    "subtitles": [
+     {
+      "en": "I hope you are always kind.",
+      "vi": "Tôi mong bạn luôn tử tế.",
+      "parts": [
+       "Tôi ",
+       [
+        "hope",
+        "mong",
+        2
+       ],
+       " bạn luôn ",
+       [
+        "kind",
+        "tử tế",
+        2
+       ],
+       "."
+      ]
+     }
     ]
    }
   ],
@@ -13447,6 +19657,46 @@
      "surv_sharp_rock",
      "hdri_cloudy",
      "river_bush"
+    ],
+    "subtitles": [
+     {
+      "en": "Lightning flashes, thunder rolls, and the rain pours!",
+      "vi": "Tia chớp sáng và sấm vang: mưa đổ!",
+      "parts": [
+       "Tia ",
+       [
+        "lightning",
+        "chớp",
+        2
+       ],
+       " sáng và ",
+       [
+        "thunder",
+        "sấm",
+        3
+       ],
+       " vang: ",
+       [
+        "rain",
+        "mưa",
+        0
+       ],
+       " đổ!"
+      ]
+     },
+     {
+      "en": "The orange raincoats are soaking wet, but everyone smiles.",
+      "vi": "Áo mưa cam ướt sũng nhưng ai cũng cười.",
+      "parts": [
+       "Áo mưa cam ",
+       [
+        "wet",
+        "ướt",
+        1
+       ],
+       " sũng nhưng ai cũng cười."
+      ]
+     }
     ]
    },
    {
@@ -13472,6 +19722,39 @@
      "camp_bucket",
      "camp_bottle",
      "tex_mud"
+    ],
+    "subtitles": [
+     {
+      "en": "Collect rainwater in a clean stone bowl.",
+      "vi": "Hứng nước mưa vào chậu đá sạch.",
+      "parts": [
+       [
+        "Collect",
+        "Hứng",
+        2
+       ],
+       " nước mưa vào ",
+       [
+        "bowl",
+        "chậu",
+        2
+       ],
+       " đá sạch."
+      ]
+     },
+     {
+      "en": "Do not take the muddy runoff water.",
+      "vi": "Đừng lấy nước bùn chảy tràn.",
+      "parts": [
+       "Đừng lấy nước ",
+       [
+        "muddy",
+        "bùn",
+        2
+       ],
+       " chảy tràn."
+      ]
+     }
     ]
    },
    {
@@ -13498,6 +19781,46 @@
      "surv_tripwire",
      "camp_tarp",
      "river_bush"
+    ],
+    "subtitles": [
+     {
+      "en": "Build a shelter from sticks and banana leaves.",
+      "vi": "Dựng mái che từ gậy và lá chuối.",
+      "parts": [
+       "Dựng ",
+       [
+        "shelter",
+        "mái che",
+        3
+       ],
+       " từ gậy và ",
+       [
+        "leaf",
+        "lá",
+        1
+       ],
+       " chuối."
+      ]
+     },
+     {
+      "en": "The roof must cover everything to stay dry.",
+      "vi": "Mái phải che kín để giữ khô.",
+      "parts": [
+       "Mái phải ",
+       [
+        "cover",
+        "che",
+        2
+       ],
+       " kín để giữ ",
+       [
+        "dry",
+        "khô",
+        1
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -13526,6 +19849,46 @@
      "river_cave",
      "surv_map",
      "surv_helicopter_wreck"
+    ],
+    "subtitles": [
+     {
+      "en": "The rain smudges the secret message.",
+      "vi": "Mưa làm mật thư bị nhòe.",
+      "parts": [
+       "Mưa làm ",
+       [
+        "message",
+        "mật thư",
+        2
+       ],
+       " bị ",
+       [
+        "smudge",
+        "nhòe",
+        4
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "Find the dry cave: it lies under a big rock.",
+      "vi": "Tìm hang khô: nó nằm dưới tảng đá lớn.",
+      "parts": [
+       "Tìm ",
+       [
+        "dry cave",
+        "hang khô",
+        3
+       ],
+       ": nó nằm ",
+       [
+        "under",
+        "dưới",
+        1
+       ],
+       " tảng đá lớn."
+      ]
+     }
     ]
    },
    {
@@ -13556,6 +19919,46 @@
      "surv_capture_net",
      "river_reed",
      "ground_soil_patch"
+    ],
+    "subtitles": [
+     {
+      "en": "Print fake footprints in the mud to trick the seekers.",
+      "vi": "In dấu chân giả trên bùn để đánh lừa đội săn.",
+      "parts": [
+       "In dấu chân ",
+       [
+        "fake",
+        "giả",
+        3
+       ],
+       " trên bùn để ",
+       [
+        "trick",
+        "đánh lừa",
+        3
+       ],
+       " đội săn."
+      ]
+     },
+     {
+      "en": "They will follow them to the reed bed.",
+      "vi": "Họ sẽ đi theo đến bãi lau.",
+      "parts": [
+       "Họ sẽ ",
+       [
+        "follow",
+        "đi theo",
+        1
+       ],
+       " đến bãi ",
+       [
+        "reed",
+        "lau",
+        2
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -13580,6 +19983,46 @@
      "surv_holding_pen",
      "hdri_noon",
      "anim_cheer"
+    ],
+    "subtitles": [
+     {
+      "en": "The rain stops, the sun comes out, and a rainbow appears.",
+      "vi": "Mưa tạnh, mặt trời ló ra và cầu vồng hiện.",
+      "parts": [
+       "Mưa ",
+       [
+        "stop",
+        "tạnh",
+        1
+       ],
+       ", ",
+       [
+        "sun",
+        "mặt trời",
+        0
+       ],
+       " ló ra và ",
+       [
+        "rainbow",
+        "cầu vồng",
+        2
+       ],
+       " hiện."
+      ]
+     },
+     {
+      "en": "The whole team is safe and happy.",
+      "vi": "Cả đội an toàn và vui vẻ.",
+      "parts": [
+       "Cả đội ",
+       [
+        "safe",
+        "an toàn",
+        1
+       ],
+       " và vui vẻ."
+      ]
+     }
     ]
    },
    {
@@ -13602,6 +20045,33 @@
     "assets": [
      "river_rock_large",
      "water_foam"
+    ],
+    "subtitles": [
+     {
+      "en": "A small flood is coming and the water rises high!",
+      "vi": "Cơn lũ nhỏ đang tới, nước dâng cao!",
+      "parts": [
+       "Cơn ",
+       [
+        "flood",
+        "lũ",
+        3
+       ],
+       " nhỏ đang tới, nước ",
+       [
+        "rise",
+        "dâng",
+        2
+       ],
+       " ",
+       [
+        "high",
+        "cao",
+        1
+       ],
+       "!"
+      ]
+     }
     ]
    },
    {
@@ -13624,6 +20094,39 @@
     "assets": [
      "camp_firepit",
      "river_woodpile"
+    ],
+    "subtitles": [
+     {
+      "en": "Review the weather: storm, cloud and warm sun.",
+      "vi": "Ôn thời tiết: bão, mây và nắng ấm.",
+      "parts": [
+       "Ôn ",
+       [
+        "weather",
+        "thời tiết",
+        2
+       ],
+       ": ",
+       [
+        "storm",
+        "bão",
+        2
+       ],
+       ", ",
+       [
+        "cloud",
+        "mây",
+        1
+       ],
+       " và nắng ",
+       [
+        "warm",
+        "ấm",
+        1
+       ],
+       "."
+      ]
+     }
     ]
    }
   ],
@@ -14072,6 +20575,40 @@
      "river_reed",
      "mini_large_island",
      "char_generic_female_2"
+    ],
+    "subtitles": [
+     {
+      "en": "The old dock on the island, with reeds taller than your head.",
+      "vi": "Bến cũ trên cù lao, lau sậy cao quá đầu.",
+      "parts": [
+       "Bến cũ trên ",
+       [
+        "island",
+        "cù lao",
+        2
+       ],
+       ", lau ",
+       [
+        "reed",
+        "sậy",
+        2
+       ],
+       " cao quá đầu."
+      ]
+     },
+     {
+      "en": "The Seekers board the boat to patrol.",
+      "vi": "Đội Săn Tìm lên thuyền đi tuần.",
+      "parts": [
+       "Đội Săn Tìm lên ",
+       [
+        "boat",
+        "thuyền",
+        0
+       ],
+       " đi tuần."
+      ]
+     }
     ]
    },
    {
@@ -14100,6 +20637,40 @@
      "camp_bucket",
      "river_rock_medium",
      "surv_pen_wall_stone"
+    ],
+    "subtitles": [
+     {
+      "en": "The old stone well holds fresh water deep down.",
+      "vi": "Giếng đá cổ có nước ngọt dưới đáy sâu.",
+      "parts": [
+       "Giếng đá cổ có ",
+       [
+        "fresh water",
+        "nước ngọt",
+        3
+       ],
+       " dưới đáy ",
+       [
+        "deep",
+        "sâu",
+        1
+       ],
+       "."
+      ]
+     },
+     {
+      "en": "Use a bucket to pull the water up.",
+      "vi": "Dùng xô kéo nước lên.",
+      "parts": [
+       "Dùng ",
+       [
+        "bucket",
+        "xô",
+        3
+       ],
+       " kéo nước lên."
+      ]
+     }
     ]
    },
    {
@@ -14126,6 +20697,46 @@
      "surv_tripwire",
      "river_driftwood",
      "river_boat_row"
+    ],
+    "subtitles": [
+     {
+      "en": "Make a small raft and tie the sticks with rope.",
+      "vi": "Làm bè nhỏ, buộc gậy bằng dây.",
+      "parts": [
+       "Làm ",
+       [
+        "raft",
+        "bè",
+        3
+       ],
+       " nhỏ, ",
+       [
+        "tie",
+        "buộc",
+        1
+       ],
+       " gậy bằng dây."
+      ]
+     },
+     {
+      "en": "Only if the raft floats can you paddle across the channel.",
+      "vi": "Bè nổi được thì mới chèo qua lạch.",
+      "parts": [
+       "Bè ",
+       [
+        "float",
+        "nổi",
+        2
+       ],
+       " được thì mới ",
+       [
+        "paddle",
+        "chèo",
+        1
+       ],
+       " qua lạch."
+      ]
+     }
     ]
    },
    {
@@ -14151,6 +20762,40 @@
      "surv_map",
      "surv_compass",
      "camp_bottle"
+    ],
+    "subtitles": [
+     {
+      "en": "A drifting bottle holds a secret message.",
+      "vi": "Một chai trôi dạt chứa mật thư.",
+      "parts": [
+       "Một ",
+       [
+        "bottle",
+        "chai",
+        1
+       ],
+       " trôi dạt chứa mật thư."
+      ]
+     },
+     {
+      "en": "Read it carefully to know which dock is safe, in the east.",
+      "vi": "Đọc kỹ để biết bến nào an toàn, phía đông.",
+      "parts": [
+       "Đọc kỹ để biết bến nào ",
+       [
+        "safe",
+        "an toàn",
+        1
+       ],
+       ", phía ",
+       [
+        "east",
+        "đông",
+        2
+       ],
+       "."
+      ]
+     }
     ]
    },
    {
@@ -14183,6 +20828,40 @@
      "decal_footprint_sand",
      "river_boat_row",
      "surv_net_launcher_b"
+    ],
+    "subtitles": [
+     {
+      "en": "Stand the reeds back up to hide your trail.",
+      "vi": "Dựng lau lên để giấu vệt đi.",
+      "parts": [
+       "Dựng lau lên để ",
+       [
+        "hide",
+        "giấu",
+        2
+       ],
+       " ",
+       [
+        "trail",
+        "vệt",
+        3
+       ],
+       " đi."
+      ]
+     },
+     {
+      "en": "Paddle the raft to the anchored boat to get the net.",
+      "vi": "Chèo bè tới chiếc thuyền neo lấy lưới.",
+      "parts": [
+       "Chèo bè tới chiếc thuyền ",
+       [
+        "anchor",
+        "neo",
+        3
+       ],
+       " lấy lưới."
+      ]
+     }
     ]
    },
    {
@@ -14210,6 +20889,45 @@
      "river_birds",
      "anim_cheer",
      "river_buoy"
+    ],
+    "subtitles": [
+     {
+      "en": "Sunset over the island, and the whole team counts together.",
+      "vi": "Hoàng hôn trên cù lao, cả đội cùng nhau đếm người.",
+      "parts": [
+       [
+        "Sunset",
+        "Hoàng hôn",
+        2
+       ],
+       " trên ",
+       [
+        "island",
+        "cù lao",
+        2
+       ],
+       ", cả đội ",
+       [
+        "together",
+        "cùng nhau",
+        1
+       ],
+       " đếm người."
+      ]
+     },
+     {
+      "en": "A lifebuoy rests by the dock.",
+      "vi": "Chiếc phao cứu hộ nằm bên bến.",
+      "parts": [
+       "Chiếc ",
+       [
+        "lifebuoy",
+        "phao cứu hộ",
+        3
+       ],
+       " nằm bên bến."
+      ]
+     }
     ]
    },
    {
@@ -14230,6 +20948,26 @@
     "assets": [
      "tex_sand",
      "decal_footprint_sand"
+    ],
+    "subtitles": [
+     {
+      "en": "Low tide reveals a new sandbar.",
+      "vi": "Nước ròng lộ ra bãi cát mới.",
+      "parts": [
+       [
+        "Low tide",
+        "Nước ròng",
+        3
+       ],
+       " lộ ra ",
+       [
+        "sandbar",
+        "bãi cát",
+        4
+       ],
+       " mới."
+      ]
+     }
     ]
    },
    {
@@ -14251,6 +20989,27 @@
     "assets": [
      "river_boat_row",
      "river_dock"
+    ],
+    "subtitles": [
+     {
+      "en": "The ferry takes the class home; say thank you to Mr. Tu.",
+      "vi": "Đò đưa cả lớp về nhà; em nói cảm ơn ông Tư.",
+      "parts": [
+       "Đò đưa cả lớp về ",
+       [
+        "home",
+        "nhà",
+        0
+       ],
+       "; em nói ",
+       [
+        "thank you",
+        "cảm ơn",
+        0
+       ],
+       " ông Tư."
+      ]
+     }
     ]
    }
   ],

@@ -44,6 +44,22 @@ test('asset catalog: every model in the 3D folder is used by at least one scenar
   assert.deepEqual(orphans, []);
 });
 
+test('all 30 scenarios: every stage carries level-aware subtitle lines (1+ English term each, parts rebuild the Vietnamese line)', () => {
+  type Line = { en: string; vi: string; parts: (string | [string, string, number])[] };
+  for (const s of scenarios as unknown as { id: string; stages: { n: number; subtitles?: Line[] }[] }[]) {
+    assert.equal(s.stages.length, 8, s.id);
+    for (const st of s.stages) {
+      assert.ok(st.subtitles && st.subtitles.length >= 1, `${s.id} stage ${st.n}`);
+      for (const l of st.subtitles) {
+        assert.ok(l.en.length > 0 && l.vi.length > 0, s.id);
+        assert.ok(l.parts.some((p) => typeof p !== 'string'), `${s.id} stage ${st.n}: no keyword`);
+        assert.equal(l.parts.map((p) => (typeof p === 'string' ? p : p[1])).join(''), l.vi, s.id);
+        assert.ok(!/[{}|]/.test(l.vi + l.en), `${s.id}: leftover markup`);
+      }
+    }
+  }
+});
+
 test('dino journey: every stage carries level-aware subtitle lines', () => {
   const dino = scenarios.filter((s) => s.game === 'dino_journey') as unknown as { id: string; stages: { subtitles?: { en: string; vi: string }[] }[] }[];
   assert.equal(dino.length, 5);

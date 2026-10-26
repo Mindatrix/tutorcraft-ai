@@ -1,13 +1,14 @@
 import json, sys, os
 sys.path.insert(0, os.path.dirname(__file__))
 import re
-import common, camp, fishing, survival, kayak, multiverse, dino, patch_assets
+import common, camp, fishing, survival, kayak, multiverse, dino, patch_assets, subtitles_v2
 
 ALL = []
 for m in (kayak, multiverse, camp, fishing, survival, dino):
     for s in m.SCENARIOS:
         common.validate(s)
         patch_assets.apply(s)
+        subtitles_v2.apply(s)
         # Model 3D của nhân vật (ghi ở đầu clothing_text dạng [asset_id]) cũng phải nằm trong danh sách tải.
         tagged = {m.group(1) for c in s['characters'] for m in [re.match(r'\[(\w+)\]', str(c['clothing_text']))] if m}
         s['asset_ids'] = sorted({a for st in s['stages'] for a in st['assets']} | tagged)
