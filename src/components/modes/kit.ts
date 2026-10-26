@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { loadScene } from './three/assetLoader';
+import { clone as cloneSkinned } from 'three/examples/jsm/utils/SkeletonUtils.js';
 import { THREE_ASSET_MANIFEST, THREE_DEFAULTS, assetOr } from '../../config/threeAssets';
 import { prefersReducedMotion } from './gfx';
 
@@ -449,15 +450,12 @@ export class Sparks {
 }
 
 // ---------------------------------------------------------------------------
-// GLB swap-in: when the Founder fills a model URL in threeAssets.ts
+// GLB swap-in: library models from threeAssets.ts (code-built stand-in until the file loads)
 // ---------------------------------------------------------------------------
 
-const gltf = new GLTFLoader();
-const glbCache = new Map<string, Promise<THREE.Group>>();
-
+// One loader + cache for the whole session (Meshopt decoder: library files are compressed).
 export function loadGlb(url: string): Promise<THREE.Group> {
-  if (!glbCache.has(url)) glbCache.set(url, gltf.loadAsync(url).then((g) => g.scene));
-  return glbCache.get(url)!;
+  return loadScene(url);
 }
 
 /**
@@ -469,7 +467,9 @@ export function swapInGlb(holder: THREE.Object3D, url: string | null, height: nu
   loadGlb(url)
     .then((src) => {
       if (!isAlive()) return;
-      const model = src.clone(true);
+      // Rigged models need SkeletonUtils.clone: a plain clone keeps the bones of the cached
+      // original, so the copy renders nowhere (invisible hero).
+      const model = cloneSkinned(src) as THREE.Group;
       const box = new THREE.Box3().setFromObject(model);
       const h = box.max.y - box.min.y || 1;
       model.scale.setScalar(height / h);
