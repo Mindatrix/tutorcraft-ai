@@ -16,11 +16,9 @@ function Loading() {
   return <div className="absolute inset-0 grid place-items-center text-xs font-bold tracking-wide text-slate-300">Đang dựng thế giới…</div>;
 }
 
-const SCENES: Record<BossMode, ComponentType<BossSceneProps>> = {
+// Worlds without a scene yet (3D still being built) play on the 2D canvas, without marking the device as weak.
+const SCENES: Partial<Record<BossMode, ComponentType<BossSceneProps>>> = {
   multiverse_portal: dynamic(() => import('./MultiversePortalRPG'), { ssr: false, loading: Loading }),
-  cosmic_card: dynamic(() => import('./CosmicCardBattler'), { ssr: false, loading: Loading }),
-  dino_island: dynamic(() => import('./DinoRun2D'), { ssr: false, loading: Loading }),
-  ai_agent_world: dynamic(() => import('./AIAgentWorld'), { ssr: false, loading: Loading }),
 };
 
 const LITE_KEY = 'tc:gfx-lite';
@@ -108,6 +106,16 @@ export default function ModeStage({ mode, scene, fallback }: { mode: BossMode; s
     setThree(canUseWebGL());
   };
 
+  const Scene = SCENES[mode];
+  if (!Scene) {
+    return (
+      <div className="space-y-1">
+        {fallback}
+        <p className="text-right text-[11px] text-slate-400">{def.icon} {def.nameVi} · bản 3D đang được dựng, tạm chơi bản 2D</p>
+      </div>
+    );
+  }
+
   if (!three) {
     return (
       <div className="space-y-1">
@@ -120,9 +128,8 @@ export default function ModeStage({ mode, scene, fallback }: { mode: BossMode; s
     );
   }
 
-  const Scene = SCENES[mode];
   return (
-    <StageFrame className={mode === 'dino_island' ? 'h-60 sm:h-80' : 'h-64 sm:h-80'}>
+    <StageFrame className="h-64 sm:h-80">
       <Scene {...scene} onUnavailable={lite} />
       <div className="pointer-events-none absolute inset-x-0 top-0 z-10 flex items-start justify-between gap-2 px-6 pt-3">
         <Bar label={def.hud.hero} value={scene.hp} max={scene.hpMax} tone="linear-gradient(90deg,#34d399,#10b981)" align="left" />

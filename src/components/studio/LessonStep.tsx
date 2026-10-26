@@ -339,7 +339,7 @@ export default function LessonStep({ initial, onGenerated }: { initial: StudioSe
   );
 }
 
-const STAIR_TONES = ['#6ee7b7', '#bef264', '#fcd34d', '#fb923c', '#fb7185'];
+const STAIR_TONES = ['#a5f3fc', '#6ee7b7', '#bef264', '#fcd34d', '#fb923c', '#fb7185'];
 
 function Section({ n, title, hint, last = false, children }: { n: number; title: string; hint?: string; last?: boolean; children: React.ReactNode }) {
   return (

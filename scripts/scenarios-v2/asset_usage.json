@@ -1,0 +1,1326 @@
+{
+ "anim_cheer": [
+  "kayak-01",
+  "kayak-02",
+  "kayak-03",
+  "kayak-04",
+  "kayak-05",
+  "mv-01",
+  "mv-02",
+  "mv-03",
+  "mv-04",
+  "mv-05",
+  "camp-03",
+  "camp-04",
+  "fish-01",
+  "fish-02",
+  "fish-03",
+  "fish-04",
+  "fish-05",
+  "surv-01",
+  "surv-02",
+  "surv-03",
+  "surv-04",
+  "surv-05",
+  "dino-01",
+  "dino-05"
+ ],
+ "camp_bunting": [
+  "kayak-01",
+  "kayak-04",
+  "camp-01",
+  "fish-02"
+ ],
+ "char_sunny_boy": [
+  "kayak-01"
+ ],
+ "kayak_boat": [
+  "kayak-01",
+  "kayak-02",
+  "kayak-03",
+  "kayak-04",
+  "kayak-05"
+ ],
+ "kayak_finish_arch": [
+  "kayak-01",
+  "kayak-02",
+  "kayak-03",
+  "kayak-04",
+  "kayak-05"
+ ],
+ "kayak_lifejacket": [
+  "kayak-01",
+  "kayak-02",
+  "fish-01"
+ ],
+ "kayak_log_spinning": [
+  "kayak-01"
+ ],
+ "kayak_paddle": [
+  "kayak-01",
+  "kayak-02",
+  "kayak-04",
+  "kayak-05",
+  "fish-05"
+ ],
+ "river_birds": [
+  "kayak-01",
+  "kayak-03",
+  "kayak-04",
+  "surv-01",
+  "surv-05",
+  "dino-01",
+  "dino-03",
+  "dino-04"
+ ],
+ "river_bridge": [
+  "kayak-01",
+  "kayak-04",
+  "kayak-05",
+  "camp-05",
+  "surv-02"
+ ],
+ "river_buoy": [
+  "kayak-01",
+  "kayak-02",
+  "kayak-04",
+  "fish-01",
+  "fish-02",
+  "fish-03",
+  "surv-05"
+ ],
+ "river_dock": [
+  "kayak-01",
+  "kayak-04",
+  "camp-01",
+  "camp-02",
+  "camp-05",
+  "fish-01",
+  "fish-02",
+  "fish-05",
+  "surv-05"
+ ],
+ "river_driftwood": [
+  "kayak-01",
+  "surv-05",
+  "dino-03",
+  "dino-04"
+ ],
+ "river_lilypad": [
+  "kayak-01",
+  "kayak-04",
+  "dino-01"
+ ],
+ "river_log_fallen": [
+  "kayak-01",
+  "kayak-02",
+  "camp-05",
+  "dino-02",
+  "dino-04"
+ ],
+ "river_reed": [
+  "kayak-01",
+  "kayak-04",
+  "fish-04",
+  "surv-03",
+  "surv-04",
+  "surv-05",
+  "dino-01"
+ ],
+ "river_rock_large": [
+  "kayak-01",
+  "kayak-03",
+  "fish-01",
+  "fish-03",
+  "surv-02",
+  "surv-04",
+  "dino-01",
+  "dino-05"
+ ],
+ "river_rock_medium": [
+  "kayak-01",
+  "kayak-02",
+  "camp-05",
+  "fish-03",
+  "surv-01",
+  "surv-05",
+  "dino-01",
+  "dino-03"
+ ],
+ "river_sign": [
+  "kayak-01",
+  "kayak-02",
+  "kayak-04",
+  "camp-01",
+  "camp-02",
+  "camp-03",
+  "camp-05",
+  "fish-02",
+  "fish-03",
+  "dino-02",
+  "dino-04",
+  "dino-05"
+ ],
+ "water_foam": [
+  "kayak-01",
+  "kayak-02",
+  "fish-03",
+  "surv-02",
+  "surv-04"
+ ],
+ "camp_lantern": [
+  "kayak-02",
+  "kayak-03",
+  "kayak-05",
+  "camp-01",
+  "camp-03",
+  "camp-04",
+  "fish-04",
+  "surv-01",
+  "surv-03"
+ ],
+ "river_cave": [
+  "kayak-02",
+  "fish-05",
+  "surv-01",
+  "surv-02",
+  "surv-04"
+ ],
+ "river_cliff": [
+  "kayak-02",
+  "kayak-03",
+  "fish-03",
+  "fish-05",
+  "surv-01",
+  "surv-02",
+  "dino-01"
+ ],
+ "river_tree_pine": [
+  "kayak-02",
+  "camp-01",
+  "camp-05",
+  "surv-03"
+ ],
+ "river_waterfall": [
+  "kayak-02",
+  "fish-03",
+  "surv-02",
+  "dino-03",
+  "dino-04"
+ ],
+ "river_waterfall_pool": [
+  "kayak-02",
+  "camp-05",
+  "fish-03",
+  "surv-02",
+  "dino-03",
+  "dino-04"
+ ],
+ "backdrop_mountain_valley": [
+  "kayak-03"
+ ],
+ "fx_fire": [
+  "kayak-03",
+  "camp-01",
+  "camp-02",
+  "camp-04",
+  "dino-02",
+  "dino-04"
+ ],
+ "hdri_night": [
+  "kayak-03",
+  "kayak-05",
+  "camp-04",
+  "fish-04",
+  "surv-01",
+  "surv-03",
+  "dino-01",
+  "dino-04"
+ ],
+ "hdri_sunset": [
+  "kayak-03",
+  "camp-01",
+  "camp-02",
+  "camp-05",
+  "fish-05",
+  "surv-01",
+  "surv-02",
+  "surv-05",
+  "dino-01",
+  "dino-02",
+  "dino-03",
+  "dino-05"
+ ],
+ "char_boy_1": [
+  "kayak-04"
+ ],
+ "char_skater_boy": [
+  "kayak-04"
+ ],
+ "fish_basket": [
+  "kayak-04",
+  "camp-02",
+  "fish-01",
+  "fish-02",
+  "fish-05"
+ ],
+ "food_apple": [
+  "kayak-04",
+  "camp-02",
+  "camp-05"
+ ],
+ "river_boat_row": [
+  "kayak-04",
+  "kayak-05",
+  "camp-05",
+  "fish-01",
+  "fish-02",
+  "fish-05",
+  "surv-01",
+  "surv-05"
+ ],
+ "village_horse_a": [
+  "kayak-04"
+ ],
+ "village_horse_b": [
+  "kayak-04"
+ ],
+ "camp_string_lights": [
+  "kayak-05",
+  "camp-02",
+  "camp-04",
+  "surv-03"
+ ],
+ "fx_spark": [
+  "kayak-05",
+  "mv-01",
+  "mv-02",
+  "mv-03",
+  "mv-04",
+  "mv-05",
+  "camp-04"
+ ],
+ "water_normal": [
+  "kayak-05",
+  "fish-03",
+  "surv-01",
+  "surv-03"
+ ],
+ "char_kid_dancer": [
+  "mv-01",
+  "mv-05"
+ ],
+ "mv_boss": [
+  "mv-01",
+  "mv-02",
+  "mv-03",
+  "mv-04",
+  "mv-05"
+ ],
+ "mv_hero_scarlet": [
+  "mv-01",
+  "mv-02",
+  "mv-03",
+  "mv-04",
+  "mv-05"
+ ],
+ "mv_minion_shadow": [
+  "mv-01",
+  "mv-04"
+ ],
+ "mv_npc_druid_elf": [
+  "mv-01",
+  "mv-02",
+  "mv-03",
+  "mv-04",
+  "mv-05"
+ ],
+ "mv_wall_breach": [
+  "mv-01"
+ ],
+ "mv_world_castle": [
+  "mv-01",
+  "mv-04",
+  "mv-05"
+ ],
+ "mv_world_cyberpunk": [
+  "mv-01",
+  "mv-02",
+  "mv-04",
+  "mv-05"
+ ],
+ "mv_world_enchanted_candidate": [
+  "mv-01"
+ ],
+ "mv_ruin_building": [
+  "mv-02"
+ ],
+ "mv_world_desert": [
+  "mv-02",
+  "mv-03",
+  "mv-05"
+ ],
+ "ground_sand_slab": [
+  "mv-03"
+ ],
+ "mini_large_island": [
+  "mv-03",
+  "surv-05"
+ ],
+ "mv_world_ruin_candidate": [
+  "mv-03"
+ ],
+ "char_crimson_kick": [
+  "mv-04"
+ ],
+ "mini_floating_island": [
+  "mv-04",
+  "mv-05"
+ ],
+ "mv_weapon_runecrossbow": [
+  "mv-04"
+ ],
+ "char_grovaen_female": [
+  "mv-05"
+ ],
+ "char_iridescent_voyager": [
+  "mv-05"
+ ],
+ "char_tpose_boy": [
+  "mv-05"
+ ],
+ "char_wanderer": [
+  "mv-05",
+  "fish-05"
+ ],
+ "mv_boss_verdant": [
+  "mv-05"
+ ],
+ "anim_cook": [
+  "camp-01",
+  "camp-02"
+ ],
+ "anim_kneel_work": [
+  "camp-01",
+  "camp-03",
+  "dino-04"
+ ],
+ "camp_axe": [
+  "camp-01",
+  "camp-05"
+ ],
+ "camp_backpack": [
+  "camp-01",
+  "camp-03",
+  "camp-05"
+ ],
+ "camp_bottle": [
+  "camp-01",
+  "camp-03",
+  "camp-05",
+  "surv-01",
+  "surv-02",
+  "surv-03",
+  "surv-04",
+  "surv-05"
+ ],
+ "camp_bucket": [
+  "camp-01",
+  "camp-02",
+  "camp-03",
+  "camp-05",
+  "surv-04",
+  "surv-05"
+ ],
+ "camp_cup": [
+  "camp-01",
+  "camp-02"
+ ],
+ "camp_fire_starter": [
+  "camp-01"
+ ],
+ "camp_firepit": [
+  "camp-01",
+  "camp-02",
+  "camp-03",
+  "camp-04",
+  "camp-05",
+  "surv-01",
+  "surv-02",
+  "surv-04"
+ ],
+ "camp_grill": [
+  "camp-01",
+  "camp-02"
+ ],
+ "camp_marshmallow_stick": [
+  "camp-01",
+  "camp-04"
+ ],
+ "camp_matchbox": [
+  "camp-01",
+  "camp-02"
+ ],
+ "camp_rope": [
+  "camp-01",
+  "camp-03",
+  "fish-03",
+  "dino-04"
+ ],
+ "camp_skewer": [
+  "camp-01",
+  "camp-02"
+ ],
+ "camp_skewer_meat": [
+  "camp-01"
+ ],
+ "camp_skewer_veg": [
+  "camp-01",
+  "camp-02"
+ ],
+ "camp_sleeping_bag": [
+  "camp-01",
+  "camp-03"
+ ],
+ "camp_table": [
+  "camp-01",
+  "camp-02",
+  "camp-03",
+  "camp-04"
+ ],
+ "camp_tarp": [
+  "camp-01",
+  "camp-03",
+  "surv-04"
+ ],
+ "camp_tent_green": [
+  "camp-01"
+ ],
+ "camp_tent_stage": [
+  "camp-01",
+  "camp-03",
+  "camp-04",
+  "camp-05"
+ ],
+ "camp_tripod": [
+  "camp-01"
+ ],
+ "camp_water_filter": [
+  "camp-01",
+  "camp-03",
+  "camp-05"
+ ],
+ "char_hiker_girl": [
+  "camp-01",
+  "camp-05"
+ ],
+ "food_fish_cooked": [
+  "camp-01",
+  "camp-02"
+ ],
+ "food_fish_raw": [
+  "camp-01",
+  "camp-02"
+ ],
+ "food_meat_cooked": [
+  "camp-01",
+  "camp-02"
+ ],
+ "food_meat_raw": [
+  "camp-01",
+  "camp-02"
+ ],
+ "food_sausage": [
+  "camp-01"
+ ],
+ "ground_cobble_circle": [
+  "camp-01"
+ ],
+ "ground_grass_platform": [
+  "camp-01"
+ ],
+ "hdri_dawn": [
+  "camp-01",
+  "fish-01",
+  "dino-01",
+  "dino-04",
+  "dino-05"
+ ],
+ "mini_camp_hero": [
+  "camp-01"
+ ],
+ "river_fern": [
+  "camp-01",
+  "surv-01",
+  "dino-02"
+ ],
+ "river_firewood": [
+  "camp-01",
+  "camp-02",
+  "camp-03",
+  "camp-04"
+ ],
+ "river_pebbles": [
+  "camp-01",
+  "dino-01",
+  "dino-02"
+ ],
+ "river_stump": [
+  "camp-01",
+  "camp-03",
+  "camp-04",
+  "dino-02",
+  "dino-05"
+ ],
+ "river_woodpile": [
+  "camp-01",
+  "camp-03",
+  "camp-04",
+  "surv-04",
+  "dino-04"
+ ],
+ "camp_bench": [
+  "camp-02",
+  "camp-04"
+ ],
+ "camp_pan": [
+  "camp-02",
+  "camp-05"
+ ],
+ "camp_skewer_fish": [
+  "camp-02"
+ ],
+ "camp_well": [
+  "camp-02"
+ ],
+ "food_bread": [
+  "camp-02",
+  "camp-05"
+ ],
+ "food_corn": [
+  "camp-02"
+ ],
+ "fx_smoke": [
+  "camp-02",
+  "dino-04"
+ ],
+ "ground_cobble_path_b": [
+  "camp-02"
+ ],
+ "ground_farmland": [
+  "camp-02"
+ ],
+ "ground_soil_patch": [
+  "camp-02",
+  "surv-04",
+  "dino-02"
+ ],
+ "village_cart": [
+  "camp-02"
+ ],
+ "village_cow": [
+  "camp-02"
+ ],
+ "camp_tent_damaged": [
+  "camp-03"
+ ],
+ "char_grass_kid": [
+  "camp-03"
+ ],
+ "decal_footprint_mud": [
+  "camp-03",
+  "surv-01",
+  "surv-02",
+  "surv-03",
+  "surv-04"
+ ],
+ "hdri_cloudy": [
+  "camp-03",
+  "surv-04",
+  "dino-04"
+ ],
+ "hdri_noon": [
+  "camp-03",
+  "fish-01",
+  "fish-03",
+  "fish-05",
+  "surv-04",
+  "dino-02",
+  "dino-03",
+  "dino-05"
+ ],
+ "river_bush": [
+  "camp-03",
+  "surv-04",
+  "dino-02"
+ ],
+ "river_shed": [
+  "camp-03"
+ ],
+ "camp_chair": [
+  "camp-04"
+ ],
+ "char_nomad_boy": [
+  "camp-04"
+ ],
+ "ground_cobble_path_a": [
+  "camp-04"
+ ],
+ "surv_map": [
+  "camp-04",
+  "camp-05",
+  "fish-03",
+  "surv-01",
+  "surv-04",
+  "surv-05"
+ ],
+ "tree_fort": [
+  "camp-04"
+ ],
+ "camp_firstaid": [
+  "camp-05"
+ ],
+ "char_female_a": [
+  "camp-05"
+ ],
+ "fish_bobber": [
+  "camp-05",
+  "fish-01",
+  "fish-04"
+ ],
+ "fish_rod": [
+  "camp-05",
+  "fish-01",
+  "fish-02",
+  "fish-03",
+  "fish-05"
+ ],
+ "mini_ganga_valley": [
+  "camp-05",
+  "fish-03"
+ ],
+ "river_duck": [
+  "camp-05"
+ ],
+ "surv_compass": [
+  "camp-05",
+  "fish-04",
+  "surv-01",
+  "surv-03",
+  "surv-05"
+ ],
+ "surv_flashlight": [
+  "camp-05",
+  "surv-01",
+  "surv-02",
+  "surv-03"
+ ],
+ "anim_cast": [
+  "fish-01",
+  "fish-04"
+ ],
+ "anim_pull_fish": [
+  "fish-01",
+  "fish-02",
+  "fish-03",
+  "fish-04",
+  "fish-05"
+ ],
+ "fish_bait": [
+  "fish-01",
+  "fish-03",
+  "fish-04",
+  "fish-05"
+ ],
+ "fish_boat_chair": [
+  "fish-01"
+ ],
+ "fish_box": [
+  "fish-01"
+ ],
+ "fish_bucket": [
+  "fish-01",
+  "fish-05"
+ ],
+ "fish_carp": [
+  "fish-01",
+  "fish-02"
+ ],
+ "fish_climbing_perch": [
+  "fish-01",
+  "fish-02"
+ ],
+ "fish_cod": [
+  "fish-01"
+ ],
+ "fish_crucian": [
+  "fish-01",
+  "fish-02"
+ ],
+ "fish_grass_carp": [
+  "fish-01",
+  "fish-05"
+ ],
+ "fish_hook": [
+  "fish-01"
+ ],
+ "fish_king_salmon": [
+  "fish-01",
+  "fish-05"
+ ],
+ "fish_net": [
+  "fish-01",
+  "fish-02",
+  "fish-03",
+  "fish-04"
+ ],
+ "fish_record_board": [
+  "fish-01",
+  "fish-02"
+ ],
+ "fish_reel": [
+  "fish-01",
+  "fish-04"
+ ],
+ "fish_rod_holder": [
+  "fish-01"
+ ],
+ "fish_rod_wood": [
+  "fish-01"
+ ],
+ "fish_scale": [
+  "fish-01",
+  "fish-02",
+  "fish-05"
+ ],
+ "fish_snakehead": [
+  "fish-01",
+  "fish-02",
+  "fish-04"
+ ],
+ "fish_tackle_box": [
+  "fish-01",
+  "fish-02",
+  "fish-04"
+ ],
+ "fish_tilapia": [
+  "fish-01",
+  "fish-02",
+  "fish-05"
+ ],
+ "fish_walking_catfish": [
+  "fish-01",
+  "fish-04"
+ ],
+ "river_boat_aluminium": [
+  "fish-01",
+  "fish-02",
+  "fish-03",
+  "fish-04",
+  "fish-05",
+  "surv-05"
+ ],
+ "char_female_b": [
+  "fish-02"
+ ],
+ "fish_basa": [
+  "fish-02",
+  "fish-04"
+ ],
+ "fish_bass": [
+  "fish-02"
+ ],
+ "fish_floating_dock": [
+  "fish-02"
+ ],
+ "fish_hemibagrus": [
+  "fish-02",
+  "fish-03"
+ ],
+ "fish_rainbow_trout": [
+  "fish-02",
+  "fish-03",
+  "fish-05"
+ ],
+ "fish_rod_carbon": [
+  "fish-02"
+ ],
+ "fish_rod_fiberglass": [
+  "fish-02"
+ ],
+ "fish_rod_gold": [
+  "fish-02"
+ ],
+ "fish_silver_carp": [
+  "fish-02"
+ ],
+ "fish_tra": [
+  "fish-02",
+  "fish-04"
+ ],
+ "rod_cand_1": [
+  "fish-02"
+ ],
+ "rod_cand_2": [
+  "fish-02"
+ ],
+ "rod_cand_3": [
+  "fish-02"
+ ],
+ "rod_cand_4": [
+  "fish-02"
+ ],
+ "rod_cand_5": [
+  "fish-02"
+ ],
+ "fish_eel": [
+  "fish-03",
+  "fish-04"
+ ],
+ "fish_sheatfish": [
+  "fish-03"
+ ],
+ "fx_bubbles": [
+  "fish-03"
+ ],
+ "fish_dock_lamp": [
+  "fish-04"
+ ],
+ "fish_unknown": [
+  "fish-04"
+ ],
+ "fish_golden_carp": [
+  "fish-05"
+ ],
+ "mini_clear_river": [
+  "fish-05",
+  "surv-01"
+ ],
+ "mini_indus_basin": [
+  "fish-05"
+ ],
+ "river_cabin": [
+  "fish-05"
+ ],
+ "surv_letter": [
+  "fish-05",
+  "surv-01",
+  "surv-02",
+  "surv-03",
+  "surv-04",
+  "surv-05"
+ ],
+ "anim_rope_rub": [
+  "surv-01"
+ ],
+ "anim_sad": [
+  "surv-01"
+ ],
+ "anim_wave": [
+  "surv-01",
+  "surv-02",
+  "dino-01"
+ ],
+ "decal_footprint_sand": [
+  "surv-01",
+  "surv-04",
+  "surv-05"
+ ],
+ "river_branch": [
+  "surv-01",
+  "surv-02",
+  "surv-03"
+ ],
+ "river_moss_rock": [
+  "surv-01",
+  "surv-02",
+  "dino-02",
+  "dino-03"
+ ],
+ "river_rock_small": [
+  "surv-01",
+  "dino-03"
+ ],
+ "surv_barrel": [
+  "surv-01"
+ ],
+ "surv_broom": [
+  "surv-01",
+  "surv-02",
+  "surv-03",
+  "surv-04"
+ ],
+ "surv_capture_net": [
+  "surv-01",
+  "surv-02",
+  "surv-03",
+  "surv-04",
+  "surv-05"
+ ],
+ "surv_container_blue": [
+  "surv-01"
+ ],
+ "surv_crate": [
+  "surv-01",
+  "surv-02"
+ ],
+ "surv_flag": [
+  "surv-01"
+ ],
+ "surv_holding_pen": [
+  "surv-01",
+  "surv-02",
+  "surv-03",
+  "surv-04",
+  "surv-05"
+ ],
+ "surv_net_launcher_a": [
+  "surv-01"
+ ],
+ "surv_pen_wall_window": [
+  "surv-01"
+ ],
+ "surv_pointed_stone": [
+  "surv-01",
+  "surv-02",
+  "surv-03",
+  "surv-04"
+ ],
+ "surv_rival_tent": [
+  "surv-01"
+ ],
+ "surv_rope": [
+  "surv-01",
+  "surv-02",
+  "surv-03",
+  "surv-04",
+  "surv-05"
+ ],
+ "surv_rope_cut": [
+  "surv-01"
+ ],
+ "surv_sharp_rock": [
+  "surv-01",
+  "surv-02",
+  "surv-03",
+  "surv-04",
+  "surv-05"
+ ],
+ "surv_spring": [
+  "surv-01",
+  "surv-02",
+  "surv-03"
+ ],
+ "surv_stake": [
+  "surv-01"
+ ],
+ "surv_stick": [
+  "surv-01",
+  "surv-02",
+  "surv-03",
+  "surv-04",
+  "surv-05"
+ ],
+ "surv_stone_basin": [
+  "surv-01",
+  "surv-02",
+  "surv-04",
+  "surv-05"
+ ],
+ "surv_trap_rope": [
+  "surv-01"
+ ],
+ "surv_tripwire": [
+  "surv-01",
+  "surv-03",
+  "surv-04",
+  "surv-05"
+ ],
+ "river_fence": [
+  "surv-02"
+ ],
+ "surv_binoculars": [
+  "surv-02"
+ ],
+ "surv_container_red": [
+  "surv-02"
+ ],
+ "char_gamer_boy": [
+  "surv-03"
+ ],
+ "river_butterfly": [
+  "surv-03",
+  "dino-01"
+ ],
+ "surv_sentinel": [
+  "surv-03"
+ ],
+ "watchtower": [
+  "surv-03"
+ ],
+ "surv_helicopter_wreck": [
+  "surv-04"
+ ],
+ "tex_mud": [
+  "surv-04"
+ ],
+ "char_generic_female_2": [
+  "surv-05"
+ ],
+ "surv_net_launcher_b": [
+  "surv-05"
+ ],
+ "surv_pen_wall_stone": [
+  "surv-05"
+ ],
+ "tex_sand": [
+  "surv-05"
+ ],
+ "dino_antelope": [
+  "dino-01",
+  "dino-02",
+  "dino-03",
+  "dino-04",
+  "dino-05"
+ ],
+ "dino_diplodocus": [
+  "dino-01",
+  "dino-02",
+  "dino-03",
+  "dino-04",
+  "dino-05"
+ ],
+ "dino_nest_shelter": [
+  "dino-01",
+  "dino-04"
+ ],
+ "dino_rabbit": [
+  "dino-01",
+  "dino-02",
+  "dino-03",
+  "dino-04"
+ ],
+ "dino_raptor_rider": [
+  "dino-01",
+  "dino-02",
+  "dino-03",
+  "dino-04",
+  "dino-05"
+ ],
+ "dino_rat": [
+  "dino-01",
+  "dino-02",
+  "dino-04"
+ ],
+ "dino_sauropod_grey": [
+  "dino-01",
+  "dino-02",
+  "dino-03",
+  "dino-04",
+  "dino-05"
+ ],
+ "dino_stegosaurus": [
+  "dino-01",
+  "dino-02",
+  "dino-03",
+  "dino-04",
+  "dino-05"
+ ],
+ "dino_trex_brown": [
+  "dino-01",
+  "dino-02",
+  "dino-03",
+  "dino-04",
+  "dino-05"
+ ],
+ "dino_triceratops": [
+  "dino-01",
+  "dino-02",
+  "dino-03",
+  "dino-04",
+  "dino-05"
+ ],
+ "dino_wolf_a": [
+  "dino-01",
+  "dino-02",
+  "dino-03",
+  "dino-04",
+  "dino-05"
+ ],
+ "dino_wolf_b": [
+  "dino-01",
+  "dino-02",
+  "dino-03",
+  "dino-04",
+  "dino-05"
+ ],
+ "ground_clearing": [
+  "dino-01"
+ ],
+ "ground_grass_block": [
+  "dino-01",
+  "dino-02"
+ ],
+ "ground_grass_iso": [
+  "dino-01",
+  "dino-02",
+  "dino-05"
+ ],
+ "ground_grass_patch": [
+  "dino-01",
+  "dino-05"
+ ],
+ "ground_grass_tuft": [
+  "dino-01",
+  "dino-05"
+ ],
+ "ground_strip_6x20": [
+  "dino-01",
+  "dino-05"
+ ],
+ "mini_azure_river": [
+  "dino-01",
+  "dino-05"
+ ],
+ "mushrooms": [
+  "dino-01",
+  "dino-02",
+  "dino-03"
+ ],
+ "palm_a": [
+  "dino-01",
+  "dino-03"
+ ],
+ "palm_b": [
+  "dino-01",
+  "dino-03"
+ ],
+ "river_grass_tall": [
+  "dino-01",
+  "dino-02"
+ ],
+ "tree_nursery_pot": [
+  "dino-01"
+ ],
+ "tree_pixel": [
+  "dino-01",
+  "dino-05"
+ ],
+ "tree_pixel_stylized": [
+  "dino-01"
+ ],
+ "tree_x01": [
+  "dino-01",
+  "dino-05"
+ ],
+ "tree_x02": [
+  "dino-01"
+ ],
+ "tree_x03": [
+  "dino-01",
+  "dino-05"
+ ],
+ "tree_x04": [
+  "dino-01",
+  "dino-04"
+ ],
+ "tree_x05": [
+  "dino-01",
+  "dino-05"
+ ],
+ "tree_x06_duo": [
+  "dino-01",
+  "dino-05"
+ ],
+ "wood_plank_a": [
+  "dino-01",
+  "dino-03",
+  "dino-04"
+ ],
+ "ground_grass_dark": [
+  "dino-02",
+  "dino-04"
+ ],
+ "ground_grass_emerald": [
+  "dino-02",
+  "dino-04"
+ ],
+ "ground_stone_floor": [
+  "dino-02",
+  "dino-03"
+ ],
+ "river_butterfly__alt1": [
+  "dino-02"
+ ],
+ "river_pebbles__alt1": [
+  "dino-02"
+ ],
+ "tree_x07_elm": [
+  "dino-02"
+ ],
+ "tree_x08_verdant": [
+  "dino-02",
+  "dino-04"
+ ],
+ "tree_x09_lone": [
+  "dino-02",
+  "dino-03"
+ ],
+ "tree_x10_ancient_a": [
+  "dino-02",
+  "dino-03"
+ ],
+ "tree_x11_ancient_b": [
+  "dino-02",
+  "dino-04"
+ ],
+ "dino_world_dry_plateau": [
+  "dino-03"
+ ],
+ "mini_floating_oasis": [
+  "dino-03",
+  "dino-05"
+ ],
+ "mini_floating_waterfall": [
+  "dino-03",
+  "dino-05"
+ ],
+ "mini_jungle_river": [
+  "dino-03"
+ ],
+ "mini_runestone_falls": [
+  "dino-03"
+ ],
+ "river_cliff__alt1": [
+  "dino-03"
+ ],
+ "river_fern__alt1": [
+  "dino-03"
+ ],
+ "river_lilypad__alt1": [
+  "dino-03"
+ ],
+ "tree_x12_dark_bark": [
+  "dino-03",
+  "dino-04"
+ ],
+ "wood_plank_b": [
+  "dino-03",
+  "dino-04"
+ ],
+ "river_bush__alt2": [
+  "dino-04"
+ ],
+ "dino_trex_black": [
+  "dino-05"
+ ],
+ "dino_trex_yellow": [
+  "dino-05"
+ ],
+ "dino_world_floating_jungle": [
+  "dino-05"
+ ],
+ "mini_logic_island": [
+  "dino-05"
+ ]
+}

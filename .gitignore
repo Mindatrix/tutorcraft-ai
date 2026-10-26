@@ -45,3 +45,9 @@ next-env.d.ts
 
 # Unity WebGL build output (rebuild: Unity > TutorCraft > Build WebGL). The app falls back to Three.js when absent.
 /public/unity/
+
+# Meshy
+.meshy-state.json
+
+# Python bytecode (scripts/scenarios-v2)
+__pycache__/

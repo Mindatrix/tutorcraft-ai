@@ -5,14 +5,17 @@ export type ScenarioId = 'homework' | 'in_class' | 'coop_raid' | 'boat_race';
 
 /**
  * The 5 official game worlds (see gameModes.ts). Visual skin only — scoring stays on the server.
- * Cancelled: WASTELAND (Wasteland Survival), DUNGEON (Dungeon Labyrinth), MAGIC_TOWER (Magic Tower 1v1).
+ * Plan 2026-10-26 (river camping & survival theme): Cosmic Card Battler → Summer Camp Quests,
+ * Dino Island Run → River Fishing Challenge, AI Agent World → River Survival: Escape & Pursuit.
+ * Cancelled earlier: Wasteland Survival, Dungeon Labyrinth, Magic Tower 1v1.
  */
 export const GameMode = {
   KAYAK_RUSH_3D: 'kayak_rush',
   MULTIVERSE_PORTAL_RPG: 'multiverse_portal',
-  COSMIC_CARD_BATTLER: 'cosmic_card',
-  DINO_ISLAND_RUN_2D: 'dino_island',
-  AI_AGENT_WORLD_3D: 'ai_agent_world',
+  SUMMER_CAMP_QUESTS: 'summer_camp',
+  RIVER_FISHING: 'river_fishing',
+  RIVER_SURVIVAL: 'river_survival',
+  DINO_JOURNEY: 'dino_journey',
 } as const;
 export type GameMode = (typeof GameMode)[keyof typeof GameMode];
 
@@ -32,7 +35,7 @@ export type ThemeId =
 export type Difficulty = 'easy' | 'medium' | 'hard';
 
 /** 5 teaching levels the tutor picks: 1 = Dễ … 5 = Rất khó. Default 3 (Trung bình). */
-export type DifficultyLevel = 1 | 2 | 3 | 4 | 5;
+export type DifficultyLevel = 0 | 1 | 2 | 3 | 4 | 5;
 
 /** Standard = clean academic quiz, Gamified = full RPG battle. */
 export type ExamMode = 'standard' | 'gamified';
@@ -147,7 +150,7 @@ export interface BattleConfig {
   /** Players sharing one boss in a Co-op Raid. */
   teamSize: number;
   cefrLevel?: string;
-  /** Overall difficulty level 1–5 (see levels.ts). Missing = 3. */
+  /** Overall difficulty level 0–5 (0 = Beginner) (see levels.ts). Missing = 3. */
   level?: DifficultyLevel;
   /** Question formats the tutor asked the AI for. Missing = ['mcq']. */
   questionTypes?: QuestionType[];

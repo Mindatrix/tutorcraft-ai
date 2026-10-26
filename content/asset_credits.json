@@ -1,0 +1,54 @@
+{
+ "hdri_dawn": {
+  "file": "/assets/hdri/river_dawn_2k.hdr",
+  "title": "Kiara 1 Dawn",
+  "source": "https://polyhaven.com/a/kiara_1_dawn",
+  "authors": [
+   "Greg Zaal"
+  ],
+  "license": "CC0",
+  "downloaded": "2026-10-26"
+ },
+ "hdri_day": {
+  "file": "/assets/hdri/river_day_2k.hdr",
+  "title": "Kloofendal 48d Partly Cloudy (Pure Sky)",
+  "source": "https://polyhaven.com/a/kloofendal_48d_partly_cloudy_puresky",
+  "authors": [
+   "Greg Zaal",
+   "Jarod Guest"
+  ],
+  "license": "CC0",
+  "downloaded": "2026-10-26"
+ },
+ "hdri_sunset": {
+  "file": "/assets/hdri/river_sunset_2k.hdr",
+  "title": "Industrial Sunset (Pure Sky)",
+  "source": "https://polyhaven.com/a/industrial_sunset_puresky",
+  "authors": [
+   "Jarod Guest",
+   "Sergej Majboroda"
+  ],
+  "license": "CC0",
+  "downloaded": "2026-10-26"
+ },
+ "hdri_night": {
+  "file": "/assets/hdri/river_night_2k.hdr",
+  "title": "Rogland Clear Night",
+  "source": "https://polyhaven.com/a/rogland_clear_night",
+  "authors": [
+   "Greg Zaal"
+  ],
+  "license": "CC0",
+  "downloaded": "2026-10-26"
+ },
+ "hdri_cloudy": {
+  "file": "/assets/hdri/river_cloudy_2k.hdr",
+  "title": "Kloofendal Overcast (Pure Sky)",
+  "source": "https://polyhaven.com/a/kloofendal_overcast_puresky",
+  "authors": [
+   "Greg Zaal"
+  ],
+  "license": "CC0",
+  "downloaded": "2026-10-26"
+ }
+}

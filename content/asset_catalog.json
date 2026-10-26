@@ -1,0 +1,4760 @@
+[
+ {
+  "id": "camp_backpack",
+  "file": "camp/camp_backpack.glb",
+  "mb_raw": 2.19,
+  "mb_web": 0.35,
+  "mb_low": 0.16,
+  "scope": "game",
+  "game": "summer_camp",
+  "games": [
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 10000,
+  "tris_web": 10000,
+  "tris_low": 4470,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "camp_cup",
+  "file": "camp/camp_cup.glb",
+  "mb_raw": 21.68,
+  "mb_web": 0.41,
+  "mb_low": 0.14,
+  "scope": "game",
+  "game": "summer_camp",
+  "games": [
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 491804,
+  "tris_web": 7999,
+  "tris_low": 4000,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "camp_fire_starter",
+  "file": "camp/camp_fire_starter.glb",
+  "mb_raw": 3.28,
+  "mb_web": 0.16,
+  "mb_low": 0.08,
+  "scope": "game",
+  "game": "summer_camp",
+  "games": [
+   "summer_camp"
+  ],
+  "source": "self",
+  "tris_raw": 1480,
+  "tris_web": 1480,
+  "tris_low": 1480,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "camp_firepit",
+  "file": "camp/camp_firepit.glb",
+  "mb_raw": 5.39,
+  "mb_web": 0.27,
+  "mb_low": 0.11,
+  "scope": "game",
+  "game": "summer_camp",
+  "games": [
+   "river_survival",
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 17364,
+  "tris_web": 8000,
+  "tris_low": 4000,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "camp_firepit__alt1",
+  "file": "camp/camp_firepit__alt1.glb",
+  "mb_raw": 74.98,
+  "mb_web": 0.42,
+  "mb_low": 0.13,
+  "scope": "game",
+  "game": "summer_camp",
+  "games": [
+   "river_survival",
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 1309799,
+  "tris_web": 7937,
+  "tris_low": 3932,
+  "textures": 4,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "camp_grill",
+  "file": "camp/camp_grill.glb",
+  "mb_raw": 3.16,
+  "mb_web": 0.17,
+  "mb_low": 0.09,
+  "scope": "game",
+  "game": "summer_camp",
+  "games": [
+   "summer_camp"
+  ],
+  "source": "self",
+  "tris_raw": 2051,
+  "tris_web": 2051,
+  "tris_low": 2051,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "camp_pan",
+  "file": "camp/camp_pan.glb",
+  "mb_raw": 2.32,
+  "mb_web": 0.07,
+  "mb_low": 0.05,
+  "scope": "game",
+  "game": "summer_camp",
+  "games": [
+   "summer_camp"
+  ],
+  "source": "self",
+  "tris_raw": 2074,
+  "tris_web": 2074,
+  "tris_low": 2074,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "camp_rope",
+  "file": "camp/camp_rope.glb",
+  "mb_raw": 4.86,
+  "mb_web": 0.34,
+  "mb_low": 0.12,
+  "scope": "game",
+  "game": "summer_camp",
+  "games": [
+   "dino_journey",
+   "river_fishing",
+   "river_survival",
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 18875,
+  "tris_web": 8000,
+  "tris_low": 3998,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "camp_skewer_fish",
+  "file": "camp/camp_skewer_fish.glb",
+  "mb_raw": 3.52,
+  "mb_web": 0.21,
+  "mb_low": 0.09,
+  "scope": "game",
+  "game": "summer_camp",
+  "games": [
+   "summer_camp"
+  ],
+  "source": "self",
+  "tris_raw": 1542,
+  "tris_web": 1542,
+  "tris_low": 1542,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "camp_skewer_meat",
+  "file": "camp/camp_skewer_meat.glb",
+  "mb_raw": 3.34,
+  "mb_web": 0.12,
+  "mb_low": 0.06,
+  "scope": "game",
+  "game": "summer_camp",
+  "games": [
+   "summer_camp"
+  ],
+  "source": "self",
+  "tris_raw": 1558,
+  "tris_web": 1558,
+  "tris_low": 1558,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "camp_skewer_veg",
+  "file": "camp/camp_skewer_veg.glb",
+  "mb_raw": 3.78,
+  "mb_web": 0.17,
+  "mb_low": 0.08,
+  "scope": "game",
+  "game": "summer_camp",
+  "games": [
+   "summer_camp"
+  ],
+  "source": "self",
+  "tris_raw": 1557,
+  "tris_web": 1557,
+  "tris_low": 1557,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "camp_tent_damaged",
+  "file": "camp/camp_tent_damaged.glb",
+  "mb_raw": 6.79,
+  "mb_web": 0.21,
+  "mb_low": 0.12,
+  "scope": "game",
+  "game": "summer_camp",
+  "games": [
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 178676,
+  "tris_web": 7972,
+  "tris_low": 5134,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "camp_tent_green",
+  "file": "camp/camp_tent_green.glb",
+  "mb_raw": 14.21,
+  "mb_web": 0.41,
+  "mb_low": 0.17,
+  "scope": "game",
+  "game": "summer_camp",
+  "games": [
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 52594,
+  "tris_web": 8000,
+  "tris_low": 4804,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "camp_tent_stage",
+  "file": "camp/camp_tent_stage.glb",
+  "mb_raw": 8.62,
+  "mb_web": 0.36,
+  "mb_low": 0.16,
+  "scope": "game",
+  "game": "summer_camp",
+  "games": [
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 9127,
+  "tris_web": 9127,
+  "tris_low": 4458,
+  "textures": 4,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "camp_tent_stage__alt1",
+  "file": "camp/camp_tent_stage__alt1.glb",
+  "mb_raw": 3.06,
+  "mb_web": 0.21,
+  "mb_low": 0.08,
+  "scope": "game",
+  "game": "summer_camp",
+  "games": [
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 51143,
+  "tris_web": 7909,
+  "tris_low": 3863,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "camp_tent_stage__alt2",
+  "file": "camp/camp_tent_stage__alt2.glb",
+  "mb_raw": 36.31,
+  "mb_web": 0.8,
+  "mb_low": 0.26,
+  "scope": "game",
+  "game": "summer_camp",
+  "games": [
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 819926,
+  "tris_web": 7862,
+  "tris_low": 3932,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "camp_tent_stage__alt3",
+  "file": "camp/camp_tent_stage__alt3.glb",
+  "mb_raw": 33.26,
+  "mb_web": 0.64,
+  "mb_low": 0.23,
+  "scope": "game",
+  "game": "summer_camp",
+  "games": [
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 797411,
+  "tris_web": 7964,
+  "tris_low": 3910,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "camp_tent_stage__alt4",
+  "file": "camp/camp_tent_stage__alt4.glb",
+  "mb_raw": 45.83,
+  "mb_web": 0.56,
+  "mb_low": 0.17,
+  "scope": "game",
+  "game": "summer_camp",
+  "games": [
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 1023052,
+  "tris_web": 7809,
+  "tris_low": 3842,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "camp_tripod",
+  "file": "camp/camp_tripod.glb",
+  "mb_raw": 3.87,
+  "mb_web": 0.21,
+  "mb_low": 0.1,
+  "scope": "game",
+  "game": "summer_camp",
+  "games": [
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 100000,
+  "tris_web": 8000,
+  "tris_low": 4182,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "camp_well",
+  "file": "camp/camp_well.glb",
+  "mb_raw": 57.91,
+  "mb_web": 0.37,
+  "mb_low": 0.13,
+  "scope": "game",
+  "game": "summer_camp",
+  "games": [
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 1744694,
+  "tris_web": 7990,
+  "tris_low": 3998,
+  "textures": 2,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "food_meat_cooked",
+  "file": "camp/food_meat_cooked.glb",
+  "mb_raw": 68.61,
+  "mb_web": 0.5,
+  "mb_low": 0.15,
+  "scope": "game",
+  "game": "summer_camp",
+  "games": [
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 1110041,
+  "tris_web": 8439,
+  "tris_low": 3974,
+  "textures": 4,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "char_gamer_boy",
+  "file": "characters/char_gamer_boy.glb",
+  "mb_raw": 4.17,
+  "mb_web": 0.41,
+  "mb_low": 0.34,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "river_survival"
+  ],
+  "source": "meshy",
+  "tris_raw": 9996,
+  "tris_web": 9996,
+  "tris_low": 9996,
+  "textures": 1,
+  "animations": 7,
+  "skinned": true
+ },
+ {
+  "id": "char_generic_female_2",
+  "file": "characters/char_generic_female_2.glb",
+  "mb_raw": 52.34,
+  "mb_web": 0.76,
+  "mb_low": 0.4,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "river_survival"
+  ],
+  "source": "meshy",
+  "tris_raw": 1111221,
+  "tris_web": 24775,
+  "tris_low": 9925,
+  "textures": 1,
+  "animations": 6,
+  "skinned": true
+ },
+ {
+  "id": "char_grass_kid",
+  "file": "characters/char_grass_kid.glb",
+  "mb_raw": 5.52,
+  "mb_web": 0.72,
+  "mb_low": 0.57,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 20596,
+  "tris_web": 20596,
+  "tris_low": 10000,
+  "textures": 1,
+  "animations": 11,
+  "skinned": true
+ },
+ {
+  "id": "char_grovaen_female",
+  "file": "characters/char_grovaen_female.glb",
+  "mb_raw": 5.25,
+  "mb_web": 0.43,
+  "mb_low": 0.24,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "multiverse_portal"
+  ],
+  "source": "meshy",
+  "tris_raw": 50397,
+  "tris_web": 20000,
+  "tris_low": 9999,
+  "textures": 1,
+  "animations": 2,
+  "skinned": true
+ },
+ {
+  "id": "char_iridescent_voyager",
+  "file": "characters/char_iridescent_voyager.glb",
+  "mb_raw": 6.35,
+  "mb_web": 0.3,
+  "mb_low": 0.2,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "multiverse_portal"
+  ],
+  "source": "meshy",
+  "tris_raw": 9007,
+  "tris_web": 9007,
+  "tris_low": 9007,
+  "textures": 1,
+  "animations": 2,
+  "skinned": true
+ },
+ {
+  "id": "char_kid_dancer",
+  "file": "characters/char_kid_dancer.glb",
+  "mb_raw": 8.18,
+  "mb_web": 0.67,
+  "mb_low": 0.51,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "multiverse_portal"
+  ],
+  "source": "meshy",
+  "tris_raw": 17950,
+  "tris_web": 17950,
+  "tris_low": 9999,
+  "textures": 1,
+  "animations": 16,
+  "skinned": true
+ },
+ {
+  "id": "char_sunny_boy",
+  "file": "characters/char_sunny_boy.glb",
+  "mb_raw": 4.44,
+  "mb_web": 0.38,
+  "mb_low": 0.24,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "kayak_rush"
+  ],
+  "source": "meshy",
+  "tris_raw": 18527,
+  "tris_web": 18527,
+  "tris_low": 10000,
+  "textures": 1,
+  "animations": 3,
+  "skinned": true
+ },
+ {
+  "id": "char_tpose_boy",
+  "file": "characters/char_tpose_boy.glb",
+  "mb_raw": 17.97,
+  "mb_web": 0.48,
+  "mb_low": 0.32,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "multiverse_portal"
+  ],
+  "source": "meshy",
+  "tris_raw": 245055,
+  "tris_web": 20000,
+  "tris_low": 10000,
+  "textures": 1,
+  "animations": 7,
+  "skinned": true
+ },
+ {
+  "id": "char_boy_1",
+  "file": "characters/chua_co_xuong/char_boy_1.glb",
+  "mb_raw": 12.57,
+  "mb_web": 0.32,
+  "mb_low": 0.15,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "kayak_rush"
+  ],
+  "source": "meshy",
+  "tris_raw": 198818,
+  "tris_web": 19999,
+  "tris_low": 9997,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "char_crimson_kick",
+  "file": "characters/chua_co_xuong/char_crimson_kick.glb",
+  "mb_raw": 25.12,
+  "mb_web": 0.45,
+  "mb_low": 0.2,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "multiverse_portal"
+  ],
+  "source": "meshy",
+  "tris_raw": 548436,
+  "tris_web": 19996,
+  "tris_low": 9988,
+  "textures": 4,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "char_female_a",
+  "file": "characters/chua_co_xuong/char_female_a.glb",
+  "mb_raw": 36.58,
+  "mb_web": 0.31,
+  "mb_low": 0.14,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 254696,
+  "tris_web": 19994,
+  "tris_low": 9996,
+  "textures": 4,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "char_female_b",
+  "file": "characters/chua_co_xuong/char_female_b.glb",
+  "mb_raw": 35.41,
+  "mb_web": 0.3,
+  "mb_low": 0.13,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "river_fishing"
+  ],
+  "source": "meshy",
+  "tris_raw": 240906,
+  "tris_web": 20000,
+  "tris_low": 10000,
+  "textures": 4,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "char_hiker_girl",
+  "file": "characters/chua_co_xuong/char_hiker_girl.glb",
+  "mb_raw": 7.5,
+  "mb_web": 0.39,
+  "mb_low": 0.19,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 189490,
+  "tris_web": 19997,
+  "tris_low": 10085,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "char_nomad_boy",
+  "file": "characters/chua_co_xuong/char_nomad_boy.glb",
+  "mb_raw": 16.71,
+  "mb_web": 0.67,
+  "mb_low": 0.26,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 21057,
+  "tris_web": 21057,
+  "tris_low": 9999,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "char_skater_boy",
+  "file": "characters/chua_co_xuong/char_skater_boy.glb",
+  "mb_raw": 118.27,
+  "mb_web": 0.43,
+  "mb_low": 0.17,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "kayak_rush"
+  ],
+  "source": "meshy",
+  "tris_raw": 3028040,
+  "tris_web": 20000,
+  "tris_low": 9998,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "char_wanderer",
+  "file": "characters/chua_co_xuong/char_wanderer.glb",
+  "mb_raw": 39.77,
+  "mb_web": 0.92,
+  "mb_low": 0.29,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "multiverse_portal",
+   "river_fishing"
+  ],
+  "source": "meshy",
+  "tris_raw": 753607,
+  "tris_web": 19782,
+  "tris_low": 9905,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "dino_diplodocus",
+  "file": "dino/khung_long/dino_diplodocus.glb",
+  "mb_raw": 5.1,
+  "mb_web": 0.28,
+  "mb_low": 0.13,
+  "scope": "game",
+  "game": "dino_journey",
+  "games": [
+   "dino_journey"
+  ],
+  "source": "meshy",
+  "tris_raw": 87870,
+  "tris_web": 20000,
+  "tris_low": 10000,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "dino_raptor_rider",
+  "file": "dino/khung_long/dino_raptor_rider.glb",
+  "mb_raw": 2.35,
+  "mb_web": 0.33,
+  "mb_low": 0.16,
+  "scope": "game",
+  "game": "dino_journey",
+  "games": [
+   "dino_journey"
+  ],
+  "source": "meshy",
+  "tris_raw": 29498,
+  "tris_web": 20000,
+  "tris_low": 10000,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "dino_sauropod_grey",
+  "file": "dino/khung_long/dino_sauropod_grey.glb",
+  "mb_raw": 36.67,
+  "mb_web": 0.61,
+  "mb_low": 0.17,
+  "scope": "game",
+  "game": "dino_journey",
+  "games": [
+   "dino_journey"
+  ],
+  "source": "meshy",
+  "tris_raw": 754832,
+  "tris_web": 20000,
+  "tris_low": 10000,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "dino_stegosaurus",
+  "file": "dino/khung_long/dino_stegosaurus.glb",
+  "mb_raw": 26.42,
+  "mb_web": 0.6,
+  "mb_low": 0.21,
+  "scope": "game",
+  "game": "dino_journey",
+  "games": [
+   "dino_journey"
+  ],
+  "source": "meshy",
+  "tris_raw": 582346,
+  "tris_web": 19999,
+  "tris_low": 9997,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "dino_trex_black",
+  "file": "dino/khung_long/dino_trex_black.glb",
+  "mb_raw": 17.87,
+  "mb_web": 0.62,
+  "mb_low": 0.19,
+  "scope": "game",
+  "game": "dino_journey",
+  "games": [
+   "dino_journey"
+  ],
+  "source": "meshy",
+  "tris_raw": 201996,
+  "tris_web": 20000,
+  "tris_low": 10000,
+  "textures": 4,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "dino_trex_brown",
+  "file": "dino/khung_long/dino_trex_brown.glb",
+  "mb_raw": 64.12,
+  "mb_web": 0.61,
+  "mb_low": 0.17,
+  "scope": "game",
+  "game": "dino_journey",
+  "games": [
+   "dino_journey"
+  ],
+  "source": "meshy",
+  "tris_raw": 177174,
+  "tris_web": 20000,
+  "tris_low": 10000,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "dino_trex_yellow",
+  "file": "dino/khung_long/dino_trex_yellow.glb",
+  "mb_raw": 34.2,
+  "mb_web": 0.65,
+  "mb_low": 0.23,
+  "scope": "game",
+  "game": "dino_journey",
+  "games": [
+   "dino_journey"
+  ],
+  "source": "meshy",
+  "tris_raw": 854185,
+  "tris_web": 20000,
+  "tris_low": 10000,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "dino_triceratops",
+  "file": "dino/khung_long/dino_triceratops.glb",
+  "mb_raw": 15.87,
+  "mb_web": 0.42,
+  "mb_low": 0.15,
+  "scope": "game",
+  "game": "dino_journey",
+  "games": [
+   "dino_journey"
+  ],
+  "source": "meshy",
+  "tris_raw": 236866,
+  "tris_web": 19999,
+  "tris_low": 9999,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "dino_nest_shelter",
+  "file": "dino/the_gioi/dino_nest_shelter.glb",
+  "mb_raw": 70.08,
+  "mb_web": 1.58,
+  "mb_low": 0.43,
+  "scope": "game",
+  "game": "dino_journey",
+  "games": [
+   "dino_journey"
+  ],
+  "source": "meshy",
+  "tris_raw": 1358302,
+  "tris_web": 149999,
+  "tris_low": 29986,
+  "textures": 4,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "dino_world_dry_plateau",
+  "file": "dino/the_gioi/dino_world_dry_plateau.glb",
+  "mb_raw": 29.98,
+  "mb_web": 1.57,
+  "mb_low": 0.42,
+  "scope": "game",
+  "game": "dino_journey",
+  "games": [
+   "dino_journey"
+  ],
+  "source": "meshy",
+  "tris_raw": 700128,
+  "tris_web": 149998,
+  "tris_low": 30000,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "dino_world_floating_jungle",
+  "file": "dino/the_gioi/dino_world_floating_jungle.glb",
+  "mb_raw": 456.98,
+  "mb_web": 2.33,
+  "mb_low": 0.39,
+  "scope": "game",
+  "game": "dino_journey",
+  "games": [
+   "dino_journey"
+  ],
+  "source": "meshy",
+  "tris_raw": 9865247,
+  "tris_web": 145961,
+  "tris_low": 28945,
+  "textures": 4,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "dino_antelope",
+  "file": "dino/thu_nho/dino_antelope.glb",
+  "mb_raw": 18.89,
+  "mb_web": 0.41,
+  "mb_low": 0.17,
+  "scope": "game",
+  "game": "dino_journey",
+  "games": [
+   "dino_journey"
+  ],
+  "source": "meshy",
+  "tris_raw": 285886,
+  "tris_web": 20000,
+  "tris_low": 10000,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "dino_rabbit",
+  "file": "dino/thu_nho/dino_rabbit.glb",
+  "mb_raw": 24.84,
+  "mb_web": 0.74,
+  "mb_low": 0.2,
+  "scope": "game",
+  "game": "dino_journey",
+  "games": [
+   "dino_journey"
+  ],
+  "source": "meshy",
+  "tris_raw": 445486,
+  "tris_web": 20000,
+  "tris_low": 10204,
+  "textures": 4,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "dino_rat",
+  "file": "dino/thu_nho/dino_rat.glb",
+  "mb_raw": 12.92,
+  "mb_web": 0.47,
+  "mb_low": 0.18,
+  "scope": "game",
+  "game": "dino_journey",
+  "games": [
+   "dino_journey"
+  ],
+  "source": "meshy",
+  "tris_raw": 226269,
+  "tris_web": 19999,
+  "tris_low": 10025,
+  "textures": 2,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "dino_wolf_a",
+  "file": "dino/thu_nho/dino_wolf_a.glb",
+  "mb_raw": 28.6,
+  "mb_web": 0.5,
+  "mb_low": 0.19,
+  "scope": "game",
+  "game": "dino_journey",
+  "games": [
+   "dino_journey"
+  ],
+  "source": "meshy",
+  "tris_raw": 757625,
+  "tris_web": 19997,
+  "tris_low": 12148,
+  "textures": 2,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "dino_wolf_b",
+  "file": "dino/thu_nho/dino_wolf_b.glb",
+  "mb_raw": 62.42,
+  "mb_web": 1.01,
+  "mb_low": 0.34,
+  "scope": "game",
+  "game": "dino_journey",
+  "games": [
+   "dino_journey"
+  ],
+  "source": "meshy",
+  "tris_raw": 1631899,
+  "tris_web": 19767,
+  "tris_low": 9963,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "fish_basa",
+  "file": "fishing/ca/fish_basa.glb",
+  "mb_raw": 9.46,
+  "mb_web": 0.15,
+  "mb_low": 0.11,
+  "scope": "game",
+  "game": "river_fishing",
+  "games": [
+   "river_fishing"
+  ],
+  "source": "meshy",
+  "tris_raw": 140175,
+  "tris_web": 8000,
+  "tris_low": 3999,
+  "textures": 2,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "fish_bass",
+  "file": "fishing/ca/fish_bass.glb",
+  "mb_raw": 19.94,
+  "mb_web": 0.24,
+  "mb_low": 0.21,
+  "scope": "game",
+  "game": "river_fishing",
+  "games": [
+   "river_fishing"
+  ],
+  "source": "meshy",
+  "tris_raw": 358850,
+  "tris_web": 8000,
+  "tris_low": 4516,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "fish_carp",
+  "file": "fishing/ca/fish_carp.glb",
+  "mb_raw": 14.5,
+  "mb_web": 0.13,
+  "mb_low": 0.09,
+  "scope": "game",
+  "game": "river_fishing",
+  "games": [
+   "river_fishing"
+  ],
+  "source": "meshy",
+  "tris_raw": 402274,
+  "tris_web": 7996,
+  "tris_low": 4000,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "fish_cod",
+  "file": "fishing/ca/fish_cod.glb",
+  "mb_raw": 17.25,
+  "mb_web": 0.17,
+  "mb_low": 0.14,
+  "scope": "game",
+  "game": "river_fishing",
+  "games": [
+   "river_fishing"
+  ],
+  "source": "meshy",
+  "tris_raw": 306784,
+  "tris_web": 7993,
+  "tris_low": 3999,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "fish_cod__alt1",
+  "file": "fishing/ca/fish_cod__alt1.glb",
+  "mb_raw": 8.58,
+  "mb_web": 0.12,
+  "mb_low": 0.11,
+  "scope": "game",
+  "game": "river_fishing",
+  "games": [
+   "river_fishing"
+  ],
+  "source": "meshy",
+  "tris_raw": 5262,
+  "tris_web": 5262,
+  "tris_low": 4000,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "fish_eel",
+  "file": "fishing/ca/fish_eel.glb",
+  "mb_raw": 11.68,
+  "mb_web": 0.12,
+  "mb_low": 0.08,
+  "scope": "game",
+  "game": "river_fishing",
+  "games": [
+   "river_fishing"
+  ],
+  "source": "meshy",
+  "tris_raw": 71452,
+  "tris_web": 8000,
+  "tris_low": 4000,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "fish_eel__alt1",
+  "file": "fishing/ca/fish_eel__alt1.glb",
+  "mb_raw": 8.16,
+  "mb_web": 0.13,
+  "mb_low": 0.1,
+  "scope": "game",
+  "game": "river_fishing",
+  "games": [
+   "river_fishing"
+  ],
+  "source": "meshy",
+  "tris_raw": 183579,
+  "tris_web": 8000,
+  "tris_low": 4000,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "fish_eel__alt2",
+  "file": "fishing/ca/fish_eel__alt2.glb",
+  "mb_raw": 2.05,
+  "mb_web": 0.14,
+  "mb_low": 0.11,
+  "scope": "game",
+  "game": "river_fishing",
+  "games": [
+   "river_fishing"
+  ],
+  "source": "meshy",
+  "tris_raw": 19558,
+  "tris_web": 8000,
+  "tris_low": 4000,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "fish_golden_carp",
+  "file": "fishing/ca/fish_golden_carp.glb",
+  "mb_raw": 39.86,
+  "mb_web": 0.12,
+  "mb_low": 0.12,
+  "scope": "game",
+  "game": "river_fishing",
+  "games": [
+   "river_fishing"
+  ],
+  "source": "meshy",
+  "tris_raw": 5086,
+  "tris_web": 5086,
+  "tris_low": 5086,
+  "textures": 4,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "fish_hemibagrus",
+  "file": "fishing/ca/fish_hemibagrus.glb",
+  "mb_raw": 37.41,
+  "mb_web": 0.29,
+  "mb_low": 0.23,
+  "scope": "game",
+  "game": "river_fishing",
+  "games": [
+   "river_fishing"
+  ],
+  "source": "meshy",
+  "tris_raw": 892118,
+  "tris_web": 7995,
+  "tris_low": 3892,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "fish_king_salmon",
+  "file": "fishing/ca/fish_king_salmon.glb",
+  "mb_raw": 38.27,
+  "mb_web": 0.16,
+  "mb_low": 0.12,
+  "scope": "game",
+  "game": "river_fishing",
+  "games": [
+   "river_fishing"
+  ],
+  "source": "meshy",
+  "tris_raw": 779958,
+  "tris_web": 7996,
+  "tris_low": 4000,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "fish_king_salmon__alt1",
+  "file": "fishing/ca/fish_king_salmon__alt1.glb",
+  "mb_raw": 17.7,
+  "mb_web": 0.2,
+  "mb_low": 0.16,
+  "scope": "game",
+  "game": "river_fishing",
+  "games": [
+   "river_fishing"
+  ],
+  "source": "meshy",
+  "tris_raw": 299464,
+  "tris_web": 8000,
+  "tris_low": 4000,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "fish_rainbow_trout",
+  "file": "fishing/ca/fish_rainbow_trout.glb",
+  "mb_raw": 9.3,
+  "mb_web": 0.12,
+  "mb_low": 0.08,
+  "scope": "game",
+  "game": "river_fishing",
+  "games": [
+   "river_fishing"
+  ],
+  "source": "meshy",
+  "tris_raw": 243592,
+  "tris_web": 8000,
+  "tris_low": 4000,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "fish_silver_carp",
+  "file": "fishing/ca/fish_silver_carp.glb",
+  "mb_raw": 12.54,
+  "mb_web": 0.17,
+  "mb_low": 0.13,
+  "scope": "game",
+  "game": "river_fishing",
+  "games": [
+   "river_fishing"
+  ],
+  "source": "meshy",
+  "tris_raw": 172408,
+  "tris_web": 8000,
+  "tris_low": 4000,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "fish_snakehead",
+  "file": "fishing/ca/fish_snakehead.glb",
+  "mb_raw": 8.09,
+  "mb_web": 0.17,
+  "mb_low": 0.14,
+  "scope": "game",
+  "game": "river_fishing",
+  "games": [
+   "river_fishing"
+  ],
+  "source": "meshy",
+  "tris_raw": 22312,
+  "tris_web": 7999,
+  "tris_low": 3999,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "fish_tilapia",
+  "file": "fishing/ca/fish_tilapia.glb",
+  "mb_raw": 19.64,
+  "mb_web": 0.2,
+  "mb_low": 0.17,
+  "scope": "game",
+  "game": "river_fishing",
+  "games": [
+   "river_fishing"
+  ],
+  "source": "meshy",
+  "tris_raw": 396288,
+  "tris_web": 8000,
+  "tris_low": 4000,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "fish_tilapia__alt1",
+  "file": "fishing/ca/fish_tilapia__alt1.glb",
+  "mb_raw": 25.56,
+  "mb_web": 0.18,
+  "mb_low": 0.14,
+  "scope": "game",
+  "game": "river_fishing",
+  "games": [
+   "river_fishing"
+  ],
+  "source": "meshy",
+  "tris_raw": 506930,
+  "tris_web": 8000,
+  "tris_low": 4000,
+  "textures": 4,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "fish_tra",
+  "file": "fishing/ca/fish_tra.glb",
+  "mb_raw": 1.48,
+  "mb_web": 0.16,
+  "mb_low": 0.13,
+  "scope": "game",
+  "game": "river_fishing",
+  "games": [
+   "river_fishing"
+  ],
+  "source": "meshy",
+  "tris_raw": 17708,
+  "tris_web": 8000,
+  "tris_low": 4000,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "fish_unknown",
+  "file": "fishing/ca/fish_unknown.glb",
+  "mb_raw": 1.87,
+  "mb_web": 0.13,
+  "mb_low": 0.09,
+  "scope": "game",
+  "game": "river_fishing",
+  "games": [
+   "river_fishing"
+  ],
+  "source": "meshy",
+  "tris_raw": 18413,
+  "tris_web": 7999,
+  "tris_low": 4000,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "fish_walking_catfish",
+  "file": "fishing/ca/fish_walking_catfish.glb",
+  "mb_raw": 1.7,
+  "mb_web": 0.11,
+  "mb_low": 0.08,
+  "scope": "game",
+  "game": "river_fishing",
+  "games": [
+   "river_fishing"
+  ],
+  "source": "meshy",
+  "tris_raw": 19951,
+  "tris_web": 8000,
+  "tris_low": 4000,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "rod_cand_1",
+  "file": "fishing/can_cau_ung_vien/rod_cand_1.glb",
+  "mb_raw": 12.78,
+  "mb_web": 0.4,
+  "mb_low": 0.14,
+  "scope": "game",
+  "game": "river_fishing",
+  "games": [
+   "river_fishing"
+  ],
+  "source": "meshy",
+  "tris_raw": 101231,
+  "tris_web": 7999,
+  "tris_low": 4248,
+  "textures": 4,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "rod_cand_2",
+  "file": "fishing/can_cau_ung_vien/rod_cand_2.glb",
+  "mb_raw": 7.8,
+  "mb_web": 0.22,
+  "mb_low": 0.1,
+  "scope": "game",
+  "game": "river_fishing",
+  "games": [
+   "river_fishing"
+  ],
+  "source": "meshy",
+  "tris_raw": 174758,
+  "tris_web": 8000,
+  "tris_low": 4000,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "rod_cand_3",
+  "file": "fishing/can_cau_ung_vien/rod_cand_3.glb",
+  "mb_raw": 31.72,
+  "mb_web": 0.37,
+  "mb_low": 0.13,
+  "scope": "game",
+  "game": "river_fishing",
+  "games": [
+   "river_fishing"
+  ],
+  "source": "meshy",
+  "tris_raw": 19818,
+  "tris_web": 7999,
+  "tris_low": 3999,
+  "textures": 4,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "rod_cand_4",
+  "file": "fishing/can_cau_ung_vien/rod_cand_4.glb",
+  "mb_raw": 1.53,
+  "mb_web": 0.22,
+  "mb_low": 0.09,
+  "scope": "game",
+  "game": "river_fishing",
+  "games": [
+   "river_fishing"
+  ],
+  "source": "meshy",
+  "tris_raw": 10000,
+  "tris_web": 10000,
+  "tris_low": 4000,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "rod_cand_5",
+  "file": "fishing/can_cau_ung_vien/rod_cand_5.glb",
+  "mb_raw": 13.37,
+  "mb_web": 0.37,
+  "mb_low": 0.13,
+  "scope": "game",
+  "game": "river_fishing",
+  "games": [
+   "river_fishing"
+  ],
+  "source": "meshy",
+  "tris_raw": 204420,
+  "tris_web": 7999,
+  "tris_low": 4000,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "fish_basket",
+  "file": "fishing/fish_basket.glb",
+  "mb_raw": 8.05,
+  "mb_web": 0.32,
+  "mb_low": 0.11,
+  "scope": "game",
+  "game": "river_fishing",
+  "games": [
+   "kayak_rush",
+   "river_fishing",
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 207250,
+  "tris_web": 8000,
+  "tris_low": 4000,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "fish_boat_chair",
+  "file": "fishing/fish_boat_chair.glb",
+  "mb_raw": 3.11,
+  "mb_web": 0.15,
+  "mb_low": 0.08,
+  "scope": "game",
+  "game": "river_fishing",
+  "games": [
+   "river_fishing"
+  ],
+  "source": "self",
+  "tris_raw": 2246,
+  "tris_web": 2246,
+  "tris_low": 2246,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "fish_box",
+  "file": "fishing/fish_box.glb",
+  "mb_raw": 38.95,
+  "mb_web": 0.42,
+  "mb_low": 0.14,
+  "scope": "game",
+  "game": "river_fishing",
+  "games": [
+   "river_fishing"
+  ],
+  "source": "meshy",
+  "tris_raw": 1101760,
+  "tris_web": 7999,
+  "tris_low": 3990,
+  "textures": 2,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "fish_climbing_perch",
+  "file": "fishing/fish_climbing_perch.glb",
+  "mb_raw": 3.3,
+  "mb_web": 0.18,
+  "mb_low": 0.1,
+  "scope": "game",
+  "game": "river_fishing",
+  "games": [
+   "river_fishing"
+  ],
+  "source": "self",
+  "tris_raw": 3082,
+  "tris_web": 3082,
+  "tris_low": 3082,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "fish_crucian",
+  "file": "fishing/fish_crucian.glb",
+  "mb_raw": 3.93,
+  "mb_web": 0.24,
+  "mb_low": 0.11,
+  "scope": "game",
+  "game": "river_fishing",
+  "games": [
+   "river_fishing"
+  ],
+  "source": "self",
+  "tris_raw": 3075,
+  "tris_web": 3075,
+  "tris_low": 3075,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "fish_dock_lamp",
+  "file": "fishing/fish_dock_lamp.glb",
+  "mb_raw": 3.65,
+  "mb_web": 0.19,
+  "mb_low": 0.1,
+  "scope": "game",
+  "game": "river_fishing",
+  "games": [
+   "river_fishing"
+  ],
+  "source": "self",
+  "tris_raw": 2543,
+  "tris_web": 2543,
+  "tris_low": 2543,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "fish_floating_dock",
+  "file": "fishing/fish_floating_dock.glb",
+  "mb_raw": 4.17,
+  "mb_web": 0.32,
+  "mb_low": 0.16,
+  "scope": "game",
+  "game": "river_fishing",
+  "games": [
+   "river_fishing"
+  ],
+  "source": "self",
+  "tris_raw": 3964,
+  "tris_web": 3964,
+  "tris_low": 3964,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "fish_grass_carp",
+  "file": "fishing/fish_grass_carp.glb",
+  "mb_raw": 4.16,
+  "mb_web": 0.27,
+  "mb_low": 0.13,
+  "scope": "game",
+  "game": "river_fishing",
+  "games": [
+   "river_fishing"
+  ],
+  "source": "self",
+  "tris_raw": 3036,
+  "tris_web": 3036,
+  "tris_low": 3036,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "fish_record_board",
+  "file": "fishing/fish_record_board.glb",
+  "mb_raw": 3.87,
+  "mb_web": 0.26,
+  "mb_low": 0.12,
+  "scope": "game",
+  "game": "river_fishing",
+  "games": [
+   "river_fishing"
+  ],
+  "source": "self",
+  "tris_raw": 2302,
+  "tris_web": 2302,
+  "tris_low": 2302,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "fish_rod_carbon",
+  "file": "fishing/fish_rod_carbon.glb",
+  "mb_raw": 3.98,
+  "mb_web": 0.21,
+  "mb_low": 0.09,
+  "scope": "game",
+  "game": "river_fishing",
+  "games": [
+   "river_fishing"
+  ],
+  "source": "self",
+  "tris_raw": 2482,
+  "tris_web": 2482,
+  "tris_low": 2482,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "fish_rod_fiberglass",
+  "file": "fishing/fish_rod_fiberglass.glb",
+  "mb_raw": 4.27,
+  "mb_web": 0.25,
+  "mb_low": 0.11,
+  "scope": "game",
+  "game": "river_fishing",
+  "games": [
+   "river_fishing"
+  ],
+  "source": "self",
+  "tris_raw": 2339,
+  "tris_web": 2339,
+  "tris_low": 2339,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "fish_rod_gold",
+  "file": "fishing/fish_rod_gold.glb",
+  "mb_raw": 4.13,
+  "mb_web": 0.23,
+  "mb_low": 0.11,
+  "scope": "game",
+  "game": "river_fishing",
+  "games": [
+   "river_fishing"
+  ],
+  "source": "self",
+  "tris_raw": 3080,
+  "tris_web": 3080,
+  "tris_low": 3080,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "fish_rod_holder",
+  "file": "fishing/fish_rod_holder.glb",
+  "mb_raw": 3.48,
+  "mb_web": 0.14,
+  "mb_low": 0.07,
+  "scope": "game",
+  "game": "river_fishing",
+  "games": [
+   "river_fishing"
+  ],
+  "source": "self",
+  "tris_raw": 1989,
+  "tris_web": 1989,
+  "tris_low": 1989,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "fish_rod_wood",
+  "file": "fishing/fish_rod_wood.glb",
+  "mb_raw": 9.64,
+  "mb_web": 0.36,
+  "mb_low": 0.13,
+  "scope": "game",
+  "game": "river_fishing",
+  "games": [
+   "river_fishing",
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 112306,
+  "tris_web": 7998,
+  "tris_low": 5052,
+  "textures": 2,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "fish_scale",
+  "file": "fishing/fish_scale.glb",
+  "mb_raw": 4.17,
+  "mb_web": 0.24,
+  "mb_low": 0.11,
+  "scope": "game",
+  "game": "river_fishing",
+  "games": [
+   "river_fishing"
+  ],
+  "source": "self",
+  "tris_raw": 2030,
+  "tris_web": 2030,
+  "tris_low": 2030,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "fish_sheatfish",
+  "file": "fishing/fish_sheatfish.glb",
+  "mb_raw": 3.94,
+  "mb_web": 0.22,
+  "mb_low": 0.12,
+  "scope": "game",
+  "game": "river_fishing",
+  "games": [
+   "river_fishing"
+  ],
+  "source": "self",
+  "tris_raw": 3632,
+  "tris_web": 3632,
+  "tris_low": 3632,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "fx_bubbles",
+  "file": "fx/fx_bubbles.glb",
+  "mb_raw": 6.97,
+  "mb_web": 0.33,
+  "mb_low": 0.12,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "river_fishing"
+  ],
+  "source": "meshy",
+  "tris_raw": 20077,
+  "tris_web": 7999,
+  "tris_low": 3999,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "kayak_boat",
+  "file": "kayak/kayak_boat.glb",
+  "mb_raw": 3.75,
+  "mb_web": 0.1,
+  "mb_low": 0.04,
+  "scope": "game",
+  "game": "kayak_rush",
+  "games": [
+   "kayak_rush"
+  ],
+  "source": "meshy",
+  "tris_raw": 1074,
+  "tris_web": 1074,
+  "tris_low": 1074,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "kayak_finish_arch",
+  "file": "kayak/kayak_finish_arch.glb",
+  "mb_raw": 71.63,
+  "mb_web": 0.49,
+  "mb_low": 0.14,
+  "scope": "game",
+  "game": "kayak_rush",
+  "games": [
+   "kayak_rush"
+  ],
+  "source": "meshy",
+  "tris_raw": 2020072,
+  "tris_web": 7877,
+  "tris_low": 3962,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "kayak_lifejacket",
+  "file": "kayak/kayak_lifejacket.glb",
+  "mb_raw": 22.59,
+  "mb_web": 0.49,
+  "mb_low": 0.15,
+  "scope": "game",
+  "game": "kayak_rush",
+  "games": [
+   "kayak_rush",
+   "river_fishing"
+  ],
+  "source": "meshy",
+  "tris_raw": 485832,
+  "tris_web": 10062,
+  "tris_low": 3990,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "kayak_lifejacket__alt1",
+  "file": "kayak/kayak_lifejacket__alt1.glb",
+  "mb_raw": 25.51,
+  "mb_web": 0.48,
+  "mb_low": 0.16,
+  "scope": "game",
+  "game": "kayak_rush",
+  "games": [
+   "kayak_rush",
+   "river_fishing"
+  ],
+  "source": "meshy",
+  "tris_raw": 558823,
+  "tris_web": 7978,
+  "tris_low": 3984,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "kayak_paddle",
+  "file": "kayak/kayak_paddle.glb",
+  "mb_raw": 3.55,
+  "mb_web": 0.15,
+  "mb_low": 0.05,
+  "scope": "game",
+  "game": "kayak_rush",
+  "games": [
+   "kayak_rush",
+   "river_fishing"
+  ],
+  "source": "meshy",
+  "tris_raw": 17448,
+  "tris_web": 8000,
+  "tris_low": 4000,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "mv_boss",
+  "file": "multiverse/mv_boss.glb",
+  "mb_raw": 8.29,
+  "mb_web": 0.4,
+  "mb_low": 0.26,
+  "scope": "game",
+  "game": "multiverse_portal",
+  "games": [
+   "multiverse_portal"
+  ],
+  "source": "meshy",
+  "tris_raw": 9987,
+  "tris_web": 9987,
+  "tris_low": 9987,
+  "textures": 1,
+  "animations": 2,
+  "skinned": true
+ },
+ {
+  "id": "mv_boss_verdant",
+  "file": "multiverse/mv_boss_verdant.glb",
+  "mb_raw": 101.59,
+  "mb_web": 0.67,
+  "mb_low": 0.24,
+  "scope": "game",
+  "game": "multiverse_portal",
+  "games": [
+   "multiverse_portal"
+  ],
+  "source": "meshy",
+  "tris_raw": 2204614,
+  "tris_web": 19932,
+  "tris_low": 9960,
+  "textures": 4,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "mv_hero_scarlet",
+  "file": "multiverse/mv_hero_scarlet.glb",
+  "mb_raw": 15.68,
+  "mb_web": 0.6,
+  "mb_low": 0.38,
+  "scope": "game",
+  "game": "multiverse_portal",
+  "games": [
+   "multiverse_portal"
+  ],
+  "source": "meshy",
+  "tris_raw": 302883,
+  "tris_web": 19998,
+  "tris_low": 11092,
+  "textures": 1,
+  "animations": 7,
+  "skinned": true
+ },
+ {
+  "id": "mv_minion_shadow",
+  "file": "multiverse/mv_minion_shadow.glb",
+  "mb_raw": 6.1,
+  "mb_web": 0.26,
+  "mb_low": 0.24,
+  "scope": "game",
+  "game": "multiverse_portal",
+  "games": [
+   "multiverse_portal"
+  ],
+  "source": "meshy",
+  "tris_raw": 9991,
+  "tris_web": 9991,
+  "tris_low": 9991,
+  "textures": 1,
+  "animations": 5,
+  "skinned": true
+ },
+ {
+  "id": "mv_npc_druid_elf",
+  "file": "multiverse/mv_npc_druid_elf.glb",
+  "mb_raw": 9.13,
+  "mb_web": 0.42,
+  "mb_low": 0.23,
+  "scope": "game",
+  "game": "multiverse_portal",
+  "games": [
+   "multiverse_portal"
+  ],
+  "source": "meshy",
+  "tris_raw": 106120,
+  "tris_web": 19992,
+  "tris_low": 9992,
+  "textures": 1,
+  "animations": 1,
+  "skinned": true
+ },
+ {
+  "id": "mv_ruin_building",
+  "file": "multiverse/mv_ruin_building.glb",
+  "mb_raw": 13.21,
+  "mb_web": 0.77,
+  "mb_low": 0.24,
+  "scope": "game",
+  "game": "multiverse_portal",
+  "games": [
+   "multiverse_portal"
+  ],
+  "source": "meshy",
+  "tris_raw": 193220,
+  "tris_web": 7992,
+  "tris_low": 3997,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "mv_wall_breach",
+  "file": "multiverse/mv_wall_breach.glb",
+  "mb_raw": 80.7,
+  "mb_web": 0.49,
+  "mb_low": 0.14,
+  "scope": "game",
+  "game": "multiverse_portal",
+  "games": [
+   "multiverse_portal"
+  ],
+  "source": "meshy",
+  "tris_raw": 1892822,
+  "tris_web": 8000,
+  "tris_low": 4000,
+  "textures": 4,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "mv_weapon_runecrossbow",
+  "file": "multiverse/mv_weapon_runecrossbow.glb",
+  "mb_raw": 18.56,
+  "mb_web": 0.44,
+  "mb_low": 0.16,
+  "scope": "game",
+  "game": "multiverse_portal",
+  "games": [
+   "multiverse_portal"
+  ],
+  "source": "meshy",
+  "tris_raw": 386201,
+  "tris_web": 8987,
+  "tris_low": 3987,
+  "textures": 2,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "mv_world_desert",
+  "file": "multiverse/mv_world_desert.glb",
+  "mb_raw": 12.8,
+  "mb_web": 1.33,
+  "mb_low": 0.36,
+  "scope": "game",
+  "game": "multiverse_portal",
+  "games": [
+   "multiverse_portal"
+  ],
+  "source": "meshy",
+  "tris_raw": 355927,
+  "tris_web": 149999,
+  "tris_low": 29999,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "mv_world_enchanted_candidate",
+  "file": "multiverse/mv_world_enchanted_candidate.glb",
+  "mb_raw": 16.42,
+  "mb_web": 2.22,
+  "mb_low": 0.74,
+  "scope": "game",
+  "game": "multiverse_portal",
+  "games": [
+   "multiverse_portal"
+  ],
+  "source": "meshy",
+  "tris_raw": 98134,
+  "tris_web": 98134,
+  "tris_low": 29833,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "mv_world_ruin_candidate",
+  "file": "multiverse/mv_world_ruin_candidate.glb",
+  "mb_raw": 6.6,
+  "mb_web": 1.46,
+  "mb_low": 0.57,
+  "scope": "game",
+  "game": "multiverse_portal",
+  "games": [
+   "multiverse_portal"
+  ],
+  "source": "meshy",
+  "tris_raw": 94520,
+  "tris_web": 94520,
+  "tris_low": 29668,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "palm_a",
+  "file": "river_world/cay_phu/palm_a.glb",
+  "mb_raw": 2.46,
+  "mb_web": 0.38,
+  "mb_low": 0.23,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey"
+  ],
+  "source": "meshy",
+  "tris_raw": 21167,
+  "tris_web": 21167,
+  "tris_low": 21167,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "palm_b",
+  "file": "river_world/cay_phu/palm_b.glb",
+  "mb_raw": 30.99,
+  "mb_web": 0.49,
+  "mb_low": 0.1,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey"
+  ],
+  "source": "meshy",
+  "tris_raw": 1726456,
+  "tris_web": 148370,
+  "tris_low": 29214,
+  "textures": 0,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "tree_nursery_pot",
+  "file": "river_world/cay_phu/tree_nursery_pot.glb",
+  "mb_raw": 32.15,
+  "mb_web": 0.5,
+  "mb_low": 0.11,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey"
+  ],
+  "source": "meshy",
+  "tris_raw": 1785950,
+  "tris_web": 149994,
+  "tris_low": 29984,
+  "textures": 0,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "tree_pixel",
+  "file": "river_world/cay_phu/tree_pixel.glb",
+  "mb_raw": 2.32,
+  "mb_web": 0.4,
+  "mb_low": 0.3,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey"
+  ],
+  "source": "meshy",
+  "tris_raw": 18832,
+  "tris_web": 18832,
+  "tris_low": 18832,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "tree_pixel_stylized",
+  "file": "river_world/cay_phu/tree_pixel_stylized.glb",
+  "mb_raw": 17.74,
+  "mb_web": 0.72,
+  "mb_low": 0.42,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey"
+  ],
+  "source": "meshy",
+  "tris_raw": 18832,
+  "tris_web": 18832,
+  "tris_low": 18832,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "tree_x01",
+  "file": "river_world/cay_phu/tree_x01.glb",
+  "mb_raw": 421.85,
+  "mb_web": 2.18,
+  "mb_low": 0.4,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey"
+  ],
+  "source": "meshy",
+  "tris_raw": 9995757,
+  "tris_web": 149196,
+  "tris_low": 29955,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "tree_x02",
+  "file": "river_world/cay_phu/tree_x02.glb",
+  "mb_raw": 74.19,
+  "mb_web": 5.63,
+  "mb_low": 0.73,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey"
+  ],
+  "source": "meshy",
+  "tris_raw": 1001201,
+  "tris_web": 295689,
+  "tris_low": 57308,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "tree_x03",
+  "file": "river_world/cay_phu/tree_x03.glb",
+  "mb_raw": 9.06,
+  "mb_web": 0.51,
+  "mb_low": 0.21,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey"
+  ],
+  "source": "meshy",
+  "tris_raw": 6307,
+  "tris_web": 6307,
+  "tris_low": 6307,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "tree_x04",
+  "file": "river_world/cay_phu/tree_x04.glb",
+  "mb_raw": 2.32,
+  "mb_web": 0.4,
+  "mb_low": 0.3,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey"
+  ],
+  "source": "meshy",
+  "tris_raw": 21411,
+  "tris_web": 21411,
+  "tris_low": 21411,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "tree_x05",
+  "file": "river_world/cay_phu/tree_x05.glb",
+  "mb_raw": 2.22,
+  "mb_web": 0.38,
+  "mb_low": 0.26,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey"
+  ],
+  "source": "meshy",
+  "tris_raw": 9948,
+  "tris_web": 9948,
+  "tris_low": 9948,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "tree_x06_duo",
+  "file": "river_world/cay_phu/tree_x06_duo.glb",
+  "mb_raw": 16.68,
+  "mb_web": 0.33,
+  "mb_low": 0.14,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey"
+  ],
+  "source": "meshy",
+  "tris_raw": 3147,
+  "tris_web": 3147,
+  "tris_low": 3147,
+  "textures": 2,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "tree_x07_elm",
+  "file": "river_world/cay_phu/tree_x07_elm.glb",
+  "mb_raw": 107.65,
+  "mb_web": 3.06,
+  "mb_low": 0.61,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey"
+  ],
+  "source": "meshy",
+  "tris_raw": 2104910,
+  "tris_web": 146556,
+  "tris_low": 29598,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "tree_x08_verdant",
+  "file": "river_world/cay_phu/tree_x08_verdant.glb",
+  "mb_raw": 51.74,
+  "mb_web": 0.4,
+  "mb_low": 0.19,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey"
+  ],
+  "source": "meshy",
+  "tris_raw": 1489974,
+  "tris_web": 19995,
+  "tris_low": 9999,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "tree_x09_lone",
+  "file": "river_world/cay_phu/tree_x09_lone.glb",
+  "mb_raw": 44.79,
+  "mb_web": 2.23,
+  "mb_low": 0.5,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey"
+  ],
+  "source": "meshy",
+  "tris_raw": 911699,
+  "tris_web": 149995,
+  "tris_low": 29238,
+  "textures": 4,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "tree_x10_ancient_a",
+  "file": "river_world/cay_phu/tree_x10_ancient_a.glb",
+  "mb_raw": 19.66,
+  "mb_web": 2.61,
+  "mb_low": 0.87,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey"
+  ],
+  "source": "meshy",
+  "tris_raw": 87300,
+  "tris_web": 87300,
+  "tris_low": 29833,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "tree_x11_ancient_b",
+  "file": "river_world/cay_phu/tree_x11_ancient_b.glb",
+  "mb_raw": 19.38,
+  "mb_web": 2.63,
+  "mb_low": 0.82,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey"
+  ],
+  "source": "meshy",
+  "tris_raw": 93711,
+  "tris_web": 93711,
+  "tris_low": 29999,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "tree_x12_dark_bark",
+  "file": "river_world/cay_phu/tree_x12_dark_bark.glb",
+  "mb_raw": 18.74,
+  "mb_web": 1.35,
+  "mb_low": 0.38,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey"
+  ],
+  "source": "meshy",
+  "tris_raw": 560755,
+  "tris_web": 149781,
+  "tris_low": 29970,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "ground_clearing",
+  "file": "river_world/ground/ground_clearing.glb",
+  "mb_raw": 6.93,
+  "mb_web": 1.09,
+  "mb_low": 0.4,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey"
+  ],
+  "source": "meshy",
+  "tris_raw": 104134,
+  "tris_web": 59679,
+  "tris_low": 19558,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "ground_cobble_circle",
+  "file": "river_world/ground/ground_cobble_circle.glb",
+  "mb_raw": 47.06,
+  "mb_web": 0.9,
+  "mb_low": 0.32,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 98723,
+  "tris_web": 60000,
+  "tris_low": 19999,
+  "textures": 4,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "ground_cobble_path_a",
+  "file": "river_world/ground/ground_cobble_path_a.glb",
+  "mb_raw": 12.61,
+  "mb_web": 0.28,
+  "mb_low": 0.1,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 3000,
+  "tris_web": 3000,
+  "tris_low": 3000,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "ground_cobble_path_b",
+  "file": "river_world/ground/ground_cobble_path_b.glb",
+  "mb_raw": 12.19,
+  "mb_web": 0.52,
+  "mb_low": 0.24,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 43337,
+  "tris_web": 43337,
+  "tris_low": 20000,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "ground_farmland",
+  "file": "river_world/ground/ground_farmland.glb",
+  "mb_raw": 14.27,
+  "mb_web": 0.8,
+  "mb_low": 0.33,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 389384,
+  "tris_web": 59984,
+  "tris_low": 19999,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "ground_grass_block",
+  "file": "river_world/ground/ground_grass_block.glb",
+  "mb_raw": 129.51,
+  "mb_web": 3.04,
+  "mb_low": 1.24,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey"
+  ],
+  "source": "meshy",
+  "tris_raw": 2755876,
+  "tris_web": 196532,
+  "tris_low": 96878,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "ground_grass_dark",
+  "file": "river_world/ground/ground_grass_dark.glb",
+  "mb_raw": 22.39,
+  "mb_web": 0.76,
+  "mb_low": 0.31,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey"
+  ],
+  "source": "meshy",
+  "tris_raw": 472982,
+  "tris_web": 59996,
+  "tris_low": 21774,
+  "textures": 4,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "ground_grass_emerald",
+  "file": "river_world/ground/ground_grass_emerald.glb",
+  "mb_raw": 84.38,
+  "mb_web": 3.41,
+  "mb_low": 0.77,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey"
+  ],
+  "source": "meshy",
+  "tris_raw": 1414062,
+  "tris_web": 197850,
+  "tris_low": 58010,
+  "textures": 4,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "ground_grass_iso",
+  "file": "river_world/ground/ground_grass_iso.glb",
+  "mb_raw": 117.23,
+  "mb_web": 1.23,
+  "mb_low": 0.33,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey"
+  ],
+  "source": "meshy",
+  "tris_raw": 1591770,
+  "tris_web": 59688,
+  "tris_low": 19764,
+  "textures": 4,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "ground_grass_patch",
+  "file": "river_world/ground/ground_grass_patch.glb",
+  "mb_raw": 11.95,
+  "mb_web": 1.59,
+  "mb_low": 0.28,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey"
+  ],
+  "source": "meshy",
+  "tris_raw": 116000,
+  "tris_web": 59946,
+  "tris_low": 18847,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "ground_grass_platform",
+  "file": "river_world/ground/ground_grass_platform.glb",
+  "mb_raw": 1.88,
+  "mb_web": 0.23,
+  "mb_low": 0.13,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 10754,
+  "tris_web": 10754,
+  "tris_low": 10754,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "ground_grass_tuft",
+  "file": "river_world/ground/ground_grass_tuft.glb",
+  "mb_raw": 2.46,
+  "mb_web": 0.42,
+  "mb_low": 0.28,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey"
+  ],
+  "source": "meshy",
+  "tris_raw": 9879,
+  "tris_web": 9879,
+  "tris_low": 9879,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "ground_sand_slab",
+  "file": "river_world/ground/ground_sand_slab.glb",
+  "mb_raw": 7.55,
+  "mb_web": 0.44,
+  "mb_low": 0.16,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "multiverse_portal"
+  ],
+  "source": "meshy",
+  "tris_raw": 230393,
+  "tris_web": 59999,
+  "tris_low": 19997,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "ground_soil_patch",
+  "file": "river_world/ground/ground_soil_patch.glb",
+  "mb_raw": 20.37,
+  "mb_web": 0.45,
+  "mb_low": 0.16,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey",
+   "river_survival",
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 661334,
+  "tris_web": 59999,
+  "tris_low": 20000,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "ground_stone_floor",
+  "file": "river_world/ground/ground_stone_floor.glb",
+  "mb_raw": 1.2,
+  "mb_web": 0.17,
+  "mb_low": 0.15,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey"
+  ],
+  "source": "meshy",
+  "tris_raw": 18095,
+  "tris_web": 18095,
+  "tris_low": 18095,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "ground_strip_6x20",
+  "file": "river_world/ground/ground_strip_6x20.glb",
+  "mb_raw": 21.44,
+  "mb_web": 0.67,
+  "mb_low": 0.25,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey"
+  ],
+  "source": "meshy",
+  "tris_raw": 460569,
+  "tris_web": 60000,
+  "tris_low": 19997,
+  "textures": 4,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "village_cart",
+  "file": "river_world/lang/village_cart.glb",
+  "mb_raw": 24.23,
+  "mb_web": 0.37,
+  "mb_low": 0.16,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 624776,
+  "tris_web": 14994,
+  "tris_low": 7499,
+  "textures": 2,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "village_cow",
+  "file": "river_world/lang/village_cow.glb",
+  "mb_raw": 17.57,
+  "mb_web": 0.46,
+  "mb_low": 0.19,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 370799,
+  "tris_web": 15996,
+  "tris_low": 8911,
+  "textures": 2,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "village_horse_a",
+  "file": "river_world/lang/village_horse_a.glb",
+  "mb_raw": 34.78,
+  "mb_web": 0.36,
+  "mb_low": 0.15,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "kayak_rush"
+  ],
+  "source": "meshy",
+  "tris_raw": 892131,
+  "tris_web": 14616,
+  "tris_low": 7408,
+  "textures": 2,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "village_horse_b",
+  "file": "river_world/lang/village_horse_b.glb",
+  "mb_raw": 40.61,
+  "mb_web": 0.89,
+  "mb_low": 0.29,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "kayak_rush"
+  ],
+  "source": "meshy",
+  "tris_raw": 955182,
+  "tris_web": 14967,
+  "tris_low": 7279,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "backdrop_mountain_valley",
+  "file": "river_world/mini/backdrop_mountain_valley.glb",
+  "mb_raw": 38.21,
+  "mb_web": 1.26,
+  "mb_low": 0.3,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "kayak_rush"
+  ],
+  "source": "meshy",
+  "tris_raw": 1130469,
+  "tris_web": 149995,
+  "tris_low": 29998,
+  "textures": 2,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "mini_azure_river",
+  "file": "river_world/mini/mini_azure_river.glb",
+  "mb_raw": 14.32,
+  "mb_web": 0.33,
+  "mb_low": 0.19,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey"
+  ],
+  "source": "meshy",
+  "tris_raw": 10043,
+  "tris_web": 10043,
+  "tris_low": 10043,
+  "textures": 4,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "mini_camp_hero",
+  "file": "river_world/mini/mini_camp_hero.glb",
+  "mb_raw": 59.32,
+  "mb_web": 3.19,
+  "mb_low": 0.58,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 1261795,
+  "tris_web": 180911,
+  "tris_low": 29615,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "mini_clear_river",
+  "file": "river_world/mini/mini_clear_river.glb",
+  "mb_raw": 20.44,
+  "mb_web": 2.57,
+  "mb_low": 0.46,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "river_fishing",
+   "river_survival"
+  ],
+  "source": "meshy",
+  "tris_raw": 411339,
+  "tris_web": 149995,
+  "tris_low": 29382,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "mini_floating_island",
+  "file": "river_world/mini/mini_floating_island.glb",
+  "mb_raw": 2.3,
+  "mb_web": 0.4,
+  "mb_low": 0.28,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "multiverse_portal"
+  ],
+  "source": "meshy",
+  "tris_raw": 9998,
+  "tris_web": 9998,
+  "tris_low": 9998,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "mini_floating_oasis",
+  "file": "river_world/mini/mini_floating_oasis.glb",
+  "mb_raw": 80.59,
+  "mb_web": 1.78,
+  "mb_low": 0.49,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey"
+  ],
+  "source": "meshy",
+  "tris_raw": 2281798,
+  "tris_web": 149994,
+  "tris_low": 29996,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "mini_floating_waterfall",
+  "file": "river_world/mini/mini_floating_waterfall.glb",
+  "mb_raw": 97.25,
+  "mb_web": 1.65,
+  "mb_low": 0.43,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey"
+  ],
+  "source": "meshy",
+  "tris_raw": 1944268,
+  "tris_web": 149989,
+  "tris_low": 30000,
+  "textures": 4,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "mini_ganga_valley",
+  "file": "river_world/mini/mini_ganga_valley.glb",
+  "mb_raw": 49.07,
+  "mb_web": 1.53,
+  "mb_low": 0.39,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "river_fishing",
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 1398718,
+  "tris_web": 149994,
+  "tris_low": 29995,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "mini_indus_basin",
+  "file": "river_world/mini/mini_indus_basin.glb",
+  "mb_raw": 30.8,
+  "mb_web": 1.88,
+  "mb_low": 0.56,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "river_fishing"
+  ],
+  "source": "meshy",
+  "tris_raw": 662889,
+  "tris_web": 149989,
+  "tris_low": 34628,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "mini_jungle_river",
+  "file": "river_world/mini/mini_jungle_river.glb",
+  "mb_raw": 7.87,
+  "mb_web": 1.67,
+  "mb_low": 0.46,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey"
+  ],
+  "source": "meshy",
+  "tris_raw": 116402,
+  "tris_web": 116402,
+  "tris_low": 28298,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "mini_large_island",
+  "file": "river_world/mini/mini_large_island.glb",
+  "mb_raw": 19.13,
+  "mb_web": 1.74,
+  "mb_low": 0.55,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "multiverse_portal",
+   "river_survival"
+  ],
+  "source": "meshy",
+  "tris_raw": 502654,
+  "tris_web": 149999,
+  "tris_low": 36495,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "mini_logic_island",
+  "file": "river_world/mini/mini_logic_island.glb",
+  "mb_raw": 75.16,
+  "mb_web": 2.06,
+  "mb_low": 0.58,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey"
+  ],
+  "source": "meshy",
+  "tris_raw": 1570160,
+  "tris_web": 149952,
+  "tris_low": 29982,
+  "textures": 4,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "mini_runestone_falls",
+  "file": "river_world/mini/mini_runestone_falls.glb",
+  "mb_raw": 94.09,
+  "mb_web": 2.53,
+  "mb_low": 0.47,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey"
+  ],
+  "source": "meshy",
+  "tris_raw": 1988320,
+  "tris_web": 149984,
+  "tris_low": 29882,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "mushrooms",
+  "file": "river_world/phu/mushrooms.glb",
+  "mb_raw": 92.37,
+  "mb_web": 0.6,
+  "mb_low": 0.21,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey"
+  ],
+  "source": "meshy",
+  "tris_raw": 1852030,
+  "tris_web": 14980,
+  "tris_low": 7456,
+  "textures": 4,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "river_grass_tall",
+  "file": "river_world/phu/river_grass_tall.glb",
+  "mb_raw": 2.57,
+  "mb_web": 0.43,
+  "mb_low": 0.21,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey"
+  ],
+  "source": "meshy",
+  "tris_raw": 14507,
+  "tris_web": 14507,
+  "tris_low": 8197,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "tree_fort",
+  "file": "river_world/phu/tree_fort.glb",
+  "mb_raw": 3.21,
+  "mb_web": 0.59,
+  "mb_low": 0.46,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 35902,
+  "tris_web": 35902,
+  "tris_low": 35902,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "watchtower",
+  "file": "river_world/phu/watchtower.glb",
+  "mb_raw": 10.85,
+  "mb_web": 0.37,
+  "mb_low": 0.15,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "river_survival"
+  ],
+  "source": "meshy",
+  "tris_raw": 27420,
+  "tris_web": 15000,
+  "tris_low": 7500,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "wood_plank_a",
+  "file": "river_world/phu/wood_plank_a.glb",
+  "mb_raw": 1.52,
+  "mb_web": 0.2,
+  "mb_low": 0.11,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey"
+  ],
+  "source": "meshy",
+  "tris_raw": 10000,
+  "tris_web": 10000,
+  "tris_low": 7500,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "wood_plank_b",
+  "file": "river_world/phu/wood_plank_b.glb",
+  "mb_raw": 15.7,
+  "mb_web": 0.42,
+  "mb_low": 0.17,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey"
+  ],
+  "source": "meshy",
+  "tris_raw": 9992,
+  "tris_web": 9992,
+  "tris_low": 7500,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "river_birds",
+  "file": "river_world/river_birds.glb",
+  "mb_raw": 8.78,
+  "mb_web": 0.48,
+  "mb_low": 0.2,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey",
+   "kayak_rush",
+   "river_survival"
+  ],
+  "source": "meshy",
+  "tris_raw": 7414,
+  "tris_web": 7414,
+  "tris_low": 7414,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "river_boat_row",
+  "file": "river_world/river_boat_row.glb",
+  "mb_raw": 9.97,
+  "mb_web": 0.67,
+  "mb_low": 0.25,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "kayak_rush",
+   "river_fishing",
+   "river_survival",
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 23842,
+  "tris_web": 14999,
+  "tris_low": 7500,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "river_boat_row__alt1",
+  "file": "river_world/river_boat_row__alt1.glb",
+  "mb_raw": 9.62,
+  "mb_web": 0.62,
+  "mb_low": 0.23,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "kayak_rush",
+   "river_fishing",
+   "river_survival",
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 22603,
+  "tris_web": 15000,
+  "tris_low": 7500,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "river_bridge",
+  "file": "river_world/river_bridge.glb",
+  "mb_raw": 6.32,
+  "mb_web": 0.3,
+  "mb_low": 0.13,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "kayak_rush",
+   "river_survival",
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 150398,
+  "tris_web": 14995,
+  "tris_low": 7499,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "river_bridge__alt1",
+  "file": "river_world/river_bridge__alt1.glb",
+  "mb_raw": 58.39,
+  "mb_web": 1.11,
+  "mb_low": 0.33,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "kayak_rush",
+   "river_survival",
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 1501229,
+  "tris_web": 19381,
+  "tris_low": 7458,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "river_buoy",
+  "file": "river_world/river_buoy.glb",
+  "mb_raw": 41.85,
+  "mb_web": 0.23,
+  "mb_low": 0.1,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "kayak_rush",
+   "river_fishing",
+   "river_survival"
+  ],
+  "source": "meshy",
+  "tris_raw": 553010,
+  "tris_web": 15000,
+  "tris_low": 7500,
+  "textures": 2,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "river_buoy__alt1",
+  "file": "river_world/river_buoy__alt1.glb",
+  "mb_raw": 1.57,
+  "mb_web": 0.22,
+  "mb_low": 0.12,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "kayak_rush",
+   "river_fishing",
+   "river_survival"
+  ],
+  "source": "meshy",
+  "tris_raw": 10000,
+  "tris_web": 10000,
+  "tris_low": 7500,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "river_buoy__alt2",
+  "file": "river_world/river_buoy__alt2.glb",
+  "mb_raw": 8.96,
+  "mb_web": 0.27,
+  "mb_low": 0.12,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "kayak_rush",
+   "river_fishing",
+   "river_survival"
+  ],
+  "source": "meshy",
+  "tris_raw": 99977,
+  "tris_web": 14999,
+  "tris_low": 7500,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "river_buoy__alt3",
+  "file": "river_world/river_buoy__alt3.glb",
+  "mb_raw": 11.06,
+  "mb_web": 0.27,
+  "mb_low": 0.13,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "kayak_rush",
+   "river_fishing",
+   "river_survival"
+  ],
+  "source": "meshy",
+  "tris_raw": 280443,
+  "tris_web": 15000,
+  "tris_low": 7500,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "river_bush",
+  "file": "river_world/river_bush.glb",
+  "mb_raw": 2.14,
+  "mb_web": 0.37,
+  "mb_low": 0.25,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey",
+   "river_survival",
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 9664,
+  "tris_web": 9664,
+  "tris_low": 9664,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "river_bush__alt1",
+  "file": "river_world/river_bush__alt1.glb",
+  "mb_raw": 461.94,
+  "mb_web": 3.17,
+  "mb_low": 0.6,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey",
+   "river_survival",
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 10360911,
+  "tris_web": 147885,
+  "tris_low": 29585,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "river_bush__alt2",
+  "file": "river_world/river_bush__alt2.glb",
+  "mb_raw": 112.25,
+  "mb_web": 2.56,
+  "mb_low": 0.47,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey",
+   "river_survival",
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 2481143,
+  "tris_web": 149905,
+  "tris_low": 29886,
+  "textures": 2,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "river_bush__alt3",
+  "file": "river_world/river_bush__alt3.glb",
+  "mb_raw": 23.14,
+  "mb_web": 3.01,
+  "mb_low": 0.89,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey",
+   "river_survival",
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 90998,
+  "tris_web": 90998,
+  "tris_low": 29953,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "river_butterfly",
+  "file": "river_world/river_butterfly.glb",
+  "mb_raw": 6.39,
+  "mb_web": 0.49,
+  "mb_low": 0.16,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey",
+   "river_survival"
+  ],
+  "source": "meshy",
+  "tris_raw": 83285,
+  "tris_web": 14663,
+  "tris_low": 6931,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "river_butterfly__alt1",
+  "file": "river_world/river_butterfly__alt1.glb",
+  "mb_raw": 34.8,
+  "mb_web": 0.82,
+  "mb_low": 0.3,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey",
+   "river_survival"
+  ],
+  "source": "meshy",
+  "tris_raw": 10242,
+  "tris_web": 10242,
+  "tris_low": 7500,
+  "textures": 4,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "river_cabin",
+  "file": "river_world/river_cabin.glb",
+  "mb_raw": 195.39,
+  "mb_web": 2.85,
+  "mb_low": 0.53,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "river_fishing"
+  ],
+  "source": "meshy",
+  "tris_raw": 4565989,
+  "tris_web": 149175,
+  "tris_low": 29759,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "river_cave",
+  "file": "river_world/river_cave.glb",
+  "mb_raw": 190.93,
+  "mb_web": 2.93,
+  "mb_low": 0.52,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "kayak_rush",
+   "river_fishing",
+   "river_survival"
+  ],
+  "source": "meshy",
+  "tris_raw": 3110672,
+  "tris_web": 148876,
+  "tris_low": 29942,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "river_cliff",
+  "file": "river_world/river_cliff.glb",
+  "mb_raw": 1.32,
+  "mb_web": 0.18,
+  "mb_low": 0.11,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey",
+   "kayak_rush",
+   "river_fishing",
+   "river_survival"
+  ],
+  "source": "meshy",
+  "tris_raw": 9996,
+  "tris_web": 9996,
+  "tris_low": 7500,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "river_cliff__alt1",
+  "file": "river_world/river_cliff__alt1.glb",
+  "mb_raw": 67.56,
+  "mb_web": 0.82,
+  "mb_low": 0.27,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey",
+   "kayak_rush",
+   "river_fishing",
+   "river_survival"
+  ],
+  "source": "meshy",
+  "tris_raw": 1916545,
+  "tris_web": 14823,
+  "tris_low": 7440,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "river_dock",
+  "file": "river_world/river_dock.glb",
+  "mb_raw": 25.64,
+  "mb_web": 0.48,
+  "mb_low": 0.17,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "kayak_rush",
+   "river_fishing",
+   "river_survival",
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 522248,
+  "tris_web": 14997,
+  "tris_low": 7473,
+  "textures": 4,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "river_driftwood",
+  "file": "river_world/river_driftwood.glb",
+  "mb_raw": 70.66,
+  "mb_web": 0.75,
+  "mb_low": 0.21,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey",
+   "kayak_rush",
+   "river_survival",
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 1858047,
+  "tris_web": 14594,
+  "tris_low": 7418,
+  "textures": 4,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "river_duck",
+  "file": "river_world/river_duck.glb",
+  "mb_raw": 51.58,
+  "mb_web": 0.51,
+  "mb_low": 0.18,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 593314,
+  "tris_web": 15000,
+  "tris_low": 7499,
+  "textures": 4,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "river_duck__alt1",
+  "file": "river_world/river_duck__alt1.glb",
+  "mb_raw": 43.53,
+  "mb_web": 0.39,
+  "mb_low": 0.14,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 407138,
+  "tris_web": 15000,
+  "tris_low": 7500,
+  "textures": 4,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "river_fence",
+  "file": "river_world/river_fence.glb",
+  "mb_raw": 8,
+  "mb_web": 0.41,
+  "mb_low": 0.16,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "river_survival"
+  ],
+  "source": "meshy",
+  "tris_raw": 5855,
+  "tris_web": 5855,
+  "tris_low": 5855,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "river_fence__alt1",
+  "file": "river_world/river_fence__alt1.glb",
+  "mb_raw": 33.59,
+  "mb_web": 0.51,
+  "mb_low": 0.17,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "river_survival"
+  ],
+  "source": "meshy",
+  "tris_raw": 769860,
+  "tris_web": 16334,
+  "tris_low": 7465,
+  "textures": 4,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "river_fence__alt2",
+  "file": "river_world/river_fence__alt2.glb",
+  "mb_raw": 11.82,
+  "mb_web": 0.48,
+  "mb_low": 0.15,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "river_survival"
+  ],
+  "source": "meshy",
+  "tris_raw": 160181,
+  "tris_web": 14999,
+  "tris_low": 7499,
+  "textures": 2,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "river_fern",
+  "file": "river_world/river_fern.glb",
+  "mb_raw": 46.25,
+  "mb_web": 2.62,
+  "mb_low": 0.45,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey",
+   "river_survival",
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 919847,
+  "tris_web": 146892,
+  "tris_low": 28613,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "river_fern__alt1",
+  "file": "river_world/river_fern__alt1.glb",
+  "mb_raw": 86.04,
+  "mb_web": 1.52,
+  "mb_low": 0.42,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey",
+   "river_survival",
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 2621682,
+  "tris_web": 149994,
+  "tris_low": 29999,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "river_lilypad",
+  "file": "river_world/river_lilypad.glb",
+  "mb_raw": 46.9,
+  "mb_web": 0.38,
+  "mb_low": 0.16,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey",
+   "kayak_rush"
+  ],
+  "source": "meshy",
+  "tris_raw": 730114,
+  "tris_web": 14904,
+  "tris_low": 7429,
+  "textures": 4,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "river_lilypad__alt1",
+  "file": "river_world/river_lilypad__alt1.glb",
+  "mb_raw": 39.01,
+  "mb_web": 1.03,
+  "mb_low": 0.34,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey",
+   "kayak_rush"
+  ],
+  "source": "meshy",
+  "tris_raw": 801206,
+  "tris_web": 17712,
+  "tris_low": 7424,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "river_moss_rock",
+  "file": "river_world/river_moss_rock.glb",
+  "mb_raw": 11.38,
+  "mb_web": 0.42,
+  "mb_low": 0.19,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey",
+   "river_survival"
+  ],
+  "source": "meshy",
+  "tris_raw": 299997,
+  "tris_web": 14996,
+  "tris_low": 8956,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "river_pebbles",
+  "file": "river_world/river_pebbles.glb",
+  "mb_raw": 1.94,
+  "mb_web": 0.26,
+  "mb_low": 0.13,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey",
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 10000,
+  "tris_web": 10000,
+  "tris_low": 7500,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "river_pebbles__alt1",
+  "file": "river_world/river_pebbles__alt1.glb",
+  "mb_raw": 2.44,
+  "mb_web": 0.35,
+  "mb_low": 0.15,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey",
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 20326,
+  "tris_web": 14999,
+  "tris_low": 7500,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "river_pebbles__alt2",
+  "file": "river_world/river_pebbles__alt2.glb",
+  "mb_raw": 2.09,
+  "mb_web": 0.31,
+  "mb_low": 0.12,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey",
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 18754,
+  "tris_web": 18754,
+  "tris_low": 7500,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "river_reed",
+  "file": "river_world/river_reed.glb",
+  "mb_raw": 78.96,
+  "mb_web": 2.05,
+  "mb_low": 1.92,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey",
+   "kayak_rush",
+   "river_fishing",
+   "river_survival"
+  ],
+  "source": "meshy",
+  "tris_raw": 1632028,
+  "tris_web": 119670,
+  "tris_low": 119670,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "river_rock_large",
+  "file": "river_world/river_rock_large.glb",
+  "mb_raw": 28.4,
+  "mb_web": 0.72,
+  "mb_low": 0.31,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey",
+   "kayak_rush",
+   "river_fishing",
+   "river_survival"
+  ],
+  "source": "meshy",
+  "tris_raw": 8992,
+  "tris_web": 8992,
+  "tris_low": 8992,
+  "textures": 4,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "river_rock_medium",
+  "file": "river_world/river_rock_medium.glb",
+  "mb_raw": 12.44,
+  "mb_web": 0.29,
+  "mb_low": 0.12,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey",
+   "kayak_rush",
+   "river_fishing",
+   "river_survival",
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 316921,
+  "tris_web": 15000,
+  "tris_low": 7500,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "river_rock_small",
+  "file": "river_world/river_rock_small.glb",
+  "mb_raw": 11.72,
+  "mb_web": 0.33,
+  "mb_low": 0.11,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey",
+   "river_survival"
+  ],
+  "source": "meshy",
+  "tris_raw": 929,
+  "tris_web": 929,
+  "tris_low": 929,
+  "textures": 4,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "river_sign",
+  "file": "river_world/river_sign.glb",
+  "mb_raw": 7.56,
+  "mb_web": 0.33,
+  "mb_low": 0.14,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey",
+   "kayak_rush",
+   "river_fishing",
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 5398,
+  "tris_web": 5398,
+  "tris_low": 5398,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "river_sign__alt1",
+  "file": "river_world/river_sign__alt1.glb",
+  "mb_raw": 2.8,
+  "mb_web": 0.08,
+  "mb_low": 0.04,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey",
+   "kayak_rush",
+   "river_fishing",
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 2536,
+  "tris_web": 2536,
+  "tris_low": 2536,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "river_sign__alt2",
+  "file": "river_world/river_sign__alt2.glb",
+  "mb_raw": 20.83,
+  "mb_web": 0.24,
+  "mb_low": 0.11,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey",
+   "kayak_rush",
+   "river_fishing",
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 70580,
+  "tris_web": 14996,
+  "tris_low": 7500,
+  "textures": 2,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "river_sign__alt3",
+  "file": "river_world/river_sign__alt3.glb",
+  "mb_raw": 21.58,
+  "mb_web": 0.23,
+  "mb_low": 0.11,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey",
+   "kayak_rush",
+   "river_fishing",
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 70580,
+  "tris_web": 14996,
+  "tris_low": 7500,
+  "textures": 2,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "river_sign__alt4",
+  "file": "river_world/river_sign__alt4.glb",
+  "mb_raw": 21.53,
+  "mb_web": 0.26,
+  "mb_low": 0.12,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey",
+   "kayak_rush",
+   "river_fishing",
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 70580,
+  "tris_web": 14996,
+  "tris_low": 7500,
+  "textures": 2,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "river_sign__alt5",
+  "file": "river_world/river_sign__alt5.glb",
+  "mb_raw": 33.74,
+  "mb_web": 0.52,
+  "mb_low": 0.18,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey",
+   "kayak_rush",
+   "river_fishing",
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 767920,
+  "tris_web": 14992,
+  "tris_low": 7500,
+  "textures": 4,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "river_stump",
+  "file": "river_world/river_stump.glb",
+  "mb_raw": 45.63,
+  "mb_web": 0.62,
+  "mb_low": 0.23,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey",
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 1235725,
+  "tris_web": 14999,
+  "tris_low": 7493,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "river_tree_pine",
+  "file": "river_world/river_tree_pine.glb",
+  "mb_raw": 5.76,
+  "mb_web": 0.35,
+  "mb_low": 0.24,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "kayak_rush",
+   "river_survival",
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 24895,
+  "tris_web": 24895,
+  "tris_low": 24895,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "river_tree_pine__alt1",
+  "file": "river_world/river_tree_pine__alt1.glb",
+  "mb_raw": 34.38,
+  "mb_web": 3.42,
+  "mb_low": 0.57,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "kayak_rush",
+   "river_survival",
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 485086,
+  "tris_web": 170416,
+  "tris_low": 29463,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "river_tree_pine__alt2",
+  "file": "river_world/river_tree_pine__alt2.glb",
+  "mb_raw": 285.99,
+  "mb_web": 2.86,
+  "mb_low": 0.51,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "kayak_rush",
+   "river_survival",
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 5621703,
+  "tris_web": 145994,
+  "tris_low": 29251,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "river_waterfall",
+  "file": "river_world/river_waterfall.glb",
+  "mb_raw": 1.42,
+  "mb_web": 0.19,
+  "mb_low": 0.11,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey",
+   "kayak_rush",
+   "river_fishing",
+   "river_survival"
+  ],
+  "source": "meshy",
+  "tris_raw": 10000,
+  "tris_web": 10000,
+  "tris_low": 7500,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "river_waterfall_pool",
+  "file": "river_world/river_waterfall_pool.glb",
+  "mb_raw": 1.27,
+  "mb_web": 0.16,
+  "mb_low": 0.09,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey",
+   "kayak_rush",
+   "river_fishing",
+   "river_survival",
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 4946,
+  "tris_web": 4946,
+  "tris_low": 4946,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "river_woodpile",
+  "file": "river_world/river_woodpile.glb",
+  "mb_raw": 126.28,
+  "mb_web": 2.99,
+  "mb_low": 0.56,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "dino_journey",
+   "river_survival",
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 2917161,
+  "tris_web": 149755,
+  "tris_low": 29925,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "surv_barrel_1",
+  "file": "survival/surv_barrel_1.glb",
+  "mb_raw": 3.23,
+  "mb_web": 0.21,
+  "mb_low": 0.1,
+  "scope": "game",
+  "game": "river_survival",
+  "games": [
+   "river_survival"
+  ],
+  "source": "self",
+  "tris_raw": 1737,
+  "tris_web": 1737,
+  "tris_low": 1737,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "surv_binoculars",
+  "file": "survival/surv_binoculars.glb",
+  "mb_raw": 26.14,
+  "mb_web": 0.27,
+  "mb_low": 0.09,
+  "scope": "game",
+  "game": "river_survival",
+  "games": [
+   "river_survival"
+  ],
+  "source": "meshy",
+  "tris_raw": 487218,
+  "tris_web": 8000,
+  "tris_low": 4000,
+  "textures": 4,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "surv_compass",
+  "file": "survival/surv_compass.glb",
+  "mb_raw": 10.82,
+  "mb_web": 0.33,
+  "mb_low": 0.12,
+  "scope": "game",
+  "game": "river_survival",
+  "games": [
+   "river_fishing",
+   "river_survival",
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 131618,
+  "tris_web": 8000,
+  "tris_low": 4000,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "surv_container_blue",
+  "file": "survival/surv_container_blue.glb",
+  "mb_raw": 12.38,
+  "mb_web": 0.8,
+  "mb_low": 0.27,
+  "scope": "game",
+  "game": "river_survival",
+  "games": [
+   "river_survival"
+  ],
+  "source": "meshy",
+  "tris_raw": 29918,
+  "tris_web": 7998,
+  "tris_low": 3992,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "surv_container_red",
+  "file": "survival/surv_container_red.glb",
+  "mb_raw": 50.54,
+  "mb_web": 0.79,
+  "mb_low": 0.25,
+  "scope": "game",
+  "game": "river_survival",
+  "games": [
+   "river_survival"
+  ],
+  "source": "meshy",
+  "tris_raw": 1275954,
+  "tris_web": 7901,
+  "tris_low": 3990,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "surv_crate_1",
+  "file": "survival/surv_crate_1.glb",
+  "mb_raw": 3.58,
+  "mb_web": 0.21,
+  "mb_low": 0.09,
+  "scope": "game",
+  "game": "river_survival",
+  "games": [
+   "river_survival"
+  ],
+  "source": "self",
+  "tris_raw": 1390,
+  "tris_web": 1390,
+  "tris_low": 1390,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "surv_flag",
+  "file": "survival/surv_flag.glb",
+  "mb_raw": 2.64,
+  "mb_web": 0.09,
+  "mb_low": 0.06,
+  "scope": "game",
+  "game": "river_survival",
+  "games": [
+   "river_survival"
+  ],
+  "source": "self",
+  "tris_raw": 2035,
+  "tris_web": 2035,
+  "tris_low": 2035,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "surv_flashlight",
+  "file": "survival/surv_flashlight.glb",
+  "mb_raw": 29.79,
+  "mb_web": 0.51,
+  "mb_low": 0.18,
+  "scope": "game",
+  "game": "river_survival",
+  "games": [
+   "river_survival",
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 713550,
+  "tris_web": 8000,
+  "tris_low": 3999,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "surv_helicopter_wreck",
+  "file": "survival/surv_helicopter_wreck.glb",
+  "mb_raw": 21.05,
+  "mb_web": 0.34,
+  "mb_low": 0.12,
+  "scope": "game",
+  "game": "river_survival",
+  "games": [
+   "river_survival"
+  ],
+  "source": "meshy",
+  "tris_raw": 473660,
+  "tris_web": 7949,
+  "tris_low": 3938,
+  "textures": 2,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "surv_letter_1",
+  "file": "survival/surv_letter_1.glb",
+  "mb_raw": 2.37,
+  "mb_web": 0.12,
+  "mb_low": 0.06,
+  "scope": "game",
+  "game": "river_survival",
+  "games": [
+   "river_fishing",
+   "river_survival"
+  ],
+  "source": "self",
+  "tris_raw": 1326,
+  "tris_web": 1326,
+  "tris_low": 1326,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "surv_map",
+  "file": "survival/surv_map.glb",
+  "mb_raw": 82.31,
+  "mb_web": 0.54,
+  "mb_low": 0.16,
+  "scope": "game",
+  "game": "river_survival",
+  "games": [
+   "river_fishing",
+   "river_survival",
+   "summer_camp"
+  ],
+  "source": "meshy",
+  "tris_raw": 1995104,
+  "tris_web": 8000,
+  "tris_low": 4000,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "surv_net_launcher_a",
+  "file": "survival/surv_net_launcher_a.glb",
+  "mb_raw": 16.6,
+  "mb_web": 0.5,
+  "mb_low": 0.16,
+  "scope": "game",
+  "game": "river_survival",
+  "games": [
+   "river_survival"
+  ],
+  "source": "meshy",
+  "tris_raw": 194133,
+  "tris_web": 9187,
+  "tris_low": 4425,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "surv_net_launcher_b",
+  "file": "survival/surv_net_launcher_b.glb",
+  "mb_raw": 20.15,
+  "mb_web": 0.59,
+  "mb_low": 0.22,
+  "scope": "game",
+  "game": "river_survival",
+  "games": [
+   "river_survival"
+  ],
+  "source": "meshy",
+  "tris_raw": 343620,
+  "tris_web": 7999,
+  "tris_low": 5033,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "surv_pen_wall_stone",
+  "file": "survival/surv_pen_wall_stone.glb",
+  "mb_raw": 9,
+  "mb_web": 0.5,
+  "mb_low": 0.18,
+  "scope": "game",
+  "game": "river_survival",
+  "games": [
+   "river_survival"
+  ],
+  "source": "meshy",
+  "tris_raw": 5295,
+  "tris_web": 5295,
+  "tris_low": 4000,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "surv_pen_wall_window",
+  "file": "survival/surv_pen_wall_window.glb",
+  "mb_raw": 7.7,
+  "mb_web": 0.4,
+  "mb_low": 0.16,
+  "scope": "game",
+  "game": "river_survival",
+  "games": [
+   "river_survival"
+  ],
+  "source": "meshy",
+  "tris_raw": 4174,
+  "tris_web": 4174,
+  "tris_low": 4174,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "surv_pointed_stone_1",
+  "file": "survival/surv_pointed_stone_1.glb",
+  "mb_raw": 3.55,
+  "mb_web": 0.17,
+  "mb_low": 0.07,
+  "scope": "game",
+  "game": "river_survival",
+  "games": [
+   "river_survival"
+  ],
+  "source": "self",
+  "tris_raw": 1210,
+  "tris_web": 1210,
+  "tris_low": 1210,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "surv_rival_tent",
+  "file": "survival/surv_rival_tent.glb",
+  "mb_raw": 32.82,
+  "mb_web": 0.66,
+  "mb_low": 0.23,
+  "scope": "game",
+  "game": "river_survival",
+  "games": [
+   "river_survival"
+  ],
+  "source": "meshy",
+  "tris_raw": 778909,
+  "tris_web": 7947,
+  "tris_low": 3976,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "surv_rope_cut",
+  "file": "survival/surv_rope_cut.glb",
+  "mb_raw": 4,
+  "mb_web": 0.26,
+  "mb_low": 0.11,
+  "scope": "game",
+  "game": "river_survival",
+  "games": [
+   "river_survival"
+  ],
+  "source": "self",
+  "tris_raw": 1867,
+  "tris_web": 1867,
+  "tris_low": 1867,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "surv_sentinel",
+  "file": "survival/surv_sentinel.glb",
+  "mb_raw": 12.79,
+  "mb_web": 0.39,
+  "mb_low": 0.16,
+  "scope": "game",
+  "game": "river_survival",
+  "games": [
+   "river_survival"
+  ],
+  "source": "meshy",
+  "tris_raw": 196278,
+  "tris_web": 7999,
+  "tris_low": 5062,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "surv_sharp_rock",
+  "file": "survival/surv_sharp_rock.glb",
+  "mb_raw": 2.88,
+  "mb_web": 0.1,
+  "mb_low": 0.05,
+  "scope": "game",
+  "game": "river_survival",
+  "games": [
+   "river_survival"
+  ],
+  "source": "self",
+  "tris_raw": 1456,
+  "tris_web": 1456,
+  "tris_low": 1456,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "surv_spring",
+  "file": "survival/surv_spring.glb",
+  "mb_raw": 3.72,
+  "mb_web": 0.26,
+  "mb_low": 0.14,
+  "scope": "game",
+  "game": "river_survival",
+  "games": [
+   "river_survival"
+  ],
+  "source": "self",
+  "tris_raw": 5811,
+  "tris_web": 5811,
+  "tris_low": 3999,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "surv_spring__alt1",
+  "file": "survival/surv_spring__alt1.glb",
+  "mb_raw": 13.1,
+  "mb_web": 0.24,
+  "mb_low": 0.1,
+  "scope": "game",
+  "game": "river_survival",
+  "games": [
+   "river_survival"
+  ],
+  "source": "meshy",
+  "tris_raw": 378507,
+  "tris_web": 8004,
+  "tris_low": 4000,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "surv_stake_1",
+  "file": "survival/surv_stake_1.glb",
+  "mb_raw": 2.65,
+  "mb_web": 0.1,
+  "mb_low": 0.06,
+  "scope": "game",
+  "game": "river_survival",
+  "games": [
+   "river_survival"
+  ],
+  "source": "self",
+  "tris_raw": 1493,
+  "tris_web": 1493,
+  "tris_low": 1493,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "surv_stone_basin",
+  "file": "survival/surv_stone_basin.glb",
+  "mb_raw": 37.64,
+  "mb_web": 0.47,
+  "mb_low": 0.14,
+  "scope": "game",
+  "game": "river_survival",
+  "games": [
+   "river_survival"
+  ],
+  "source": "meshy",
+  "tris_raw": 909884,
+  "tris_web": 7997,
+  "tris_low": 3994,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "surv_trap_rope",
+  "file": "survival/surv_trap_rope.glb",
+  "mb_raw": 3.14,
+  "mb_web": 0.17,
+  "mb_low": 0.1,
+  "scope": "game",
+  "game": "river_survival",
+  "games": [
+   "river_survival"
+  ],
+  "source": "self",
+  "tris_raw": 2541,
+  "tris_web": 2541,
+  "tris_low": 2541,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "surv_tripwire",
+  "file": "survival/surv_tripwire.glb",
+  "mb_raw": 2.53,
+  "mb_web": 0.12,
+  "mb_low": 0.07,
+  "scope": "game",
+  "game": "river_survival",
+  "games": [
+   "river_survival"
+  ],
+  "source": "self",
+  "tris_raw": 1974,
+  "tris_web": 1974,
+  "tris_low": 1974,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ }
+]

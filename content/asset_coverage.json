@@ -1,0 +1,72 @@
+{
+ "total_used": 280,
+ "have_file": 236,
+ "missing_count": 44,
+ "missing_by_group": {
+  "anim": [
+   "anim_cast",
+   "anim_cheer",
+   "anim_cook",
+   "anim_kneel_work",
+   "anim_pull_fish",
+   "anim_rope_rub",
+   "anim_sad",
+   "anim_wave"
+  ],
+  "camp": [
+   "camp_axe",
+   "camp_bench",
+   "camp_bottle",
+   "camp_bucket",
+   "camp_bunting",
+   "camp_chair",
+   "camp_firstaid",
+   "camp_lantern",
+   "camp_marshmallow_stick",
+   "camp_matchbox",
+   "camp_sleeping_bag",
+   "camp_string_lights",
+   "camp_table",
+   "camp_tarp",
+   "camp_water_filter"
+  ],
+  "fish": [
+   "fish_bait",
+   "fish_bobber",
+   "fish_hook",
+   "fish_net",
+   "fish_reel"
+  ],
+  "food": [
+   "food_apple",
+   "food_bread",
+   "food_corn",
+   "food_fish_raw",
+   "food_meat_raw",
+   "food_sausage"
+  ],
+  "fx": [
+   "fx_fire",
+   "fx_smoke",
+   "fx_spark"
+  ],
+  "kayak": [
+   "kayak_log_spinning"
+  ],
+  "river": [
+   "river_shed"
+  ],
+  "surv": [
+   "surv_broom"
+  ],
+  "tex": [
+   "tex_mud",
+   "tex_sand"
+  ],
+  "water": [
+   "water_foam",
+   "water_normal"
+  ]
+ },
+ "unused_models": []
+}

@@ -3,8 +3,8 @@ import assert from 'node:assert/strict';
 import * as E from '../src/engine';
 import type { AnswerRecord } from '../src/engine';
 
-test('5 levels: level 3 keeps legacy behaviour, others scale monotonically', () => {
-  assert.deepEqual(E.LEVEL_IDS, [1, 2, 3, 4, 5]);
+test('6 levels (0 = Beginner): level 3 keeps legacy behaviour, others scale monotonically', () => {
+  assert.deepEqual(E.LEVEL_IDS, [0, 1, 2, 3, 4, 5]);
   assert.deepEqual([E.timeLimitFor('easy', 3), E.timeLimitFor('medium', 3), E.timeLimitFor('hard', 3)], [30, 45, 60]);
   assert.equal(E.timeLimitFor('medium'), E.timeLimitFor('medium', 3));
   const t = E.LEVEL_IDS.map((l) => E.timeLimitFor('medium', l));
@@ -24,18 +24,21 @@ test('normalizeConfig clamps level and defaults to 3', () => {
   assert.equal(E.normalizeConfig({ ...base, level: 5 }).level, 5);
   assert.equal(E.normalizeConfig({ ...base, level: 99 }).level, 3);
   assert.equal(E.normalizeConfig({ ...base, level: 'abc' }).level, 3);
+  assert.equal(E.normalizeConfig({ ...base, level: 0 }).level, 0, 'Beginner (0) must survive normalisation');
+  assert.equal(E.normalizeConfig({ ...base, level: null }).level, 3);
+  assert.equal(E.normalizeConfig({ ...base, level: -1 }).level, 3);
   assert.equal(E.normalizeConfig({ scenario: 'boat_race' }).scenario, 'boat_race');
 });
 
 test('bot plan is deterministic and stronger at higher levels', () => {
   const seed = E.raceSeed('b1', 2, 3);
   assert.deepEqual(E.botPlan(seed, 20, 3), E.botPlan(seed, 20, 3));
-  const acc = (lv: 1 | 2 | 3 | 4 | 5) => {
+  const acc = (lv: 0 | 1 | 2 | 3 | 4 | 5) => {
     let n = 0;
     for (let s = 0; s < 40; s++) n += E.botPlan(`seed${s}`, 30, lv).filter((x) => x.correct).length;
     return n / (40 * 30);
   };
-  assert.ok(acc(1) < acc(3) && acc(3) < acc(5));
+  assert.ok(acc(0) < acc(1) && acc(1) < acc(3) && acc(3) < acc(5));
 });
 
 test('race outcome: more correct wins, tie goes to the faster boat, server caps time', () => {

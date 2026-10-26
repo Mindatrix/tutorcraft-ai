@@ -1,14 +1,14 @@
 import type { BattleConfig, Difficulty, DifficultyLevel } from './types';
 
-// 5 teaching levels (age 5+). Level 3 reproduces the original behaviour exactly
+// 6 teaching levels (age 5+): 0 = Beginner (all-Vietnamese support), 1..5 = A1..C1. Level 3 reproduces the original behaviour exactly
 // (40/40/20 mix, 30/45/60 s, 40% mistakes allowed) so existing battles are unchanged.
 
 export const DEFAULT_LEVEL: DifficultyLevel = 3;
-export const LEVEL_IDS: DifficultyLevel[] = [1, 2, 3, 4, 5];
+export const LEVEL_IDS: DifficultyLevel[] = [0, 1, 2, 3, 4, 5];
 
 export interface LevelDefinition {
   level: DifficultyLevel;
-  code: 'easy' | 'medium' | 'intermediate' | 'hard' | 'very_hard';
+  code: 'beginner' | 'easy' | 'medium' | 'intermediate' | 'hard' | 'very_hard';
   nameVi: string;
   /** CEFR target used when the tutor leaves "Tự động". */
   cefr: string;
@@ -25,6 +25,12 @@ export interface LevelDefinition {
 }
 
 export const LEVELS: Record<DifficultyLevel, LevelDefinition> = {
+  0: {
+    level: 0, code: 'beginner', nameVi: 'Beginner', cefr: 'Pre-A1',
+    mix: { easy: 1, medium: 0, hard: 0 }, timeMult: 1.7, allowedWrong: 0.7,
+    guidance: 'Absolute beginners (age 5+): write the question, hints and explanations in Vietnamese; only the target English word or very short phrase (1-3 words) appears in English, always with a picture-friendly meaning (colours, animals, food, family, numbers). No grammar terms, no sentences longer than 5 English words.',
+    bot: { accuracy: 0.35, pace: 0.9 },
+  },
   1: {
     level: 1, code: 'easy', nameVi: 'Dễ', cefr: 'A1',
     mix: { easy: 0.8, medium: 0.2, hard: 0 }, timeMult: 1.4, allowedWrong: 0.6,
@@ -58,8 +64,9 @@ export const LEVELS: Record<DifficultyLevel, LevelDefinition> = {
 };
 
 export function normalizeLevel(raw: unknown): DifficultyLevel {
+  if (raw == null || raw === '' || typeof raw === 'boolean') return DEFAULT_LEVEL;
   const n = Math.round(Number(raw));
-  return n >= 1 && n <= 5 ? (n as DifficultyLevel) : DEFAULT_LEVEL;
+  return n >= 0 && n <= 5 ? (n as DifficultyLevel) : DEFAULT_LEVEL;
 }
 
 export function levelOf(config: Pick<BattleConfig, 'level'> | undefined | null): LevelDefinition {

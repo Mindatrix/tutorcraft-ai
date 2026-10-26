@@ -31,7 +31,7 @@ export function bossHp(questions: number, teamSize = 1): number {
   return questions * BASE_DAMAGE * Math.max(1, teamSize);
 }
 
-/** Seconds per question. `level` (1–5) scales it; level 3 / undefined = the base table. */
+/** Seconds per question. `level` (0–5) scales it; level 3 / undefined = the base table. */
 export function timeLimitFor(difficulty: Difficulty | undefined, level?: DifficultyLevel): number {
   const base = TIME_LIMIT_BY_DIFFICULTY[difficulty ?? 'medium'] ?? TIME_LIMIT_BY_DIFFICULTY.medium;
   return Math.round(base * LEVELS[normalizeLevel(level)].timeMult);

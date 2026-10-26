@@ -20,7 +20,7 @@ const STEPS = [
 ];
 
 const CARD_TONES = ['#fcd34d', '#fb7185', '#c4b5fd', '#6ee7b7'];
-const STAIR_TONES = ['#6ee7b7', '#bef264', '#fcd34d', '#fb923c', '#fb7185'];
+const STAIR_TONES = ['#a5f3fc', '#6ee7b7', '#bef264', '#fcd34d', '#fb923c', '#fb7185'];
 
 export function Hero() {
   return (
@@ -127,8 +127,18 @@ export function Games() {
   );
 }
 
-const WORLD_ORDER: GameMode[] = ['multiverse_portal', 'kayak_rush', 'cosmic_card', 'dino_island', 'ai_agent_world'];
+const WORLD_ORDER: GameMode[] = ['river_survival', 'kayak_rush', 'summer_camp', 'river_fishing', 'dino_journey', 'multiverse_portal'];
 const WORLD_TONES = ['#c4b5fd', '#5eead4', '#fcd34d', '#86efac', '#7dd3fc'];
+
+/** Stand-in art while a world's 3D scene is being built (no screenshot yet). */
+function WorldPending({ icon, tone }: { icon: string; tone: string }) {
+  return (
+    <div className="absolute inset-0 grid place-items-center" style={{ background: `radial-gradient(circle at 50% 38%, ${tone}55, #0f172a 72%)` }}>
+      <span className="text-6xl drop-shadow-[4px_4px_0_rgb(0_0_0/.6)]" aria-hidden>{icon}</span>
+      <span className="absolute bottom-3 right-5 bg-black/65 px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-widest">Đang dựng 3D</span>
+    </div>
+  );
+}
 
 export function Worlds() {
   return (
@@ -146,7 +156,11 @@ export function Worlds() {
                 <div style={{ filter: 'drop-shadow(6px 6px 0 #000)' }}>
                   <div className="p-[3px]" style={{ clipPath: BEVEL_CLIP, background: WORLD_TONES[i] }}>
                     <div className="relative aspect-[4/3] overflow-hidden bg-slate-900" style={{ clipPath: BEVEL_CLIP }}>
-                      <Image src={`/modes/${id}.webp`} alt={`${m.name}: ảnh trong game`} fill sizes="(min-width:1024px) 50vw, (min-width:640px) 50vw, 100vw" className="object-cover transition-transform duration-700 group-hover:scale-105" />
+                      {m.preview ? (
+                        <Image src={m.preview} alt={`${m.name}: ảnh trong game`} fill sizes="(min-width:1024px) 50vw, (min-width:640px) 50vw, 100vw" className="object-cover transition-transform duration-700 group-hover:scale-105" />
+                      ) : (
+                        <WorldPending icon={m.icon} tone={WORLD_TONES[i]} />
+                      )}
                       <span className="absolute left-5 top-3 bg-black/65 px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-widest">{m.status === 'upgraded' ? 'Nâng cấp' : 'Mới'}</span>
                     </div>
                   </div>
@@ -195,7 +209,7 @@ export function How() {
 
         <div className="mt-24">
           <h3 className="text-3xl md:text-4xl font-extrabold">Từ bé 5 tuổi <span className="text-orange-500">đến người lớn</span></h3>
-          <p className="mt-2 text-slate-600">Năm bậc khó, bậc nào cũng đủ 7 dạng bài.</p>
+          <p className="mt-2 text-slate-600">Sáu bậc khó, từ Beginner (toàn tiếng Việt) đến C1 (toàn tiếng Anh), bậc nào cũng đủ 7 dạng bài.</p>
           <ul className="mt-8 flex items-end">
             {LEVEL_IDS.map((lv, i) => (
               <li key={lv} className="tc-stripes relative flex flex-1 flex-col justify-end border-[3px] p-3 -ml-[3px] first:ml-0" style={{ height: 96 + i * 44, background: STAIR_TONES[i], borderColor: INK }}>

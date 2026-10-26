@@ -1,22 +1,25 @@
 // ============================================================================
-// 3D ASSET CONFIGURATION & PLACEHOLDERS (THREE_ASSET_MANIFEST)
+// 3D ASSET CONFIGURATION (THREE_ASSET_MANIFEST)
 // ============================================================================
-// Founder điền tài nguyên 3D vào đây. Quy ước:
-//   - Chuỗi còn bắt đầu bằng "[ĐIỀN TẠI ĐÂY" = CHƯA CÓ  → game tự dựng mô hình low-poly bằng code (fallback).
-//   - Số / mảng còn là `null`                 = CHƯA CÓ  → dùng giá trị trong THREE_DEFAULTS bên dưới.
-// Gọi `missingThreeAssets()` để xem danh sách ô còn trống (kèm đường dẫn, vd "gameModes.kayak_rush.kayakModelUrl").
+// Mọi ô đã được điền (A3.6, 26/10/2026) từ thư viện model thật (content/asset_catalog.json):
+//   - lib('<id>')        = URL của model trong thư viện (bản web; bản thấp: withQuality(url, 'low')).
+//   - ids('<thư mục>')   = danh sách id model của một gói (camp, fishing/ca, dino/khung_long…).
+//   - PROCEDURAL         = phần này dựng bằng code (nước bằng shader, sprite 2D, mũ…): đã quyết, không phải ô trống.
+// Ô bắt đầu bằng "[ĐIỀN TẠI ĐÂY" vẫn được hiểu là CHƯA CÓ (game tự dựng mô hình low-poly bằng code).
+// Gọi `missingThreeAssets()` để xem ô còn trống (kiểm thử yêu cầu danh sách rỗng).
 //
-// Đường dẫn file đặt trong /public, ví dụ file public/assets/3d/kayak.glb → '/assets/3d/kayak.glb'.
-// Chỉ dùng tài nguyên CC0 / miễn phí (Kenney.nl, Kay Lousberg, Poly Haven) hoặc do bạn tự làm.
-// Màu sắc đã điền sẵn là màu đã chọn theo ảnh tham khảo (có thể đổi).
-//
-// 5 game chính thức (src/engine/gameModes.ts): kayak_rush · multiverse_portal · cosmic_card · dino_island · ai_agent_world.
-// Đã huỷ: Wasteland Survival, Dungeon Labyrinth, Magic Tower 1v1.
+// 6 game chính thức (src/engine/gameModes.ts): kayak_rush · multiverse_portal · summer_camp · river_fishing · river_survival · dino_journey.
+// Bộ "thế giới sông" và bộ nhân vật dùng chung cho Kayak, Trại Hè, Câu Cá, Sinh Tồn: điện thoại tải một lần rồi lưu cache
+// (src/components/modes/three/assetLoader.ts). Ảnh trời HDRI (Poly Haven, CC0) nằm trong /public/assets/hdri.
 
 import { GameMode } from '../engine/types';
+import { ASSET_LIBRARY, PROCEDURAL, lib } from './assetLibrary';
 
+export { PROCEDURAL };
 export const FILL = '[ĐIỀN TẠI ĐÂY]';
 type Fill<T extends string = string> = T | `[ĐIỀN TẠI ĐÂY${string}`;
+/** Ids of library models (content/asset_catalog.json). */
+type AssetIds = string[];
 
 /** 2D canvas fallback (máy yếu / không có WebGL): ảnh sprite sheet tuỳ chọn. */
 interface Fallback2D {
@@ -45,32 +48,87 @@ export interface MultiversePortalAssets {
   fallback2d: Fallback2D;
 }
 
-export interface CosmicCardAssets {
-  tableModelUrl: Fill;
-  cardBackTextureUrl: Fill;
-  /** Thư mục ảnh Anime / Splash Art: 0.png … 3.png (A–D). */
-  cardArtDir: Fill;
-  laserBeamShader: Fill;
-  palette: { beam: Fill; critical: Fill; nebula: Fill };
+/** Thế giới sông dùng chung (cây, đá, nước, bến gỗ, trời): mỗi gói là danh sách id model trong thư viện. */
+export interface RiverWorldAssets {
+  /** Cây, bụi, dương xỉ, lau sậy, đá, sỏi, nấm, cỏ cao, gỗ mục. */
+  natureIds: AssetIds;
+  /** Bến gỗ, cầu, nhà gỗ, chòi, biển chỉ đường, làng, phao. */
+  structureIds: AssetIds;
+  /** Mặt đất, bãi cỏ, đường sỏi (khối nền dựng cảnh). */
+  groundIds: AssetIds;
+  /** Phông nền xa: đảo nổi, thung lũng, thác (vẽ ở xa, bản thấp trên điện thoại). */
+  backdropIds: AssetIds;
+  /** Thuyền nhôm nhỏ (Câu Cá) và kayak (Kayak Rush). */
+  boatModelUrls: { aluminium: Fill; kayak: Fill };
+  /** HDRI (Poly Haven, CC0): bản 2K cho máy tính; bản 1K cùng tên đổi _2k → _1k cho điện thoại. Tải bằng scripts/fetch-hdri.mjs. */
+  hdriUrls: { dawn: Fill; day: Fill; sunset: Fill; night: Fill; cloudy: Fill };
+  /** Vân đất PBR: PROCEDURAL (shader) cho tới khi có ảnh tex_mud / tex_sand trong thư viện. */
+  groundTextureDirs: { grass: Fill; mud: Fill; sand: Fill; pebbles: Fill; rock: Fill };
+  water: { normalMapUrl: Fill; foamMapUrl: Fill };
+  palette: { water: Fill; waterDeep: Fill; foliage: Fill; sunlight: Fill };
+}
+
+/** Nhân vật dùng chung: thân có xương (kèm clip hoạt ảnh bên trong) và thân chưa có xương (hoạt ảnh phụ bằng code). */
+export interface CharacterAssets {
+  /** Nhân vật có xương; mỗi file mang sẵn clip (Walking, Running, Big_Wave_Hello…). */
+  riggedIds: AssetIds;
+  /** Nhân vật tĩnh: nhún, xoay, nhảy bằng code (C2.3). */
+  staticIds: AssetIds;
+  /** Trang phục/màu đổi bằng vật liệu (C2.2), không cần gói quần áo riêng. */
+  wardrobe: Fill;
+  /** Clip nằm trong từng file nhân vật. */
+  animations: Fill;
+}
+
+export interface SummerCampAssets {
+  /** Lều, bếp lửa, vỉ nướng, chảo, ba lô, dây thừng… */
+  campIds: AssetIds;
+  /** Thực phẩm sống / chín và xiên nướng. */
+  foodIds: AssetIds;
+  /** Ảnh 2D biểu tượng công cụ mở khoá. */
+  toolIconDir: Fill;
+  /** Ảnh hạt lửa, khói, tia lửa (lửa trại dựng bằng shader trong code). */
+  fxTextureDir: Fill;
+  palette: { fire: Fill; smoke: Fill; tent: Fill };
   fallback2d: Fallback2D;
 }
 
-export interface DinoIslandAssets {
-  dinoModelUrl: Fill;
-  friendModelUrl: Fill;
-  cageModelUrl: Fill;
-  monsterModelUrl: Fill;
-  eggGachaModelUrl: Fill;
-  backgroundUrl: Fill; // tranh nền thác nước (tuỳ chọn)
-  palette: { dino: Fill; sky: Fill; lava: Fill };
+export interface RiverFishingAssets {
+  /** Cần câu 4 cấp, giá cần, hộp đồ, giỏ, bến nổi, đèn bến, bảng kỷ lục, ghế thuyền. */
+  gearIds: AssetIds;
+  /** Mỗi loài một model tĩnh (bơi bằng code). */
+  fishIds: AssetIds;
+  fishIconDir: Fill;
+  splashTextureUrl: Fill;
+  palette: { line: Fill; tensionSafe: Fill; tensionDanger: Fill };
   fallback2d: Fallback2D;
 }
 
-export interface AgentWorldAssets {
-  officeModelUrl: Fill;
-  agentModelUrls: { orion: Fill; kai: Fill; quinn: Fill };
-  studentModelUrl: Fill;
-  zoneColors: { tech: Fill; cafe: Fill; gameZone: Fill; meetingRoom: Fill; lounge: Fill };
+export interface RiverSurvivalAssets {
+  /** Cọc gỗ, dây thừng, đá sắc, trại đối thủ, thùng, container, trực thăng rơi, bẫy, mật thư, bản đồ, la bàn, ống nhòm, đèn pin. */
+  survivalIds: AssetIds;
+  /** Bụi rậm, dương xỉ, cỏ cao, lau sậy để lẩn trốn. */
+  hideSpotIds: AssetIds;
+  /** Lưới bắt của đội Săn Tìm — đội Chạy Trốn cướp được để đuổi ngược hoặc giải cứu đồng đội. */
+  captureToolModelUrl: Fill;
+  /** Khu giữ người bị bắt (không đáng sợ). */
+  holdingPenModelUrl: Fill;
+  footprintDecalDir: Fill;
+  minimapUrl: Fill;
+  palette: { escapers: Fill; pursuers: Fill; dusk: Fill };
+  fallback2d: Fallback2D;
+}
+
+export interface DinoJourneyAssets {
+  /** Khủng long: cha (T-Rex nâu), bạn đồng hành, bầy cổ dài, sừng ba, lưng gai. */
+  dinoIds: AssetIds;
+  /** Sinh vật nhỏ: linh dương, thỏ, chuột, sói (kẻ nhặt xác trong cảnh bắt nạt). */
+  critterIds: AssetIds;
+  /** Cao nguyên khô, rừng nổi, tổ trứng. */
+  worldIds: AssetIds;
+  /** Ảnh thu nhỏ để chọn loài và màu khi chơi cả lớp. */
+  speciesIconDir: Fill;
+  palette: { grass: Fill; dusk: Fill; storm: Fill };
   fallback2d: Fallback2D;
 }
 
@@ -80,12 +138,17 @@ export interface ThreeAssetManifest {
     exportFormat: Fill<'glb' | 'gltf'>;
     dracoCompression: boolean | null;
   };
+  /** Dùng chung cho 4 game sông nước. */
+  riverWorld: RiverWorldAssets;
+  /** Dùng chung cho mọi game có nhân vật học viên. */
+  characters: CharacterAssets;
   gameModes: {
     [GameMode.KAYAK_RUSH_3D]: KayakRushAssets;
     [GameMode.MULTIVERSE_PORTAL_RPG]: MultiversePortalAssets;
-    [GameMode.COSMIC_CARD_BATTLER]: CosmicCardAssets;
-    [GameMode.DINO_ISLAND_RUN_2D]: DinoIslandAssets;
-    [GameMode.AI_AGENT_WORLD_3D]: AgentWorldAssets;
+    [GameMode.SUMMER_CAMP_QUESTS]: SummerCampAssets;
+    [GameMode.RIVER_FISHING]: RiverFishingAssets;
+    [GameMode.RIVER_SURVIVAL]: RiverSurvivalAssets;
+    [GameMode.DINO_JOURNEY]: DinoJourneyAssets;
   };
   graphicsSettings: {
     defaultCameraFov: number | null;
@@ -98,73 +161,102 @@ export interface ThreeAssetManifest {
   };
 }
 
-const glb = (name: string) => `[ĐIỀN TẠI ĐÂY: Link URL file ${name}.glb]` as const;
+/** Ids of the library models in a folder of the 3D library (e.g. "camp", "dino/khung_long"). */
+export function ids(folder: string, filter: (id: string) => boolean = () => true): string[] {
+  const prefix = folder.endsWith('/') ? folder : `${folder}/`;
+  return ASSET_LIBRARY.filter((a) => a.file.startsWith(prefix) && !a.file.slice(prefix.length).includes('/') && filter(a.id)).map((a) => a.id);
+}
+const RIVER = [...ids('river_world'), ...ids('river_world/cay_phu'), ...ids('river_world/phu'), ...ids('river_world/lang')];
+const pick = (list: string[], re: RegExp) => list.filter((id) => re.test(id));
 
 export const THREE_ASSET_MANIFEST: ThreeAssetManifest = {
   blenderMcp: {
     port: 9876, // đã kiểm chứng: Blender MCP add-on đang lắng nghe cổng 9876 (24/10/2026)
-    exportFormat: 'glb', // đã kiểm chứng: toàn bộ asset hiện có trong /public/models là .glb
-    dracoCompression: null, // [ĐIỀN TẠI ĐÂY: true/false] — true cần thêm DRACOLoader + decoder trong /public
+    exportFormat: 'glb',
+    dracoCompression: false, // đã chốt: dùng nén Meshopt (scripts/optimize-glb.mjs) thay cho Draco
+  },
+  riverWorld: {
+    natureIds: pick(RIVER, /^(river_(bush|fern|reed|rock|pebbles|grass|tree|lilypad|stump|log|driftwood|flower|moss|woodpile)|tree_|palm_|mushrooms)/),
+    structureIds: pick(RIVER, /^(river_(dock|bridge|cabin|sign|fence|shed|boat|buoy|waterfall|cave|well|birds|butterfly)|watchtower|tree_fort|wood_plank|village_)/),
+    groundIds: ids('river_world/ground'),
+    backdropIds: ids('river_world/mini'),
+    boatModelUrls: { aluminium: lib('river_boat_row'), kayak: lib('kayak_boat') },
+    hdriUrls: {
+      dawn: '/assets/hdri/river_dawn_2k.hdr',
+      day: '/assets/hdri/river_day_2k.hdr',
+      sunset: '/assets/hdri/river_sunset_2k.hdr',
+      night: '/assets/hdri/river_night_2k.hdr',
+      cloudy: '/assets/hdri/river_cloudy_2k.hdr',
+    },
+    groundTextureDirs: { grass: PROCEDURAL, mud: PROCEDURAL, sand: PROCEDURAL, pebbles: PROCEDURAL, rock: PROCEDURAL },
+    water: { normalMapUrl: PROCEDURAL, foamMapUrl: PROCEDURAL },
+    palette: { water: '#2fb5b0', waterDeep: '#0f6f7a', foliage: '#4f8f3a', sunlight: '#fff1c9' },
+  },
+  characters: {
+    riggedIds: ids('characters'),
+    staticIds: ids('characters/chua_co_xuong'),
+    wardrobe: PROCEDURAL,
+    animations: 'embedded',
   },
   gameModes: {
     [GameMode.KAYAK_RUSH_3D]: {
-      kayakModelUrl: glb('kayak'),
-      riverTextureUrl: '[ĐIỀN TẠI ĐÂY: Link URL texture mặt sông]',
-      skyboxUrl: '[ĐIỀN TẠI ĐÂY: Link URL ảnh trời 360° (.hdr/.jpg)]',
-      hatModelUrls: { propeller: glb('hat_propeller'), wizard: glb('hat_wizard'), jester: glb('hat_jester'), hardhat: glb('hat_hardhat') },
-      obstacleModelUrls: { spinningLog: glb('log_spinning'), iceBlock: glb('ice_block'), plantMonster: glb('plant_monster') },
+      kayakModelUrl: lib('kayak_boat'),
+      riverTextureUrl: PROCEDURAL,
+      skyboxUrl: '/assets/hdri/river_day_2k.hdr',
+      hatModelUrls: { propeller: PROCEDURAL, wizard: PROCEDURAL, jester: PROCEDURAL, hardhat: PROCEDURAL },
+      obstacleModelUrls: { spinningLog: lib('river_log_fallen'), iceBlock: PROCEDURAL, plantMonster: PROCEDURAL },
       palette: { river: '#36c3cf', riverDeep: '#1b8fa6', foam: '#f4fbff', bank: '#7cc36a' },
-      fallback2d: { spriteSheetUrl: '[ĐIỀN TẠI ĐÂY: Link URL sprite sheet thuyền 2D]' },
+      fallback2d: { spriteSheetUrl: PROCEDURAL },
     },
     [GameMode.MULTIVERSE_PORTAL_RPG]: {
-      heroModelUrl: glb('scarlet_princess'),
-      heroAnimations: {
-        idle: '[ĐIỀN TẠI ĐÂY: Tên clip animation, ví dụ: "Idle"]',
-        attack: '[ĐIỀN TẠI ĐÂY: Tên clip animation, ví dụ: "Slash"]',
-        hit: '[ĐIỀN TẠI ĐÂY: Tên clip animation, ví dụ: "TakeHit"]',
-        run: '[ĐIỀN TẠI ĐÂY: Tên clip animation, ví dụ: "Run"]',
-        defeat: '[ĐIỀN TẠI ĐÂY: Tên clip animation, ví dụ: "Death"]',
-      },
-      bossModelUrl: glb('boss'),
-      worldModelUrls: { castle: glb('world_castle'), cyberpunk: glb('world_cyberpunk'), desert: glb('world_desert') },
-      hdriSkyboxUrls: {
-        castle: '[ĐIỀN TẠI ĐÂY: HDRI lâu đài sương mù (Poly Haven)]',
-        cyberpunk: '[ĐIỀN TẠI ĐÂY: HDRI thành phố đêm]',
-        desert: '[ĐIỀN TẠI ĐÂY: HDRI sa mạc]',
-      },
+      heroModelUrl: lib('mv_hero_scarlet'),
+      // Clip names inside mv_hero_scarlet.glb (Mixamo); defeat is played in code (fall + fade).
+      heroAnimations: { idle: 'Idle_Step_Turn_Left', attack: 'Large_step_then_high_kick', hit: 'Step_Back', run: 'Running', defeat: PROCEDURAL },
+      bossModelUrl: lib('mv_boss'),
+      worldModelUrls: { castle: lib('mv_world_castle'), cyberpunk: lib('mv_world_cyberpunk'), desert: lib('mv_world_desert') },
+      hdriSkyboxUrls: { castle: '/assets/hdri/river_cloudy_2k.hdr', cyberpunk: '/assets/hdri/river_night_2k.hdr', desert: '/assets/hdri/river_sunset_2k.hdr' },
       portalRimColor: '#c084fc',
-      fallback2d: { spriteSheetUrl: '[ĐIỀN TẠI ĐÂY: Link URL sprite sheet Scarlet 2D]' },
+      fallback2d: { spriteSheetUrl: PROCEDURAL },
     },
-    [GameMode.COSMIC_CARD_BATTLER]: {
-      tableModelUrl: glb('cosmic_table'),
-      cardBackTextureUrl: '[ĐIỀN TẠI ĐÂY: Link URL mặt sau thẻ bài]',
-      cardArtDir: '[ĐIỀN TẠI ĐÂY: Thư mục ảnh thẻ, ví dụ: "/assets/cards/"]',
-      laserBeamShader: 'EnergyBeamShader', // đã viết sẵn trong CosmicCardBattler.tsx
-      palette: { beam: '#5eead4', critical: '#facc15', nebula: '#6d28d9' },
-      fallback2d: { spriteSheetUrl: '[ĐIỀN TẠI ĐÂY: Link URL sprite sheet thẻ 2D]' },
+    [GameMode.SUMMER_CAMP_QUESTS]: {
+      campIds: ids('camp', (id) => !/^(food_|camp_skewer)/.test(id)),
+      foodIds: ids('camp', (id) => /^(food_|camp_skewer)/.test(id)),
+      toolIconDir: PROCEDURAL,
+      fxTextureDir: PROCEDURAL,
+      palette: { fire: '#ff8a3d', smoke: '#cfc7bd', tent: '#f2a541' },
+      fallback2d: { spriteSheetUrl: PROCEDURAL },
     },
-    [GameMode.DINO_ISLAND_RUN_2D]: {
-      dinoModelUrl: glb('dino_green'),
-      friendModelUrl: glb('dino_friend'),
-      cageModelUrl: glb('iron_cage'),
-      monsterModelUrl: glb('spiky_beetle'),
-      eggGachaModelUrl: glb('gacha_egg'),
-      backgroundUrl: '[ĐIỀN TẠI ĐÂY: Link URL tranh nền thác nước]',
-      palette: { dino: '#5cc93b', sky: '#8fd3ff', lava: '#ff6a1a' },
-      fallback2d: { spriteSheetUrl: '[ĐIỀN TẠI ĐÂY: Link URL sprite sheet Dino 2D]' },
+    [GameMode.RIVER_FISHING]: {
+      gearIds: ids('fishing'),
+      fishIds: ids('fishing/ca'),
+      fishIconDir: PROCEDURAL,
+      splashTextureUrl: PROCEDURAL,
+      palette: { line: '#f8fafc', tensionSafe: '#34d399', tensionDanger: '#f43f5e' },
+      fallback2d: { spriteSheetUrl: PROCEDURAL },
     },
-    [GameMode.AI_AGENT_WORLD_3D]: {
-      officeModelUrl: glb('isometric_office'),
-      agentModelUrls: { orion: glb('agent_orion'), kai: glb('agent_kai'), quinn: glb('agent_quinn') },
-      studentModelUrl: glb('student_avatar'),
-      zoneColors: { tech: '#9fb889', cafe: '#6b4a32', gameZone: '#e9845f', meetingRoom: '#5b7bd6', lounge: '#2a2d35' },
-      fallback2d: { spriteSheetUrl: '[ĐIỀN TẠI ĐÂY: Link URL sprite sheet văn phòng 2D]' },
+    [GameMode.RIVER_SURVIVAL]: {
+      survivalIds: ids('survival'),
+      hideSpotIds: pick(RIVER, /^(river_(bush|fern|reed)|river_grass_tall)/),
+      captureToolModelUrl: lib('surv_net_launcher_a'),
+      holdingPenModelUrl: lib('surv_holding_pen'),
+      footprintDecalDir: '/assets/textures/footprints/',
+      minimapUrl: PROCEDURAL,
+      palette: { escapers: '#38bdf8', pursuers: '#f97316', dusk: '#3b2f5c' },
+      fallback2d: { spriteSheetUrl: PROCEDURAL },
+    },
+    [GameMode.DINO_JOURNEY]: {
+      dinoIds: ids('dino/khung_long'),
+      critterIds: ids('dino/thu_nho'),
+      worldIds: ids('dino/the_gioi'),
+      speciesIconDir: PROCEDURAL,
+      palette: { grass: '#8fbf5a', dusk: '#e0894d', storm: '#3d4a6b' },
+      fallback2d: { spriteSheetUrl: PROCEDURAL },
     },
   },
   graphicsSettings: {
-    defaultCameraFov: null, // [ĐIỀN TẠI ĐÂY: ví dụ 50] — mỗi game có góc máy riêng (Agent World cố định fov 30)
-    bloomIntensity: null, // [ĐIỀN TẠI ĐÂY: ví dụ 0.5] — hiện chưa có hậu kỳ Bloom (giữ nhẹ cho điện thoại)
-    shadowMapSize: null, // [ĐIỀN TẠI ĐÂY: ví dụ 1024]
+    defaultCameraFov: 50,
+    bloomIntensity: 0, // đã chốt: không Bloom (giữ nhẹ cho điện thoại)
+    shadowMapSize: 1024,
     fpsFallbackThreshold: 30, // đã chốt: FPS < 30 …
     fpsFallbackWindowMs: 5000, // … liên tục 5 giây → lùi về 2D canvas
     maxPixelRatio: 1.75, // đã chốt: đủ nét, không quá nặng cho điện thoại
@@ -193,9 +285,9 @@ export function assetOr<T>(value: T | string | null, fallback: T): T {
   return isUnfilled(value) ? fallback : (value as T);
 }
 
-/** URL đã điền, hoặc null nếu ô còn trống. */
+/** URL đã điền, hoặc null nếu ô còn trống hoặc phần đó dựng bằng code (PROCEDURAL). */
 export function assetUrl(value: string): string | null {
-  return isUnfilled(value) ? null : value;
+  return isUnfilled(value) || value === PROCEDURAL ? null : value;
 }
 
 /** Danh sách đường dẫn các ô còn trống, ví dụ ["gameModes.kayak_rush.kayakModelUrl", "graphicsSettings.bloomIntensity"]. */

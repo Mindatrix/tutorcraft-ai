@@ -28,18 +28,14 @@ const MAX_BYTES = 8 * 1024 * 1024;
 
 // tên file trong manifest (glb('<tên>')) -> [từ khóa tìm kiếm, regex tên model bắt buộc khớp]
 const MODELS = {
+  // Chỉ còn Kayak Rush & Multiverse Portal; 3 game sông nước mới tải theo danh mục tài nguyên.
   kayak: ['low poly kayak', /kayak|canoe|boat|raft/i], hat_propeller: ['propeller hat', /propeller|beanie/i],
   hat_wizard: ['wizard hat', /wizard|witch|mage/i], hat_jester: ['jester hat', /jester|clown/i],
   hat_hardhat: ['hard hat helmet construction', /hard.?hat|construction|helmet/i], log_spinning: ['wooden log', /\blog\b|trunk|timber/i],
   ice_block: ['ice cube block', /\bice\b/i], plant_monster: ['plant monster', /plant|flower|cactus|venus|carnivor/i],
   scarlet_princess: ['female warrior', /warrior|knight|princess|heroine|swordswoman/i], boss: ['dark knight', /knight|boss|demon|monster|golem|orc|dragon/i],
   world_castle: ['castle', /castle|fortress|tower/i], world_cyberpunk: ['cyberpunk city', /cyber|neon|sci.?fi|futur/i],
-  world_desert: ['desert ruins', /desert|ruin|temple|pyramid/i], cosmic_table: ['sci-fi table', /table|desk|altar/i],
-  dino_green: ['cartoon dinosaur', /dino|rex|raptor|dragon/i], dino_friend: ['baby dinosaur', /dino|rex|raptor/i],
-  iron_cage: ['cage', /\bcage\b/i], spiky_beetle: ['beetle', /beetle|bug|insect|spider/i],
-  gacha_egg: ['dinosaur egg', /egg/i], isometric_office: ['isometric office', /office|room|desk/i],
-  agent_orion: ['robot', /robot|bot|android|mech/i], agent_kai: ['cute robot', /robot|bot|android|mech/i],
-  agent_quinn: ['android girl', /android|robot|girl|cyborg/i], student_avatar: ['student character', /student|kid|boy|girl|character|school/i],
+  world_desert: ['desert ruins', /desert|ruin|temple|pyramid/i],
 };
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));

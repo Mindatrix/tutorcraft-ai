@@ -45,7 +45,11 @@ export default function WorldPicker({ scenario, value, onChange }: { scenario: S
           const m = GAME_MODES[id];
           return (
             <Tile key={id} active={race || value === id} onClick={race ? undefined : () => onChange(id)} tone={TONES[i % TONES.length]} title={`${m.icon} ${m.name}`} sub={m.genre} badge={m.status === 'upgraded' ? 'Nâng cấp' : 'Mới'}>
-              <Image src={`/modes/${id}.webp`} alt={`${m.name}: ảnh trong game`} fill sizes="(min-width:1024px) 18vw, (min-width:640px) 30vw, 45vw" className="object-cover transition-transform duration-500 group-hover:scale-105" />
+              {m.preview ? (
+                <Image src={m.preview} alt={`${m.name}: ảnh trong game`} fill sizes="(min-width:1024px) 18vw, (min-width:640px) 30vw, 45vw" className="object-cover transition-transform duration-500 group-hover:scale-105" />
+              ) : (
+                <div className="grid h-full w-full place-items-center bg-[radial-gradient(circle_at_50%_40%,#1e3a3a,#0f172a)] text-4xl" aria-hidden>{m.icon}</div>
+              )}
             </Tile>
           );
         })}
