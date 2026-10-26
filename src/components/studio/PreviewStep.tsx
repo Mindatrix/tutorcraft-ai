@@ -127,6 +127,7 @@ export default function PreviewStep({ draft, onBack, onPublished }: { draft: Stu
             cefrLevel: s.cefrLevel || undefined,
             level: s.level,
             gameMode: s.gameMode ?? undefined,
+            scenarioKey: s.scenarioKey,
             examType: s.scenario === 'coop_raid' ? 'group' : 'individual',
           },
         }),

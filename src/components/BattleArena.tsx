@@ -31,6 +31,8 @@ import {
   type StoryBeat,
   type TeamRace,
   levelLabel,
+  stageForProgress,
+  type SubtitleLine,
 } from '../engine';
 import { dropResult, load, queueResult, remove, save, studentKey } from '../client/storage';
 import { initSfx, play, setMuted } from '../client/sfx';
@@ -41,6 +43,7 @@ import dynamic from 'next/dynamic';
 import RaceTrack from './RaceTrack';
 import Scenery from './scenery/Scenery';
 import ModeStage, { StageFrame } from './modes/ModeStage';
+import SubtitleBar from './modes/SubtitleBar';
 
 // Three.js is heavy: load it only when a Boat Race actually starts.
 const KayakRush = dynamic(() => import('./modes/KayakRush'), { ssr: false });
@@ -71,6 +74,8 @@ export interface ArenaBattle {
   totalQuestions: number;
   /** Boss HP weighted by question format (from the server). */
   bossMaxHp?: number;
+  /** Story subtitles of the battle's scenario, by stage (1..8). */
+  subtitles?: Record<number, SubtitleLine[]>;
 }
 
 interface Leaderboard {
@@ -143,6 +148,9 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
   const display = feedback?.state ?? view?.state ?? null;
   const question = feedback?.question ?? view?.question ?? null;
   const theme = themeForQuestion(config.themes, display?.idx ?? 0);
+  // Story stage from question progress (the server match clock takes over in phase B).
+  const stage = stageForProgress(question?.index ?? display?.idx ?? 0, view?.totalQuestions ?? battle.totalQuestions);
+  const subtitleLines = battle.subtitles?.[stage] ?? [];
   const playerName = anonymous ? 'Anonymous' : nickname || 'Hero';
   const timeLeft = Math.max(0, Math.ceil((deadline - clock) / 1000));
   const freezeLeft = Math.max(0, Math.ceil((frozenUntil - clock) / 1000));
@@ -568,6 +576,10 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
             />
           );
         })()}
+        {/* Story subtitles (A2): share of English follows the level; below the stage, never over the answers */}
+        {(gamified || isRace) && phase !== 'lobby' && display && subtitleLines.length > 0 && (
+          <SubtitleBar key={stage} lines={subtitleLines} level={config.level} title={`Phụ đề chặng ${stage}`} />
+        )}
 
         {/* Story beats: boss transformation, enrage taunts, quest completions */}
         {gamified && phase === 'playing' && beats.length > 0 && (

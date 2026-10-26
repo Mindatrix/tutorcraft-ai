@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Loader2 } from 'lucide-react';
-import { defaultBoss, normalizeConfig, sanitizeBoss } from '../engine';
+import { defaultBoss, normalizeConfig, sanitizeBoss, sanitizeSubtitleMap } from '../engine';
 import BattleArena, { type ArenaBattle, type Prefs } from './BattleArena';
 import { load, save } from '../client/storage';
 
@@ -21,6 +21,7 @@ function parse(raw: Record<string, unknown>): ArenaBattle {
     classCode: typeof rawConfig.classCode === 'string' ? rawConfig.classCode : '',
     totalQuestions: Math.max(1, Number(raw.totalQuestions) || 1),
     bossMaxHp: Number(raw.bossMaxHp) > 0 ? Number(raw.bossMaxHp) : undefined,
+    subtitles: sanitizeSubtitleMap(raw.subtitles),
   };
 }
 

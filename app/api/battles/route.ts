@@ -12,6 +12,7 @@ import {
 import { demoLoadedBattle, loadBattle, loadBattleByCode, publicBattle, saveBattle } from '../../../src/server/battles';
 import { clientKey, rateLimit, rateLimitShared } from '../../../src/server/rateLimit';
 import { UNAUTHORIZED, ensureTutorProfile, requireTutor } from '../../../src/server/auth';
+import { scenarioSubtitles } from '../../../src/server/scenarios';
 
 /** Publish a battle the tutor reviewed and edited in the Studio. */
 export async function POST(req: Request) {
@@ -76,5 +77,7 @@ export async function GET(req: Request) {
   if (!battle) return NextResponse.json({ error: 'Không tìm thấy đấu trường.' }, { status: 404 });
 
   // Never the questions or answers — those are served one at a time by /api/session.
-  return NextResponse.json(publicBattle(battle), { headers: { 'Cache-Control': 'no-store' } });
+  // Story subtitles (by stage) come along: they are the scenario's text, not answers.
+  const subtitles = await scenarioSubtitles(battle.config.scenarioKey);
+  return NextResponse.json({ ...publicBattle(battle), subtitles }, { headers: { 'Cache-Control': 'no-store' } });
 }

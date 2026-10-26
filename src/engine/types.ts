@@ -160,6 +160,8 @@ export interface BattleConfig {
   typeCounts?: Partial<Record<QuestionType, number>>;
   /** 3D game world. Missing = classic 2D canvas (battles saved before worlds existed). */
   gameMode?: GameMode;
+  /** Story scenario of that world (game_scenarios.id, e.g. "dino-01"): stages, characters, subtitles. */
+  scenarioKey?: string;
 }
 
 export interface BattleScaling {

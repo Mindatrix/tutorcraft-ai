@@ -18,6 +18,8 @@ export interface StudioSettings {
   questionCount?: number;
   /** 3D game world; null = classic 2D canvas. Boat Race always plays Kayak Rush. */
   gameMode?: GameMode | null;
+  /** Story scenario in that world (game_scenarios.id): stages, characters, level-aware subtitles. */
+  scenarioKey?: string;
 }
 
 export interface StudioDraft {

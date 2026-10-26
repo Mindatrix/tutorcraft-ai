@@ -11,6 +11,7 @@ export * from './schema';
 export * from './fallback';
 export * from './docx';
 export * from './chunking';
+export * from './subtitles';
 export * from './assetLoader';
 export * from './scoring';
 export * from './race';

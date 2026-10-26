@@ -22,6 +22,7 @@ import {
   MIN_QUESTIONS,
   MAX_QUESTIONS,
   DEFAULT_BOSS_MODE,
+  resolveGameMode,
   DOC_MAX_CHARS,
   DOCX_MIME,
   extractDocxText,
@@ -31,6 +32,7 @@ import {
 import { field, label, type StudioDraft, type StudioSettings } from './types';
 import { authFetch } from '../../client/supabaseBrowser';
 import WorldPicker from './WorldPicker';
+import ScenarioPicker from './ScenarioPicker';
 import { canInflateInBrowser, inflateRawBrowser } from '../../client/inflate';
 
 const TEXT_TYPES = ['text/plain', 'text/markdown'];
@@ -155,6 +157,7 @@ export default function LessonStep({ initial, onGenerated }: { initial: StudioSe
         questionTypes: s.questionTypes,
         questionCount: s.questionCount || undefined,
         gameMode: s.gameMode ?? undefined,
+        scenarioKey: s.scenarioKey,
         examType: s.scenario === 'coop_raid' ? 'group' : 'individual',
         document,
       };
@@ -236,6 +239,7 @@ export default function LessonStep({ initial, onGenerated }: { initial: StudioSe
       <Section n={2} title="Chọn kiểu chơi" hint="Kéo hoặc bấm vào thẻ để chọn.">
         <ScenarioCarousel3D value={s.scenario} onChange={(id) => set('scenario', id)} />
         <WorldPicker scenario={s.scenario} value={s.gameMode} onChange={(m) => set('gameMode', m)} />
+        <ScenarioPicker game={resolveGameMode({ scenario: s.scenario, gameMode: s.gameMode ?? undefined })} value={s.scenarioKey} onChange={(id) => set('scenarioKey', id)} />
       </Section>
 
       <Section n={3} title="Mức độ khó" hint="Dành cho học viên từ 5 tuổi. Càng lên cao câu càng khó, thời gian mỗi câu càng ngắn, bot đua thuyền càng mạnh.">

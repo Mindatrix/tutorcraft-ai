@@ -133,7 +133,13 @@ export function normalizeConfig(raw: Record<string, unknown>): BattleConfig {
     questionCount: normalizeQuestionCount(raw.questionCount),
     typeCounts: normalizeTypeCounts(raw.typeCounts),
     gameMode: normalizeGameMode(raw.gameMode, scenario),
+    scenarioKey: normalizeScenarioKey(raw.scenarioKey),
   };
+}
+
+/** game_scenarios.id: lower-case slug such as "dino-01" / "kayak-03". */
+export function normalizeScenarioKey(raw: unknown): string | undefined {
+  return typeof raw === 'string' && /^[a-z][a-z0-9_-]{1,39}$/.test(raw.trim()) ? raw.trim() : undefined;
 }
 
 /** JSON schema sent to Gemini's structured output (OpenAPI subset). */
