@@ -4,22 +4,27 @@ import path from 'node:path';
 import { Readable } from 'node:stream';
 
 // DEVELOPMENT ONLY: serves the local 3D library (~/Documents/3D_tutorcraft, outside the repo)
-//   /dev-assets/web/<file> → <library>/_optimized/<file>
-//   /dev-assets/low/<file> → <library>/_low/<file>
-// Production uses NEXT_PUBLIC_ASSET_BASE_URL (a CDN); this route answers 404 there.
+//   /dev-assets/web/<file>  → <library>/_optimized/<file>   (.glb)
+//   /dev-assets/low/<file>  → <library>/_low/<file>         (.glb)
+//   /dev-assets/hdri/<file> → <library>/hdri/<file>         (.hdr, 2K skies; the 1K ones are in /public)
+// Production uses NEXT_PUBLIC_ASSET_BASE_URL (a CDN with the same three folders); this route answers 404 there.
 
 const ROOT = path.resolve((process.env.TC_3D_DIR || '~/Documents/3D_tutorcraft').replace(/^~/, os.homedir()));
-const DIRS: Record<string, string> = { web: '_optimized', low: '_low' };
+const DIRS: Record<string, { dir: string; ext: string; type: string }> = {
+  web: { dir: '_optimized', ext: '.glb', type: 'model/gltf-binary' },
+  low: { dir: '_low', ext: '.glb', type: 'model/gltf-binary' },
+  hdri: { dir: 'hdri', ext: '.hdr', type: 'image/vnd.radiance' },
+};
 
 export async function GET(_req: Request, ctx: RouteContext<'/dev-assets/[...path]'>) {
   if (process.env.NODE_ENV !== 'development') return new Response('Not found', { status: 404 });
-  const [quality, ...rest] = (await ctx.params).path;
-  const dir = DIRS[quality ?? ''];
-  if (!dir || !rest.length || !rest.at(-1)!.toLowerCase().endsWith('.glb')) return new Response('Not found', { status: 404 });
-  const base = path.join(ROOT, dir);
+  const [kind, ...rest] = (await ctx.params).path;
+  const d = DIRS[kind ?? ''];
+  if (!d || !rest.length || !rest.at(-1)!.toLowerCase().endsWith(d.ext)) return new Response('Not found', { status: 404 });
+  const base = path.join(ROOT, d.dir);
   const file = path.resolve(base, ...rest);
   if (!file.startsWith(base + path.sep) || !existsSync(file)) return new Response('Not found', { status: 404 });
   const size = statSync(file).size;
   const body = Readable.toWeb(createReadStream(file)) as ReadableStream;
-  return new Response(body, { headers: { 'Content-Type': 'model/gltf-binary', 'Content-Length': String(size), 'Cache-Control': 'public, max-age=3600' } });
+  return new Response(body, { headers: { 'Content-Type': d.type, 'Content-Length': String(size), 'Cache-Control': 'public, max-age=3600' } });
 }

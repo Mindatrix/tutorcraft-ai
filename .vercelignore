@@ -1,3 +1,5 @@
 .test-build
 tc_preview
 .preview-tmp
+# HDRI 2K: served from the asset CDN, never from the deployment
+public/assets/hdri/*_2k.hdr

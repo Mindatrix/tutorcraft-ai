@@ -54,6 +54,23 @@ export function lib(id: string, quality: AssetQuality = 'high'): string {
   return `${assetBase()}/${quality === 'low' ? 'low' : 'web'}/${a.file}`;
 }
 
+export type HdriSize = '2k' | '1k';
+
+/**
+ * Sky image (HDRI, Poly Haven CC0). The 1K file is small and ships in /public: phones use it, and so
+ * does everyone when the 2K one cannot be loaded. The 2K file (4–7 MB each) stays out of git, next to
+ * the model library: NEXT_PUBLIC_ASSET_BASE_URL/hdri/… (dev: ~/Documents/3D_tutorcraft/hdri).
+ */
+export function hdri(key: string, size: HdriSize = '2k'): string {
+  return size === '1k' ? `/assets/hdri/river_${key}_1k.hdr` : `${assetBase()}/hdri/river_${key}_2k.hdr`;
+}
+
+/** The same sky in another size ("river_day_2k" ⇄ "river_day_1k"); other URLs pass through. */
+export function hdriSize(url: string, size: HdriSize): string {
+  const m = /river_([a-z]+)_[12]k\.hdr$/.exec(url);
+  return m ? hdri(m[1], size) : url;
+}
+
 /** Same model, other quality: "/…/web/x.glb" ⇄ "/…/low/x.glb". */
 export function withQuality(url: string, quality: AssetQuality): string {
   return url.replace(/\/(web|low)\//, `/${quality === 'low' ? 'low' : 'web'}/`);

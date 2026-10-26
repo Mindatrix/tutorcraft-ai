@@ -1,7 +1,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { PROCEDURAL, THREE_ASSET_MANIFEST, THREE_DEFAULTS, assetOr, assetUrl, isUnfilled, missingThreeAssets } from '../src/config/threeAssets';
-import { ASSET_LIBRARY, lib, libraryAsset, withQuality } from '../src/config/assetLibrary';
+import { existsSync, readdirSync } from 'node:fs';
+import { ASSET_LIBRARY, assetBase, hdri, hdriSize, lib, libraryAsset, withQuality } from '../src/config/assetLibrary';
 import { GAME_MODE_IDS } from '../src/engine/gameModes';
 
 test('3D manifest: placeholders are detected, filled values pass through', () => {
@@ -61,4 +62,20 @@ test('A3.6: manifest points at real library models; packs are non-empty id lists
   assert.match(lib('does_not_exist'), /^\[ĐIỀN TẠI ĐÂY/);
   assert.equal(withQuality(lib('kayak_boat'), 'low').replace(/^.*\/low\//, ''), 'kayak/kayak_boat.glb');
   assert.ok(ASSET_LIBRARY.length >= 200);
+});
+
+test('HDRI skies: 2K comes from the asset base (out of git), each has a 1K twin in /public, no 2K file in /public', () => {
+  const m = THREE_ASSET_MANIFEST;
+  const skies = [...Object.values(m.riverWorld.hdriUrls), m.gameModes.kayak_rush.skyboxUrl, ...Object.values(m.gameModes.multiverse_portal.hdriSkyboxUrls)] as string[];
+  assert.equal(skies.length, 9);
+  for (const url of skies) {
+    assert.ok(url.startsWith(`${assetBase()}/hdri/`) && /\/river_[a-z]+_2k\.hdr$/.test(url), url);
+    const low = hdriSize(url, '1k');
+    assert.match(low, /^\/assets\/hdri\/river_[a-z]+_1k\.hdr$/);
+    assert.ok(existsSync(`public${low}`), `${low} missing`);
+    assert.equal(hdriSize(low, '2k'), url, 'and back');
+  }
+  assert.equal(hdri('day', '1k'), '/assets/hdri/river_day_1k.hdr');
+  assert.equal(hdriSize('/x/model.glb', '1k'), '/x/model.glb', 'other URLs pass through');
+  assert.deepEqual(readdirSync('public/assets/hdri').filter((f) => /_2k\.hdr$/.test(f)), []);
 });

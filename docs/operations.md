@@ -45,6 +45,8 @@ Thư viện gốc nằm ngoài repo, ở `~/Documents/3D_tutorcraft` (khoảng 7
 2. Tối ưu bản thấp: lệnh như trên, nhưng thư mục đích là `~/Documents/3D_tutorcraft/_low` và thêm cờ `--low`.
 3. Dựng danh mục: `node scripts/build-asset-catalog.mjs`. Đây là script **duy nhất** ghi `content/asset_catalog.json` và `content/asset_coverage.json`; bản Python cũ (`build-asset-catalog.py`) đã bị xoá, đừng tạo lại script thứ hai ghi cùng file.
 4. Kiểm tra bằng Blender: `/Applications/Blender.app/Contents/MacOS/Blender --background --python scripts/validate-glb.py -- ~/Documents/3D_tutorcraft/_optimized ~/Documents/3D_tutorcraft/_report/validate.json --thumbs ~/Documents/3D_tutorcraft/_report/thumbs`
+   - Script báo thiếu chất liệu, màu nền đen, ảnh hỏng, sai đơn vị, và **phần bề mặt phủ ảnh gần đen**: lấy mẫu ảnh tại tâm từng mặt, tính theo diện tích; trên 40% thì báo lỗi. Phép kiểm này bắt được trường hợp chất liệu vẫn có ảnh nhưng ảnh đen từng mảng, ví dụ `camp_grill` bị Meshy dựng nhầm hai tấm phông đen.
+   - Model tối có chủ ý (quái bóng tối, đất ẩm, quần áo đen) được ghi trong `DARK_OK` ở đầu script. Chỉ thêm vào đó sau khi đã xem ảnh chụp.
 5. Chạy `npm test`. Bộ test kiểm tra độ phủ, đảm bảo manifest không còn ô trống, và giữ ngân sách 40 MB (bản cao) / 15 MB (bản thấp) cho mỗi trận.
 
 Ngân sách của bộ tối ưu (số mặt, cạnh ảnh tối đa, trần dung lượng):
@@ -58,15 +60,28 @@ Ngân sách của bộ tối ưu (số mặt, cạnh ảnh tối đa, trần dun
 
 Model quét từ Meshy chia UV thành hàng nghìn mảnh, nên bộ giản lược thường bị "kẹt". Script tự chuyển sang chế độ *Permissive* (có tính tới UV). Nếu vẫn quá nặng, script lùi về chế độ *Sloppy*.
 
+`optimize-glb.mjs` ghi an toàn: dựng GLB trong bộ nhớ, ghi ra tệp tạm cạnh tệp đích, kiểm đầu tệp (chữ `glTF`, phiên bản 2, độ dài khớp, khối đầu là JSON), đạt thì mới đổi tên đè lên tệp cũ. Lỗi giữa chừng thì tệp cũ còn nguyên. Không dùng `io.write()` với tên tệp không có đuôi `.glb`: hàm đó chọn định dạng theo đuôi tệp, nên sẽ ghi ra glTF dạng JSON kèm tệp rời. Ngày 27/10 lỗi này đã làm hỏng cả thư viện.
+
+### Ảnh trời HDRI
+
+- Có 5 bầu trời (Poly Haven, CC0), mỗi bầu trời 2 cỡ, tải bằng `node scripts/fetch-hdri.mjs`.
+- **Bản 1K** (1,2–1,7 MB mỗi ảnh, tổng 6,6 MB) nằm trong `public/assets/hdri/` và trong git. Điện thoại dùng bản này, và mọi máy cũng dùng nó khi không tải được bản 2K: `hdriSize(url, '1k')` trong `src/config/assetLibrary.ts`.
+- **Bản 2K** (4–7 MB mỗi ảnh, tổng 26 MB) **không** nằm trong git hay bản triển khai: `.gitignore` và `.vercelignore` chặn `public/assets/hdri/*_2k.hdr`. Bản này nằm cùng thư viện model, ở `~/Documents/3D_tutorcraft/hdri/`. Manifest lấy địa chỉ qua `hdri('<tên>')`, tức là `NEXT_PUBLIC_ASSET_BASE_URL/hdri/river_<tên>_2k.hdr`; khi dev thì route `/dev-assets/hdri/…` phục vụ.
+
 Phục vụ model:
 - **Khi dev:** route `/dev-assets/web|low/<file>` đọc thẳng thư viện trên máy.
-- **Khi production:** đặt `NEXT_PUBLIC_ASSET_BASE_URL` trỏ tới CDN, trong đó có hai thư mục `web/` (nội dung của `_optimized`) và `low/` (nội dung của `_low`). Nên dùng Cloudflare R2 vì không tính phí băng thông: một lớp 50 em × khoảng 30 MB là khoảng 1,5 GB mỗi buổi, vượt xa gói Free của Supabase.
-- **Chưa có CDN:** mọi model trả về 404, và cảnh tự giữ mô hình dựng bằng code.
+- **Khi production:** đặt `NEXT_PUBLIC_ASSET_BASE_URL` trỏ tới CDN, trong đó có ba thư mục: `web/` (nội dung của `_optimized`), `low/` (nội dung của `_low`) và `hdri/` (các ảnh trời 2K trong `~/Documents/3D_tutorcraft/hdri`). Nên dùng Cloudflare R2 vì không tính phí băng thông: một lớp 50 em × khoảng 30 MB là khoảng 1,5 GB mỗi buổi, vượt xa gói Free của Supabase.
+- **Chưa có CDN:** mọi model trả về 404, và cảnh tự giữ mô hình dựng bằng code. Trời thì dùng bản 1K trong `public/`.
 
 ## Việc cần làm (phát sinh sau giai đoạn A, 27/10/2026)
 
 - **Thời gian chờ Gemini khi sinh câu hỏi.** Hiện chờ 17 s cho model chính và 27 s cho model phụ (`src/server/gemini.ts`, tính theo số câu × trọng số dạng bài). Ngày 26/10 đo thực tế mất khoảng 31 s cho 10 câu mức Beginner, nên dễ rơi về ngân hàng câu dự phòng.
-  - Cần làm: nâng thời gian chờ theo số đo thật và thêm model dự phòng thứ ba, mà vẫn giữ tổng thời gian dưới giới hạn của hàm trên Vercel.
+  - Cần làm: nâng thời gian chờ theo số đo thật và thêm model dự phòng thứ ba, mà vẫn giữ tổng thời gian dưới giới hạn của hàm trên Vercel. Route sinh câu hỏi hiện chưa đặt `maxDuration`, nên chạy theo mặc định của Vercel.
+  - Chữa tạm, không cần sửa code: đặt biến môi trường `GEMINI_PRIMARY_TIMEOUT_MS` (ví dụ `35000`) và `GEMINI_SECONDARY_TIMEOUT_MS` trên Vercel. Hai biến này thay hẳn công thức tính theo số câu.
   - Coi là xong khi: 10 lần sinh liên tiếp không lần nào phải dùng ngân hàng dự phòng.
 - **Bộ nhớ GPU trên điện thoại tầm trung.** Texture đang là WebP chứ không phải KTX2 (máy chưa có `toktx`), nên GPU phải giải nén mỗi ảnh ra RGBA đầy đủ.
-  - Cần làm: đo khi chơi `dino-02` (kịch bản nặng nhất: 34,5 MB bản cao / 11,4 MB bản thấp) trên 1–2 máy Android tầm trung và một iPad đời cũ. Nếu máy giật, tràn bộ nhớ hoặc mất ngữ cảnh WebGL thì chuyển bản cao sang KTX2.
+  - Cần làm: đo khi chơi kịch bản nặng nhất trên 1–2 máy Android tầm trung và một iPad đời cũ. Ngày 27/10, kịch bản nặng nhất là `dino-01`: 36,2 MB bản cao / 13,0 MB bản thấp, tính cả bản `palm_b` và `tree_nursery_pot` mới có màu; xếp sau là `dino-02` với 33,5 / 10,5 MB. Nếu máy giật, tràn bộ nhớ hoặc mất ngữ cảnh WebGL thì chuyển bản cao sang KTX2.
+  - Coi là xong khi: có số đo FPS và bộ nhớ, kèm quyết định giữ WebP hay chuyển KTX2.
+- **Model hỏng cần làm lại bên Meshy: `camp_grill`.** File mới thay ngày 27/10 vẫn còn hai tấm phông đen: 84% bề mặt, 93 trên 2.051 mặt nằm ở hai mặt phẳng y = ±0,95; cỏ và đá rơi vãi quanh. Lỗi nằm ở file gốc, không do tối ưu, và không vá được gọn bằng code.
+  - Cần làm: tạo lại một bếp nướng đứng riêng, không có nền hay mặt đất, rồi chạy `optimize-glb.mjs --files camp/camp_grill.glb --force` (bản cao và bản thấp) và `validate-glb.py`.
+  - Coi là xong khi: Blender không còn báo bề mặt đen cho file này.

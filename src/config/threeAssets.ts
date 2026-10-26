@@ -10,10 +10,11 @@
 //
 // 6 game chính thức (src/engine/gameModes.ts): kayak_rush · multiverse_portal · summer_camp · river_fishing · river_survival · dino_journey.
 // Bộ "thế giới sông" và bộ nhân vật dùng chung cho Kayak, Trại Hè, Câu Cá, Sinh Tồn: điện thoại tải một lần rồi lưu cache
-// (src/components/modes/three/assetLoader.ts). Ảnh trời HDRI (Poly Haven, CC0) nằm trong /public/assets/hdri.
+// (src/components/modes/three/assetLoader.ts). Ảnh trời HDRI (Poly Haven, CC0): bản 1K trong /public/assets/hdri,
+// bản 2K nằm cùng thư viện model, ngoài git (hdri() trong assetLibrary.ts).
 
 import { GameMode } from '../engine/types';
-import { ASSET_LIBRARY, PROCEDURAL, lib } from './assetLibrary';
+import { ASSET_LIBRARY, PROCEDURAL, hdri, lib } from './assetLibrary';
 
 export { PROCEDURAL };
 export const FILL = '[ĐIỀN TẠI ĐÂY]';
@@ -60,7 +61,7 @@ export interface RiverWorldAssets {
   backdropIds: AssetIds;
   /** Thuyền nhôm nhỏ (Câu Cá) và kayak (Kayak Rush). */
   boatModelUrls: { aluminium: Fill; kayak: Fill };
-  /** HDRI (Poly Haven, CC0): bản 2K cho máy tính; bản 1K cùng tên đổi _2k → _1k cho điện thoại. Tải bằng scripts/fetch-hdri.mjs. */
+  /** HDRI (Poly Haven, CC0): bản 2K cho máy tính (CDN); bản 1K trong /public cho điện thoại và làm đường lùi: hdriSize(url, '1k'). Tải bằng scripts/fetch-hdri.mjs. */
   hdriUrls: { dawn: Fill; day: Fill; sunset: Fill; night: Fill; cloudy: Fill };
   /** Vân đất PBR: PROCEDURAL (shader) cho tới khi có ảnh tex_mud / tex_sand trong thư viện. */
   groundTextureDirs: { grass: Fill; mud: Fill; sand: Fill; pebbles: Fill; rock: Fill };
@@ -182,11 +183,11 @@ export const THREE_ASSET_MANIFEST: ThreeAssetManifest = {
     backdropIds: ids('river_world/mini'),
     boatModelUrls: { aluminium: lib('river_boat_row'), kayak: lib('kayak_boat') },
     hdriUrls: {
-      dawn: '/assets/hdri/river_dawn_2k.hdr',
-      day: '/assets/hdri/river_day_2k.hdr',
-      sunset: '/assets/hdri/river_sunset_2k.hdr',
-      night: '/assets/hdri/river_night_2k.hdr',
-      cloudy: '/assets/hdri/river_cloudy_2k.hdr',
+      dawn: hdri('dawn'),
+      day: hdri('day'),
+      sunset: hdri('sunset'),
+      night: hdri('night'),
+      cloudy: hdri('cloudy'),
     },
     groundTextureDirs: { grass: PROCEDURAL, mud: PROCEDURAL, sand: PROCEDURAL, pebbles: PROCEDURAL, rock: PROCEDURAL },
     water: { normalMapUrl: PROCEDURAL, foamMapUrl: PROCEDURAL },
@@ -202,7 +203,7 @@ export const THREE_ASSET_MANIFEST: ThreeAssetManifest = {
     [GameMode.KAYAK_RUSH_3D]: {
       kayakModelUrl: lib('kayak_boat'),
       riverTextureUrl: PROCEDURAL,
-      skyboxUrl: '/assets/hdri/river_day_2k.hdr',
+      skyboxUrl: hdri('day'),
       hatModelUrls: { propeller: PROCEDURAL, wizard: PROCEDURAL, jester: PROCEDURAL, hardhat: PROCEDURAL },
       obstacleModelUrls: { spinningLog: lib('river_log_fallen'), iceBlock: PROCEDURAL, plantMonster: PROCEDURAL },
       palette: { river: '#36c3cf', riverDeep: '#1b8fa6', foam: '#f4fbff', bank: '#7cc36a' },
@@ -214,7 +215,7 @@ export const THREE_ASSET_MANIFEST: ThreeAssetManifest = {
       heroAnimations: { idle: 'Idle_Step_Turn_Left', attack: 'Large_step_then_high_kick', hit: 'Step_Back', run: 'Running', defeat: PROCEDURAL },
       bossModelUrl: lib('mv_boss'),
       worldModelUrls: { castle: lib('mv_world_castle'), cyberpunk: lib('mv_world_cyberpunk'), desert: lib('mv_world_desert') },
-      hdriSkyboxUrls: { castle: '/assets/hdri/river_cloudy_2k.hdr', cyberpunk: '/assets/hdri/river_night_2k.hdr', desert: '/assets/hdri/river_sunset_2k.hdr' },
+      hdriSkyboxUrls: { castle: hdri('cloudy'), cyberpunk: hdri('night'), desert: hdri('sunset') },
       portalRimColor: '#c084fc',
       fallback2d: { spriteSheetUrl: PROCEDURAL },
     },

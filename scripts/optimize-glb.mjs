@@ -9,6 +9,8 @@
 // (bản thấp: 3 MB / 0,5 MB); vượt trần thì làm lại chặt hơn (tối đa 3 lượt).
 // Model quét (Meshy) có nhiều đường nối UV làm bộ giản lược thường "kẹt": lượt 2 dùng chế độ
 // Permissive (cho gộp qua đường nối), lượt 3 dùng Sloppy (chỉ theo vị trí) nếu vẫn quá nặng.
+// Ghi an toàn: GLB dựng trong bộ nhớ, ghi ra tệp tạm cạnh tệp đích, kiểm đầu tệp glTF (magic, phiên bản 2,
+// độ dài, khối JSON) rồi mới đổi tên đè lên. Lỗi giữa chừng thì tệp cũ còn nguyên.
 import fs from 'node:fs';
 import path from 'node:path';
 import { NodeIO } from '@gltf-transform/core';
@@ -37,6 +39,37 @@ await MeshoptEncoder.ready;
 await MeshoptSimplifier.ready;
 await MeshoptDecoder.ready;
 const io = new NodeIO().registerExtensions(ALL_EXTENSIONS).registerDependencies({ 'meshopt.decoder': MeshoptDecoder, 'meshopt.encoder': MeshoptEncoder });
+
+/**
+ * Why a buffer is not a valid GLB 2.0 file, or null when it is: "glTF" magic, version 2, header length
+ * equal to the byte count, first chunk JSON. (27/10: a write through io.write() to a non-.glb name
+ * produced .gltf JSON + side files and broke the whole library, so outputs are checked before use.)
+ */
+export function glbProblem(buf) {
+  if (buf.byteLength < 20) return `quá ngắn (${buf.byteLength} byte)`;
+  const v = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
+  if (v.getUint32(0, true) !== 0x46546c67) return 'đầu tệp không phải "glTF"';
+  if (v.getUint32(4, true) !== 2) return `phiên bản glTF ${v.getUint32(4, true)}, cần 2`;
+  if (v.getUint32(8, true) !== buf.byteLength) return `độ dài ghi trong đầu tệp ${v.getUint32(8, true)} ≠ ${buf.byteLength} byte`;
+  if (v.getUint32(16, true) !== 0x4e4f534a) return 'khối đầu tiên không phải JSON';
+  return null;
+}
+
+/** Write next to the target, check the header, then rename over it: the old file stays until the new one is good. */
+function writeGlbAtomic(out, glb) {
+  const bad = glbProblem(glb);
+  if (bad) throw new Error(`GLB tạo ra không hợp lệ: ${bad}`);
+  fs.mkdirSync(path.dirname(out), { recursive: true });
+  const tmp = `${out}.${process.pid}.tmp`;
+  try {
+    fs.writeFileSync(tmp, glb);
+    const back = glbProblem(fs.readFileSync(tmp));
+    if (back) throw new Error(`tệp tạm ghi ra không hợp lệ: ${back}`);
+    fs.renameSync(tmp, out);
+  } finally {
+    fs.rmSync(tmp, { force: true });
+  }
+}
 
 function walk(d, out = []) {
   for (const e of fs.readdirSync(d, { withFileTypes: true })) {
@@ -231,21 +264,19 @@ for (const f of files) {
   try {
     let b = budget(rel, LOW);
     let res;
-    let bytes;
+    let glb;
     for (let attempt = 0; attempt < 3; attempt++) {
       res = await optimizeOnce(f, rel, b);
-      bytes = (await io.writeBinary(res.doc)).byteLength;
-      if (bytes <= b.capMb * 1e6) break;
+      glb = await io.writeBinary(res.doc);
+      if (glb.byteLength <= b.capMb * 1e6) break;
       // Over the cap: tighter triangles and smaller textures, then try again.
       b = { ...b, tris: Math.round(b.tris * 0.6), tex: Math.max(256, b.tex / 2) };
     }
-    fs.mkdirSync(path.dirname(out), { recursive: true });
-    await io.write(out, res.doc);
+    writeGlbAtomic(out, glb);
     const after = fs.statSync(out).size;
     const over = after > budget(rel, LOW).capMb * 1e6;
     report.push({ file: rel, before, after, tris0: res.tris0, tris1: res.tris1, how: res.how, over, sec: Math.round((Date.now() - t0) / 1000) });
     console.log(`${over ? '!' : '✓'} ${rel}: ${(before / 1e6).toFixed(1)} → ${(after / 1e6).toFixed(2)} MB, ${res.tris0} → ${res.tris1} tam giác (${res.how}), ${Math.round((Date.now() - t0) / 1000)}s${over ? ' — VẪN VƯỢT TRẦN' : ''}`);
-    void bytes;
   } catch (e) {
     console.log(`✗ ${rel}: ${String(e.message).slice(0, 160)}`);
     report.push({ file: rel, error: String(e.message).slice(0, 200) });

@@ -14,7 +14,20 @@ import sys
 import time
 
 import bpy
+import numpy as np
 from mathutils import Vector
+
+# A face is "dark" when its texture luminance is below DARK_LUM; a file is flagged when more than
+# DARK_SHARE of its textured surface is dark (tuned on the whole library, 27/10/2026).
+DARK_LUM = 0.12
+DARK_SHARE = 0.4
+# Looked at the renders: dark on purpose, not a defect. Add a file here only after checking its thumbnail.
+DARK_OK = {
+    'mv_minion_shadow': 'quái bóng tối, đen có chủ ý',
+    'mv_ruin_building': 'phần tối là bên trong nhà đổ, mặt ngoài xám',
+    'ground_soil_patch': 'đất ẩm màu sẫm',
+    'char_crimson_kick': 'quần áo đen',
+}
 
 argv = sys.argv[sys.argv.index('--') + 1:] if '--' in sys.argv else []
 if len(argv) < 2:
@@ -84,6 +97,62 @@ def check_material(mat):
     return issues
 
 
+_pixels = {}
+
+
+def image_pixels(img):
+    """H×W×4 array of the image (cached per image; textures are shared between meshes)."""
+    if img.name not in _pixels:
+        w, h = img.size
+        px = np.empty(w * h * 4, dtype=np.float32)
+        img.pixels.foreach_get(px)
+        _pixels[img.name] = px.reshape(h, w, 4)
+    return _pixels[img.name]
+
+
+def dark_surface(meshes):
+    """
+    Share of the textured surface whose base-colour texture is near black, sampled at each face's UV
+    centre and weighted by area. Catches what the material check cannot: a texture that exists but is
+    black over large areas (27/10: Meshy baked two black backdrop panels into camp_grill).
+    Returns None when no mesh has a base-colour texture.
+    """
+    dark_area = known_area = 0.0
+    for o in meshes:
+        me = o.data
+        n = len(me.polygons)
+        if not n or not me.uv_layers.active:
+            continue
+        area = np.empty(n, np.float32)
+        me.polygons.foreach_get('area', area)
+        start = np.empty(n, np.int32)
+        me.polygons.foreach_get('loop_start', start)
+        count = np.empty(n, np.int32)
+        me.polygons.foreach_get('loop_total', count)
+        mat = np.empty(n, np.int32)
+        me.polygons.foreach_get('material_index', mat)
+        uv = np.empty(len(me.loops) * 2, np.float32)
+        me.uv_layers.active.data.foreach_get('uv', uv)
+        centre = np.add.reduceat(uv.reshape(-1, 2), start, axis=0) / count[:, None]
+        for i, slot in enumerate(o.material_slots):
+            bsdf = principled(slot.material)
+            img = linked_image(bsdf.inputs['Base Color']) if bsdf else None
+            if img is None or not img.size[0]:
+                continue
+            sel = mat == i
+            if not sel.any():
+                continue
+            px = image_pixels(img)
+            h, w = px.shape[:2]
+            x = ((centre[sel, 0] % 1) * (w - 1)).astype(int)
+            y = ((centre[sel, 1] % 1) * (h - 1)).astype(int)
+            c = px[y, x]
+            lum = 0.2126 * c[:, 0] + 0.7152 * c[:, 1] + 0.0722 * c[:, 2]
+            known_area += float(area[sel].sum())
+            dark_area += float(area[sel][lum < DARK_LUM].sum())
+    return dark_area / known_area if known_area > 0 else None
+
+
 def setup_thumb_scene():
     scn = bpy.context.scene
     scn.render.engine = 'BLENDER_EEVEE_NEXT' if 'BLENDER_EEVEE_NEXT' in [e.identifier for e in bpy.types.RenderSettings.bl_rna.properties['engine'].enum_items] else 'BLENDER_EEVEE'
@@ -124,6 +193,7 @@ for i, f in enumerate(files):
     t0 = time.time()
     try:
         bpy.ops.wm.read_factory_settings(use_empty=True)
+        _pixels.clear()  # image names ("Image_0"…) repeat from file to file
         bpy.ops.import_scene.gltf(filepath=f)
         # The glTF importer adds an "Icosphere" as the display shape of bones: not part of the file.
         bone_shapes = {pb.custom_shape for o in bpy.context.scene.objects if o.type == 'ARMATURE' for pb in o.pose.bones if pb.custom_shape}
@@ -159,6 +229,11 @@ for i, f in enumerate(files):
             elif biggest < 0.01:
                 issues.append(f'quá nhỏ ({biggest:.4f} m) — có thể sai đơn vị')
         entry['materials'] = len(mats)
+        share = dark_surface(meshes)
+        if share is not None:
+            entry['dark_pct'] = round(share * 100, 1)
+            if share > DARK_SHARE and os.path.splitext(os.path.basename(f))[0] not in DARK_OK:
+                issues.append(f'{share * 100:.0f}% bề mặt phủ ảnh gần đen → HIỆN ĐEN TỪNG MẢNG (xem ảnh chụp; nếu tối có chủ ý thì thêm vào DARK_OK)')
         entry['issues'] = sorted(set(issues))
         if THUMBS and meshes:
             cam = setup_thumb_scene()
