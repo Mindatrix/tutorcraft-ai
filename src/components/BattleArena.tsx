@@ -48,7 +48,6 @@ import SubtitleBar from './modes/SubtitleBar';
 // Three.js is heavy: load it only when a Boat Race actually starts.
 const KayakRush = dynamic(() => import('./modes/KayakRush'), { ssr: false });
 const PortalIntro = dynamic(() => import('./PortalIntro'), { ssr: false });
-const RaceSceneUnity = dynamic(() => import('./RaceSceneUnity'), { ssr: false });
 import { useContentGuard, useWindowFocused, Watermark } from './ContentGuard';
 
 /** Wall clock for event handlers (kept out of render). */
@@ -101,9 +100,8 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
   // 3D game world (visual only; null = classic 2D canvas for battles saved before worlds existed).
   const world = resolveGameMode(config);
   const plan = useMemo(() => botPlan(raceSeed(battle.id, variant, config.level), battle.totalQuestions, config.level), [battle.id, variant, config.level, battle.totalQuestions]);
-  // Renderer ladder: Unity WebGL build → Three.js scene → 2D lanes.
-  const [renderer, setRenderer] = useState<'unity' | 'three' | '2d'>('unity');
-  const noUnity = useCallback(() => setRenderer('three'), []);
+  // Renderer ladder: Three.js scene → 2D lanes.
+  const [renderer, setRenderer] = useState<'three' | '2d'>('three');
   const no3d = useCallback(() => setRenderer('2d'), []);
   const scene3d = renderer !== '2d';
   const [limits, setLimits] = useState<number[]>([]); // per-question time limits seen so far (drives the bot's pace)
@@ -523,7 +521,6 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
         )}
 
         {/* Battle scene — stays mounted into the result screen so the boss break + chest drop can play */}
-        {isRace && race && renderer === 'unity' && phase !== 'lobby' && display && <RaceSceneUnity playerPos={race.playerPos} botPos={race.botPos} result={final?.race?.result ?? null} onUnavailable={noUnity} />}
         {isRace && race && renderer === 'three' && phase !== 'lobby' && display && (
           <StageFrame tone="#5eead4">
             <KayakRush playerPos={race.playerPos} botPos={race.botPos} heroName={playerName} botName={`Bot ${levelLabel(config.level)}`} event={display.event} finished={phase === 'result'} result={final?.race?.result ?? null} onUnavailable={no3d} />

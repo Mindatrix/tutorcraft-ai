@@ -10,20 +10,6 @@
   3. `GET /api/cron/retry-results` có header `Authorization: Bearer $CRON_SECRET`. Vercel Cron gọi route này mỗi ngày (`vercel.json`). Gói Hobby chỉ cho cron chạy 1 lần/ngày; muốn dày hơn thì dùng cron-job.org hoặc GitHub Actions gọi cùng URL.
 - Cần đặt biến môi trường `CRON_SECRET` trên Vercel (một chuỗi ngẫu nhiên dài).
 
-## Bản Unity (Boat Race 3D) nằm trên CDN, không nằm trong bản triển khai
-
-- `public/unity/` đã có trong `.gitignore` và `.vercelignore`.
-- Sau mỗi lần build lại Unity:
-
-  ```bash
-  node --env-file=.env.local scripts/publish-unity-build.mjs
-  ```
-
-  Script nén gzip bản build (45 MB còn khoảng 14 MB), tải lên bucket công khai `unity-builds` của Supabase Storage, vào thư mục có hash nội dung (cache 1 năm), rồi ghi lại `src/config/unityBuild.json`. Commit file JSON đó.
-- Dùng bản build cục bộ khi phát triển: `NEXT_PUBLIC_UNITY_BUILD_URL=/unity/boatrace/Build`.
-- Chuyển sang CDN khác (ví dụ Cloudflare R2, miễn phí băng thông) thì đặt `NEXT_PUBLIC_UNITY_BUILD_URL` trỏ tới thư mục chứa các file `.gz`, kèm `NEXT_PUBLIC_UNITY_BUILD_GZIP=1`.
-- Gói Free của Supabase có 5 GB băng thông/tháng, tức khoảng 350 lượt tải lần đầu (trình duyệt cache lại sau đó).
-
 ## Tài liệu bài giảng
 
 - Định dạng hỗ trợ: PDF, ảnh, TXT/MD và Word `.docx`. Trình duyệt tự giải nén `.docx` và chỉ gửi chữ lên máy chủ; trình duyệt cũ thì gửi nguyên file để máy chủ đọc. File `.doc` đời cũ cần lưu lại thành `.docx` hoặc PDF.

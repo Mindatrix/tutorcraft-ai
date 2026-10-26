@@ -7,7 +7,7 @@ import { BEVEL_CLIP, canUseWebGL } from './gfx';
 import type { BossSceneProps, SceneEvent } from './types';
 
 // Renderer ladder for boss-battle worlds: Three.js scene → 2D canvas.
-// (Unity WebGL exists only for Kayak Rush; see BattleArena.)
+// (Kayak Rush có cảnh three.js riêng trong BattleArena.)
 // Falls back when WebGL is missing, the context dies, or FPS < 30 for 5 s.
 
 type BossMode = Exclude<GameMode, 'kayak_rush'>;
