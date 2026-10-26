@@ -72,3 +72,9 @@ export function normalizeLevel(raw: unknown): DifficultyLevel {
 export function levelOf(config: Pick<BattleConfig, 'level'> | undefined | null): LevelDefinition {
   return LEVELS[normalizeLevel(config?.level)];
 }
+
+/** "Beginner · Pre-A1", "Trung bình · B1" — the one label every screen shows for a level. */
+export function levelLabel(level: unknown): string {
+  const lv = LEVELS[normalizeLevel(level)];
+  return `${lv.nameVi} · ${lv.cefr}`;
+}

@@ -9,6 +9,7 @@ import {
   QUESTION_TYPE_IDS,
   bossHpForQuestions,
   convertQuestion,
+  levelLabel,
   questionProblem,
   questionType,
   type BattleEvent,
@@ -132,7 +133,7 @@ export default function PreviewStep({ draft, onBack, onPublished }: { draft: Stu
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Không xuất bản được đấu trường');
-      onPublished({ ...data, lessonTitle: draft.lessonTitle });
+      onPublished({ ...data, lessonTitle: draft.lessonTitle, level: draft.settings.level });
     } catch (e) {
       setError((e as Error).message);
     } finally {
@@ -144,7 +145,7 @@ export default function PreviewStep({ draft, onBack, onPublished }: { draft: Stu
     <div className="space-y-5">
       <div className="flex items-start gap-2 px-4 py-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-emerald-400 text-sm">
         <div>
-          <div>{draft.provider} · {draft.questions.length} câu · {draft.execution_time}</div>
+          <div>{draft.provider} · {draft.questions.length} câu · Mức {levelLabel(draft.settings.level)} · {draft.execution_time}</div>
           <div className="text-xs text-emerald-400/70">{draft.attempts.map((a) => `${a.model}: ${a.ok ? 'OK' : a.error} (${a.ms}ms)`).join(' → ')}</div>
           {draft.review_topics.length > 0 && <div className="text-xs text-sky-400">🔁 Ôn tập lặp lại: {draft.review_topics.join(', ')}</div>}
         </div>

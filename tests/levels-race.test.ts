@@ -97,3 +97,23 @@ test('team race: even split by join order, scored per member', () => {
   assert.equal(E.teamRace([row('a', 4, 10), row('b', 4, 10)]).winner, 'draw');
   assert.ok(Math.abs(E.teamRace(Array.from({ length: 9 }, (_, i) => row(String(i), 1))).teams[0].members.length - 4) <= 1);
 });
+
+test('A1.6: every level 0..5 is complete; labels; out-of-range falls back to 3', () => {
+  for (const lv of E.LEVEL_IDS) {
+    const d = E.LEVELS[lv];
+    assert.equal(d.level, lv);
+    assert.ok(Math.abs(d.mix.easy + d.mix.medium + d.mix.hard - 1) < 1e-9, `mix of level ${lv} sums to 1`);
+    assert.ok(d.guidance.length > 20 && d.nameVi && d.cefr);
+  }
+  assert.equal(E.LEVELS[0].cefr, 'Pre-A1');
+  assert.equal(E.LEVELS[0].mix.easy, 1, 'Beginner only gets easy questions');
+  assert.equal(E.levelLabel(0), 'Beginner · Pre-A1');
+  assert.equal(E.levelLabel(5), 'Rất khó · C1');
+  assert.equal(E.levelLabel(undefined), E.levelLabel(3));
+  assert.equal(E.levelLabel(6), E.levelLabel(3));
+  assert.equal(E.levelLabel('0'), 'Beginner · Pre-A1', 'a level read back from a form or JSON as text');
+  // Beginner is the most forgiving: longest time, most mistakes allowed, weakest race bot.
+  assert.ok(E.timeLimitFor('easy', 0) > E.timeLimitFor('easy', 1));
+  assert.ok(E.wrongPenalty(20, 0) < E.wrongPenalty(20, 1));
+  assert.ok(E.LEVELS[0].bot.accuracy < E.LEVELS[1].bot.accuracy);
+});

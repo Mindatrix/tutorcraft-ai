@@ -55,6 +55,8 @@ export interface PublishedBattle {
   variants: number[];
   warning?: string;
   lessonTitle: string;
+  /** Difficulty level the battle was published with (0 = Beginner). */
+  level?: DifficultyLevel;
 }
 
 export const field =

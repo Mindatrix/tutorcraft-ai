@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import QRCode from 'qrcode';
 import { Copy, Download, MessageCircle, Plus, RefreshCw, BarChart3, AlertTriangle } from 'lucide-react';
-import type { TeamRace } from '../../engine';
+import { levelLabel, type TeamRace } from '../../engine';
 import type { PublishedBattle } from './types';
 import { authFetch } from '../../client/supabaseBrowser';
 
@@ -96,6 +96,7 @@ export default function ShareStep({ battle, onNew }: { battle: PublishedBattle; 
         ) : (
           <p className="text-sm text-slate-600">Chưa có mã ngắn (cần chạy supabase/schema.sql). Học sinh dùng link hoặc QR bên dưới.</p>
         )}
+        {battle.level !== undefined && <p className="text-sm font-bold text-[#1b1448]">🎚 Mức {levelLabel(battle.level)}</p>}
         <div className="border-t-2 border-dashed border-[#1b1448]/30" />
         <p className="text-sm text-slate-600">Học sinh vào trang chủ, nhập mã — hoặc quét QR.</p>
 

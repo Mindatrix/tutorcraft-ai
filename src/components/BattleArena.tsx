@@ -30,6 +30,7 @@ import {
   type SkillId,
   type StoryBeat,
   type TeamRace,
+  levelLabel,
 } from '../engine';
 import { dropResult, load, queueResult, remove, save, studentKey } from '../client/storage';
 import { initSfx, play, setMuted } from '../client/sfx';
@@ -461,6 +462,7 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
               <p className={`text-sm mt-1 ${muted2}`}>
                 {battle.totalQuestions} questions · ~{config.durationMinutes} min
                 {gamified ? ` · Boss HP ${scaling.bossHp.toLocaleString('en-US')}` : ''}
+                {` · Mức ${levelLabel(config.level)}`}
               </p>
             </div>
 
@@ -495,7 +497,7 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
         {isRace && race && renderer === 'unity' && phase !== 'lobby' && display && <RaceSceneUnity playerPos={race.playerPos} botPos={race.botPos} result={final?.race?.result ?? null} onUnavailable={noUnity} />}
         {isRace && race && renderer === 'three' && phase !== 'lobby' && display && (
           <StageFrame tone="#5eead4">
-            <KayakRush playerPos={race.playerPos} botPos={race.botPos} heroName={playerName} botName={`Bot Cấp ${config.level ?? 3}`} event={display.event} finished={phase === 'result'} result={final?.race?.result ?? null} onUnavailable={no3d} />
+            <KayakRush playerPos={race.playerPos} botPos={race.botPos} heroName={playerName} botName={`Bot ${levelLabel(config.level)}`} event={display.event} finished={phase === 'result'} result={final?.race?.result ?? null} onUnavailable={no3d} />
           </StageFrame>
         )}
         {isRace && race && phase !== 'lobby' && display && (
@@ -507,7 +509,7 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
             playerCorrect={race.playerCorrect}
             botCorrect={race.botCorrect}
             total={race.total}
-            botName={`Bot Cấp ${config.level ?? 3}`}
+            botName={`Bot ${levelLabel(config.level)}`}
             finished={phase === 'result'}
             teamName={view?.team ? TEAM_NAMES[view.team] : null}
             teamTone={view?.team ?? null}

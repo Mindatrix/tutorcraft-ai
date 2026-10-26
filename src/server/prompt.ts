@@ -27,6 +27,7 @@ export function buildBattlePrompt(p: PromptInput): string {
   const mode = resolveGameMode(p.config);
   const world = mode ? `\nGAME WORLD: ${GAME_MODES[mode].name} — ${GAME_MODES[mode].promptHint}. Flavor the boss, map name and dialogue to fit this world (questions stay academic).` : '';
   const level = `CEFR level ${p.config.cefrLevel || lv.cefr} — difficulty level ${lv.level}/5 (${lv.nameVi}). ${lv.guidance}`;
+  const beginner = lv.level === 0 ? `\n${BEGINNER_RULES}` : '';
 
   const sections = p.documentSections
     ? `\nThe document is given as ${p.documentSections.shown} numbered sections${p.documentSections.shown < p.documentSections.total ? ` (selected from ${p.documentSections.total}: the ones most relevant to the topic plus an even spread; the rest are omitted)` : ''}. Spread the questions across ALL given sections in document order — do not take everything from the first section. If the lesson topic names a unit/part, focus on the sections that match it.`
@@ -50,7 +51,7 @@ TARGET: ${level}, age-appropriate, accurate terminology.
 SCENARIO: ${scenario.name} — ${scenario.style}.
 GAME THEME: ${themes}. Keep question text academic; the game layer is added by the app.${world}
 ${source}
-${review}
+${review}${beginner}
 
 GAME DESIGN — design the boss of this arena from the lesson content:
 - "boss_name": Vietnamese, epic, tied to the lesson (e.g. "Chúa Tể Thì Quá Khứ Đơn").
@@ -74,6 +75,23 @@ For EVERY question:
 Also write 3 "teaching_notes" in Vietnamese: practical tips for the tutor to teach this topic.
 Return JSON only.`;
 }
+
+/**
+ * Level 0 (Beginner, Pre-A1, age 5+): the student reads Vietnamese; English is only the thing
+ * being learnt. Checked by tests/prompt.test.ts and the live A1.4 check (10 questions, no
+ * English outside the answers).
+ */
+export const BEGINNER_RULES = `BEGINNER MODE (level 0 — the student cannot read English sentences yet):
+- Write EVERY "question", instruction, "hint", "explanation", "rubric", "deep_insight", "teaching_notes" and the boss texts in VIETNAMESE.
+- English appears ONLY as the target word or a very short phrase (1–3 words) that is being taught, inside the answer fields ("options", "pairs"[].left, "gaps"[].answers, "tokens", "answers", "word_bank") or quoted once in the question as the thing to recognise.
+- Whenever an English word appears in a question, add its Vietnamese meaning in brackets, e.g. Con vật nào là "cat" (con mèo)?
+- Use only basic, picture-friendly vocabulary: colours, animals, food, family, numbers 1–20, body parts, school things, toys, greetings, weather.
+- "mcq": ask in Vietnamese, options are single English words (or Vietnamese meanings when asking for the meaning of an English word).
+- "matching": left = English word, right = its Vietnamese meaning.
+- "cloze": a 1–2 sentence English text of at most 6 words per sentence, always with a "word_bank"; the instruction is Vietnamese.
+- "reorder": 3–5 tokens forming a tiny sentence ("I like red apples."); the instruction is Vietnamese.
+- "transform", "reading", "essay": keep them tiny (one sentence of at most 6 English words, min_words 2, max_words 10); every instruction in Vietnamese.
+- Never use grammar terms (thì, mệnh đề, danh động từ…) and never write a full English sentence in a question stem.`;
 
 const TYPE_SPECS: Record<QuestionType, string> = {
   mcq: `"mcq" (multiple choice): "options" = 4 strings, exactly one correct, plausible distractors, no duplicates; "correct_idx" = 0-based index of the right one.`,

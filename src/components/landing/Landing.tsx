@@ -213,7 +213,7 @@ export function How() {
           <ul className="mt-8 flex items-end">
             {LEVEL_IDS.map((lv, i) => (
               <li key={lv} className="tc-stripes relative flex flex-1 flex-col justify-end border-[3px] p-3 -ml-[3px] first:ml-0" style={{ height: 96 + i * 44, background: STAIR_TONES[i], borderColor: INK }}>
-                <span className="text-xs font-bold opacity-70">Mức {i + 1} · {LEVELS[lv].cefr}</span>
+                <span className="text-xs font-bold opacity-70">Mức {lv} · {LEVELS[lv].cefr}</span>
                 <span className="text-lg font-extrabold leading-tight">{LEVELS[lv].nameVi}</span>
               </li>
             ))}
