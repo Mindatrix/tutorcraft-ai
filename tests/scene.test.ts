@@ -123,12 +123,41 @@ test('C2.5 all 360 story characters have a library model; a scenario reuses a mo
   assert.equal(E.castModels(dino.game, dino.characters).get(1)?.model, E.taggedModel(moc.clothing_text));
 });
 
+test('C1.5 scene triangles (27/10): fill copies ≤ ~8 k / 3 k, neighbours only near the boundary, same layout on every device', () => {
+  const worst = { high: 0, low: 0 };
+  for (const s of scenarios.filter((x) => x.game !== 'multiverse_portal')) {
+    for (const quality of ['high', 'low'] as const) {
+      for (let stage = 1; stage <= 8; stage++) {
+        const stages = [stage - 1, stage, stage + 1].filter((n) => n >= 1 && n <= 8);
+        const all = layout(s, 99, { quality, stages });
+        const near = layout(s, 99, { quality, stages, current: stage });
+        // Same placements, minus far-side neighbour fill: nothing moves.
+        const keys = new Set(all.placements.map((p) => `${p.key}@${p.x},${p.z}`));
+        assert.ok(near.placements.every((p) => keys.has(`${p.key}@${p.x},${p.z}`)), `${s.id} ${stage}: layout changed`);
+        const reach = E.NEIGHBOUR_REACH * near.world.stageLength;
+        for (const p of near.placements) {
+          if (p.focal || p.stage === stage) continue;
+          const area = near.stages.find((a) => a.n === p.stage)!;
+          const boundary = p.stage < stage ? area.z1 : area.z0;
+          assert.ok(Math.abs(p.z - boundary) <= reach + 1e-6, `${s.id} ${stage}: neighbour fill far from the boundary`);
+        }
+        for (const p of near.placements.filter((x) => !x.focal && x.variant.startsWith('fill'))) assert.ok(p.tris <= (quality === 'low' ? 4_000 : 10_500), `${p.libraryId} ${p.variant}: ${p.tris}`);
+        const tris = near.placements.reduce((a, p) => a + p.tris, 0);
+        worst[quality] = Math.max(worst[quality], tris);
+      }
+    }
+  }
+  // Worst scene (world only) before 27/10: 2.24 M (high) / 735 k (low); after: ~1.18 M / ~262 k.
+  assert.ok(worst.high <= 1_300_000, `high ${worst.high}`);
+  assert.ok(worst.low <= 300_000, `low ${worst.low}`);
+});
+
 test('C1.2 / C1.5 triangle budget: fill uses light models only; three stages fit a weak phone in low quality', () => {
   for (const s of scenarios.filter((x) => x.game !== 'multiverse_portal')) {
     for (const quality of ['high', 'low'] as const) {
       const l = layout(s, 99, { quality });
       const fill = l.placements.filter((p) => !p.focal);
-      assert.ok(fill.every((p) => p.variant === 'low'), 'fill draws the low variant');
+      assert.ok(fill.every((p) => p.variant === (quality === 'low' ? 'fill_low' : 'fill') || p.variant === 'low'), 'fill draws a fill (or low) variant');
       const perStage = new Map<number, number>();
       for (const p of fill) perStage.set(p.stage, (perStage.get(p.stage) ?? 0) + p.tris);
       for (const [n, t] of perStage) assert.ok(t <= E.FILL_BUDGET[quality === 'low' ? 1 : 0], `${s.id} ${quality} stage ${n}: ${t} fill triangles`);

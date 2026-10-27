@@ -1,9 +1,15 @@
 import { GEMINI_RESPONSE_SCHEMA } from '../engine/schema';
 
-// Fail-safe loop:
-//   Attempt 1: fast primary Flash-Lite model (timeout scaled by question count).
-//   Attempt 2: secondary Flash-Lite model on timeout or error.
-//   Caller falls back to the local cached template if both fail.
+// Fail-safe loop (27/10/2026):
+//   Attempt 1: primary Flash-Lite model, 20 s.
+//   Attempt 2 (once): a lighter model, 20 s, on timeout or error.
+//   Then the caller uses the pre-written question bank ("Local Cached Template").
+// Worst case ≈ 40 s of model time; the generate-battle route sets maxDuration = 60 s (Vercel with
+// Fluid compute: default and Hobby maximum 300 s, Pro maximum 800 s; vercel.com/docs/functions/
+// configuring-functions/duration, updated 24/08/2026).
+// Measured 27/10 (one 10-question Beginner request each): flash-lite-latest 7.8 s, 3.1-flash-lite
+// 8.1 s, 3.5-flash-lite 16.5 s; 2.5-flash-lite is gone (404). The 26/10 run took ~31 s for 10
+// questions with a document, which a 20 s cut-off would send to the retry.
 // The blueprint named Gemini 2.0 Flash / 1.5 Flash; Google has retired both (Oct 2026),
 // so the defaults are current Flash-Lite models. Override via env if needed.
 //
@@ -16,12 +22,15 @@ import { GEMINI_RESPONSE_SCHEMA } from '../engine/schema';
 // format weight ("units" = questions × average weight) and the base is wider.
 
 export const PRIMARY_MODEL = process.env.GEMINI_PRIMARY_MODEL || 'gemini-flash-lite-latest';
-export const SECONDARY_MODEL = process.env.GEMINI_SECONDARY_MODEL || 'gemini-3.1-flash-lite';
+/** The one retry: the previous, lighter Flash-Lite generation. */
+export const SECONDARY_MODEL = process.env.GEMINI_RETRY_MODEL || process.env.GEMINI_SECONDARY_MODEL || 'gemini-3.1-flash-lite';
+/** Per attempt (ms). */
+export const ATTEMPT_TIMEOUT_MS = 20_000;
 
-function timeouts(units: number): [number, number] {
-  const primary = Number(process.env.GEMINI_PRIMARY_TIMEOUT_MS) || 8000 + units * 600;
-  const secondary = Number(process.env.GEMINI_SECONDARY_TIMEOUT_MS) || 12000 + units * 1000;
-  return [primary, secondary];
+function timeouts(): [number, number] {
+  const primary = Number(process.env.GEMINI_PRIMARY_TIMEOUT_MS) || ATTEMPT_TIMEOUT_MS;
+  const retry = Number(process.env.GEMINI_RETRY_TIMEOUT_MS) || Number(process.env.GEMINI_SECONDARY_TIMEOUT_MS) || ATTEMPT_TIMEOUT_MS;
+  return [primary, retry];
 }
 
 export interface InlineDocument {
@@ -94,8 +103,6 @@ export async function generateWithFailSafe<T>(
   prompt: string,
   doc: InlineDocument | null,
   validate: (raw: unknown) => T,
-  /** Questions × average format weight (an all-mcq battle: just the question count). */
-  questionCount: number,
 ): Promise<{ result: T | null; model: string | null; attempts: GeminiAttempt[] }> {
   const apiKey = process.env.GEMINI_API_KEY;
   const attempts: GeminiAttempt[] = [];
@@ -104,7 +111,7 @@ export async function generateWithFailSafe<T>(
     return { result: null, model: null, attempts };
   }
 
-  const [primaryMs, secondaryMs] = timeouts(questionCount);
+  const [primaryMs, secondaryMs] = timeouts();
   const plan: [string, number][] = [
     [PRIMARY_MODEL, primaryMs],
     [SECONDARY_MODEL, secondaryMs],

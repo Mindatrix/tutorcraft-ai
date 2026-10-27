@@ -2,6 +2,8 @@
 // Tối ưu GLB cho web (A3.4 / A3.5): giảm số mặt, thu nhỏ ảnh (WebP), lượng tử hoá, nén Meshopt.
 // Không sửa file gốc.
 //   node --max-old-space-size=8192 scripts/optimize-glb.mjs <nguồn> <đích> [--only chuỗi] [--force] [--low]
+// Bản cây rải (fill): --tris 8000 --tex 512 vào _fill; --low --tris 6000 (= 3000) vào _fill_low.
+// Không làm bản fill cho river_reed: dưới ~120 nghìn mặt thân và bông lau tan thành một cục (27/10).
 // Thường dùng:
 //   bản cao : node … optimize-glb.mjs ~/Documents/3D_tutorcraft ~/Documents/3D_tutorcraft/_optimized
 //   bản thấp: node … optimize-glb.mjs ~/Documents/3D_tutorcraft ~/Documents/3D_tutorcraft/_low --low
@@ -35,6 +37,9 @@ const fi = rest.indexOf('--files');
 const FILES = fi >= 0 ? new Set(rest[fi + 1].split(',').map((x) => x.trim()).filter(Boolean)) : null;
 const ti = rest.indexOf('--tris');
 const TRIS = ti >= 0 ? Number(rest[ti + 1]) : null; // override the triangle budget (tests / single files)
+// --tex N : largest texture edge (px), e.g. 512 for the fill variants (_fill, _fill_low).
+const xi = rest.indexOf('--tex');
+const TEX = xi >= 0 ? Number(rest[xi + 1]) : null;
 await MeshoptEncoder.ready;
 await MeshoptSimplifier.ready;
 await MeshoptDecoder.ready;
@@ -122,6 +127,7 @@ export function budget(rel, low = false) {
   const o = OVERRIDES[rel.split(path.sep).join('/')];
   if (o) b = { ...b, tris: low ? o.low : o.tris, capMb: low ? (o.lowCapMb ?? Math.max(b.capMb, 3)) : o.capMb };
   if (TRIS) b = { ...b, tris: low ? Math.round(TRIS / 2) : TRIS };
+  if (TEX) b = { ...b, tex: TEX };
   return b;
 }
 

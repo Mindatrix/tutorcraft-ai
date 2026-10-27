@@ -21,6 +21,22 @@
         "3001"
       ],
       "port": 3001
+    },
+    {
+      "name": "prod-lan",
+      "runtimeExecutable": "/usr/bin/env",
+      "runtimeArgs": [
+        "TC_SERVE_LOCAL_ASSETS=1",
+        "npx",
+        "next",
+        "start",
+        "-H",
+        "192.168.1.253",
+        "-p",
+        "3005"
+      ],
+      "port": 3005,
+      "url": "http://192.168.1.253:3005"
     }
   ]
 }

@@ -20,6 +20,9 @@ export interface CatalogAsset {
   /** Triangles of the high / low variant (scene triangle budgets). */
   tris_web?: number | null;
   tris_low?: number | null;
+  /** Fill variants (scattered scenery): ≤ 8 k triangles (high tier) / ≤ 3 k (low tier). */
+  tris_fill?: number | null;
+  tris_fill_low?: number | null;
 }
 
 export type AliasMap = Record<string, { to?: string; file?: string; note?: string }>;

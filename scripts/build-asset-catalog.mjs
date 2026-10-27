@@ -5,7 +5,8 @@
 //   TC_3D_DIR=/đường/dẫn node scripts/build-asset-catalog.mjs
 // Ghi:
 //   content/asset_catalog.json  — mỗi .glb: id, file, game, scope, source, games (kịch bản nào dùng),
-//                                 tris_raw/tris_web/tris_low, mb_raw/mb_web/mb_low, textures
+//                                 tris_raw/tris_web/tris_low, mb_raw/mb_web/mb_low, textures,
+//                                 tris_fill/tris_fill_low (bản cây rải ≤ 8 / 3 nghìn mặt, chỉ model làm cảnh rải)
 //   content/asset_coverage.json — id kịch bản gọi nhưng CHƯA có file, và model chưa kịch bản nào dùng
 // Chỉ đọc phần JSON đầu mỗi file GLB (không nạp hình học), nên chạy nhanh kể cả file vài trăm MB.
 import fs from 'node:fs';
@@ -15,6 +16,8 @@ import os from 'node:os';
 const ROOT = path.resolve((process.env.TC_3D_DIR || '~/Documents/3D_tutorcraft').replace(/^~/, os.homedir()));
 const OPT = path.join(ROOT, '_optimized');
 const LOW = path.join(ROOT, '_low');
+const FILL = path.join(ROOT, '_fill');
+const FILL_LOW = path.join(ROOT, '_fill_low');
 const GAME = { camp: 'summer_camp', fishing: 'river_fishing', survival: 'river_survival', multiverse: 'multiverse_portal', dino: 'dino_journey', kayak: 'kayak_rush' };
 
 if (!fs.existsSync(ROOT)) {
@@ -111,6 +114,8 @@ for (const f of walk(ROOT).sort()) {
   const raw = glbInfo(f);
   const web = glbInfo(path.join(OPT, rel));
   const low = glbInfo(path.join(LOW, rel));
+  const fill = glbInfo(path.join(FILL, rel));
+  const fillLow = glbInfo(path.join(FILL_LOW, rel));
   const games = new Set();
   for (const [a, gs] of usedBy) {
     const target = aliases[a]?.to;
@@ -130,6 +135,8 @@ for (const f of walk(ROOT).sort()) {
     tris_raw: raw?.tris ?? null,
     tris_web: web?.tris ?? null,
     tris_low: low?.tris ?? null,
+    ...(fill ? { tris_fill: fill.tris, mb_fill: mb(path.join(FILL, rel)) } : {}),
+    ...(fillLow ? { tris_fill_low: fillLow.tris, mb_fill_low: mb(path.join(FILL_LOW, rel)) } : {}),
     textures: (web ?? raw)?.textures ?? 0,
     animations: raw?.animations ?? 0,
     skinned: (raw?.skins ?? 0) > 0,

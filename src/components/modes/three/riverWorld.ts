@@ -9,7 +9,7 @@ import type { GfxTier } from './SceneRuntime';
 
 // The shared river (and Dino Journey meadow) world, built from a layout (plan C1 / C2 gate):
 // water or a dirt path, two banks, a ground plane, and every placed model drawn instanced.
-// Fill always uses the low variant (see sceneBuilder); the stage's own models follow the tier.
+// Fill uses its fill / fill_low variant (see sceneBuilder) and casts no shadow; the stage's own models follow the tier.
 
 export interface RiverWorldOptions {
   layout: SceneLayout;
@@ -36,7 +36,8 @@ export interface RiverWorld {
   dispose(): void;
 }
 
-const urlOf = (p: Pick<Placement, 'file' | 'variant'>) => `${assetBase()}/${p.variant === 'low' ? 'low' : 'web'}/${p.file}`;
+const FOLDER: Record<Placement['variant'], string> = { high: 'web', low: 'low', fill: 'fill', fill_low: 'fill_low' };
+const urlOf = (p: Pick<Placement, 'file' | 'variant'>) => `${assetBase()}/${FOLDER[p.variant]}/${p.file}`;
 
 function waterMaterial(world: WorldTemplate, fog: THREE.ColorRepresentation) {
   const half = world.waterHalf;
@@ -154,7 +155,12 @@ export function buildRiverWorld(opts: RiverWorldOptions): RiverWorld {
     ),
   ).then(() => {
     if (!alive) return { drawCalls: 0, instances: 0, models: 0, failed };
-    batch = buildInstances(placements, (p) => models.get(urlOf(p)) ?? null, { castShadow: opts.tier === 'high', receiveShadow: false });
+    // The stage's own models cast shadows (high tier); scattered fill never does (27/10: the shadow
+    // pass redrew the whole fill, ~1.8 M triangles).
+    const own = buildInstances(placements.filter((p) => p.focal), (p) => models.get(urlOf(p)) ?? null, { castShadow: opts.tier === 'high', receiveShadow: false });
+    const fill = buildInstances(placements.filter((p) => !p.focal), (p) => models.get(urlOf(p)) ?? null, { castShadow: false, receiveShadow: false });
+    batch = { group: new THREE.Group(), drawCalls: own.drawCalls + fill.drawCalls, instances: own.instances + fill.instances, dispose: () => (own.dispose(), fill.dispose()) };
+    batch.group.add(own.group, fill.group);
     group.add(batch.group);
     return { drawCalls: batch.drawCalls + group.children.length - 1, instances: batch.instances, models: models.size, failed };
   });

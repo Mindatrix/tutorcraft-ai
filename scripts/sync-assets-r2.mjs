@@ -7,6 +7,7 @@
 //
 // Thư mục trên R2 = thư mục mà code đọc (src/config/assetLibrary.ts):
 //   web/  ← <thư viện>/_optimized   low/ ← _low   mid/ ← _mid   hdri/ ← hdri (bầu trời 2K)
+//   fill/ ← _fill   fill_low/ ← _fill_low   (bản cây rải ≤ 8 / 3 nghìn mặt)
 // Không bao giờ đẩy file gốc (các thư mục camp/, dino/, … và "Multiverse Portal/").
 // Khóa đọc từ .env.local: R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET
 // (R2_PUBLIC_URL tùy chọn). Script KHÔNG in giá trị khóa ra màn hình hay log.
@@ -25,6 +26,8 @@ const FOLDERS = [
   { prefix: 'web', dir: '_optimized', ext: '.glb' },
   { prefix: 'low', dir: '_low', ext: '.glb' },
   { prefix: 'mid', dir: '_mid', ext: '.glb' },
+  { prefix: 'fill', dir: '_fill', ext: '.glb' },
+  { prefix: 'fill_low', dir: '_fill_low', ext: '.glb' },
   { prefix: 'hdri', dir: 'hdri', ext: '.hdr' },
 ];
 const TYPES = { '.glb': 'model/gltf-binary', '.hdr': 'image/vnd.radiance', '.json': 'application/json' };

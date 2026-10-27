@@ -101,8 +101,9 @@ Phục vụ model:
   - `Cache-Control: public, max-age=86400, stale-while-revalidate=604800`. Tên file không đổi khi tối ưu lại, nên không đặt `immutable`.
   - `Content-Type` là `model/gltf-binary` cho GLB và `image/vnd.radiance` cho HDR.
 - **Còn phải làm trên Cloudflare** (khóa hiện có là loại đọc/ghi đối tượng, không đổi được cài đặt bucket):
-  - CORS hiện chỉ cho `http://localhost:3000`. Cần thêm tên miền production, và địa chỉ LAN nếu muốn thử điện thoại với R2.
+  - CORS (kiểm bằng curl 27/10, sau khi chủ dự án sửa trên Cloudflare): `https://tutorcraft-ai.vercel.app` và `http://localhost:3000` đều được trả `Access-Control-Allow-Origin` đúng tên miền, kể cả preflight (`GET, HEAD`, header `range`). Địa chỉ LAN chưa có, nên khi thử điện thoại thì dùng thư viện trên máy (mục "Đo trên điện thoại thật").
   - Link `r2.dev` bị giới hạn tốc độ, chỉ dùng để thử. Bản chính thức cần gắn tên miền riêng cho bucket, rồi đặt `NEXT_PUBLIC_ASSET_BASE_URL` trên Vercel.
+- **Thư mục cây rải (27/10):** `fill/` và `fill_low/`, mỗi thư mục 74 file (14,1 / 9,1 MB), đẩy lần hai 148 file, không lỗi.
 - **Mẫu biến môi trường:** `.env.example`.
 
 ### Nhập tài nguyên mới (inbox)
@@ -244,8 +245,10 @@ Số đo ngày 27/10 trên Mac (Apple M4), sau khi có 3 cấp chi tiết. Thờ
 
 ### Đo trên điện thoại thật
 
-1. Máy tính và điện thoại dùng chung một mạng Wi-Fi. Trên máy tính, chạy dev server bằng địa chỉ mạng nội bộ của máy (ví dụ `192.168.100.184`, xem bằng `ipconfig getifaddr en0`): `npx next dev -H 192.168.100.184 -p 3005`. Next chỉ cho phép tên máy mà server được khởi động với, nên phải dùng đúng địa chỉ này, không dùng `0.0.0.0`.
-2. Trên điện thoại, mở `http://192.168.100.184:3005/tutor/scene-lab`. Không cần đăng nhập; kịch bản và nhân vật đọc được bằng khóa công khai.
+1. Máy tính và điện thoại dùng chung một mạng Wi-Fi. Xem địa chỉ mạng nội bộ của máy bằng `ipconfig getifaddr en0` (ngày 27/10 là `192.168.1.253`; địa chỉ đổi khi đổi mạng). Build production (`npx next build`), rồi chạy `TC_SERVE_LOCAL_ASSETS=1 npx next start -H 192.168.1.253 -p 3005` (cấu hình `prod-lan` trong `.claude/launch.json`).
+   - `TC_SERVE_LOCAL_ASSETS=1` cho bản production đọc thư viện 3D trên máy qua `/dev-assets/…`. Không có cờ này thì route trả 404 và cảnh chỉ còn mô hình dựng bằng code. Không đặt cờ này trên Vercel.
+   - Phải dùng đúng địa chỉ, không dùng `0.0.0.0`.
+2. Trên điện thoại, mở `http://192.168.1.253:3005/tutor/scene-lab`. Không cần đăng nhập; kịch bản và nhân vật đọc được bằng khóa công khai. Mục "Khung hỏi + RainbowEdge (C4)" nằm trong cùng menu.
 3. Đợi bảng số hiện "cảnh: … mô hình" (đã nạp xong), không chạm màn hình, rồi bấm "Đo 10 giây". Chụp màn hình khi dòng "ĐO …" hiện ra.
 4. Chụp 4 lần: (a) Bản cao; (b) Bản thấp; (c) Bản thấp + Máy yếu; (d) Màn hình gia sư 50 em. Nếu điện thoại tự hạ tầng (dòng đầu ghi "tầng low" dù đã chọn Bản cao), đó cũng là một kết quả cần ghi.
 5. Cổng đạt khi (c) có FPS trung bình từ 30 trở lên và giây tệ nhất từ 25 trở lên trên một điện thoại tầm thấp (ví dụ Android 3–4 năm tuổi, RAM 3–4 GB). Ghi thêm tên máy và kết quả vào bảng trên.
@@ -280,6 +283,28 @@ So với ngân sách 700 nghìn (cao) và 220 nghìn (thấp):
   2. Fill không đổ bóng; chỉ vật chính, avatar và nhân vật đổ bóng. Lượt bóng dự kiến từ 1,8 triệu xuống khoảng 0,4 triệu.
   3. Nhân vật truyện dùng 3 cấp chi tiết như học sinh: chỉ 3–4 nhân vật gần điểm hỏi dùng bản đầy đủ, còn lại bản vừa 5 nghìn. Dự kiến giảm từ 232 xuống khoảng 100 nghìn ở bản cao.
   4. Đặt trần riêng cho cây khi dùng làm fill: bản thấp tối đa 10–15 nghìn mỗi cây.
+
+**Đã làm 27/10 (ngân sách không đổi):**
+- (a) Chặng kề chỉ giữ cây rải trong 1/3 chặng sát ranh giới (`NEIGHBOUR_REACH`, `current` trong `buildSceneLayout`). Lọc sau khi đặt, nên bố cục giống hệt trên mọi máy; vật chính của chặng kề vẫn giữ.
+- (b) Cây rải không đổ bóng; vật chính vẫn đổ bóng ở bản cao (`riverWorld.ts`).
+- (c) Bản cây rải riêng: `_fill` tối đa 8 nghìn mặt, `_fill_low` tối đa 3 nghìn, ảnh 512 px, cho 74 mô hình cây, bụi, đá, mặt đất, phông nền, đồ trên nước. Thực tế cao nhất 10,2 / 3,9 nghìn (vài phông nền không giản lược thêm được).
+  - `river_reed` không có bản cây rải: ở 3 nghìn mặt thân và bông lau tan thành một cục (đã xem ảnh). Lau sậy vẫn không vào cây rải như trước.
+  - `palm_b` ở 3 nghìn mặt vẫn rõ là cây cọ; `tree_x02` ở 1,6 nghìn mặt góc cạnh nhưng dùng được khi đứng xa.
+
+Đo lại ở `camp-01` chặng 1 (nghìn tam giác):
+
+| Phần | Bản cao: trước → sau | Bản thấp: trước → sau |
+|---|---|---|
+| Thế giới | 1.447 → 730 (cây rải 482 + 173 chặng kề) | 469 → 161 (cây rải 96 + 33) |
+| 50 học sinh | 153 → 146 | 110 → 110 |
+| 12 nhân vật truyện | 232 → 232 | 119 → 119 |
+| Lượt vẽ bóng | 1.799 → 421 | 0 → 0 |
+| Tổng | 3.672 → 1.571 (không tính bóng 1.150) | 739 → 432 |
+
+Trường hợp nặng nhất trên 30 kịch bản (phần thế giới, 3 chặng): bản cao 2.242 → 1.181 nghìn, bản thấp 735 → 262 nghìn, cùng là `camp-01` chặng 2. Có test giữ mức này.
+- Bản thấp: phần thế giới của chặng 1 (161 nghìn) đã nằm dưới 220 nghìn; cảnh xấu nhất 262 nghìn, trong đó 103 nghìn là vật chính.
+- Bản cao: phần thế giới 730 nghìn, gần đúng mức 700 nghìn.
+- Phần còn nặng là 12 nhân vật truyện (232 / 119 nghìn). Đề xuất 3 (nhân vật truyện dùng 3 cấp chi tiết) chưa làm.
 
 ### Kế hoạch giảm bộ nhớ ảnh bản cao (~293 MB): chuẩn bị sẵn, chỉ làm khi số đo điện thoại cần
 
@@ -331,16 +356,44 @@ Bản sao của 8 file Meshy trong `Multiverse Portal/` được đặt tên the
 | `r_future` | 8,7 MB | 1,25 MB | 0,52 MB | khoang nhà tương lai nhìn từ ngoài |
 
 - Cả 8 file đạt mục tiêu dung lượng: tối đa 8 MB bản cao, 3 MB bản thấp.
-- **Nhưng không file nào là không gian đi vào được** để dùng với camera góc nhìn thứ nhất. Chúng hợp làm cảnh thu nhỏ (ví dụ ảnh xem trước trong cổng) hơn là phòng.
+- Ảnh chụp từ trên xuống cho thấy phần lớn là cảnh thu nhỏ. Kiểm lại ở tầm mắt người (27/10, `scripts/room-eye-views.py`):
+  - mỗi cảnh phóng theo cỡ thật (giường 2,1 m, cyber 8 m, sân vườn 20 m, biệt thự 40 m, lâu đài 80 m, pháo đài 60 m, khoang tương lai 15 m);
+  - camera cao 1,6 m trên sàn thấp nhất có đủ chỗ đứng, chụp ở 3 vị trí;
+  - hai bảng ảnh và số đo: `docs/images/rooms-eye/phong-tam-mat-1.jpg`, `phong-tam-mat-2.jpg`, `views.jsonl` (24 ảnh lẻ ở `out/rooms-eye/`, ngoài git).
+
+  | Mã | Đi vào được? | Ghi chú |
+  |---|---|---|
+  | `r_future` | **được** | Trong khoang: cửa sổ lục giác, ghế, trần 4,75 m. Đẹp nhất. |
+  | `r_salon` | **được, nhưng thô** | Trong biệt thự có sofa, ghế, các gian; trần cách mắt 2,1–2,4 m; tối, đồ đạc vón cục. |
+  | `r_courtyard` | **được (ngoài trời)** | Đứng trong vườn thấy hồ cá, đèn đá, cây phong. Không có tường hay trần. |
+  | `r_fortress_b` | một phần | Sân trong tường thành đi được, nhưng 24 nghìn mặt trải trên 60 m nên ảnh mờ bệt. |
+  | `r_fortress_a` | không | Lâu đài nhìn từ ngoài; chỗ kín bên trong chật, tối, toàn mặt vỡ. |
+  | `r_bedroom_a`, `r_bedroom_b` | không | Chỉ là một cái giường: ở tầm mắt nhìn qua giường chỉ thấy trời. |
+  | `r_cyber` | không | Một cái bàn; ở tầm mắt chỉ thấy trời. |
+- Đề xuất của chủ dự án (chờ chốt sau khi xem ảnh): phòng ngủ và cyber dựng bằng hình học cộng đồ nội thất; các cảnh còn lại phóng to.
 - Chưa đổi bí danh `mv_world_castle` / `mv_world_cyberpunk`. Chưa đẩy lên R2.
 - Ba file còn lại trong thư mục đó không phải phòng: `Forest_Mage` và `Neon_Catgirl` là nhân vật, `Design_magical_func` chưa rõ. Cây thông 143 MB bỏ qua.
 
+## Việc của giai đoạn D (ghi 27/10, chưa làm; D bắt đầu sau khi có số đo điện thoại)
+
+- **Nối bộ lập lịch câu hỏi vào luồng câu thật.** `src/engine/questionSchedule.ts` đã tính điểm hỏi theo đồng hồ trận và seed (test 50 máy, tạm dừng, kéo dài). Phiên của em vẫn phát câu tuần tự. Nối vào `sessionService` / `matchService` để mọi máy hỏi đúng lúc lịch định.
+- **Thử thách vàng chọn câu khó hơn.** Hiện chỉ nhân đôi xu. Khi nối lịch, câu vàng lấy từ mức khó cao hơn mức của em.
+- **`ClassPodium` cho màn của em.** Khung top 3 (vàng, bạc, đồng) đã có trên màn gia sư và trong demo. Còn thiếu màn trận lớp phía em.
+- **Trường "nghĩa tiếng Việt" trong schema câu hỏi, cho gợi ý bậc 1.** Hiện gợi ý bậc 1 dùng trường `hint` tiếng Việt có sẵn.
+  - Cần thêm trường vào schema câu hỏi (`src/engine/schema.ts`, `GEMINI_RESPONSE_SCHEMA`), prompt Gemini (`src/server/prompt.ts`) và kho câu dự phòng.
+  - **Báo chủ dự án trước khi sửa schema**, vì phần nội dung câu hỏi làm chung với bên nội dung.
+
 ## Việc cần làm (phát sinh sau giai đoạn A, 27/10/2026)
 
-- **Thời gian chờ Gemini khi sinh câu hỏi.** Hiện chờ 17 s cho model chính và 27 s cho model phụ (`src/server/gemini.ts`, tính theo số câu × trọng số dạng bài). Ngày 26/10 đo thực tế mất khoảng 31 s cho 10 câu mức Beginner, nên dễ rơi về ngân hàng câu dự phòng.
-  - Cần làm: nâng thời gian chờ theo số đo thật và thêm model dự phòng thứ ba, mà vẫn giữ tổng thời gian dưới giới hạn của hàm trên Vercel. Route sinh câu hỏi hiện chưa đặt `maxDuration`, nên chạy theo mặc định của Vercel.
-  - Chữa tạm, không cần sửa code: đặt biến môi trường `GEMINI_PRIMARY_TIMEOUT_MS` (ví dụ `35000`) và `GEMINI_SECONDARY_TIMEOUT_MS` trên Vercel. Hai biến này thay hẳn công thức tính theo số câu.
-  - Coi là xong khi: 10 lần sinh liên tiếp không lần nào phải dùng ngân hàng dự phòng.
+- **Thời gian chờ Gemini khi sinh câu hỏi: đã đổi 27/10.**
+  - Model chính `gemini-flash-lite-latest` chờ 20 s.
+  - Lỗi hoặc hết giờ thì thử lại đúng một lần bằng `gemini-3.1-flash-lite` (đời Flash-Lite trước), cũng 20 s. Vẫn lỗi thì lấy câu từ kho soạn sẵn ("Local Cached Template").
+  - Route `generate-battle` đặt `maxDuration = 60`.
+  - Giới hạn Vercel (vercel.com/docs/functions/configuring-functions/duration, cập nhật 24/08/2026), khi bật Fluid compute (mặc định): Hobby mặc định và tối đa 300 s; Pro mặc định 300 s, tối đa 800 s. Vì vậy 60 s nằm trong giới hạn của mọi gói.
+  - Biến môi trường để đổi: `GEMINI_PRIMARY_MODEL`, `GEMINI_RETRY_MODEL`, `GEMINI_PRIMARY_TIMEOUT_MS`, `GEMINI_RETRY_TIMEOUT_MS`.
+  - Đo 27/10, mỗi model một lần, 10 câu mức Beginner không có tài liệu: `flash-lite-latest` 7,8 s, `3.1-flash-lite` 8,1 s, `3.5-flash-lite` 16,5 s; `2.5-flash-lite` không còn (404).
+  - Rủi ro: lần đo 26/10 có tài liệu mất khoảng 31 s cho 10 câu, nên với tài liệu dài lượt đầu có thể hết 20 s và chuyển sang lượt thử lại.
+  - Coi là xong khi: 10 lần sinh liên tiếp (có tài liệu) không lần nào phải dùng kho câu.
 - **Bộ nhớ GPU trên điện thoại tầm trung.** Texture đang là WebP chứ không phải KTX2 (máy chưa có `toktx`), nên GPU phải giải nén mỗi ảnh ra RGBA đầy đủ. Kế hoạch giảm (chưa làm) ở mục "Kế hoạch giảm bộ nhớ ảnh" bên dưới.
   - Cần làm: đo khi chơi kịch bản nặng nhất trên 1–2 máy Android tầm trung và một iPad đời cũ. Ngày 27/10, kịch bản nặng nhất là `dino-01`: 36,2 MB bản cao / 13,0 MB bản thấp, tính cả bản `palm_b` và `tree_nursery_pot` mới có màu; xếp sau là `dino-02` với 33,5 / 10,5 MB. Nếu máy giật, tràn bộ nhớ hoặc mất ngữ cảnh WebGL thì chuyển bản cao sang KTX2.
   - Coi là xong khi: có số đo FPS và bộ nhớ, kèm quyết định giữ WebP hay chuyển KTX2.

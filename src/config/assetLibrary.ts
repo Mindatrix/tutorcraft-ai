@@ -28,6 +28,8 @@ export interface LibraryAsset {
   mb_raw?: number | null;
   tris_web?: number | null;
   tris_low?: number | null;
+  tris_fill?: number | null;
+  tris_fill_low?: number | null;
 }
 
 export const ASSET_LIBRARY: LibraryAsset[] = catalog as LibraryAsset[];

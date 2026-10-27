@@ -7,7 +7,6 @@ import {
     FALLBACK_TEACHING_NOTES,
     planQuestionTypes,
     configTypes,
-    averageWeight,
     plannedQuestionCount,
     normalizeConfig,
     parseRequestedCounts,
@@ -20,6 +19,9 @@ import {
     type QuestionType,
 } from '../../../src/engine';
 import { generateWithFailSafe } from '../../../src/server/gemini';
+
+// Gemini: 20 s, one 20 s retry on a lighter model, then the question bank (src/server/gemini.ts).
+export const maxDuration = 60;
 import { DocumentError, parseDocument, type DocumentInput } from '../../../src/server/documents';
 import { buildBattlePrompt } from '../../../src/server/prompt';
 import { rateLimitShared } from '../../../src/server/rateLimit';
@@ -113,7 +115,7 @@ export async function POST(req: Request) {
 
     // Accept the AI output if it delivers at least 80% of the requested questions.
     const minQuestions = Math.max(1, Math.ceil(Q * 0.8));
-    const ai = await generateWithFailSafe(prompt, parsedDoc.inline, (raw) => validateBattlePayload(raw, minQuestions, bossFallback), Math.round(Q * averageWeight(types)));
+    const ai = await generateWithFailSafe(prompt, parsedDoc.inline, (raw) => validateBattlePayload(raw, minQuestions, bossFallback));
 
     // The format plan the AI was given; bank top-ups follow it so the mix stays as requested.
     const plan: QuestionType[] = config.typeCounts

@@ -62,9 +62,10 @@ const FILL: Partial<Record<SceneCategory, [number, number]>> = {
 };
 
 /**
- * Scattered fill is drawn with the LOW variant of a model (it is scenery, often far away), and a
- * model only enters the fill if one copy stays under this many triangles ([high, low] quality):
- * Meshy scans can be 30–120 thousand triangles even in the low variant (river_reed: 120 k).
+ * Scattered fill is drawn with the FILL variant of a model (≤ 8 k triangles on the high tier, ≤ 3 k
+ * on low: _fill / _fill_low, 27/10), or its low variant when it has none, and a model only enters
+ * the fill if one copy stays under this many triangles ([high, low] quality): Meshy scans can be
+ * 30–120 thousand triangles even in the low variant (river_reed: 120 k).
  */
 const PER_COPY: Partial<Record<SceneCategory, [number, number]>> = {
   tree: [32_000, 12_000],
@@ -163,11 +164,18 @@ export interface Placement {
   fit: SizeFit;
   /** Part of the stage's own cluster (not fill). */
   focal: boolean;
-  /** Which file variant to draw: fill always uses the low one. */
-  variant: 'high' | 'low';
+  /** Which file variant to draw: the stage's own models follow the tier, fill uses fill / fill_low. */
+  variant: ModelVariant;
   /** Triangles of that variant (0 when unknown). */
   tris: number;
 }
+
+/** web (high), low, and the fill variants of scattered scenery. */
+export type ModelVariant = 'high' | 'low' | 'fill' | 'fill_low';
+
+/** How much of a neighbouring stage's fill is drawn: the part within this share of a stage of the
+ *  shared boundary (27/10: a scene shows 2–3 stages, each budgeted on its own). */
+export const NEIGHBOUR_REACH = 1 / 3;
 
 export interface StageArea {
   n: number;
@@ -193,6 +201,10 @@ export interface LayoutInput {
   quality?: 'high' | 'low';
   /** Stages to build (default: all of the scenario). */
   stages?: number[];
+  /** The stage the camera is in: neighbours keep only their fill near the shared boundary. */
+  current?: number;
+  /** Share of a stage length kept on a neighbour's side of the boundary (default NEIGHBOUR_REACH). */
+  neighbourReach?: number;
   /** Nature models used when the scenario lists none of a kind (the shared river pack). */
   fallbackNature?: string[];
 }
@@ -257,7 +269,7 @@ export function buildSceneLayout(input: LayoutInput): SceneLayout {
     const put = (c: CatalogAsset, id: string, cat: SceneCategory, x: number, z: number, focal: boolean, idx: number) => {
       const [size, fit, jitter] = sizeFor(c.id, cat);
       const y = cat === 'water' ? 0.03 : 0;
-      const variant: 'high' | 'low' = !focal || q === 1 ? 'low' : 'high';
+      const variant: ModelVariant = !focal ? fillVariant(c, q) : q === 1 ? 'low' : 'high';
       placements.push({
         key: `${n}:${focal ? 'f' : 'n'}:${idx}:${c.id}`,
         id,
@@ -314,7 +326,7 @@ export function buildSceneLayout(input: LayoutInput): SceneLayout {
       const count = FILL[cat]?.[q] ?? 0;
       if (!list.length || !count) continue;
       for (let i = 0; i < count; i++) {
-        const fits = list.filter((c) => trisOf(c, 'low') <= budget);
+        const fits = list.filter((c) => trisOf(c, fillVariant(c, q)) <= budget);
         if (!fits.length) break;
         const c = fits[Math.floor(rand() * fits.length)];
         let placed = false;
@@ -331,26 +343,44 @@ export function buildSceneLayout(input: LayoutInput): SceneLayout {
           if (cat !== 'ground' && cat !== 'backdrop' && nearFocal) continue;
           if (!free(x, z, GAP[cat] ?? 2)) continue;
           put(c, c.id, cat, x, z, false, i);
-          budget -= trisOf(c, 'low');
+          budget -= trisOf(c, fillVariant(c, q));
           placed = true;
         }
       }
     }
   }
-  return { world, stages, placements, missing: [...missing].sort() };
+  // Neighbouring stages: only their fill near the boundary with the current stage (computed after
+  // placing, so the random sequence and therefore the layout stay the same on every device).
+  const cur = input.current;
+  const reach = (input.neighbourReach ?? NEIGHBOUR_REACH) * world.stageLength;
+  const kept =
+    cur === undefined
+      ? placements
+      : placements.filter((p) => {
+          if (p.focal || p.stage === cur) return true;
+          const boundary = p.stage < cur ? stageArea(world, p.stage).z1 : stageArea(world, p.stage).z0;
+          return Math.abs(p.z - boundary) <= reach;
+        });
+  return { world, stages, placements: kept, missing: [...missing].sort() };
 }
 
 const round = (v: number) => Math.round(v * 1000) / 1000;
 
-function trisOf(c: CatalogAsset, variant: 'high' | 'low'): number {
-  const v = variant === 'low' ? c.tris_low ?? c.tris_web : c.tris_web;
+function trisOf(c: CatalogAsset, variant: ModelVariant): number {
+  const v = variant === 'fill' ? c.tris_fill : variant === 'fill_low' ? c.tris_fill_low : variant === 'low' ? c.tris_low ?? c.tris_web : c.tris_web;
   return Number(v) || 0;
+}
+
+/** The variant scattered copies of a model use: its fill file when it has one, else the low file. */
+export function fillVariant(c: CatalogAsset, q: number): ModelVariant {
+  if (q === 1) return c.tris_fill_low ? 'fill_low' : 'low';
+  return c.tris_fill ? 'fill' : 'low';
 }
 
 /** Models of a kind light enough to repeat: the scenario's own first, else the shared pack's. */
 function lightPool(cat: SceneCategory, own: CatalogAsset[], shared: CatalogAsset[], q: number): CatalogAsset[] {
   const cap = PER_COPY[cat]?.[q] ?? Infinity;
-  const light = (list: CatalogAsset[]) => list.filter((c) => trisOf(c, 'low') <= cap);
+  const light = (list: CatalogAsset[]) => list.filter((c) => trisOf(c, fillVariant(c, q)) <= cap);
   const mine = light(own);
   if (mine.length) return mine;
   const theirs = light(shared);

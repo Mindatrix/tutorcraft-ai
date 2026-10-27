@@ -347,7 +347,7 @@ function RiverStage(props: { row: Row; stage: number; tier: GfxTier; weak: boole
     const game = isGameMode(row.game) ? row.game : GameMode.SUMMER_CAMP_QUESTS;
     const plan = planRun({ game, scenarioId: row.id, tags, seedKey: `lab#${seed}` });
     const stages = [stage - 1, stage, stage + 1].filter((n) => n >= 1 && n <= 8);
-    const layout = buildSceneLayout({ scenario: row, catalog: ASSET_LIBRARY as CatalogAsset[], aliases: ASSET_ALIASES, layoutSeed: plan.layoutSeed, quality: useTier, stages, fallbackNature: THREE_ASSET_MANIFEST.riverWorld.natureIds });
+    const layout = buildSceneLayout({ scenario: row, catalog: ASSET_LIBRARY as CatalogAsset[], aliases: ASSET_ALIASES, layoutSeed: plan.layoutSeed, quality: useTier, stages, current: stage, fallbackNature: THREE_ASSET_MANIFEST.riverWorld.natureIds });
     const area = layout.stages.find((s) => s.n === stage)!;
     const world = buildRiverWorld({ layout, stages, tier: useTier, fogColor: sky.fog, onProgress: (d, t) => (hud.loading = `Đang nạp mô hình ${d}/${t}`) });
     rt.scene.add(world.group);
