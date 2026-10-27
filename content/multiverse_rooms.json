@@ -1,0 +1,271 @@
+{
+  "version": 1,
+  "note": "Khung dữ liệu cho D6. Code điền glb, glbLow, anchors (đo bằng công cụ chọn điểm trong scene-lab) và previewImage (tự sinh khi build). Mỗi cảnh là một phòng; cùng một phòng dùng lại với góc camera và ánh sáng khác nhau. Lộ trình mỗi kịch bản là 6 chặng chính.",
+  "limits": {
+    "maxRoomsInMemory": 2,
+    "maxHighMB": 8,
+    "maxLowMB": 3,
+    "previewImagePx": 512
+  },
+  "portalTiming": {
+    "openMs": 1200,
+    "flyThroughMs": 800,
+    "settleMs": 1000
+  },
+  "rooms": [
+    {
+      "id": "r_bedroom",
+      "name": "Phòng ngủ của bé",
+      "source": [
+        "Meshy_AI_Cozy_Bedroom_Diorama__1027000143_image-to-3d-texture.glb",
+        "Meshy_AI_Cozy_Bedroom_Diorama__1027000151_generate.glb"
+      ],
+      "role": "hub: điểm bắt đầu và kết thúc vòng lặp",
+      "note": "chọn 1 trong 2 bản sau khi xem thử",
+      "glb": null,
+      "glbLow": null,
+      "anchors": {
+        "start": {
+          "pos": null,
+          "lookAt": null,
+          "swayAmp": 0.02
+        },
+        "hops": [],
+        "portals": [],
+        "questionFrame": {
+          "pos": null,
+          "lookAt": null
+        }
+      },
+      "lighting": {
+        "mood": null,
+        "bloom": true
+      },
+      "previewImage": null,
+      "status": "cho_toi_uu_va_do_toa_do"
+    },
+    {
+      "id": "r_cyber",
+      "name": "Phòng cyberpunk",
+      "source": [
+        "Meshy_AI_Cyberpunk_Room_Scene_1027000541_image-to-3d-texture.glb"
+      ],
+      "role": "thay bản tạm của mv_world_cyberpunk",
+      "note": "",
+      "glb": null,
+      "glbLow": null,
+      "anchors": {
+        "start": {
+          "pos": null,
+          "lookAt": null,
+          "swayAmp": 0.02
+        },
+        "hops": [],
+        "portals": [],
+        "questionFrame": {
+          "pos": null,
+          "lookAt": null
+        }
+      },
+      "lighting": {
+        "mood": null,
+        "bloom": true
+      },
+      "previewImage": null,
+      "status": "cho_toi_uu_va_do_toa_do"
+    },
+    {
+      "id": "r_courtyard",
+      "name": "Sân vườn tuyết",
+      "source": [
+        "Meshy_AI_Japanese_Courtyard_Ko_1026235328_image-to-3d-texture.glb"
+      ],
+      "role": "không gian mới",
+      "note": "file gốc 209 MB, cần tối ưu nặng nhất",
+      "glb": null,
+      "glbLow": null,
+      "anchors": {
+        "start": {
+          "pos": null,
+          "lookAt": null,
+          "swayAmp": 0.02
+        },
+        "hops": [],
+        "portals": [],
+        "questionFrame": {
+          "pos": null,
+          "lookAt": null
+        }
+      },
+      "lighting": {
+        "mood": null,
+        "bloom": true
+      },
+      "previewImage": null,
+      "status": "cho_toi_uu_va_do_toa_do"
+    },
+    {
+      "id": "r_salon",
+      "name": "Phòng khách cổ điển",
+      "source": [
+        "Meshy_AI_Modern_Luxury_Villa_w_1026233905_texture.glb"
+      ],
+      "role": "không gian mới",
+      "note": "tạm giả định là phòng khách trong video; xác nhận sau khi xem thử",
+      "glb": null,
+      "glbLow": null,
+      "anchors": {
+        "start": {
+          "pos": null,
+          "lookAt": null,
+          "swayAmp": 0.02
+        },
+        "hops": [],
+        "portals": [],
+        "questionFrame": {
+          "pos": null,
+          "lookAt": null
+        }
+      },
+      "lighting": {
+        "mood": null,
+        "bloom": true
+      },
+      "previewImage": null,
+      "status": "cho_toi_uu_va_do_toa_do"
+    },
+    {
+      "id": "r_fortress",
+      "name": "Pháo đài",
+      "source": [
+        "Meshy_AI_A_dark_fortress_hidde_1027001819_texture.glb",
+        "Meshy_AI_Heavily_guarded_fortr_1027001253_texture.glb"
+      ],
+      "role": "thay bản tạm của mv_world_castle",
+      "note": "chọn 1 trong 2 bản",
+      "glb": null,
+      "glbLow": null,
+      "anchors": {
+        "start": {
+          "pos": null,
+          "lookAt": null,
+          "swayAmp": 0.02
+        },
+        "hops": [],
+        "portals": [],
+        "questionFrame": {
+          "pos": null,
+          "lookAt": null
+        }
+      },
+      "lighting": {
+        "mood": null,
+        "bloom": true
+      },
+      "previewImage": null,
+      "status": "cho_toi_uu_va_do_toa_do"
+    },
+    {
+      "id": "r_desert",
+      "name": "Sa mạc",
+      "source": [
+        "multiverse/mv_world_desert.glb"
+      ],
+      "role": "đã có trong thư viện",
+      "note": "",
+      "glb": null,
+      "glbLow": null,
+      "anchors": {
+        "start": {
+          "pos": null,
+          "lookAt": null,
+          "swayAmp": 0.02
+        },
+        "hops": [],
+        "portals": [],
+        "questionFrame": {
+          "pos": null,
+          "lookAt": null
+        }
+      },
+      "lighting": {
+        "mood": null,
+        "bloom": true
+      },
+      "previewImage": null,
+      "status": "cho_toi_uu_va_do_toa_do"
+    },
+    {
+      "id": "r_future",
+      "name": "Thành phố tương lai (dự phòng)",
+      "source": [
+        "Meshy_AI_Design_a_futuristic_d_1027000956_texture.glb"
+      ],
+      "role": "dự phòng, cần xem lại trước khi dùng",
+      "note": "",
+      "glb": null,
+      "glbLow": null,
+      "anchors": {
+        "start": {
+          "pos": null,
+          "lookAt": null,
+          "swayAmp": 0.02
+        },
+        "hops": [],
+        "portals": [],
+        "questionFrame": {
+          "pos": null,
+          "lookAt": null
+        }
+      },
+      "lighting": {
+        "mood": null,
+        "bloom": true
+      },
+      "previewImage": null,
+      "status": "cho_toi_uu_va_do_toa_do"
+    }
+  ],
+  "routes": {
+    "mv-01": [
+      "r_bedroom",
+      "r_fortress",
+      "r_salon",
+      "r_fortress",
+      "r_cyber",
+      "r_fortress"
+    ],
+    "mv-02": [
+      "r_bedroom",
+      "r_cyber",
+      "r_cyber",
+      "r_cyber",
+      "r_desert",
+      "r_cyber"
+    ],
+    "mv-03": [
+      "r_bedroom",
+      "r_desert",
+      "r_courtyard",
+      "r_desert",
+      "r_desert",
+      "r_desert"
+    ],
+    "mv-04": [
+      "r_bedroom",
+      "r_fortress",
+      "r_cyber",
+      "r_fortress",
+      "r_fortress",
+      "r_fortress"
+    ],
+    "mv-05": [
+      "r_fortress",
+      "r_cyber",
+      "r_desert",
+      "r_courtyard",
+      "r_salon",
+      "r_bedroom"
+    ]
+  }
+}

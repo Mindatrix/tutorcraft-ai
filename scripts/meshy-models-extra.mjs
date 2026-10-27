@@ -4,6 +4,8 @@
 const camp = (faces, prompt) => ({ group: 'camp', dir: 'camp', faces, prompt });
 const fish = (faces, prompt) => ({ group: 'fishing', dir: 'fishing', faces, prompt });
 const surv = (faces, prompt) => ({ group: 'survival', dir: 'survival', faces, prompt });
+// Nhân vật chơi được cho cửa hàng xu: dáng hai chân, T-pose, gắn xương (rig) để chạy hoạt ảnh.
+const chr = (faces, height, prompt) => ({ group: 'chars', dir: 'characters', faces, rig: true, pose: 't-pose', height, prompt });
 
 export const EXTRA = {
   // ---------- Summer Camp ----------
@@ -58,4 +60,10 @@ export const EXTRA = {
   surv_tripwire: surv(2000, 'thin string tripwire tied between two small posts with a little bell hanging in the middle'),
   surv_letter_1: surv(1500, 'rolled secret letter paper scroll tied with a red string, aged parchment, no text'),
   surv_letter_2: surv(1500, 'folded old letter sealed with red wax, tan parchment, no text'),
+
+  // ---------- Nhân vật cửa hàng xu (đợt 1) ----------
+  char_baby_dragon: chr(10000, 1.0, 'cute friendly baby dragon character standing upright on two legs like a cartoon kid, big round head, tiny wings, short tail, small rounded horns, soft teal and cream colors, big kind eyes, smiling, arms out to the sides, full body, kid friendly'),
+  char_kid_astronaut: chr(10000, 1.2, 'cute cartoon kid astronaut in a chunky white and orange space suit with a big round transparent helmet showing a smiling child face, small backpack, friendly proportions, big head, arms out to the sides, full body, kid friendly'),
+  char_buddy_robot: chr(10000, 1.1, 'friendly small helper robot buddy with a rounded body, two arms and two legs, big round glowing blue eyes on a screen face, white and mint colors, tiny antenna, cute and harmless, arms out to the sides, full body, kid friendly'),
+  char_river_otter: chr(10000, 1.1, 'cute cartoon river otter standing upright on two legs like a kid, brown fur with a cream belly, wearing a small orange life vest and a tiny paddler cap, big smiling face, long tail, arms out to the sides, full body, kid friendly'),
 };

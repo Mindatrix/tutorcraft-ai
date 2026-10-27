@@ -5,7 +5,7 @@
 //  --preview-only  chỉ tạo bản nháp (chưa tô màu) và in link ảnh để bạn duyệt; chạy lại không kèm cờ này để tô màu tiếp
 //  --lite          dùng meshy-6-lite (rẻ hơn, để thử)
 //  --force         tạo lại dù file đã có
-//  --group g       chỉ tạo nhóm g: camp | fishing | survival (các món bạn không tìm được, xem scripts/meshy-models-extra.mjs)
+//  --group g       chỉ tạo nhóm g: camp | fishing | survival | chars (các món bạn không tìm được, xem scripts/meshy-models-extra.mjs)
 // Món trong meshy-models-extra.mjs được lưu vào ~/Documents/3D_tutorcraft/<nhóm>/<tên>.glb
 // Tiến độ lưu ở .meshy-state.json để chạy lại không tốn điểm lần nữa.
 import fs from 'node:fs';
@@ -123,7 +123,7 @@ async function one(name, m) {
       if (r.rigged_character_glb_url) glbUrl = r.rigged_character_glb_url;
       for (const [k, v] of Object.entries(r.basic_animations || {})) {
         if (typeof v === 'string' && /glb/i.test(k) && v && !/armature/i.test(k)) {
-          const n = await download(v, path.join(OUT, `${name}_${k.replace(/_glb_url$/, '')}.glb`));
+          const n = await download(v, path.join(m.dir ? path.join(SRC, m.dir) : OUT, `${name}_${k.replace(/_glb_url$/, '')}.glb`));
           console.log(`\n  + ${name}_${k}: ${(n / 1024).toFixed(0)} KB`);
         }
       }
