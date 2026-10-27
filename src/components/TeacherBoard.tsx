@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { avatarTemplate, avatarTemplates, AVATAR_COLORS, BOARD_LOD, lodLevels, type LodLevel, type MatchView } from '../engine';
+import { avatarTemplate, avatarTemplates, AVATAR_COLORS, BOARD_LOD, PODIUM_COLORS, lodLevels, podiumOf, type LodLevel, type MatchView, type PodiumPlace } from '../engine';
 import { createRuntime, type GfxTier, type RuntimeStats } from './modes/three/SceneRuntime';
 import { LodAvatar } from './modes/three/avatar';
 import { NameBoard } from './modes/three/nameBoard';
@@ -82,6 +82,13 @@ export default function TeacherBoard({ view, tier = 'high', onStats }: TeacherBo
     rings.count = 0;
     rings.frustumCulled = false;
     rt.scene.add(rings);
+    // C4.19 the class top 3: a gold / silver / bronze ring round their spot, a medal on their tag.
+    const podiumMat = new THREE.MeshBasicMaterial({ toneMapped: false, side: THREE.DoubleSide });
+    const podiumRings = new THREE.InstancedMesh(new THREE.RingGeometry(0.62, 0.8, 32).rotateX(-Math.PI / 2), podiumMat, 3);
+    podiumRings.count = 0;
+    podiumRings.frustumCulled = false;
+    rt.scene.add(podiumRings);
+    const MEDAL: Record<PodiumPlace, string> = { gold: '🥇 ', silver: '🥈 ', bronze: '🥉 ' };
 
     const seats = new Map<string, Seat>();
     const m = new THREE.Matrix4();
@@ -93,6 +100,8 @@ export default function TeacherBoard({ view, tier = 'high', onStats }: TeacherBo
       const v = live.current;
       const pos = seatsFor(v);
       const ids = [...pos.keys()];
+      const podium = podiumOf(v.scores);
+      let podiumN = 0;
       ids.forEach((id, i) => {
         const p = v.roster.find((x) => x.id === id)!;
         const color = p.color ?? AVATAR_COLORS[i % AVATAR_COLORS.length].hex;
@@ -105,13 +114,22 @@ export default function TeacherBoard({ view, tier = 'high', onStats }: TeacherBo
         seat.pos.copy(pos.get(id)!);
         seat.color = color;
         const stars = v.scores.players[id] ?? 0;
-        names.set(i, p.nickname, color, `★ ${stars}${p.online ? '' : ' · mất kết nối'}`);
+        const place = podium[id];
+        names.set(i, p.nickname, color, `${place ? MEDAL[place] : ''}★ ${stars}${p.online ? '' : ' · mất kết nối'}`);
+        if (place && podiumN < 3) {
+          podiumRings.setMatrixAt(podiumN, m.makeTranslation(seat.pos.x, 0.04, seat.pos.z));
+          podiumRings.setColorAt(podiumN, c.set(PODIUM_COLORS[place]));
+          podiumN += 1;
+        }
         names.place(i, tmp.copy(seat.pos).setY(2.3));
         rings.setMatrixAt(i, m.makeTranslation(seat.pos.x, 0.03, seat.pos.z));
         rings.setColorAt(i, c.set(color));
       });
       rings.count = ids.length;
       names.mesh.count = ids.length;
+      podiumRings.count = podiumN;
+      podiumRings.instanceMatrix.needsUpdate = true;
+      if (podiumRings.instanceColor) podiumRings.instanceColor.needsUpdate = true;
       rings.instanceMatrix.needsUpdate = true;
       if (rings.instanceColor) rings.instanceColor.needsUpdate = true;
       for (const [id, seat] of seats) {
@@ -180,6 +198,7 @@ export default function TeacherBoard({ view, tier = 'high', onStats }: TeacherBo
       for (const s of seats.values()) s.avatar?.dispose();
       names.dispose();
       rings.dispose();
+      podiumRings.dispose();
       rt.dispose();
     };
   }, [tier, onStats]);

@@ -1,5 +1,6 @@
 import { after } from 'next/server';
 import { answerGuard, matchAnswerTask } from '../../../../src/server/matches';
+import { answerCoins } from '../../../../src/server/rewards';
 import { clientKey, rateLimit } from '../../../../src/server/rateLimit';
 import { SESSION_HEADER, sessionErrorResponse, sessions } from '../../../../src/server/sessions';
 
@@ -26,10 +27,14 @@ export async function POST(req: Request) {
     const res = await sessions.act(token, { kind: 'pair', questionId: body.questionId, left: body.left, right: body.right }, answerGuard(token));
     const task = matchAnswerTask(res);
     if (task) after(task);
-    const { sessionId: _sid, matchId: _mid, ...out } = res;
+    // C4.16 coins when the last pair completes the question (server grading and timing only).
+    const coins = await answerCoins(res);
+    const { sessionId: _sid, matchId: _mid, studentKey: _key, streak: _streak, ...out } = res;
     void _sid;
     void _mid;
-    return Response.json(out, { headers: { 'Cache-Control': 'no-store' } });
+    void _key;
+    void _streak;
+    return Response.json({ ...out, coins }, { headers: { 'Cache-Control': 'no-store' } });
   } catch (e) {
     return sessionErrorResponse(e);
   }

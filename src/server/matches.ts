@@ -2,6 +2,7 @@ import { DEMO_BATTLE_ID } from '../engine';
 import { loadBattle } from './battles';
 import { realtimeBroadcaster } from './matchBroadcast';
 import { createMatchService, MatchError, type MatchService } from './matchService';
+import { rewards } from './rewards';
 import { SupabaseMatchStore } from './matchStore';
 import { rateLimitShared } from './rateLimit';
 import { scenarioMeta } from './scenarios';
@@ -23,6 +24,7 @@ export function matches(): MatchService {
     loadBattle, // not cached: ownership is checked against the current row
     session: (token) => sessions.student(token),
     scenario: scenarioMeta,
+    rewards: rewards() ?? undefined,
   });
   return service;
 }
@@ -41,12 +43,13 @@ export function answerGuard(token: string): ActGuard | undefined {
 }
 
 /** After a graded answer: feed the class match (scores, stage, Survival rules) without delaying the reply. */
-export function matchAnswerTask(res: { matchId?: string | null; sessionId?: string; scored?: { correct: boolean; stars: number } | null }) {
+export function matchAnswerTask(res: { matchId?: string | null; sessionId?: string; scored?: { correct: boolean; stars: number } | null; streak?: { wrongAt: number[] } | null }) {
   if (!res.matchId || !res.sessionId || !res.scored) return null;
   const { sessionId, scored } = res;
+  const wrongAt = res.streak?.wrongAt ?? [];
   return () =>
     matches()
-      .onAnswer(sessionId, scored)
+      .onAnswer(sessionId, { ...scored, wrongAt })
       .then(
         () => undefined,
         (e: unknown) => console.error('match onAnswer failed:', (e as Error).message),

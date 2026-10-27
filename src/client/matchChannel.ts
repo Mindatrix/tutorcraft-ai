@@ -13,6 +13,7 @@ import {
   type SignedMatchMessage,
   type SurvivalEvent,
   type SurvivalPublic,
+  type RescueEvent,
   type MatchResult,
   type MatchTime,
 } from '../engine';
@@ -55,6 +56,8 @@ export interface MatchSnapshot {
   dropped: number;
   /** Genuine messages that arrived after a newer state (already covered), or replays. */
   stale: number;
+  /** C4.14 latest class-rescue news (the helper's question carries no answer key). */
+  rescue?: { events: RescueEvent[]; question?: { id: number; question: string; options: string[] } | null } | null;
 }
 
 export interface MatchConnectOptions {
@@ -93,7 +96,7 @@ export interface MatchConnection {
   receive(payload: unknown): Promise<boolean>;
 }
 
-const TYPES: MatchMessageType[] = ['state', 'stage', 'scores', 'roster', 'survival', 'ended'];
+const TYPES: MatchMessageType[] = ['state', 'stage', 'scores', 'roster', 'survival', 'ended', 'rescue'];
 
 function b64urlBytes(s: string): Uint8Array<ArrayBuffer> {
   const bin = atob(s.replace(/-/g, '+').replace(/_/g, '/') + '==='.slice((s.length + 3) % 4));
@@ -237,6 +240,10 @@ export async function connectMatch(opts: MatchConnectOptions): Promise<MatchConn
         snap.view = { ...v, status: 'ended', time: d.time, result: d.result };
         break;
       }
+      case 'rescue':
+        // C4.14: kept as the latest rescue news; the game shows it (helper: the question).
+        snap.rescue = msg.d as MatchSnapshot['rescue'];
+        break;
     }
   }
 

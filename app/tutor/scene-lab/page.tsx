@@ -46,6 +46,7 @@ import { DEMO_BOSS } from '../../../src/engine/demo';
 
 const Multiverse = dynamic(() => import('../../../src/components/modes/MultiversePortalRPG'), { ssr: false });
 const TeacherBoard = dynamic(() => import('../../../src/components/TeacherBoard'), { ssr: false });
+const QuestionLab = dynamic(() => import('../../../src/components/question/QuestionLab'), { ssr: false });
 import type { BoardStats } from '../../../src/components/TeacherBoard';
 import AvatarPicker from '../../../src/components/AvatarPicker';
 import type { Look, MatchView } from '../../../src/engine';
@@ -113,7 +114,7 @@ export default function SceneLab() {
   const [cast, setCast] = useState(true);
   const [seed, setSeed] = useState(20261027);
   const [mount, setMount] = useState(0);
-  const [view, setView] = useState<'river' | 'cast' | 'board' | 'picker' | 'multiverse'>('river');
+  const [view, setView] = useState<'river' | 'cast' | 'board' | 'picker' | 'multiverse' | 'question'>('river');
   const [hud, setHud] = useState<Hud | null>(null);
   const [leak, setLeak] = useState<string | null>(null);
   const api = useRef<LabApi | null>(null);
@@ -158,7 +159,7 @@ export default function SceneLab() {
           value={view}
           onChange={(e) => {
             setHud(null);
-            setView(e.target.value as 'river' | 'cast' | 'board' | 'picker' | 'multiverse');
+            setView(e.target.value as 'river' | 'cast' | 'board' | 'picker' | 'multiverse' | 'question');
           }}
         >
           <option value="river">Thế giới sông / đồng cỏ</option>
@@ -166,6 +167,7 @@ export default function SceneLab() {
           <option value="board">Màn hình gia sư (50 em)</option>
           <option value="picker">Chọn avatar</option>
           <option value="multiverse">Multiverse (kiểm tách lõi)</option>
+          <option value="question">Khung hỏi + RainbowEdge (C4)</option>
         </select>
         {(view === 'river' || view === 'cast') && (
           <select className={field} value={scenarioId} onChange={(e) => setScenarioId(e.target.value)}>
@@ -270,6 +272,7 @@ export default function SceneLab() {
         {view === 'multiverse' && <MultiverseStage key={`mv-${mount}-${tier}`} tier={tier} onHud={setHud} />}
         {view === 'board' && <BoardStage key={`board-${mount}-${tier}-${students}`} tier={tier} students={students || 50} onHud={setHud} />}
         {view === 'picker' && <PickerStage />}
+        {view === 'question' && <QuestionLab key={`q-${mount}`} tier={tier} />}
         {hud && (
           <pre className="pointer-events-none absolute left-2 top-2 max-w-[calc(100%-1rem)] whitespace-pre-wrap bg-black/70 p-2 text-[11px] leading-4 text-emerald-200">
             {[
