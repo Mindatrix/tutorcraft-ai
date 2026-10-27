@@ -31,3 +31,5 @@ export * from './questionCount';
 export * from './gameModes';
 export * from './grading';
 export * from './runEvents';
+export * from './match';
+export * from './survivalRules';
