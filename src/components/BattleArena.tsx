@@ -43,6 +43,7 @@ import dynamic from 'next/dynamic';
 import RaceTrack from './RaceTrack';
 import Scenery from './scenery/Scenery';
 import ModeStage, { StageFrame } from './modes/ModeStage';
+import { readTier, saveTier, type RenderTier } from './modes/gfxTier';
 import SubtitleBar from './modes/SubtitleBar';
 
 // Three.js is heavy: load it only when a Boat Race actually starts.
@@ -101,8 +102,14 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
   const world = resolveGameMode(config);
   const plan = useMemo(() => botPlan(raceSeed(battle.id, variant, config.level), battle.totalQuestions, config.level), [battle.id, variant, config.level, battle.totalQuestions]);
   // Renderer ladder: Three.js scene → 2D lanes.
-  const [renderer, setRenderer] = useState<'three' | '2d'>('three');
-  const no3d = useCallback(() => setRenderer('2d'), []);
+  // Renderer ladder (C1.3): Three.js high → low → 2D lanes, remembered per browser session.
+  const [renderTier, setRenderTier] = useState<RenderTier>(readTier);
+  const renderer: 'three' | '2d' = renderTier === '2d' ? '2d' : 'three';
+  const no3d = useCallback(() => {
+    saveTier('2d');
+    setRenderTier('2d');
+  }, []);
+  const lower3d = useCallback(() => saveTier('low'), []);
   const scene3d = renderer !== '2d';
   const [limits, setLimits] = useState<number[]>([]); // per-question time limits seen so far (drives the bot's pace)
 
@@ -523,7 +530,7 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
         {/* Battle scene — stays mounted into the result screen so the boss break + chest drop can play */}
         {isRace && race && renderer === 'three' && phase !== 'lobby' && display && (
           <StageFrame tone="#5eead4">
-            <KayakRush playerPos={race.playerPos} botPos={race.botPos} heroName={playerName} botName={`Bot ${levelLabel(config.level)}`} event={display.event} finished={phase === 'result'} result={final?.race?.result ?? null} onUnavailable={no3d} />
+            <KayakRush playerPos={race.playerPos} botPos={race.botPos} heroName={playerName} botName={`Bot ${levelLabel(config.level)}`} event={display.event} finished={phase === 'result'} result={final?.race?.result ?? null} tier={renderTier === 'low' ? 'low' : 'high'} onLowQuality={lower3d} onUnavailable={no3d} />
           </StageFrame>
         )}
         {isRace && race && phase !== 'lobby' && display && (

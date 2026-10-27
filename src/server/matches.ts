@@ -54,7 +54,8 @@ export function matchAnswerTask(res: { matchId?: string | null; sessionId?: stri
 }
 
 export function matchErrorResponse(e: unknown): Response {
-  if (e instanceof MatchError || e instanceof SessionError) return Response.json({ error: e.message }, { status: e.status });
+  if (e instanceof MatchError) return Response.json({ error: e.message, ...(e.extra ?? {}) }, { status: e.status });
+  if (e instanceof SessionError) return Response.json({ error: e.message }, { status: e.status });
   console.error('match error:', e instanceof Error ? e.message : String(e));
   return Response.json({ error: 'Lỗi máy chủ.' }, { status: 500 });
 }

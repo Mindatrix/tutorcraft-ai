@@ -33,3 +33,6 @@ export * from './grading';
 export * from './runEvents';
 export * from './match';
 export * from './survivalRules';
+export * from './avatars';
+export * from './sceneBuilder';
+export * from './director';

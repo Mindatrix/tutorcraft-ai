@@ -6,11 +6,16 @@ import { resolveAsset } from '../engine/assetLoader';
 // Files live OUTSIDE the repo (~/Documents/3D_tutorcraft, 7.9 GB raw) and are served from:
 //   NEXT_PUBLIC_ASSET_BASE_URL/web/<file>  — optimized (high)
 //   NEXT_PUBLIC_ASSET_BASE_URL/low/<file>  — low variant for weak phones
+//   NEXT_PUBLIC_ASSET_BASE_URL/mid/<file>  — ~5 k triangle avatars (characters, dinosaurs, critters):
+//                                             the middle level of detail for classmates further away
 // In development the base defaults to /dev-assets (app/dev-assets/[...path]/route.ts serves the
 // local library). In production it must point at a CDN (see docs/operations.md); until then
 // every model URL 404s and the scenes keep their code-built (procedural) models.
 
-export type AssetQuality = 'high' | 'low';
+export type AssetQuality = 'high' | 'low' | 'mid';
+
+/** Models that also exist as a ~5 k triangle "mid" file (avatar level of detail). */
+export const hasMidVariant = (file: string) => /^(characters|dino\/(khung_long|thu_nho))\//.test(file);
 
 export interface LibraryAsset {
   id: string;
@@ -51,7 +56,8 @@ export function libraryAsset(id: string): LibraryAsset | null {
 export function lib(id: string, quality: AssetQuality = 'high'): string {
   const a = libraryAsset(id);
   if (!a) return `[ĐIỀN TẠI ĐÂY: model "${id}" chưa có trong danh mục]`;
-  return `${assetBase()}/${quality === 'low' ? 'low' : 'web'}/${a.file}`;
+  const folder = quality === 'mid' ? (hasMidVariant(a.file) ? 'mid' : 'low') : quality === 'low' ? 'low' : 'web';
+  return `${assetBase()}/${folder}/${a.file}`;
 }
 
 export type HdriSize = '2k' | '1k';
@@ -71,7 +77,9 @@ export function hdriSize(url: string, size: HdriSize): string {
   return m ? hdri(m[1], size) : url;
 }
 
-/** Same model, other quality: "/…/web/x.glb" ⇄ "/…/low/x.glb". */
+/** Same model, other quality: "/…/web/x.glb" ⇄ "/…/low/x.glb" ⇄ "/…/mid/x.glb" (mid only where it exists). */
 export function withQuality(url: string, quality: AssetQuality): string {
-  return url.replace(/\/(web|low)\//, `/${quality === 'low' ? 'low' : 'web'}/`);
+  const file = url.replace(/^.*\/(web|low|mid)\//, '');
+  const folder = quality === 'mid' ? (hasMidVariant(file) ? 'mid' : 'low') : quality === 'low' ? 'low' : 'web';
+  return url.replace(/\/(web|low|mid)\//, `/${folder}/`);
 }

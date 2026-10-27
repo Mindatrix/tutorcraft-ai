@@ -199,9 +199,9 @@ export async function connectMatch(opts: MatchConnectOptions): Promise<MatchConn
     if (!v) return;
     switch (msg.t) {
       case 'state': {
-        const d = msg.d as { time: MatchTime; view?: MatchView };
+        const d = msg.d as { time: MatchTime; view?: MatchView; muted?: boolean };
         if (d.view) snap.view = d.view;
-        else snap.view = { ...v, time: d.time, status: d.time.status };
+        else snap.view = { ...v, time: d.time, status: d.time.status, ...(typeof d.muted === 'boolean' ? { muted: d.muted } : {}) };
         if (d.view && snap.me) {
           const mine = d.view.roster.find((p) => p.id === snap.me!.id);
           if (mine) snap.me = { ...snap.me, team: mine.team, grp: mine.grp };

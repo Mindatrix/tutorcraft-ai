@@ -32,6 +32,8 @@ export interface MatchRow {
   result: unknown | null;
   seq: number;
   announcedStage: number;
+  /** Tutor muted the whole class (C3.2). */
+  muted: boolean;
 }
 
 export interface PlayerRow {
@@ -292,6 +294,7 @@ const MATCH_COLUMNS: [keyof MatchRow, string, 'time' | 'plain'][] = [
   ['stateVersion', 'state_version', 'plain'],
   ['result', 'result', 'plain'],
   ['announcedStage', 'announced_stage', 'plain'],
+  ['muted', 'muted', 'plain'],
 ];
 
 function matchToDb(patch: Partial<MatchRow>): MRow {
@@ -332,6 +335,7 @@ function matchFromDb(r: MRow): MatchRow {
     result: r.result ?? null,
     seq: Number(r.seq ?? 0),
     announcedStage: Number(r.announced_stage ?? 0),
+    muted: !!r.muted,
   };
 }
 

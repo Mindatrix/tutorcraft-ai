@@ -1,4 +1,5 @@
 import type { BattleEvent, BossProfile, QuestionType, StoryBeat } from '../../engine';
+import type { GfxTier } from './three/SceneRuntime';
 
 export type SceneEvent = { kind: BattleEvent; n: number; amount?: number; beats?: StoryBeat[] } | null;
 
@@ -31,6 +32,10 @@ export interface BossSceneProps {
   onPickOption?: (idx: number) => void;
   /** Bring the question panel into view (Agent World hotspot modal). */
   onFocusQuestion?: () => void;
+  /** Quality tier to start on (C1.3); the runtime may step down to 'low' by itself. */
+  tier?: GfxTier;
+  /** The runtime stepped down to 'low' (the page remembers it for next time). */
+  onLowQuality?: () => void;
   /** WebGL failed or the device is too slow → parent swaps to the 2D canvas. */
   onUnavailable: () => void;
 }

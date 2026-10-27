@@ -29,6 +29,11 @@ export function setMuted(value: boolean): void {
   muted = value;
 }
 
+/** The shared Web Audio context (created by initSfx after a user tap), for the ambience layer. */
+export function audioContext(): AudioContext | null {
+  return ctx;
+}
+
 export function play(name: Sfx): void {
   if (muted || !ctx) return;
   if (ctx.state === 'suspended') void ctx.resume();

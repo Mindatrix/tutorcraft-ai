@@ -592,7 +592,7 @@ export default function MultiversePortalRPG(props: BossSceneProps) {
     const unavailable = () => live.current.onUnavailable();
     let stage: ReturnType<typeof createStage>;
     try {
-      stage = createStage(el, { fov: 50, far: 300, background: 0x0b0f1a, onSlow: unavailable });
+      stage = createStage(el, { fov: 50, far: 300, background: 0x0b0f1a, tier: live.current.tier, onLowQuality: () => live.current.onLowQuality?.(), onSlow: unavailable });
     } catch {
       unavailable();
       return;

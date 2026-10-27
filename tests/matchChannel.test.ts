@@ -118,3 +118,18 @@ test('B2.4 device: a jump in message numbers (a missed broadcast) makes it ask t
     conn.close();
   }
 });
+
+test('C3.2 device: the class mute arrives with the state message', async () => {
+  const { svc, radio, view, fake } = await rig();
+  const conn = await connectMatch({ token: 'tok1', fetch: fake, supabase: null, events: null, pollMs: 60_000 });
+  try {
+    assert.equal(conn.snapshot().view?.muted, false);
+    await svc.control('t1', view.id, 'mute');
+    const msg = radio.sent.filter((x) => JSON.parse(x.b).t === 'state').at(-1)!;
+    assert.equal(await conn.receive(msg), true);
+    assert.equal(conn.snapshot().view?.muted, true);
+  } finally {
+    conn.close();
+  }
+});
+

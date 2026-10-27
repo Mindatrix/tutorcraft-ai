@@ -92,6 +92,9 @@ export function matchClockAt(t: MatchTime, now: number): MatchClock {
 
 export type MatchControl = 'start' | 'pause' | 'resume' | 'extend' | 'end';
 export const MATCH_CONTROLS: MatchControl[] = ['start', 'pause', 'resume', 'extend', 'end'];
+/** Tutor's sound switch for the whole class (C3.2), outside the clock's state machine. */
+export type MatchAudioControl = 'mute' | 'unmute';
+export const MATCH_AUDIO_CONTROLS: MatchAudioControl[] = ['mute', 'unmute'];
 
 export type ControlResult = { ok: true; time: MatchTime } | { ok: false; status: number; reason: string };
 
@@ -302,6 +305,8 @@ export interface MatchView {
   seq: number;
   survival: SurvivalPublic | null;
   result: MatchResult | null;
+  /** The tutor muted the whole class. */
+  muted: boolean;
 }
 
 export interface MatchMe {
@@ -321,5 +326,5 @@ export interface MatchMe {
 
 export const SURVIVAL_TEAMS: Record<SurvivalTeam, string> = { escapers: 'Đội Chạy Trốn', pursuers: 'Đội Săn Tìm' };
 
-/** Dino herd species a student can pick (game_worlds.class_plan.species, dino_journey). */
+/** Dino herd species a student can pick (game_worlds.class_plan.species); see avatars.ts for all templates. */
 export const DINO_SPECIES = ['trex', 'raptor', 'triceratops', 'stegosaurus', 'diplodocus', 'sauropod'] as const;

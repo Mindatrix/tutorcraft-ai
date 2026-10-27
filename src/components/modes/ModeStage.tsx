@@ -4,11 +4,13 @@ import dynamic from 'next/dynamic';
 import { useCallback, useState, type ComponentType, type CSSProperties, type ReactNode } from 'react';
 import { GAME_MODES, type GameMode } from '../../engine';
 import { BEVEL_CLIP, canUseWebGL } from './gfx';
+import { readTier, saveTier, type RenderTier } from './gfxTier';
 import type { BossSceneProps, SceneEvent } from './types';
 
-// Renderer ladder for boss-battle worlds: Three.js scene → 2D canvas.
-// (Kayak Rush có cảnh three.js riêng trong BattleArena.)
-// Falls back when WebGL is missing, the context dies, or FPS < 30 for 5 s.
+// Renderer ladder for boss-battle worlds (C1.3): Three.js high → Three.js low → 2D canvas.
+// (Kayak Rush có cảnh three.js riêng trong BattleArena, cùng bậc thang.)
+// Steps down when the first seconds are slow (runtime → low), then when WebGL is missing,
+// the context dies, or FPS stays < 30 for 5 s on the low tier (→ 2D).
 
 type BossMode = Exclude<GameMode, 'kayak_rush'>;
 
@@ -20,18 +22,6 @@ function Loading() {
 const SCENES: Partial<Record<BossMode, ComponentType<BossSceneProps>>> = {
   multiverse_portal: dynamic(() => import('./MultiversePortalRPG'), { ssr: false, loading: Loading }),
 };
-
-const LITE_KEY = 'tc:gfx-lite';
-
-function startIn3d(): boolean {
-  if (typeof window === 'undefined') return true;
-  try {
-    if (window.sessionStorage.getItem(LITE_KEY) === '1') return false;
-  } catch {
-    /* storage blocked: decide from WebGL alone */
-  }
-  return canUseWebGL();
-}
 
 /** Bevelled "game screen" frame (no rounded rectangles). */
 export const BEVEL: CSSProperties = { clipPath: BEVEL_CLIP };
@@ -87,24 +77,19 @@ function Pop({ event }: { event: SceneEvent }) {
 }
 
 export default function ModeStage({ mode, scene, fallback }: { mode: BossMode; scene: Omit<BossSceneProps, 'onUnavailable'>; fallback: ReactNode }) {
-  const [three, setThree] = useState(startIn3d);
+  const [tier, setTier] = useState<RenderTier>(readTier);
   const def = GAME_MODES[mode];
   const lite = useCallback(() => {
-    try {
-      window.sessionStorage.setItem(LITE_KEY, '1');
-    } catch {
-      /* ignore */
-    }
-    setThree(false);
+    saveTier('2d');
+    setTier('2d');
   }, []);
+  // The runtime already switched itself to the low tier: only remember it (no remount).
+  const lower = useCallback(() => saveTier('low'), []);
   const retry3d = () => {
-    try {
-      window.sessionStorage.removeItem(LITE_KEY);
-    } catch {
-      /* ignore */
-    }
-    setThree(canUseWebGL());
+    saveTier(null);
+    setTier(canUseWebGL() ? 'high' : '2d');
   };
+  const three = tier !== '2d';
 
   const Scene = SCENES[mode];
   if (!Scene) {
@@ -130,7 +115,7 @@ export default function ModeStage({ mode, scene, fallback }: { mode: BossMode; s
 
   return (
     <StageFrame className="h-64 sm:h-80">
-      <Scene {...scene} onUnavailable={lite} />
+      <Scene {...scene} tier={tier === 'low' ? 'low' : 'high'} onLowQuality={lower} onUnavailable={lite} />
       <div className="pointer-events-none absolute inset-x-0 top-0 z-10 flex items-start justify-between gap-2 px-6 pt-3">
         <Bar label={def.hud.hero} value={scene.hp} max={scene.hpMax} tone="linear-gradient(90deg,#34d399,#10b981)" align="left" />
         <Bar label={def.hud.boss} value={scene.bossHp} max={scene.bossMax} tone="linear-gradient(90deg,#fb7185,#f59e0b)" align="right" />

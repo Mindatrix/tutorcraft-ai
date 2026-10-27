@@ -105,6 +105,80 @@ Những điểm chính:
 
 Thử tải: `node --env-file=.env.local scripts/match-load-test.mjs --students 50 --stage-seconds 300` (xem đầu file để biết cần build và chạy máy chủ trước). Script tạo một đấu trường gắn nhãn `[LOAD TEST]` rồi tự xoá sau khi chạy.
 
+## Cảnh 3D dùng chung, avatar, âm thanh (giai đoạn C)
+
+- **Lõi cảnh** `src/components/modes/three/SceneRuntime.ts` gồm renderer, bộ đèn ngoài trời, bầu trời HDRI 2K (bản thấp dùng vòm gradient), vòng lặp và số liệu. Khi rời cảnh, lõi trả lại ngữ cảnh WebGL; trình duyệt chỉ giữ được khoảng 16 ngữ cảnh. `createStage()` cũ trong `kit.ts` chạy trên lõi này, nên Multiverse và Kayak dùng chung.
+  - Vòm trời đi theo camera, nên camera đi xa (chặng 8, hoặc camera đặt lệch tâm) không còn bị một mảng đen trên trời.
+  - `stats()` có thêm ước lượng bộ nhớ đồ họa: ảnh (kể cả bầu trời, bản môi trường PMREM, bản đồ bóng) và lưới, tính theo kích thước sau khi giải nén. Draw call và tam giác đếm mọi lượt vẽ trong khung, kể cả lượt vẽ bóng và lượt làm tối nền.
+  - `maxPixelRatio` / `setPixelRatioCap()`: hạ độ nét dưới mức của tầng (chế độ máy yếu dùng 0,75).
+- **Ba tầng chất lượng** (`gfxTier.ts`):
+  - Mặc định là 3D cao. Ba giây đầu chậm (dưới 30 FPS) thì tự hạ xuống 3D thấp ngay tại chỗ: độ nét 1×, tắt bóng đổ, dùng bầu trời gradient. Thấp mà vẫn chậm 5 giây nữa thì chuyển sang 2D.
+  - Tầng của mỗi thiết bị được nhớ trong phiên trình duyệt.
+  - Cảnh cần nạp nhiều mô hình thì đặt `probe: 'manual'` và gọi `armProbe()` khi nạp xong. Lý do: lúc giải nén mô hình, máy nào cũng chậm, nên đo sớm sẽ xếp nhầm máy mạnh vào tầng thấp.
+- **Dựng cảnh từ dữ liệu** (`src/engine/sceneBuilder.ts`):
+  - Bố cục từng chặng lấy từ danh sách mô hình của kịch bản và `layoutSeed` của trận, nên mọi máy trong lớp dựng ra y hệt nhau.
+  - Cây, bụi, đá rải trên hai bờ luôn dùng bản thấp, có trần số mặt cho mỗi bản sao và cho cả chặng (bản cao 700 nghìn, bản thấp 220 nghìn).
+  - Vật dẹt hoặc dài đo theo cạnh dài nhất, vật đứng đo theo chiều cao; một số vật hay gặp có kích thước thật cố định.
+  - Mỗi mô hình lặp lại được vẽ một lần (instancing).
+- **Dấu chân** (`footprints.ts`): dán phẳng đúng chỗ chân chạm, mờ dần sau 20 giây; cả vệt dấu chân chỉ tốn một lần vẽ.
+- **Avatar** (`avatar.ts`):
+  - Ba cấp chi tiết (`LodAvatar`, luật trong `src/engine/director.ts`):
+    - gần: mô hình đầy đủ, khoảng 20 nghìn tam giác ở bản cao, 10 nghìn ở bản thấp;
+    - vừa: file `_mid` khoảng 5 nghìn tam giác, ảnh 512 px (29 file nhân vật và khủng long, 5,4 MB; CDN cần thêm thư mục `mid/` cạnh `web/` và `low/`);
+    - xa: không có mô hình, chỉ tên và màu (vòng màu dưới chân, chấm màu, tên trong bảng tên chung).
+  - Máy học sinh chỉ vẽ đầy đủ 6 bạn gần nhất, 10 bạn tiếp theo bản vừa, xa quá 45 m thì chỉ tên và màu (`STUDENT_LOD`). Chế độ máy yếu: 3 + 6, xa quá 30 m (`WEAK_STUDENT_LOD`). Mô hình chỉ nạp khi cần lần đầu rồi giữ lại; lúc mô hình gần đang nạp thì bản vừa đứng thay.
+  - Đổi màu bằng vật liệu dùng chung; mạng lưới dùng chung, nên 50 avatar chỉ tốn khoảng 10 mạng lưới.
+  - 6 trạng thái: đứng, chạy, vui, buồn, đúng, sai. Nhân vật có xương dùng đoạn hoạt ảnh có sẵn; khủng long và mô hình không xương dùng chuyển động bằng code.
+  - Mô hình có xương được đo trong tư thế nghỉ, sau khi đã cập nhật xương. Không làm vậy thì `char_sunny_boy`, file dùng đơn vị cm, có bản sao bị to gấp 100 lần.
+- **Chọn avatar** (`AvatarPicker.tsx`, `POST /api/match/join` với `{ species, color, name }`):
+  - Mẫu + 1 trong 12 màu, không trùng trong trận. Kiểu đã có bạn chọn bị gạch, kèm gợi ý; máy chủ kiểm lại và trả 409 kèm `suggest`.
+  - Khủng long có 6 loài; các game khác có 6 nhân vật hành trình.
+- **Nhân vật truyện** (`castModels`): dùng mô hình ghi trong `[asset_id]` ở đầu `clothing_text`. Nhân vật chưa ghi thì chọn mô hình theo độ tuổi và giới tính, pha màu theo `outfit_color`. Cả 360 nhân vật đều có mô hình.
+  - Thứ tự chọn (27/10): nhân vật ít lựa chọn nhất chọn trước (người già có 1 mô hình, bé gái 2, bé trai 4); người lớn và tuổi teen hết mô hình thì mượn nhóm tuổi bên cạnh; chỉ khi đó mới lặp, và lặp mô hình ít dùng nhất. Trên 30 kịch bản: số lần lặp giảm từ 59 xuống 33, số kịch bản không lặp tăng từ 3 lên 7, không mô hình nào dùng quá 2 lần trong một kịch bản (có test giữ mức này).
+  - Phần lặp còn lại hầu hết là bé gái: thư viện chỉ có 2 mô hình bé gái (`char_hiker_girl`, `char_kid_dancer`). Ảnh kiểm trùng: chế độ "12 nhân vật truyện" trong trang thử.
+- **Màn hình gia sư** (`TeacherBoard.tsx`): 3 cấp chi tiết (`BOARD_LOD`): 14 em gần camera là mô hình đầy đủ, 24 em tiếp theo bản vừa, các em còn lại chỉ có vòng màu và bảng tên. Tên cả lớp nằm trong một ảnh chung (`nameBoard.ts`), nên chỉ tốn một lần vẽ.
+- **Đạo diễn camera và hệ quả** (nền cho C4):
+  - `rt.director` (`cameraDirector.ts`):
+    - `dollyTo(neo)`: lướt tới mỏ neo trong 0,4 giây, giữ, rồi lướt về đúng vị trí cảnh muốn; `dollyBack()` về sớm;
+    - `focus(vật)` / `clearFocus()`: làm tối nền, vật được hỏi vẫn sáng và hiện xuyên qua vật che;
+    - `cameraMove(tên)`: các tên trong `content/consequences_v2.json` (`zoom_<neo>`, `shake_small`, `shake_big`, `warp_distort`, `follow_*`, `pan_*`, `dolly_through`);
+    - `rideRail(điểm)`: camera chạy trên đường cong, dùng cho cổng Multiverse.
+  - Camera của cảnh vẫn tự chạy mỗi khung; đạo diễn chỉ trộn tư thế của nó lên trước khi vẽ rồi trả lại, nên khi hết động tác camera không bị giật.
+  - `playOutcome()` (`three/director.ts`) chạy một hệ quả: hiệu ứng theo tên (khói, lửa, bụi, nhiễu, té nước, bong bóng, pháo hoa…: cả 72 tên trong `consequences_v2.json` đều có công thức), động tác camera và trạng thái avatar. Âm thanh và chữ chú thích để lớp giao diện của game lo.
+  - Cảnh tự đăng ký mỏ neo của mình (`setAnchor('grill', vật)`); tên neo chưa có thì động tác bỏ qua.
+- **Âm thanh** (`src/client/audio.ts`):
+  - Hiệu ứng và âm nền (sông, lửa trại, đêm có dế, gió) đều tổng hợp bằng Web Audio, không cần tải file.
+  - Có hai nút tắt: học sinh tự tắt, và gia sư tắt cả lớp (`POST /api/match/<id>` với `{ action: 'mute' | 'unmute' }`, phát qua kênh trận có chữ ký).
+  - Âm thanh có giấy phép (việc C3.3) sau này chỉ cần thay nguồn phát.
+- **Trang thử** `/tutor/scene-lab` có 5 chế độ: thế giới sông, 12 nhân vật truyện (kiểm trùng), màn hình gia sư 50 em, bảng chọn avatar, và Multiverse.
+  - Thế giới sông: chọn kịch bản, chặng, số học sinh, tầng chất lượng, và ô "Máy yếu" (độ nét 0,75, tắt bóng, bầu trời gradient, 3 + 6 bạn có mô hình, tầm nhìn ngắn).
+  - Bảng số: FPS, draw call, tam giác, bộ nhớ đồ họa ước lượng, số bạn ở từng cấp chi tiết, thời gian hiệu ứng, và dòng thiết bị (tên GPU, DPR, kích thước màn hình, số lõi, RAM).
+  - "Đo 10 giây" đo thời gian khung thật bằng `requestAnimationFrame`: FPS trung bình, giây tệ nhất, khung p95. Kết quả in vào bảng số để chụp màn hình.
+  - Hàng nút camera: Dolly 0,4 s, Làm tối nền, Đường ray, và "Chạy hệ quả" với mọi hệ quả trong `consequences_v2.json`.
+  - "Vào ra 10 lần" kiểm rò rỉ. Ở bản dev, React chạy mỗi hiệu ứng hai lần, nên "tạo thêm" là 20.
+  - Chế độ 12 nhân vật: hàm `__lab.snap()` (chỉ bản dev) xuất bảng ảnh từng nhân vật kèm tên, mô hình, màu; ô đỏ là mô hình bị lặp.
+
+Số đo ngày 27/10 trên Mac (Apple M4), sau khi có 3 cấp chi tiết. Thời gian mỗi khung đo bằng cách vẽ liền 60 khung, buộc GPU làm xong từng khung (`gl.finish`). Draw call và tam giác đã gồm lượt vẽ bóng:
+
+| Cảnh | Draw call | Tam giác | Bộ nhớ đồ họa (ước lượng) | Thời gian mỗi khung |
+|---|---|---|---|---|
+| Sông `camp-01`, bản cao (bóng đổ, HDRI 2K, độ nét 1,75×), 50 học sinh (6 gần, 10 vừa, 34 xa) và 12 nhân vật | 102 (63 không tính bóng) | 3,68 triệu (1,88 triệu không tính bóng) | ~293 MB ảnh + 10 MB lưới | 1,0 ms (p95 3,0) |
+| Như trên, chế độ máy yếu (độ nét 0,75, không bóng, 3 gần, 6 vừa, 41 xa) | 57 | 689 nghìn | ~93 MB ảnh + 7 MB lưới | 0,4 ms (p95 0,6) |
+| Màn hình gia sư, 50 em (14 gần, 24 vừa, 12 xa), bản cao | 80 | 748 nghìn | ~52 MB ảnh + 4 MB lưới | (không đo riêng) |
+
+- Vào ra 10 lần với cảnh sông: còn 1 runtime sống; heap JS 86 → 87 MB.
+- Vào ra 20 lần với Multiverse (đo 26/10): heap dao động quanh 85–100 MB, không tăng dần; console không có cảnh báo WebGL.
+- Bộ nhớ ảnh là phần đáng lo nhất trên điện thoại: ảnh WebP được giải nén thành RGBA 8 bit trên GPU. Ở bản cao, ảnh 1024 px của 12 nhân vật truyện và ảnh 2K của bầu trời chiếm phần lớn. Nếu điện thoại thật bị tràn bộ nhớ (trang tự tải lại), hướng xử lý: nhân vật truyện dùng bản vừa trên tầng thấp, hoặc chuyển ảnh sang KTX2/Basis (nén ngay trên GPU, nhỏ hơn 4–8 lần).
+- Cổng "30 FPS trên máy yếu" CHƯA đạt: mới có số đo trên M4, mà GPU điện thoại tầm thấp chậm hơn vài chục lần. Cần số liệu từ điện thoại thật (cách đo ở mục dưới).
+
+### Đo trên điện thoại thật
+
+1. Máy tính và điện thoại dùng chung một mạng Wi-Fi. Trên máy tính, chạy dev server bằng địa chỉ mạng nội bộ của máy (ví dụ `192.168.100.184`, xem bằng `ipconfig getifaddr en0`): `npx next dev -H 192.168.100.184 -p 3005`. Next chỉ cho phép tên máy mà server được khởi động với, nên phải dùng đúng địa chỉ này, không dùng `0.0.0.0`.
+2. Trên điện thoại, mở `http://192.168.100.184:3005/tutor/scene-lab`. Không cần đăng nhập; kịch bản và nhân vật đọc được bằng khóa công khai.
+3. Đợi bảng số hiện "cảnh: … mô hình" (đã nạp xong), không chạm màn hình, rồi bấm "Đo 10 giây". Chụp màn hình khi dòng "ĐO …" hiện ra.
+4. Chụp 4 lần: (a) Bản cao; (b) Bản thấp; (c) Bản thấp + Máy yếu; (d) Màn hình gia sư 50 em. Nếu điện thoại tự hạ tầng (dòng đầu ghi "tầng low" dù đã chọn Bản cao), đó cũng là một kết quả cần ghi.
+5. Cổng đạt khi (c) có FPS trung bình từ 30 trở lên và giây tệ nhất từ 25 trở lên trên một điện thoại tầm thấp (ví dụ Android 3–4 năm tuổi, RAM 3–4 GB). Ghi thêm tên máy và kết quả vào bảng trên.
+
 ## Việc cần làm (phát sinh sau giai đoạn A, 27/10/2026)
 
 - **Thời gian chờ Gemini khi sinh câu hỏi.** Hiện chờ 17 s cho model chính và 27 s cho model phụ (`src/server/gemini.ts`, tính theo số câu × trọng số dạng bài). Ngày 26/10 đo thực tế mất khoảng 31 s cho 10 câu mức Beginner, nên dễ rơi về ngân hàng câu dự phòng.
@@ -117,3 +191,14 @@ Thử tải: `node --env-file=.env.local scripts/match-load-test.mjs --students 
 - **Model hỏng cần làm lại bên Meshy: `camp_grill`.** File mới thay ngày 27/10 vẫn còn hai tấm phông đen: 84% bề mặt, 93 trên 2.051 mặt nằm ở hai mặt phẳng y = ±0,95; cỏ và đá rơi vãi quanh. Lỗi nằm ở file gốc, không do tối ưu, và không vá được gọn bằng code.
   - Cần làm: tạo lại một bếp nướng đứng riêng, không có nền hay mặt đất, rồi chạy `optimize-glb.mjs --files camp/camp_grill.glb --force` (bản cao và bản thấp) và `validate-glb.py`.
   - Coi là xong khi: Blender không còn báo bề mặt đen cho file này.
+- **`char_sunny_boy` dùng đơn vị cm** (cao 155 đơn vị, khung xương không có tỉ lệ 0,01 như các nhân vật khác). Code đã tự quy đổi nên hiển thị đúng; nếu bên nội dung xuất lại với tỉ lệ 0,01 thì file sẽ gọn và đồng bộ hơn. `validate-glb.py` có thêm phép kiểm "xương sai tỉ lệ" cho trường hợp hỏng thật (hông nằm ngoài thân).
+
+- **Thiếu mô hình nhân vật truyện** (ảnh kiểm trùng ngày 27/10, chế độ "12 nhân vật truyện" trong trang thử). Thư viện có 16 mô hình người, trong đó:
+  - Chỉ 2 bé gái (`char_hiker_girl`, `char_kid_dancer`): đây là phần lớn 33 lần lặp còn lại. Ví dụ `kayak-01` có 4 bé gái, nên mỗi mô hình dùng 2 lần.
+  - Không có người già: bà dùng `char_female_b` (phụ nữ trẻ), ông dùng `char_wanderer`.
+  - `char_wanderer` có sẵn một đĩa cỏ dưới chân và trông như bù nhìn, không hợp vai thầy giáo hay ông bà.
+  - Nhân vật không phải người (robot "Bot Sóng Bạc", "Cá Heo Sông Nhí", "Sóc Hạt Dẻ") đang nhận mô hình người. Cách sửa: bên nội dung ghi `[asset_id]` ở đầu `clothing_text`, hoặc làm mô hình riêng.
+  - Đứng tư thế chữ T (không có hoạt ảnh đứng): `char_iridescent_voyager`, `char_tpose_boy`, `char_grass_kid`. `char_boy_1` đứng chữ A.
+  - Phong cách lẫn lộn: mô hình gần như ảnh thật (`char_female_a`, `char_female_b`, `char_skater_boy`, `char_boy_1`) đứng cạnh mô hình hoạt hình (`char_sunny_boy`, `char_hiker_girl`, `char_kid_dancer`).
+  - Cần làm: tạo thêm ít nhất 4 bé gái, 2 người già (nam, nữ), 1 thầy giáo hoặc người lớn nam, cùng phong cách hoạt hình, có hoạt ảnh đứng. Chạy `optimize-glb.mjs` (bản cao, thấp và `--low --tris 10000` vào `_mid`) và `validate-glb.py`, rồi thêm vào `HUMAN_POOLS` trong `src/engine/avatars.ts`.
+  - Coi là xong khi: số lần lặp trên 30 kịch bản (test trong `tests/scene.test.ts`) giảm xuống gần 0, và bảng ảnh kiểm trùng không còn ô đỏ.

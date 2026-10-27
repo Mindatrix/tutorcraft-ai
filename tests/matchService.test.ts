@@ -200,7 +200,7 @@ test('B2.7 through the API: no charge no net, a right answer charges it, refusal
   void timeOf;
 });
 
-test('B1.4 Dino Journey: one student plays solo, a class plays as a herd in groups; species + colour unique', async () => {
+test('B1.4 Dino Journey: one student plays solo, a class plays as a herd in groups', async () => {
   const solo = setup(GameMode.DINO_JOURNEY, 'dino-01');
   const { view: v1 } = await solo.svc.create('t1', 'b1');
   await solo.svc.join(solo.student(1));
@@ -208,15 +208,48 @@ test('B1.4 Dino Journey: one student plays solo, a class plays as a herd in grou
 
   const herd = setup(GameMode.DINO_JOURNEY, 'dino-01');
   const { view } = await herd.svc.create('t1', 'b1');
-  await herd.svc.join(herd.student(0), { species: 'trex', color: '#AA3300' });
-  await assert.rejects(herd.svc.join(herd.student(1), { species: 'trex', color: '#aa3300' }), /màu khác/);
-  await herd.svc.join(herd.student(1), { species: 'trex', color: '#00aa33' });
-  await assert.rejects(herd.svc.join(herd.student(2), { species: 'unicorn', color: '#00aa33' }), /không hợp lệ/);
-  for (let i = 2; i < 12; i++) await herd.svc.join(herd.student(i));
+  for (let i = 0; i < 12; i++) await herd.svc.join(herd.student(i));
   const started = await herd.svc.control('t1', view.id, 'start');
   assert.deepEqual([started.view.play?.mode, started.view.play?.groupSize], ['class', 4]);
   const groups = new Set((await herd.store.players(view.id)).map((p) => p.grp));
   assert.equal(groups.size, 3);
+});
+
+test('C2.1 looks: template + one of 12 colours, unique per match, a taken one comes back with a free suggestion', async () => {
+  const herd = setup(GameMode.DINO_JOURNEY, 'dino-01');
+  await herd.svc.create('t1', 'b1');
+  const a = await herd.svc.join(herd.student(0), { species: 'trex', color: '#E53935', name: '  Mốc   nhỏ ' });
+  assert.deepEqual([a.me.species, a.me.color], ['trex', '#e53935']);
+  assert.equal(a.view.roster.find((p) => p.id === a.me.id)?.nickname, 'Mốc nhỏ', 'display name set at join');
+  const taken = await herd.svc.join(herd.student(1), { species: 'trex', color: '#e53935' }).then(() => null, (e: MatchError) => e);
+  assert.ok(taken instanceof MatchError && taken.status === 409);
+  assert.deepEqual(taken.extra?.suggest, { template: 'trex', color: '#fb8c00' }, 'same species, next free colour');
+  await herd.svc.join(herd.student(1), { species: 'trex', color: '#fb8c00' });
+  await assert.rejects(herd.svc.join(herd.student(2), { species: 'unicorn', color: '#fb8c00' }), /không hợp lệ/);
+  await assert.rejects(herd.svc.join(herd.student(2), { species: 'trex', color: '#123456' }), /không hợp lệ/, 'colour outside the palette');
+  // Re-joining keeps your own look (it is not "taken" by yourself).
+  const again = await herd.svc.join(herd.student(0), { species: 'trex', color: '#e53935' });
+  assert.equal(again.me.id, a.me.id);
+  // Other worlds pick a journey character; dinosaurs are not offered there.
+  const camp = setup(GameMode.SUMMER_CAMP_QUESTS, 'camp-01');
+  await camp.svc.create('t1', 'b1');
+  assert.equal((await camp.svc.join(camp.student(0), { species: 'sunny', color: '#1e5bd8' })).me.species, 'sunny');
+  await assert.rejects(camp.svc.join(camp.student(1), { species: 'trex', color: '#1e5bd8' }), /không hợp lệ/);
+});
+
+test('C3.2 the tutor mutes the whole class with one switch (signed broadcast, in every view)', async () => {
+  const { svc, radio, student } = setup(GameMode.SUMMER_CAMP_QUESTS, 'camp-01');
+  const { view } = await svc.create('t1', 'b1');
+  const tok = student(1);
+  await svc.join(tok);
+  await assert.rejects(svc.control('someone-else', view.id, 'mute'), /Không tìm thấy/);
+  const r = await svc.control('t1', view.id, 'mute');
+  assert.equal(r.view.muted, true);
+  const msg = radio.messages(view.id).filter((m) => m.t === 'state').at(-1)!;
+  assert.equal((msg.d as { muted: boolean }).muted, true);
+  assert.equal((await svc.state(tok)).view.muted, true);
+  await svc.control('t1', view.id, 'unmute');
+  assert.equal((await svc.state(tok)).view.muted, false);
 });
 
 test('B2.7 a dodge answered right is never lost: decided from the stored last answer at the next poll', async () => {

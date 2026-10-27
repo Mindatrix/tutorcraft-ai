@@ -29,6 +29,10 @@ export interface KayakRushProps {
   event: SceneEvent;
   finished: boolean;
   result: 'win' | 'lose' | 'draw' | string | null;
+  /** Quality tier to start on (C1.3). */
+  tier?: 'high' | 'low';
+  /** The runtime stepped down to 'low' by itself. */
+  onLowQuality?: () => void;
   onUnavailable?: () => void;
 }
 
@@ -288,7 +292,7 @@ export default function KayakRush(props: KayakRushProps) {
     const unavailable = () => live.current.onUnavailable?.();
     let stage: ReturnType<typeof createStage>;
     try {
-      stage = createStage(el, { fov: 55, far: 260, background: 0xbfe6f2, onSlow: unavailable });
+      stage = createStage(el, { fov: 55, far: 260, background: 0xbfe6f2, tier: live.current.tier, onLowQuality: () => live.current.onLowQuality?.(), onSlow: unavailable });
     } catch {
       unavailable();
       return;

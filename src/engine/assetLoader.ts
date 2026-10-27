@@ -17,6 +17,9 @@ export interface CatalogAsset {
   mb_web: number | null;
   mb_low?: number | null;
   mb_raw?: number | null;
+  /** Triangles of the high / low variant (scene triangle budgets). */
+  tris_web?: number | null;
+  tris_low?: number | null;
 }
 
 export type AliasMap = Record<string, { to?: string; file?: string; note?: string }>;

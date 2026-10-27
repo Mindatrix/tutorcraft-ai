@@ -228,6 +228,17 @@ for i, f in enumerate(files):
                 issues.append(f'quá lớn ({biggest:.0f} m) — có thể sai đơn vị')
             elif biggest < 0.01:
                 issues.append(f'quá nhỏ ({biggest:.4f} m) — có thể sai đơn vị')
+        # Rig scale: the root bone (hips) must sit inside the body. A rig exported without its 0.01
+        # armature scale keeps the hips metres up (e.g. 58.9 m on a 1.3 m body) and plays every
+        # animation 100× too big. (char_sunny_boy is in cm throughout and passes: its hips are inside.)
+        for arm in [o for o in bpy.context.scene.objects if o.type == 'ARMATURE']:
+            if not arm.data.bones or not meshes:
+                continue
+            root = arm.data.bones[0]
+            hips = (arm.matrix_world @ root.head_local).z
+            body = max((hi - lo).z, 1e-3)
+            if abs(hips) > body * 3:
+                issues.append(f'xương sai tỉ lệ (hông ở {hips:.1f} m, thân cao {body:.2f} m): hoạt ảnh sẽ phóng to — xuất lại với tỉ lệ khung xương 0,01')
         entry['materials'] = len(mats)
         share = dark_surface(meshes)
         if share is not None:

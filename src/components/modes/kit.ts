@@ -1,19 +1,15 @@
 import * as THREE from 'three';
 import { loadScene } from './three/assetLoader';
 import { clone as cloneSkinned } from 'three/examples/jsm/utils/SkeletonUtils.js';
-import { THREE_ASSET_MANIFEST, THREE_DEFAULTS, assetOr } from '../../config/threeAssets';
-import { prefersReducedMotion } from './gfx';
+import { createRuntime, disposeTree, type GfxTier, type SceneRuntime } from './three/SceneRuntime';
+import { restBox } from './three/avatar';
 
 export { BEVEL_CLIP, canUseWebGL, prefersReducedMotion } from './gfx';
+export type { GfxTier } from './three/SceneRuntime';
 
-// Shared toolkit for the 5 game worlds: renderer + loop with the FPS guard,
+// Shared toolkit for the game worlds: renderer + loop with the quality ladder (SceneRuntime),
 // stylized materials, gradient skies, text sprites, spark bursts, GLB swap-in.
 // Everything here is purely visual — the server owns answers, damage and Boss HP.
-
-const GFX = THREE_ASSET_MANIFEST.graphicsSettings;
-const FPS_MIN = assetOr(GFX.fpsFallbackThreshold, THREE_DEFAULTS.fpsFallbackThreshold);
-const FPS_WINDOW = assetOr(GFX.fpsFallbackWindowMs, THREE_DEFAULTS.fpsFallbackWindowMs);
-const MAX_DPR = assetOr(GFX.maxPixelRatio, THREE_DEFAULTS.maxPixelRatio);
 
 export const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 export const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
@@ -32,153 +28,29 @@ export function hashStr(s: string): number {
 }
 
 
-export interface Stage {
-  renderer: THREE.WebGLRenderer;
-  scene: THREE.Scene;
-  camera: THREE.PerspectiveCamera;
-  size: { w: number; h: number };
-  reduced: boolean;
-  /** Camera shake: call shake(strength 0..1, seconds). */
-  shake: (mag: number, sec: number) => void;
-  run: (frame: (dt: number, t: number) => void) => void;
-  dispose: () => void;
-}
+/** A world's renderer + scene + camera + loop: the shared SceneRuntime (three/SceneRuntime.ts). */
+export type Stage = SceneRuntime;
 
 export interface StageOptions {
   fov?: number;
   near?: number;
   far?: number;
   background?: THREE.ColorRepresentation | null;
-  /** Called once if WebGL dies or FPS stays under the threshold for the whole window. */
+  /** Quality tier to start on (ModeStage remembers a slow device). */
+  tier?: GfxTier;
+  /** The runtime stepped down to the low tier on its own (the page remembers it). */
+  onLowQuality?: () => void;
+  /** Called once if WebGL dies or FPS stays under the threshold on the low tier. */
   onSlow?: () => void;
 }
 
-/** Creates renderer + scene + camera inside `el`. Throws if WebGL is unavailable. */
+/** Creates renderer + scene + camera inside `el` (the scene lights itself). Throws if WebGL is unavailable. */
 export function createStage(el: HTMLElement, opts: StageOptions = {}): Stage {
-  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: opts.background === null, stencil: true, powerPreference: 'high-performance' });
-  renderer.setPixelRatio(Math.min(MAX_DPR, window.devicePixelRatio || 1));
-  renderer.outputColorSpace = THREE.SRGBColorSpace;
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.05;
-  const canvas = renderer.domElement;
-  canvas.style.width = '100%';
-  canvas.style.height = '100%';
-  canvas.style.display = 'block';
-  el.appendChild(canvas);
-
-  const scene = new THREE.Scene();
-  if (opts.background !== null && opts.background !== undefined) scene.background = new THREE.Color(opts.background);
-  const camera = new THREE.PerspectiveCamera(opts.fov ?? 50, 2, opts.near ?? 0.1, opts.far ?? 400);
-  const size = { w: 600, h: 300 };
-  const reduced = prefersReducedMotion();
-
-  const resize = () => {
-    size.w = el.clientWidth || 600;
-    size.h = el.clientHeight || 300;
-    renderer.setSize(size.w, size.h, false);
-    camera.aspect = size.w / size.h;
-    camera.updateProjectionMatrix();
-  };
-  resize();
-  const ro = new ResizeObserver(resize);
-  ro.observe(el);
-
-  let slowFired = false;
-  const slow = () => {
-    if (slowFired) return;
-    slowFired = true;
-    opts.onSlow?.();
-  };
-  const lost = (e: Event) => {
-    e.preventDefault();
-    slow();
-  };
-  canvas.addEventListener('webglcontextlost', lost);
-
-  const shakeState = { until: 0, mag: 0, dur: 1 };
-  let raf = 0;
-  let alive = true;
-  const clock = new THREE.Clock();
-
-  return {
-    renderer,
-    scene,
-    camera,
-    size,
-    reduced,
-    shake: (mag, sec) => {
-      if (reduced) return;
-      const t = clock.getElapsedTime();
-      shakeState.mag = Math.max(shakeState.until > t ? shakeState.mag : 0, mag);
-      shakeState.until = t + sec;
-      shakeState.dur = sec;
-    },
-    run(frame) {
-      let fpsFrames = 0;
-      let fpsStart = 0;
-      let slowSince = -1;
-      const tick = () => {
-        if (!alive) return;
-        raf = requestAnimationFrame(tick);
-        const raw = clock.getDelta();
-        const t = clock.getElapsedTime();
-        // A hidden tab pauses rAF: ignore that gap for animation and for the FPS guard.
-        const dt = raw > 0.25 ? 1 / 60 : raw;
-        if (raw > 0.5) {
-          fpsFrames = 0;
-          fpsStart = t;
-          slowSince = -1;
-        } else if (t > 2.5) {
-          // Skip the first seconds (shader compile / asset upload).
-          fpsFrames++;
-          if (t - fpsStart >= 1) {
-            const fps = fpsFrames / (t - fpsStart);
-            fpsFrames = 0;
-            fpsStart = t;
-            if (fps < FPS_MIN) {
-              if (slowSince < 0) slowSince = t - 1;
-              if ((t - slowSince) * 1000 >= FPS_WINDOW) slow();
-            } else slowSince = -1;
-          }
-        } else fpsStart = t;
-        frame(dt, t);
-        let ox = 0;
-        let oy = 0;
-        if (shakeState.until > t) {
-          const k = ((shakeState.until - t) / shakeState.dur) * shakeState.mag * 0.35;
-          ox = (Math.random() - 0.5) * k;
-          oy = (Math.random() - 0.5) * k;
-          camera.position.x += ox;
-          camera.position.y += oy;
-        }
-        renderer.render(scene, camera);
-        camera.position.x -= ox;
-        camera.position.y -= oy;
-      };
-      tick();
-    },
-    dispose() {
-      alive = false;
-      cancelAnimationFrame(raf);
-      ro.disconnect();
-      canvas.removeEventListener('webglcontextlost', lost);
-      disposeObject(scene);
-      renderer.dispose();
-      canvas.remove();
-    },
-  };
+  return createRuntime(el, { tier: opts.tier, fov: opts.fov, near: opts.near, far: opts.far, background: opts.background, lights: 'none', onLowQuality: opts.onLowQuality, onSlow: opts.onSlow });
 }
 
 export function disposeObject(root: THREE.Object3D) {
-  root.traverse((o) => {
-    const m = o as THREE.Mesh;
-    if (m.geometry) m.geometry.dispose();
-    const mats = m.material ? (Array.isArray(m.material) ? m.material : [m.material]) : [];
-    for (const mat of mats) {
-      for (const v of Object.values(mat)) if (v instanceof THREE.Texture) v.dispose();
-      mat.dispose();
-    }
-  });
+  disposeTree(root);
 }
 
 // ---------------------------------------------------------------------------
@@ -470,7 +342,7 @@ export function swapInGlb(holder: THREE.Object3D, url: string | null, height: nu
       // Rigged models need SkeletonUtils.clone: a plain clone keeps the bones of the cached
       // original, so the copy renders nowhere (invisible hero).
       const model = cloneSkinned(src) as THREE.Group;
-      const box = new THREE.Box3().setFromObject(model);
+      const box = restBox(model);
       const h = box.max.y - box.min.y || 1;
       model.scale.setScalar(height / h);
       model.position.y = -box.min.y * (height / h);

@@ -1,8 +1,12 @@
 import { randomUUID } from 'node:crypto';
 import {
-  DINO_SPECIES,
+  AVATAR_COLORS,
   GameMode,
+  MATCH_AUDIO_CONTROLS,
   MATCH_CONTROLS,
+  avatarColor,
+  avatarTemplate,
+  suggestLook,
   MAX_MATCH_PLAYERS,
   SURVIVAL,
   addSurvivalPlayer,
@@ -48,7 +52,8 @@ import { MatchStoreError, timeOf, type MatchRow, type MatchStore, type PlayerRow
 // once, settles River Survival windows — so whoever asks next sees the right state.
 
 export class MatchError extends Error {
-  constructor(public status: number, message: string) {
+  /** Extra fields for the JSON reply (e.g. a suggested free look). */
+  constructor(public status: number, message: string, public extra?: Record<string, unknown>) {
     super(message);
   }
 }
@@ -101,7 +106,6 @@ const STATE_RETRIES = 8;
 const TEAM_NAMES: Partial<Record<string, [string, string]>> = {
   [GameMode.RIVER_SURVIVAL]: ['escapers', 'pursuers'],
 };
-const COLOR = /^#[0-9a-f]{6}$/i;
 
 const isSurvivalState = (s: unknown): s is SurvivalState => !!s && typeof s === 'object' && 'players' in (s as object) && 'pendingTags' in (s as object);
 
@@ -203,6 +207,7 @@ export function createMatchService(deps: MatchDeps) {
       seq: m.seq,
       survival: survivalPublic(m.state, players),
       result: (m.result as MatchResult | null) ?? null,
+      muted: !!m.muted,
     };
   }
 
@@ -421,6 +426,7 @@ export function createMatchService(deps: MatchDeps) {
           runPlan: null,
           play: null,
           state: {},
+          muted: false,
         });
         return tutorView(m, at);
       } catch (e) {
@@ -433,8 +439,16 @@ export function createMatchService(deps: MatchDeps) {
     },
 
     async control(tutorId: string, matchId: string, action: unknown) {
-      if (!MATCH_CONTROLS.includes(action as MatchControl)) throw new MatchError(400, 'Thao tác không hợp lệ.');
       const at = now();
+      if (MATCH_AUDIO_CONTROLS.includes(action as 'mute')) {
+        // C3.2: one switch for the whole class, any time before the end.
+        const m0 = await owned(tutorId, matchId);
+        const up = await store.update(m0.id, { muted: action === 'mute' }, { status: ['lobby', 'running', 'paused'] });
+        if (!up) throw new MatchError(409, 'Trận đã kết thúc.');
+        await send(up, 'state', { time: timeOf(up), muted: up.muted });
+        return tutorView(up, at);
+      }
+      if (!MATCH_CONTROLS.includes(action as MatchControl)) throw new MatchError(400, 'Thao tác không hợp lệ.');
       let m = await advance(await owned(tutorId, matchId), at);
       const a = action as MatchControl;
       if (a === 'start') m = await startMatch(m, at);
@@ -447,7 +461,7 @@ export function createMatchService(deps: MatchDeps) {
         const up = await store.update(m.id, timePatch(ctl.time), { status: [m.status] });
         if (!up) throw new MatchError(409, 'Trận vừa thay đổi, hãy thử lại.');
         m = up;
-        await send(m, 'state', { time: timeOf(m) });
+        await send(m, 'state', { time: timeOf(m), muted: m.muted });
       }
       return tutorView(m, at);
     },
@@ -466,7 +480,12 @@ export function createMatchService(deps: MatchDeps) {
 
     // ------------------------------------------------------------------------------ student side
 
-    async join(token: unknown, opts: { species?: unknown; color?: unknown } = {}): Promise<StudentMatch> {
+    /**
+     * C2.1: a look is a template (journey character, or baby dinosaur in Dino Journey) + one of the
+     * 12 colours, unique in the match; a taken one is refused with a free suggestion. `name`
+     * replaces the display name.
+     */
+    async join(token: unknown, opts: { species?: unknown; color?: unknown; name?: unknown } = {}): Promise<StudentMatch> {
       const recv = now(); // NTP t1: before any database work
       const sess = await deps.session(token);
       const at = now();
@@ -478,22 +497,32 @@ export function createMatchService(deps: MatchDeps) {
       let species: string | null | undefined;
       let color: string | null | undefined;
       if (opts.species !== undefined || opts.color !== undefined) {
-        if (m.game !== GameMode.DINO_JOURNEY) throw new MatchError(400, 'Trận này không chọn loài.');
-        species = (DINO_SPECIES as readonly string[]).includes(opts.species as string) ? (opts.species as string) : null;
-        color = typeof opts.color === 'string' && COLOR.test(opts.color) ? opts.color.toLowerCase() : null;
-        if (!species || !color) throw new MatchError(400, 'Loài hoặc màu không hợp lệ.');
+        const t = avatarTemplate(m.game, opts.species);
+        const c = avatarColor(opts.color);
+        if (!t || !c) throw new MatchError(400, 'Mẫu nhân vật hoặc màu không hợp lệ.');
+        species = t.id;
+        color = c.hex;
       }
+      const name = typeof opts.name === 'string' && opts.name.trim() ? opts.name.trim().replace(/\s+/g, ' ').slice(0, 24) : null;
       const players = await store.players(m.id);
       const existing = players.find((p) => p.studentKey === sess.studentKey);
       const active = players.filter((p) => p.leftAt == null && p.studentKey !== sess.studentKey);
+      const lookTaken = () => {
+        const others = players.filter((p) => p.studentKey !== sess.studentKey && p.species && p.color).map((p) => ({ template: p.species!, color: p.color! }));
+        const s2 = suggestLook(m.game, { template: species ?? undefined, color: color ?? undefined }, others);
+        const t = avatarTemplate(m.game, s2?.template);
+        const c = AVATAR_COLORS.find((x) => x.hex === s2?.color);
+        return new MatchError(409, `Đã có bạn chọn kiểu này${t && c ? `. Gợi ý: ${t.nameVi}, màu ${c.nameVi}` : ''}.`, { suggest: s2 });
+      };
+      if (species && color && players.some((p) => p.studentKey !== sess.studentKey && p.species === species && p.color === color)) throw lookTaken();
       if (!existing && active.length >= MAX_MATCH_PLAYERS) throw new MatchError(409, `Trận đã đủ ${MAX_MATCH_PLAYERS} em.`);
       const skill = existing?.skill ?? (await store.skillOf(m.classCode, sess.studentKey).catch(() => null)) ?? 0.6;
       const late = !existing && m.status !== 'lobby' ? assignLate(m, active) : { team: existing?.team ?? null, grp: existing?.grp ?? null };
       let player: PlayerRow;
       try {
-        player = await store.join({ matchId: m.id, sessionId: sess.id, studentKey: sess.studentKey, nickname: sess.nickname, avatar: sess.avatar, skill, ...late, species, color }, at);
+        player = await store.join({ matchId: m.id, sessionId: sess.id, studentKey: sess.studentKey, nickname: name ?? existing?.nickname ?? sess.nickname, avatar: sess.avatar, skill, ...late, species, color }, at);
       } catch (e) {
-        if (e instanceof MatchStoreError && e.code === 'look_taken') throw new MatchError(409, 'Đã có bạn chọn loài và màu này, hãy chọn màu khác.');
+        if (e instanceof MatchStoreError && e.code === 'look_taken') throw lookTaken(); // lost a race with another student
         throw e;
       }
       await store.linkSession(sess.id, m.id, m.game === GameMode.KAYAK_RUSH_3D ? player.team : null);
@@ -502,7 +531,7 @@ export function createMatchService(deps: MatchDeps) {
         cur = (await survivalStep(cur, at, (s) => ({ state: addSurvivalPlayer(s, player.id, player.team as SurvivalTeam), events: [] }))).m;
       }
       // Re-joining with a new session (out of questions, page reload) changes nothing others see.
-      if (!existing || existing.leftAt != null || species !== undefined) await send(cur, 'roster', { player: rosterEntry(player, at) });
+      if (!existing || existing.leftAt != null || species !== undefined || name) await send(cur, 'roster', { player: rosterEntry(player, at) });
       return { view: viewOf(cur, await store.players(m.id), at, recv), me: meOf(player, cur, at), channel: channel(m.id) };
     },
 

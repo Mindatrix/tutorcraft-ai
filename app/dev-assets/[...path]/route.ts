@@ -6,6 +6,7 @@ import { Readable } from 'node:stream';
 // DEVELOPMENT ONLY: serves the local 3D library (~/Documents/3D_tutorcraft, outside the repo)
 //   /dev-assets/web/<file>  → <library>/_optimized/<file>   (.glb)
 //   /dev-assets/low/<file>  → <library>/_low/<file>         (.glb)
+//   /dev-assets/mid/<file>  → <library>/_mid/<file>         (.glb, ~5 k triangle avatars)
 //   /dev-assets/hdri/<file> → <library>/hdri/<file>         (.hdr, 2K skies; the 1K ones are in /public)
 // Production uses NEXT_PUBLIC_ASSET_BASE_URL (a CDN with the same three folders); this route answers 404 there.
 
@@ -13,6 +14,7 @@ const ROOT = path.resolve((process.env.TC_3D_DIR || '~/Documents/3D_tutorcraft')
 const DIRS: Record<string, { dir: string; ext: string; type: string }> = {
   web: { dir: '_optimized', ext: '.glb', type: 'model/gltf-binary' },
   low: { dir: '_low', ext: '.glb', type: 'model/gltf-binary' },
+  mid: { dir: '_mid', ext: '.glb', type: 'model/gltf-binary' },
   hdri: { dir: 'hdri', ext: '.hdr', type: 'image/vnd.radiance' },
 };
 
