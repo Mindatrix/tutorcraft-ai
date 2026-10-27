@@ -1,0 +1,905 @@
+{
+  "version": 1,
+  "note": "Hệ quả khi trả lời đúng/sai cho 6 game. Sai không bao giờ mất xu; chỉ mất thời gian, tiến độ, chuỗi đúng. Đáp án đúng luôn hiện trong cảnh. Không máu, không súng. Tên effect/sfx/camera/avatarAnim là khóa để Code ánh xạ vào cảnh; caption là chữ tiếng Việt hiện trên tấm biển trong cảnh.",
+  "shared": {
+    "questionLimitMs": 25000,
+    "hintAfterMs": 8000,
+    "feedbackMs": 1500,
+    "hintCostCoins": {
+      "tier1": 3,
+      "tier2": 5
+    },
+    "difficulty": {
+      "wrongInRowToEasier": 2,
+      "rightInRowToCombo": 3,
+      "wrongInRowToRescue": 3
+    },
+    "coins": {
+      "correct": 10,
+      "fastBonus": 5,
+      "fastUnderMs": 5000,
+      "streakMultiplierMax": 2,
+      "goldenMultiplier": 2
+    },
+    "wrongNeverLosesCoins": true,
+    "goldenChallenge": {
+      "intro": [
+        "Có vật phát sáng kìa! Nhận thử thách vàng không?"
+      ],
+      "onWrong": "chỉ mất chuỗi đúng, không mất xu"
+    },
+    "chotChang": {
+      "questions": 3,
+      "bonusCoins": 20,
+      "caption": [
+        "Chốt chặng! Ba câu liền nhau!"
+      ]
+    },
+    "rescue": {
+      "classModeOnly": true,
+      "rule": "Sai 3 câu liên tiếp trong một chặng: một bạn trong lớp nhận câu cứu hộ; cả hai được xu khi cứu thành công.",
+      "caption": [
+        "Bạn nào giúp bạn với!"
+      ]
+    },
+    "boxAfterMatch": {
+      "coinsMin": 20,
+      "coinsMax": 100,
+      "rule": "chỉ cho xu, không bán bằng tiền thật"
+    }
+  },
+  "games": {
+    "kayak_rush": {
+      "name": "Kayak Rush",
+      "companion": {
+        "name": "Huấn luyện viên Bo",
+        "role": "đứng trên bờ, hét qua loa"
+      },
+      "answerSign": "biển gỗ cắm bên bờ sông hiện đáp án đúng",
+      "hints": {
+        "tier1": [
+          "Bo hét: Nghĩa là \"{vi}\" đó, chọn làn nhanh lên!",
+          "Bo ra hiệu: Từ này có nghĩa \"{vi}\"."
+        ],
+        "tier2": [
+          "Bo chỉ tay: Hai làn bên này chắc chắn sai, bỏ đi!",
+          "Bo gõ loa: Chỉ còn hai làn thôi, chọn đi!"
+        ]
+      },
+      "tasks": {
+        "gate": {
+          "label": "Cổng phao",
+          "correct": {
+            "effect": "gate_open_nitro",
+            "sfx": "sfx_correct_whoosh",
+            "caption": [
+              "Qua cổng! Nitro!",
+              "Chuẩn làn rồi!"
+            ],
+            "durationMs": 1500,
+            "camera": "follow_boost",
+            "avatarAnim": "happy"
+          },
+          "wrong": {
+            "effect": "hit_rock_slow",
+            "sfx": "sfx_wrong_thud",
+            "caption": [
+              "Ối, va đá! Chậm 2 giây.",
+              "Lệch làn rồi, mất Nitro."
+            ],
+            "durationMs": 1500,
+            "camera": "shake_small",
+            "avatarAnim": "sad"
+          },
+          "wrongStreak": {
+            "effect": "boat_flip_drift_back",
+            "sfx": "sfx_wrong_splash",
+            "caption": [
+              "Thuyền lật! Trôi lùi một đoạn.",
+              "Đối thủ vượt rồi, bình tĩnh!"
+            ],
+            "durationMs": 2200,
+            "camera": "shake_big",
+            "avatarAnim": "sad"
+          },
+          "recover": {
+            "effect": "rescue_buoy_gate_easy",
+            "sfx": "sfx_hint_chime",
+            "caption": [
+              "Cổng vớt đây, câu dễ thôi!"
+            ],
+            "durationMs": 1500
+          }
+        },
+        "rapids": {
+          "label": "Ghềnh thác",
+          "correct": {
+            "effect": "shoot_rapids",
+            "sfx": "sfx_correct_whoosh",
+            "caption": [
+              "Vượt ghềnh gọn gàng!"
+            ],
+            "durationMs": 1500,
+            "camera": "follow_boost",
+            "avatarAnim": "happy"
+          },
+          "wrong": {
+            "effect": "spin_out_small",
+            "sfx": "sfx_wrong_thud",
+            "caption": [
+              "Xoáy nước xoay thuyền một vòng."
+            ],
+            "durationMs": 1500,
+            "camera": "shake_small",
+            "avatarAnim": "sad"
+          },
+          "wrongStreak": {
+            "effect": "paddle_lost_slow",
+            "sfx": "sfx_wrong_splash",
+            "caption": [
+              "Mất mái chèo, chèo chậm một lúc."
+            ],
+            "durationMs": 2200,
+            "camera": "shake_big",
+            "avatarAnim": "sad"
+          },
+          "recover": {
+            "effect": "rescue_calm_pool",
+            "sfx": "sfx_hint_chime",
+            "caption": [
+              "Vào vũng nước lặng, trả lời để nhặt lại mái chèo."
+            ],
+            "durationMs": 1500
+          }
+        },
+        "sprint": {
+          "label": "Nước rút về đích",
+          "correct": {
+            "effect": "final_boost",
+            "sfx": "sfx_correct_fanfare_short",
+            "caption": [
+              "Nước rút! Tăng tốc!"
+            ],
+            "durationMs": 1500,
+            "camera": "follow_boost",
+            "avatarAnim": "happy"
+          },
+          "wrong": {
+            "effect": "cramp_slow",
+            "sfx": "sfx_wrong_thud",
+            "caption": [
+              "Mỏi tay rồi, chậm lại chút."
+            ],
+            "durationMs": 1500,
+            "avatarAnim": "sad"
+          },
+          "wrongStreak": {
+            "effect": "rival_pass",
+            "sfx": "sfx_wrong_splash",
+            "caption": [
+              "Đối thủ bứt lên trước!"
+            ],
+            "durationMs": 2000,
+            "camera": "shake_small",
+            "avatarAnim": "sad"
+          },
+          "recover": {
+            "effect": "rescue_tow_rope",
+            "sfx": "sfx_hint_chime",
+            "caption": [
+              "Bạn kéo dây hỗ trợ, trả lời để bám theo."
+            ],
+            "durationMs": 1500
+          }
+        }
+      }
+    },
+    "river_fishing": {
+      "name": "River Fishing",
+      "companion": {
+        "name": "Bác Tư câu cá",
+        "role": "ngồi cạnh trên ghế gỗ, nói nhỏ"
+      },
+      "answerSign": "tấm bảng gỗ cắm ở cầu tàu hiện đáp án đúng",
+      "hints": {
+        "tier1": [
+          "Bác Tư thì thầm: Nghĩa là \"{vi}\" đấy cháu.",
+          "Bác Tư nháy mắt: Từ này nghĩa \"{vi}\"."
+        ],
+        "tier2": [
+          "Bác Tư chỉ cần câu: Hai mồi này cá chê rồi.",
+          "Bác Tư khẽ nói: Bỏ hai mồi kia đi."
+        ]
+      },
+      "tasks": {
+        "bite": {
+          "label": "Cá cắn câu",
+          "correct": {
+            "effect": "hook_set_fish_jump",
+            "sfx": "sfx_correct_reel",
+            "caption": [
+              "Dính rồi! Kéo lên!"
+            ],
+            "durationMs": 1500,
+            "camera": "zoom_float",
+            "avatarAnim": "happy"
+          },
+          "wrong": {
+            "effect": "fish_nibble_escape",
+            "sfx": "sfx_wrong_plop",
+            "caption": [
+              "Cá rỉa mồi rồi bỏ đi."
+            ],
+            "durationMs": 1500,
+            "avatarAnim": "sad"
+          },
+          "wrongStreak": {
+            "effect": "line_snap",
+            "sfx": "sfx_wrong_snap",
+            "caption": [
+              "Đứt dây! Con cá thoát mất."
+            ],
+            "durationMs": 2200,
+            "camera": "shake_small",
+            "avatarAnim": "sad"
+          },
+          "recover": {
+            "effect": "rescue_rebait",
+            "sfx": "sfx_hint_chime",
+            "caption": [
+              "Thả mồi lại, câu dễ để gỡ gạc."
+            ],
+            "durationMs": 1500
+          }
+        },
+        "reel": {
+          "label": "Kéo cá to",
+          "correct": {
+            "effect": "reel_in_big",
+            "sfx": "sfx_correct_fanfare_short",
+            "caption": [
+              "Cá to! Kéo thắng rồi!"
+            ],
+            "durationMs": 1800,
+            "camera": "zoom_rod",
+            "avatarAnim": "happy"
+          },
+          "wrong": {
+            "effect": "rod_bend_hold",
+            "sfx": "sfx_wrong_creak",
+            "caption": [
+              "Cá to quá, cần cong, chưa kéo nổi."
+            ],
+            "durationMs": 1800,
+            "camera": "shake_small",
+            "avatarAnim": "sad"
+          },
+          "wrongStreak": {
+            "effect": "rod_bend_lose",
+            "sfx": "sfx_wrong_snap",
+            "caption": [
+              "Cá kéo thẳng ra sông, hụt mất."
+            ],
+            "durationMs": 2200,
+            "camera": "shake_big",
+            "avatarAnim": "sad"
+          },
+          "recover": {
+            "effect": "rescue_net_helper",
+            "sfx": "sfx_hint_chime",
+            "caption": [
+              "Bác Tư cầm vợt phụ, trả lời để chốt cá."
+            ],
+            "durationMs": 1500
+          }
+        },
+        "weigh": {
+          "label": "Cân và ghi kỷ lục",
+          "correct": {
+            "effect": "record_board_update",
+            "sfx": "sfx_correct_coin",
+            "caption": [
+              "Ghi vào bảng kỷ lục!"
+            ],
+            "durationMs": 1500,
+            "camera": "zoom_board",
+            "avatarAnim": "happy"
+          },
+          "wrong": {
+            "effect": "scale_wobble_retry",
+            "sfx": "sfx_wrong_plop",
+            "caption": [
+              "Cân chao đảo, cân lại nhé."
+            ],
+            "durationMs": 1500,
+            "avatarAnim": "sad"
+          },
+          "wrongStreak": {
+            "effect": "fish_slips_back",
+            "sfx": "sfx_wrong_splash",
+            "caption": [
+              "Cá trượt khỏi tay, rơi lại xuống sông."
+            ],
+            "durationMs": 2000,
+            "camera": "shake_small",
+            "avatarAnim": "sad"
+          },
+          "recover": {
+            "effect": "rescue_second_weigh",
+            "sfx": "sfx_hint_chime",
+            "caption": [
+              "Cân lần hai, câu dễ hơn."
+            ],
+            "durationMs": 1500
+          }
+        }
+      }
+    },
+    "summer_camp": {
+      "name": "Summer Camp",
+      "companion": {
+        "name": "Cô Mai trưởng trại",
+        "role": "đứng cạnh bếp, nhắc nhẹ"
+      },
+      "answerSign": "biển gỗ bên bếp lửa hiện đáp án đúng",
+      "hints": {
+        "tier1": [
+          "Cô Mai gợi ý: Từ này nghĩa là \"{vi}\" nhé.",
+          "Cô Mai nhắc: \"{vi}\" đó con."
+        ],
+        "tier2": [
+          "Cô Mai chỉ: Hai đáp án này không đúng đâu.",
+          "Cô Mai lắc đầu với hai đáp án sai."
+        ]
+      },
+      "tasks": {
+        "tent_peg": {
+          "label": "Chằng lều (từng cọc)",
+          "correct": {
+            "effect": "peg_driven_firm",
+            "sfx": "sfx_correct_knock",
+            "caption": [
+              "Cọc chắc rồi!"
+            ],
+            "durationMs": 1500,
+            "camera": "zoom_peg",
+            "avatarAnim": "happy"
+          },
+          "wrong": {
+            "effect": "peg_loose_wobble",
+            "sfx": "sfx_wrong_creak",
+            "caption": [
+              "Cọc lỏng, lều hơi nghiêng."
+            ],
+            "durationMs": 1500,
+            "camera": "shake_small",
+            "avatarAnim": "sad"
+          },
+          "wrongStreak": {
+            "effect": "tent_collapse",
+            "sfx": "sfx_wrong_flop",
+            "caption": [
+              "Lều xiêu rồi sập! Dựng lại nào."
+            ],
+            "durationMs": 2400,
+            "camera": "shake_big",
+            "avatarAnim": "sad"
+          },
+          "recover": {
+            "effect": "rescue_repair_peg",
+            "sfx": "sfx_hint_chime",
+            "caption": [
+              "Câu sửa cọc, dễ thôi."
+            ],
+            "durationMs": 1500
+          }
+        },
+        "grill": {
+          "label": "Nướng đồ ăn",
+          "correct": {
+            "effect": "food_cooked_perfect",
+            "sfx": "sfx_correct_sizzle_ding",
+            "caption": [
+              "Chín vàng thơm phức!"
+            ],
+            "durationMs": 1800,
+            "camera": "zoom_grill",
+            "avatarAnim": "happy"
+          },
+          "wrong": {
+            "effect": "meat_drops_ground",
+            "sfx": "sfx_wrong_plop",
+            "caption": [
+              "Ối, thịt rơi xuống đất!"
+            ],
+            "durationMs": 1800,
+            "avatarAnim": "sad"
+          },
+          "wrongStreak": {
+            "effect": "food_burnt_smoke",
+            "sfx": "sfx_wrong_sizzle_cough",
+            "caption": [
+              "Cháy khét rồi! Khói um cả bếp."
+            ],
+            "durationMs": 2400,
+            "camera": "shake_small",
+            "avatarAnim": "sad"
+          },
+          "recover": {
+            "effect": "rescue_fresh_batch",
+            "sfx": "sfx_hint_chime",
+            "caption": [
+              "Nướng mẻ mới, câu dễ hơn."
+            ],
+            "durationMs": 1500
+          }
+        },
+        "campfire": {
+          "label": "Nhóm lửa trại",
+          "correct": {
+            "effect": "fire_roars_warm",
+            "sfx": "sfx_correct_whoosh",
+            "caption": [
+              "Lửa lên rồi, ấm quá!"
+            ],
+            "durationMs": 1500,
+            "camera": "zoom_fire",
+            "avatarAnim": "happy"
+          },
+          "wrong": {
+            "effect": "fire_sputters",
+            "sfx": "sfx_wrong_fizz",
+            "caption": [
+              "Lửa lụi dần, củi ẩm."
+            ],
+            "durationMs": 1500,
+            "avatarAnim": "sad"
+          },
+          "wrongStreak": {
+            "effect": "fire_out_wind",
+            "sfx": "sfx_wrong_gust",
+            "caption": [
+              "Gió thổi tắt lửa! Nhóm lại nào."
+            ],
+            "durationMs": 2200,
+            "camera": "shake_small",
+            "avatarAnim": "sad"
+          },
+          "recover": {
+            "effect": "rescue_dry_wood",
+            "sfx": "sfx_hint_chime",
+            "caption": [
+              "Nhặt củi khô, câu dễ."
+            ],
+            "durationMs": 1500
+          }
+        },
+        "map_pin": {
+          "label": "Bản đồ nổi, ghim đúng nơi",
+          "correct": {
+            "effect": "compass_spins_true",
+            "sfx": "sfx_correct_ding",
+            "caption": [
+              "Kim la bàn xoay đúng hướng!"
+            ],
+            "durationMs": 1500,
+            "camera": "zoom_map",
+            "avatarAnim": "happy"
+          },
+          "wrong": {
+            "effect": "compass_wobble",
+            "sfx": "sfx_wrong_creak",
+            "caption": [
+              "Kim la bàn lắc lư, chưa đúng."
+            ],
+            "durationMs": 1500,
+            "avatarAnim": "sad"
+          },
+          "wrongStreak": {
+            "effect": "lost_detour",
+            "sfx": "sfx_wrong_gust",
+            "caption": [
+              "Đi lạc đường vòng một đoạn."
+            ],
+            "durationMs": 2200,
+            "camera": "shake_small",
+            "avatarAnim": "sad"
+          },
+          "recover": {
+            "effect": "rescue_trail_marker",
+            "sfx": "sfx_hint_chime",
+            "caption": [
+              "Cột mốc bên đường giúp con nhớ lại."
+            ],
+            "durationMs": 1500
+          }
+        }
+      }
+    },
+    "river_survival": {
+      "name": "River Survival: Escape & Pursuit",
+      "companion": {
+        "name": "Đài radio cứu hộ",
+        "role": "giọng nói qua bộ đàm"
+      },
+      "answerSign": "bảng chỉ dẫn phát sáng ở cửa thoát hiểm hiện đáp án đúng",
+      "hints": {
+        "tier1": [
+          "Radio rè rè: Từ này nghĩa là \"{vi}\", nhanh lên!",
+          "Radio báo: \"{vi}\", nghe rõ không?"
+        ],
+        "tier2": [
+          "Radio: Hai hướng này bị chặn, loại đi.",
+          "Radio: Chỉ còn hai lối khả thi."
+        ]
+      },
+      "tasks": {
+        "exit_door": {
+          "label": "Cửa thoát hiểm",
+          "correct": {
+            "effect": "door_opens_run",
+            "sfx": "sfx_correct_door",
+            "caption": [
+              "Cửa mở! Chạy thôi!"
+            ],
+            "durationMs": 1500,
+            "camera": "follow_run",
+            "avatarAnim": "happy"
+          },
+          "wrong": {
+            "effect": "trip_and_stumble",
+            "sfx": "sfx_wrong_thud",
+            "caption": [
+              "Vấp ngã! Chân hơi đau."
+            ],
+            "durationMs": 1800,
+            "camera": "shake_small",
+            "avatarAnim": "sad"
+          },
+          "wrongStreak": {
+            "effect": "net_hit_freeze_6s",
+            "sfx": "sfx_wrong_net",
+            "caption": [
+              "Trúng lưới! Đứng im 6 giây."
+            ],
+            "durationMs": 2400,
+            "camera": "shake_big",
+            "avatarAnim": "sad"
+          },
+          "recover": {
+            "effect": "rescue_by_teammate",
+            "sfx": "sfx_hint_chime",
+            "caption": [
+              "Bạn đồng đội gỡ lưới cho em, cả hai nhận xu."
+            ],
+            "durationMs": 1800
+          }
+        },
+        "map": {
+          "label": "Xem bản đồ",
+          "correct": {
+            "effect": "route_lit_shortcut",
+            "sfx": "sfx_correct_ding",
+            "caption": [
+              "Đường tắt sáng lên!"
+            ],
+            "durationMs": 1500,
+            "camera": "zoom_map",
+            "avatarAnim": "happy"
+          },
+          "wrong": {
+            "effect": "wrong_turn_pursuer_closer",
+            "sfx": "sfx_wrong_thud",
+            "caption": [
+              "Rẽ nhầm, kẻ truy đuổi gần hơn."
+            ],
+            "durationMs": 1800,
+            "camera": "shake_small",
+            "avatarAnim": "sad"
+          },
+          "wrongStreak": {
+            "effect": "dead_end_cornered",
+            "sfx": "sfx_wrong_net",
+            "caption": [
+              "Ngõ cụt! Bị dồn vào góc."
+            ],
+            "durationMs": 2400,
+            "camera": "shake_big",
+            "avatarAnim": "sad"
+          },
+          "recover": {
+            "effect": "rescue_alt_path",
+            "sfx": "sfx_hint_chime",
+            "caption": [
+              "Radio chỉ lối vòng, trả lời để thoát."
+            ],
+            "durationMs": 1500
+          }
+        },
+        "net_dodge": {
+          "label": "Né lưới",
+          "correct": {
+            "effect": "dodge_roll",
+            "sfx": "sfx_correct_whoosh",
+            "caption": [
+              "Né được rồi!"
+            ],
+            "durationMs": 1500,
+            "camera": "follow_run",
+            "avatarAnim": "happy"
+          },
+          "wrong": {
+            "effect": "net_graze_slow",
+            "sfx": "sfx_wrong_net",
+            "caption": [
+              "Lưới sượt qua, chậm lại."
+            ],
+            "durationMs": 1800,
+            "camera": "shake_small",
+            "avatarAnim": "sad"
+          },
+          "wrongStreak": {
+            "effect": "net_caught_freeze_6s",
+            "sfx": "sfx_wrong_net",
+            "caption": [
+              "Bị lưới trùm! Đứng im 6 giây."
+            ],
+            "durationMs": 2400,
+            "camera": "shake_big",
+            "avatarAnim": "sad"
+          },
+          "recover": {
+            "effect": "rescue_teammate_cut_net",
+            "sfx": "sfx_hint_chime",
+            "caption": [
+              "Đồng đội cắt lưới, cả hai nhận xu."
+            ],
+            "durationMs": 1800
+          }
+        }
+      }
+    },
+    "dino_journey": {
+      "name": "Dino Journey",
+      "companion": {
+        "name": "Cha khủng long",
+        "role": "đi phía trước, dẫn bầy"
+      },
+      "answerSign": "bia đá ven đường hiện đáp án đúng",
+      "hints": {
+        "tier1": [
+          "Cha gầm khẽ: Từ này nghĩa là \"{vi}\", con nghe chưa?",
+          "Cha chỉ dấu chân: \"{vi}\" đó con."
+        ],
+        "tier2": [
+          "Cha lắc đầu với hai dấu chân sai.",
+          "Cha khịt mũi: Hai hướng này có mùi nguy hiểm."
+        ]
+      },
+      "tasks": {
+        "footprint": {
+          "label": "Dấu chân dẫn đường",
+          "correct": {
+            "effect": "herd_advances",
+            "sfx": "sfx_correct_stomp",
+            "caption": [
+              "Cả bầy tiến lên!"
+            ],
+            "durationMs": 1500,
+            "camera": "pan_herd",
+            "avatarAnim": "happy"
+          },
+          "wrong": {
+            "effect": "baby_trips",
+            "sfx": "sfx_wrong_thud",
+            "caption": [
+              "Khủng long con vấp té, cả bầy chậm lại."
+            ],
+            "durationMs": 1800,
+            "camera": "shake_small",
+            "avatarAnim": "sad"
+          },
+          "wrongStreak": {
+            "effect": "herd_ambushed",
+            "sfx": "sfx_wrong_roar",
+            "caption": [
+              "Bầy bị tấn công dồn dập! Cha che chắn."
+            ],
+            "durationMs": 2400,
+            "camera": "shake_big",
+            "avatarAnim": "sad"
+          },
+          "recover": {
+            "effect": "rescue_protect_question",
+            "sfx": "sfx_hint_chime",
+            "caption": [
+              "Câu bảo vệ: trả lời để cha đẩy lùi kẻ thù."
+            ],
+            "durationMs": 1800
+          }
+        },
+        "obstacle": {
+          "label": "Núi và trở ngại mới",
+          "correct": {
+            "effect": "climb_or_fight_win",
+            "sfx": "sfx_correct_roar_short",
+            "caption": [
+              "Con vượt qua rồi! Con đánh lui được kẻ thù!"
+            ],
+            "durationMs": 2000,
+            "camera": "pan_herd",
+            "avatarAnim": "happy"
+          },
+          "wrong": {
+            "effect": "slip_on_rocks",
+            "sfx": "sfx_wrong_thud",
+            "caption": [
+              "Trượt đá, té lăn xuống một đoạn."
+            ],
+            "durationMs": 1800,
+            "camera": "shake_small",
+            "avatarAnim": "sad"
+          },
+          "wrongStreak": {
+            "effect": "pack_attack_heavy",
+            "sfx": "sfx_wrong_roar",
+            "caption": [
+              "Bầy thú săn mồi vây quanh!"
+            ],
+            "durationMs": 2400,
+            "camera": "shake_big",
+            "avatarAnim": "sad"
+          },
+          "recover": {
+            "effect": "rescue_father_charge",
+            "sfx": "sfx_hint_chime",
+            "caption": [
+              "Cha lao ra chặn đường, trả lời để chạy tiếp."
+            ],
+            "durationMs": 1800
+          }
+        },
+        "skill": {
+          "label": "Kỹ năng sinh tồn (uống nước, trốn, ấp trứng)",
+          "correct": {
+            "effect": "skill_learned_glow",
+            "sfx": "sfx_correct_ding",
+            "caption": [
+              "Học được kỹ năng mới!"
+            ],
+            "durationMs": 1500,
+            "camera": "zoom_baby",
+            "avatarAnim": "happy"
+          },
+          "wrong": {
+            "effect": "skill_fumble",
+            "sfx": "sfx_wrong_plop",
+            "caption": [
+              "Làm chưa đúng, thử lại nhé."
+            ],
+            "durationMs": 1500,
+            "avatarAnim": "sad"
+          },
+          "wrongStreak": {
+            "effect": "egg_rolls_away",
+            "sfx": "sfx_wrong_thud",
+            "caption": [
+              "Quả trứng lăn đi, phải chạy theo."
+            ],
+            "durationMs": 2000,
+            "camera": "shake_small",
+            "avatarAnim": "sad"
+          },
+          "recover": {
+            "effect": "rescue_father_demo",
+            "sfx": "sfx_hint_chime",
+            "caption": [
+              "Cha làm mẫu một lần, em làm lại."
+            ],
+            "durationMs": 1800
+          }
+        }
+      }
+    },
+    "multiverse_portal": {
+      "name": "Multiverse Portal",
+      "companion": {
+        "name": "Trợ lý Lumi",
+        "role": "quả cầu sáng bay cạnh vai"
+      },
+      "answerSign": "bảng hologram nổi trước cổng hiện đáp án đúng",
+      "hints": {
+        "tier1": [
+          "Lumi nhấp nháy: Nghĩa là \"{vi}\", chọn cổng đi!",
+          "Lumi thì thầm: \"{vi}\" đó bạn."
+        ],
+        "tier2": [
+          "Lumi làm mờ hai cổng sai.",
+          "Lumi: Hai cổng này đang bất ổn, tránh ra."
+        ]
+      },
+      "tasks": {
+        "portal": {
+          "label": "Cổng dịch chuyển",
+          "correct": {
+            "effect": "portal_crossing_new_world",
+            "sfx": "sfx_correct_portal",
+            "caption": [
+              "Xuyên qua! Không gian mới!"
+            ],
+            "durationMs": 2000,
+            "camera": "dolly_through",
+            "avatarAnim": "happy"
+          },
+          "wrong": {
+            "effect": "portal_shudder_push_back",
+            "sfx": "sfx_wrong_glitch",
+            "caption": [
+              "Cổng rung, em bị đẩy lùi."
+            ],
+            "durationMs": 1800,
+            "camera": "shake_small",
+            "avatarAnim": "sad"
+          },
+          "wrongStreak": {
+            "effect": "glitch_zone_enter",
+            "sfx": "sfx_wrong_glitch_long",
+            "caption": [
+              "Rơi vào vùng nhiễu! Không gian bị méo."
+            ],
+            "durationMs": 2400,
+            "camera": "warp_distort",
+            "avatarAnim": "sad"
+          },
+          "recover": {
+            "effect": "rescue_stable_gate",
+            "sfx": "sfx_hint_chime",
+            "caption": [
+              "Cổng ổn định hiện ra, câu dễ."
+            ],
+            "durationMs": 1800
+          }
+        },
+        "stable_gate": {
+          "label": "Cổng ổn định (gỡ nhiễu)",
+          "correct": {
+            "effect": "glitch_cleared",
+            "sfx": "sfx_correct_ding",
+            "caption": [
+              "Không gian trở lại bình thường."
+            ],
+            "durationMs": 1500,
+            "avatarAnim": "happy"
+          },
+          "wrong": {
+            "effect": "glitch_flickers",
+            "sfx": "sfx_wrong_glitch",
+            "caption": [
+              "Vẫn còn nhiễu, thử lại."
+            ],
+            "durationMs": 1500,
+            "avatarAnim": "sad"
+          },
+          "wrongStreak": {
+            "effect": "glitch_deepens",
+            "sfx": "sfx_wrong_glitch_long",
+            "caption": [
+              "Nhiễu nặng hơn, Lumi giúp em."
+            ],
+            "durationMs": 2000,
+            "camera": "warp_distort",
+            "avatarAnim": "sad"
+          },
+          "recover": {
+            "effect": "rescue_lumi_boost",
+            "sfx": "sfx_hint_chime",
+            "caption": [
+              "Lumi tăng sáng chỉ đường, trả lời để thoát."
+            ],
+            "durationMs": 1800
+          }
+        }
+      }
+    }
+  }
+}
