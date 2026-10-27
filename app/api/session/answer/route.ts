@@ -1,3 +1,5 @@
+import { after } from 'next/server';
+import { answerGuard, matchAnswerTask } from '../../../../src/server/matches';
 import { clientKey, rateLimit } from '../../../../src/server/rateLimit';
 import { SESSION_HEADER, sessionErrorResponse, sessions } from '../../../../src/server/sessions';
 
@@ -12,7 +14,9 @@ export async function POST(req: Request) {
   const token = req.headers.get(SESSION_HEADER) ?? '';
   const byToken = rateLimit(`answer-token:${token.slice(-24)}`, 120, 60_000);
   const byIp = rateLimit(`answer-ip:${clientKey(req)}`, 1500, 60_000);
-  if (!byToken.ok || !byIp.ok) return Response.json({ error: 'Quá nhiều yêu cầu.' }, { status: 429 });
+  // B2.8: a burst (e.g. 100 requests in one second from a script) is cut at 5 per second per student.
+  const burst = rateLimit(`answer-burst:${token.slice(-24)}`, 5, 1000);
+  if (!burst.ok || !byToken.ok || !byIp.ok) return Response.json({ error: 'Quá nhiều yêu cầu.' }, { status: 429 });
 
   let body: Record<string, unknown>;
   try {
@@ -21,8 +25,13 @@ export async function POST(req: Request) {
     return Response.json({ error: 'Body không phải JSON hợp lệ.' }, { status: 400 });
   }
   try {
-    const res = await sessions.act(token, { kind: 'answer', questionId: body.questionId, chosenIdx: body.chosenIdx, response: body.response });
-    return Response.json(res, { headers: { 'Cache-Control': 'no-store' } });
+    const res = await sessions.act(token, { kind: 'answer', questionId: body.questionId, chosenIdx: body.chosenIdx, response: body.response }, answerGuard(token));
+    const task = matchAnswerTask(res);
+    if (task) after(task);
+    const { sessionId: _sid, matchId: _mid, ...out } = res;
+    void _sid;
+    void _mid;
+    return Response.json(out, { headers: { 'Cache-Control': 'no-store' } });
   } catch (e) {
     return sessionErrorResponse(e);
   }

@@ -15,8 +15,10 @@ export async function POST(req: Request) {
     return Response.json({ error: 'Body không phải JSON hợp lệ.' }, { status: 400 });
   }
   try {
-    const res = await sessions.act(token, { kind: 'cast', skill: body.skill });
-    return Response.json(res, { headers: { 'Cache-Control': 'no-store' } });
+    const { sessionId: _sid, matchId: _mid, ...out } = await sessions.act(token, { kind: 'cast', skill: body.skill });
+    void _sid;
+    void _mid;
+    return Response.json(out, { headers: { 'Cache-Control': 'no-store' } });
   } catch (e) {
     return sessionErrorResponse(e);
   }

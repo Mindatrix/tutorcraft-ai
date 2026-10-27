@@ -35,6 +35,9 @@ import {
   type PublicQuestion,
   type SessionLogEntry,
   type SkillId,
+  answerStars,
+  isAnswerCorrect,
+  questionTimeLimit,
 } from '../engine';
 import { SKILL_IDS } from '../engine/skills';
 import { open, seal } from './crypto';
@@ -95,6 +98,15 @@ export interface SessionDeps {
 export function phraseHash(salt: string, text: string): string {
   return createHash('sha256').update(hashInput(salt, text)).digest('hex').slice(0, 16);
 }
+
+/** Session id and battle id inside a token, without touching the database (rate-limit keys). */
+export function peekSession(token: unknown): { sid: string; bid: string } | null {
+  const p = open<TokenPayload>(token);
+  return p && typeof p.sid === 'string' && typeof p.bid === 'string' ? { sid: p.sid, bid: p.bid } : null;
+}
+
+/** Durable rate-limit check started by the route; awaited before anything is written. */
+export type ActGuard = Promise<{ ok: boolean; retryAfterSec: number }>;
 
 /** Raw answer payload from the client, before validation. */
 export type RawAction =
@@ -219,9 +231,17 @@ export function createSessionService(deps: SessionDeps) {
       return view(rec, ctx, rebuildSession(ctx, rec.startedAt, rec.log).state);
     },
 
-    async act(token: unknown, raw: RawAction) {
+    /** Who the token belongs to (class matches use it to find the student's match player). */
+    async student(token: unknown) {
+      const { rec } = await resolve(token);
+      return { id: rec.id, battleId: rec.battleId, studentKey: rec.studentKey, nickname: rec.nickname, avatar: rec.avatar, matchId: rec.matchId ?? null };
+    },
+
+    async act(token: unknown, raw: RawAction, guard?: ActGuard) {
       const at = now(); // stamped on arrival — AI grading time doesn't count against the student
-      const { store, rec, ctx } = await resolve(token);
+      // The durable rate limit runs in parallel with loading the session, not after it.
+      const [{ store, rec, ctx }, limit] = await Promise.all([resolve(token), guard ?? null]);
+      if (limit && !limit.ok) throw new SessionError(429, `Gửi quá nhanh. Thử lại sau ${limit.retryAfterSec}s.`);
       if (rec.status !== 'active') throw new SessionError(409, 'Trận đấu đã kết thúc.');
       if (rec.log.length >= MAX_LOG) throw new SessionError(429, 'Quá nhiều thao tác trong một trận.');
 
@@ -262,10 +282,21 @@ export function createSessionService(deps: SessionDeps) {
       if (!(await store.update(updated, rec.version))) throw new SessionError(409, 'Thao tác bị trùng — hãy thử lại.');
 
       const reveal: AnswerReveal | null = res.afterAnswer ? revealFor(ctx, res.afterAnswer, grade) : null;
+      // What the class match counts: right or wrong, and 1-3 stars by speed (0 when wrong).
+      let scored: { correct: boolean; stars: number } | null = null;
+      const last = res.afterAnswer?.answers[res.afterAnswer.answers.length - 1];
+      const lastQ = last ? ctx.questions.find((x) => x.id === last.questionId) : undefined;
+      if (last && lastQ && entry.t !== 'cast') {
+        const correct = isAnswerCorrect(lastQ, last);
+        scored = { correct, stars: answerStars({ correct, score: last.score, timeMs: last.timeMs, limitMs: questionTimeLimit(lastQ, ctx.config.level) * 1000 }) };
+      }
       return {
         view: view(updated, ctx, res.rebuilt.state),
         afterAnswer: res.afterAnswer,
         reveal,
+        scored,
+        sessionId: rec.id,
+        matchId: rec.matchId ?? null,
       };
     },
 

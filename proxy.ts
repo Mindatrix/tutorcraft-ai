@@ -21,6 +21,9 @@ const ROUTE_RULES: { path: string; exact?: boolean; method?: string; scope: 'ip'
   // Joining a battle (the start of a session), not the answers under /api/session/*.
   { path: '/api/session', exact: true, method: 'POST', scope: 'ip', rule: { limit: 150, windowMs: 60_000 } },
   { path: '/api/battle-result', method: 'POST', scope: 'ip', rule: { limit: 150, windowMs: 60_000 } },
+  // Class match: joining is per IP (the whole class at once); survival actions per student.
+  { path: '/api/match/join', method: 'POST', scope: 'ip', rule: { limit: 150, windowMs: 60_000 } },
+  { path: '/api/match/action', method: 'POST', scope: 'token', rule: { limit: 120, windowMs: 60_000 } },
   { path: '/api/battle-result', method: 'POST', scope: 'token', rule: { limit: 10, windowMs: 60_000 } },
 ];
 const MAX_BODY_BYTES = 6 * 1024 * 1024;

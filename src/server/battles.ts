@@ -24,6 +24,8 @@ export interface LoadedBattle {
   boss: BossProfile;
   questions: Question[];
   tutorName: string;
+  /** Owner (battles.tutor_id); null for the demo and for battles saved before sign-in existed. */
+  tutorId?: string | null;
 }
 
 type Row = Record<string, unknown> & { id: string; questions?: unknown[]; config?: Record<string, unknown> | null };
@@ -41,6 +43,7 @@ function fromRow(row: Row): LoadedBattle {
     boss: sanitizeBoss(cfg.boss, defaultBoss(topic, config.themes)),
     questions,
     tutorName: typeof cfg.tutorName === 'string' ? cfg.tutorName.slice(0, 60) : '',
+    tutorId: typeof row.tutor_id === 'string' ? row.tutor_id : null,
   };
 }
 

@@ -61,3 +61,26 @@ export async function scenarioSubtitles(rawKey: unknown): Promise<Record<number,
   subCache.set(id, { at: Date.now(), subs });
   return subs;
 }
+
+const metaCache = new Map<string, { at: number; meta: { tags: string[]; species: string[] } | null }>();
+
+/** Tags (night, storm…) and fish species of a scenario, for planRun() at the start of a match. */
+export async function scenarioMeta(rawKey: unknown): Promise<{ tags: string[]; species: string[] } | null> {
+  const id = normalizeScenarioKey(rawKey);
+  if (!id) return null;
+  const hit = metaCache.get(id);
+  if (hit && Date.now() - hit.at < TTL_MS) return hit.meta;
+  const db = serverSupabase();
+  if (!db) return null;
+  const { data, error } = await db.from('game_scenarios').select('tags, asset_ids').eq('id', id).maybeSingle();
+  if (error) return hit?.meta ?? null;
+  const meta = data
+    ? {
+        tags: (Array.isArray(data.tags) ? data.tags : []).filter((t: unknown): t is string => typeof t === 'string'),
+        species: (Array.isArray(data.asset_ids) ? data.asset_ids : []).filter((a: unknown): a is string => typeof a === 'string' && /^fish_/.test(a) && !/_(rod|bait|bobber|scale|net|hook)/.test(a)),
+      }
+    : null;
+  if (metaCache.size > 200) metaCache.delete(metaCache.keys().next().value!);
+  metaCache.set(id, { at: Date.now(), meta });
+  return meta;
+}

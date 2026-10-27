@@ -21,6 +21,8 @@ export interface SessionRecord {
    * received, or the insert failed). true = written. null/undefined = still playing / n/a.
    */
   resultSaved?: boolean | null;
+  /** Class match this session plays in (battle_sessions.match_id, set by /api/match/join). */
+  matchId?: string | null;
 }
 
 export interface SessionStore {
@@ -82,6 +84,7 @@ type Row = {
   version: number;
   team: TeamId | null;
   result_saved?: boolean | null;
+  match_id?: string | null;
 };
 
 /** Older databases may not have result_saved yet (schema.sql not re-run): keep working without it. */
@@ -124,6 +127,7 @@ export class SupabaseSessionStore implements SessionStore {
       version: r.version,
       team: r.team ?? null,
       resultSaved: r.result_saved ?? null,
+      matchId: r.match_id ?? null,
     };
   }
 
