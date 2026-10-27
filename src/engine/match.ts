@@ -222,7 +222,9 @@ export type MatchMessageType =
   /** River Survival rule events (tags, catches, nets, rescues). */
   | 'survival'
   /** Time up or ended by the tutor: { result, time }. */
-  | 'ended';
+  | 'ended'
+  /** C4.14 class rescue: a classmate is asked to help (or the rescue worked / failed). */
+  | 'rescue';
 
 export interface MatchMessage<T = unknown> {
   /** Match id: a message for another match is ignored. */

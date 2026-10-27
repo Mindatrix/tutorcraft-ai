@@ -25,6 +25,17 @@ import {
   survivalResult,
   survivalSettle,
   hashString,
+  RESCUE,
+  newRescueState,
+  openRescue,
+  questionType,
+  rescueAnswer,
+  rescueApplies,
+  rescueExpire,
+  scheduleAt,
+  schedulePlanFor,
+  type RescueEvent,
+  type RescueState,
   type ClassResult,
   type MatchControl,
   type MatchMe,
@@ -45,6 +56,7 @@ import {
 import type { LoadedBattle } from './battles';
 import { matchPublicKey, type Broadcaster, type MatchPublicKey } from './matchBroadcast';
 import { MatchStoreError, timeOf, type MatchRow, type MatchStore, type PlayerRow, type ScoreRow } from './matchStore';
+import type { RewardService } from './rewardService';
 
 // Class matches (plan phase B2): the server owns the clock, the teams, the scores and the rules;
 // devices only draw what they are told. No timers run on the server (Vercel functions sleep):
@@ -77,6 +89,14 @@ export interface MatchDeps {
   now?: () => number;
   /** Scoreboard broadcasts at most this often per match. */
   throttleMs?: number;
+  /** C4 coins (class rescue, gift box, golden challenge). Without it those pay nothing. */
+  rewards?: RewardService;
+}
+
+/** C4.14 a rescue as the class sees it: who helps whom, and the helper's question (no answer key). */
+export interface RescueBroadcast {
+  events: RescueEvent[];
+  question?: { id: number; question: string; options: string[] } | null;
 }
 
 export interface ChannelInfo {
@@ -306,6 +326,63 @@ export function createMatchService(deps: MatchDeps) {
       await new Promise((res) => setTimeout(res, 15 + Math.random() * 40 * (i + 1)));
     }
     throw new MatchError(409, 'Trận đang bận, thử lại.');
+  }
+
+  const rescueOf = (m: MatchRow): RescueState => (m.state as { rescue?: RescueState }).rescue ?? newRescueState();
+
+  /** C4.14 apply a class-rescue step (same optimistic loop as Survival), then tell the class. */
+  async function rescueStep(m: MatchRow, fn: (s: RescueState) => { state: RescueState; events: RescueEvent[] }, question?: RescueBroadcast['question']): Promise<{ m: MatchRow; events: RescueEvent[] }> {
+    let cur = m;
+    for (let i = 0; i < STATE_RETRIES; i++) {
+      const before = rescueOf(cur);
+      const r = fn(before);
+      if (r.state === before) return { m: cur, events: r.events };
+      const up = await store.update(cur.id, { state: { ...cur.state, rescue: r.state as unknown as Record<string, unknown> }, stateVersion: cur.stateVersion + 1 }, { stateVersion: cur.stateVersion });
+      if (up) {
+        if (r.events.length) await send(up, 'rescue', { events: r.events, ...(question ? { question } : {}) } satisfies RescueBroadcast);
+        return { m: up, events: r.events };
+      }
+      const fresh = await store.get(cur.id);
+      if (!fresh) throw new MatchError(404, 'Không tìm thấy trận.');
+      cur = fresh;
+      await new Promise((res) => setTimeout(res, 15 + Math.random() * 40 * (i + 1)));
+    }
+    throw new MatchError(409, 'Trận đang bận, thử lại.');
+  }
+
+  /** The rescue question: an easy multiple-choice one of the battle, chosen by the request id. */
+  async function rescueQuestion(m: MatchRow, requestId: string) {
+    const battle = await deps.loadBattle(m.battleId);
+    const mcq = (battle?.questions ?? []).filter((q) => questionType(q) === 'mcq' && q.options.length >= 2);
+    const easy = mcq.filter((q) => q.difficulty === 'easy');
+    const pool = easy.length ? easy : mcq;
+    return pool.length ? pool[hashString(`${m.seedKey}:${requestId}`) % pool.length] : null;
+  }
+
+  /**
+   * C4.14 after a wrong answer: the 3rd wrong in a row inside one stage opens a rescue for a
+   * classmate. `wrongAt` = server times of the trailing wrong answers (from the session log).
+   */
+  async function maybeRescue(matchId: string, playerId: string, wrongAt: number[], at: number) {
+    if (wrongAt.length < RESCUE.wrongInRow) return null;
+    let m = await store.get(matchId);
+    if (!m || m.status !== 'running' || !rescueApplies(m.game)) return null;
+    const t = timeOf(m);
+    const stage = matchClockAt(t, at).stage;
+    if (matchClockAt(t, wrongAt[wrongAt.length - RESCUE.wrongInRow]).stage !== stage) return null;
+    const s = rescueOf(m);
+    if (s.helped.includes(`${playerId}:${stage}`)) return null;
+    const players = await store.players(matchId);
+    const mates = players.map((p) => rosterEntry(p, at));
+    const requestId = `r-${playerId}-${stage}`;
+    const q = await rescueQuestion(m, requestId);
+    if (!q) return null;
+    m = (await rescueStep(m, (cur) => {
+      const expired = rescueExpire(cur, at);
+      const opened = openRescue(expired.state, { needy: playerId, stage, at, qid: q.id }, mates, m!.seedKey);
+      return { state: opened.state, events: [...expired.events, ...opened.events] };
+    }, { id: q.id, question: q.question, options: q.options })).m;
+    return m;
   }
 
   async function endMatch(m: MatchRow, at: number): Promise<MatchRow> {
@@ -600,10 +677,64 @@ export function createMatchService(deps: MatchDeps) {
     },
 
     /**
+     * C4.14 the helper answers the rescue question (graded here against the battle's key). Right and
+     * in time: both students get coins. The right option is shown afterwards, like any answer.
+     */
+    async answerRescue(token: unknown, requestId: unknown, choice: unknown) {
+      const at = now();
+      const s = await deps.session(token);
+      const me = await store.playerBySession(s.id);
+      if (!me) throw new MatchError(404, 'Em chưa ở trong trận nào.');
+      let m = await store.get(me.matchId);
+      if (!m) throw new MatchError(404, 'Không tìm thấy trận.');
+      m = await advance(m, at);
+      const req = rescueOf(m).open.find((r) => r.id === String(requestId) && r.helper === me.id);
+      if (!req) throw new MatchError(404, 'Không có lượt cứu hộ nào cho em.');
+      const q = req.qid != null ? (await deps.loadBattle(m.battleId))?.questions.find((x) => x.id === req.qid) : undefined;
+      if (!q) throw new MatchError(409, 'Câu cứu hộ không còn.');
+      const correct = Number(choice) === q.correct_idx;
+      const r = await rescueStep(m, (cur) => rescueAnswer(cur, { helperId: me.id, requestId: req.id, correct, at }));
+      const done = r.events.find((e) => e.t === 'rescued');
+      let coins = 0;
+      if (done && done.t === 'rescued' && deps.rewards) {
+        const needy = await store.player(req.needy);
+        const pay = [me, needy].filter((p): p is PlayerRow => !!p).map((p) => ({ studentKey: p.studentKey, coins: done.coins[p.id] ?? 0 }));
+        await deps.rewards.rescue({ requestId: req.id, matchId: m.id, pay });
+        coins = done.coins[me.id] ?? 0;
+      }
+      return { correct: !!done, coins, rightIdx: q.correct_idx, events: r.events };
+    },
+
+    /** C4.18 the gift box after the match: only once it ended, only for a student who answered. */
+    async openBox(token: unknown) {
+      const s = await deps.session(token);
+      const me = await store.playerBySession(s.id);
+      if (!me) throw new MatchError(404, 'Em chưa ở trong trận nào.');
+      let m = await store.get(me.matchId);
+      if (!m) throw new MatchError(404, 'Không tìm thấy trận.');
+      m = await advance(m, now());
+      if (m.status !== 'ended') throw new MatchError(409, 'Hộp quà mở khi trận kết thúc.');
+      if (me.answered < 1) throw new MatchError(409, 'Trả lời ít nhất một câu để nhận hộp quà.');
+      if (!deps.rewards) throw new MatchError(503, 'Chưa bật xu.');
+      return deps.rewards.openBox({ studentKey: me.studentKey, matchId: m.id });
+    },
+
+    /** C4.9 whether the match is at a golden point right now (same schedule on every device). */
+    async goldenNow(matchId: string) {
+      const at = now();
+      const m = await store.get(matchId);
+      if (!m || m.status !== 'running') return false;
+      const battle = await deps.loadBattle(m.battleId);
+      const plan = schedulePlanFor(timeOf(m), m.seedKey, battle?.questions.length ?? 20);
+      const s = scheduleAt(timeOf(m), at, plan);
+      return s.phase === 'question' && !!s.slot?.golden;
+    },
+
+    /**
      * After a graded answer of a session that is in a match: counters, the scoreboard (throttled),
      * the clock (stage / time up) and the Survival rules (net charge, open dodge / snatch windows).
      */
-    async onAnswer(sessionId: string, ans: { correct: boolean; stars: number }) {
+    async onAnswer(sessionId: string, ans: { correct: boolean; stars: number; wrongAt?: number[] }) {
       const at = now();
       const tick = await store.answer(sessionId, ans.correct, ans.stars, throttleMs, at);
       if (!tick) return null;
@@ -622,7 +753,12 @@ export function createMatchService(deps: MatchDeps) {
         if (gameOf.size > 500) gameOf.clear();
         gameOf.set(tick.matchId, m?.game ?? null);
       }
-      if (gameOf.get(tick.matchId) !== GameMode.RIVER_SURVIVAL) return tick;
+      if (gameOf.get(tick.matchId) !== GameMode.RIVER_SURVIVAL) {
+        if (!ans.correct && (ans.wrongAt?.length ?? 0) >= RESCUE.wrongInRow) {
+          await maybeRescue(tick.matchId, tick.playerId, ans.wrongAt!, at).catch((e: unknown) => console.warn('rescue not opened:', (e as Error).message));
+        }
+        return tick;
+      }
       m ??= await store.get(tick.matchId);
       // Net charge and stars were counted by match_answer. An open "Né lưới" / "Cướp lưới" window of
       // this student is decided now; if that write loses every retry, the next settle decides it

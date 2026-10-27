@@ -1,0 +1,109 @@
+/* RainbowEdge CSS version (weak devices, 2D tier, no WebGL): same colours, same lap time. */
+@property --tc-rainbow-a {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+.tc-rb-host {
+  position: relative;
+  isolation: isolate;
+}
+
+.tc-rb-layer {
+  position: absolute;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.tc-rb-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.tc-rb-ring,
+.tc-rb-halo {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--tc-rb-radius);
+  padding: var(--tc-rb-width);
+  /* RAINBOW_COLORS of rainbowEdgeCore.ts; declared here (not through a variable) so the angle animates. */
+  background: conic-gradient(from var(--tc-rainbow-a), #ff4d6d, #ff9f1c, #ffe066, #5eea8a, #38bdf8, #6366f1, #c084fc, #ff4d6d);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  animation: tc-rb-turn var(--tc-rb-lap) linear infinite;
+}
+
+.tc-rb-halo {
+  padding: calc(var(--tc-rb-width) * 2.5);
+  filter: blur(var(--tc-rb-blur));
+  opacity: 0.7;
+}
+
+.tc-rb-inner {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--tc-rb-radius);
+  background: radial-gradient(120% 120% at 50% 45%, rgb(5 8 22 / var(--tc-rb-inner)) 0%, rgb(5 8 22 / calc(var(--tc-rb-inner) * 0.45)) 70%, rgb(255 255 255 / 0.06) 100%);
+}
+
+.tc-rb-sparkles {
+  position: absolute;
+  inset: 0;
+  animation: tc-rb-spin calc(var(--tc-rb-lap) * 1.6) linear infinite;
+}
+
+.tc-rb-sparkle {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 5px;
+  height: 5px;
+  margin: -2.5px;
+  border-radius: 50%;
+  background: #fff8dc;
+  box-shadow: 0 0 6px 2px rgb(255 240 200 / 0.8);
+  animation: tc-rb-twinkle 1.4s ease-in-out infinite;
+}
+
+.tc-rb-content {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+}
+
+@keyframes tc-rb-turn {
+  to {
+    --tc-rainbow-a: 360deg;
+  }
+}
+
+@keyframes tc-rb-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes tc-rb-twinkle {
+  50% {
+    opacity: 0.25;
+  }
+}
+
+.tc-rb-still .tc-rb-ring,
+.tc-rb-still .tc-rb-halo,
+.tc-rb-still .tc-rb-sparkles,
+.tc-rb-still .tc-rb-sparkle {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tc-rb-ring,
+  .tc-rb-halo,
+  .tc-rb-sparkles,
+  .tc-rb-sparkle {
+    animation: none;
+  }
+}

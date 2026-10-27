@@ -284,19 +284,52 @@ export function createSessionService(deps: SessionDeps) {
       const reveal: AnswerReveal | null = res.afterAnswer ? revealFor(ctx, res.afterAnswer, grade) : null;
       // What the class match counts: right or wrong, and 1-3 stars by speed (0 when wrong).
       let scored: { correct: boolean; stars: number } | null = null;
+      // C4 coins and class rescue: this answer's server timing, the right streak, and the server
+      // times of the trailing wrong answers (newest last, at most 3).
+      let streak: { qid: number; timeMs: number; rightInRow: number; wrongAt: number[] } | null = null;
       const last = res.afterAnswer?.answers[res.afterAnswer.answers.length - 1];
       const lastQ = last ? ctx.questions.find((x) => x.id === last.questionId) : undefined;
-      if (last && lastQ && entry.t !== 'cast') {
+      if (last && lastQ && entry.t !== 'cast' && res.afterAnswer) {
         const correct = isAnswerCorrect(lastQ, last);
         scored = { correct, stars: answerStars({ correct, score: last.score, timeMs: last.timeMs, limitMs: questionTimeLimit(lastQ, ctx.config.level) * 1000 }) };
+        const log = updated.log;
+        const answeredAt = (qid: number) => [...log].reverse().find((x) => x.t !== 'cast' && x.qid === qid)?.at ?? at;
+        const wrongAt: number[] = [];
+        for (const a of [...res.afterAnswer.answers].reverse()) {
+          const q = ctx.questions.find((x) => x.id === a.questionId);
+          if (!q || isAnswerCorrect(q, a) || wrongAt.length >= 3) break;
+          wrongAt.unshift(answeredAt(a.questionId));
+        }
+        streak = { qid: lastQ.id, timeMs: last.timeMs, rightInRow: correct ? res.afterAnswer.combo : 0, wrongAt };
       }
       return {
         view: view(updated, ctx, res.rebuilt.state),
         afterAnswer: res.afterAnswer,
         reveal,
         scored,
+        streak,
         sessionId: rec.id,
+        studentKey: rec.studentKey,
         matchId: rec.matchId ?? null,
+      };
+    },
+
+    /**
+     * The current question with its answer key, for server-side helpers (C4 hints). Never send
+     * `question` to the client: only what the helper derives from it.
+     */
+    async questionContext(token: unknown) {
+      const { rec, ctx } = await resolve(token);
+      const rebuilt = rebuildSession(ctx, rec.startedAt, rec.log);
+      const s = rebuilt.state;
+      return {
+        sessionId: rec.id,
+        studentKey: rec.studentKey,
+        matchId: rec.matchId ?? null,
+        game: ctx.config.gameMode ?? null,
+        question: s.phase === 'playing' ? ctx.questions[s.idx] ?? null : null,
+        issuedAt: rebuilt.issuedAt,
+        wrongInRow: s.wrongStreak,
       };
     },
 

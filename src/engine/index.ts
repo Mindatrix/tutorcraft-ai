@@ -36,3 +36,8 @@ export * from './survivalRules';
 export * from './avatars';
 export * from './sceneBuilder';
 export * from './director';
+export * from './consequences';
+export * from './questionSchedule';
+export * from './coins';
+export * from './hints';
+export * from './rescue';
