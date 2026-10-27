@@ -152,6 +152,27 @@ check('token payload is not readable', !Buffer.from(String(s1.token).slice(3), '
   check('X-Frame-Options: DENY on pages', r.headers.get('x-frame-options') === 'DENY');
 }
 
+// 9b. Class matches (phase B): tutor routes need a tutor login; student routes need a real session
+{
+  const fakeTutor = { Authorization: 'Bearer not-a-real-supabase-access-token-123456', ...ip() };
+  let r = await post('/api/match', { battleId: '00000000-0000-4000-8000-000000000000' }, ip());
+  check('open a class match without login refused', r.status === 401, `status ${r.status}`);
+  r = await post('/api/match', { battleId: '00000000-0000-4000-8000-000000000000' }, fakeTutor);
+  check('open a class match with a fake tutor token refused', r.status === 401, `status ${r.status}`);
+  r = await post('/api/match/00000000-0000-4000-8000-000000000000', { action: 'start' }, ip());
+  check('start / pause / end a match without login refused', r.status === 401, `status ${r.status}`);
+  const bad = 'v1.' + Buffer.from('not a sealed token at all, sorry').toString('base64url');
+  r = await post('/api/match/join', {}, { [H]: bad, ...ip() });
+  check('join a match with a forged session token refused', r.status === 401, `status ${r.status}`);
+  r = await fetch(`${BASE}/api/match/state`, { headers: { [H]: bad, ...ip() } });
+  check('read a match with a forged session token refused', r.status === 401, `status ${r.status}`);
+  r = await post('/api/match/action', { type: 'tag', targets: ['x'] }, { [H]: bad, ...ip() });
+  check('survival action with a forged session token refused', r.status === 401, `status ${r.status}`);
+  const fresh = await json(await post('/api/session', { battleId: 'demo', nickname: 'sec' }, ip()));
+  r = await post('/api/match/join', {}, { [H]: fresh.token, ...ip() });
+  check('demo session cannot open or join a class match', r.status === 404, `status ${r.status}`);
+}
+
 // 10. Supabase: anon key must not read answers directly
 try {
   const env = Object.fromEntries(
@@ -160,10 +181,17 @@ try {
   const url = env.NEXT_PUBLIC_SUPABASE_URL;
   const anon = env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   if (url && anon) {
-    for (const table of ['battles', 'battle_results', 'battle_sessions']) {
+    for (const table of ['battles', 'battle_results', 'battle_sessions', 'matches', 'match_players']) {
       const r = await fetch(`${url}/rest/v1/${table}?select=*&limit=1`, { headers: { apikey: anon, Authorization: `Bearer ${anon}` } });
       const rows = await json(r);
       check(`anon key cannot read ${table}`, !Array.isArray(rows) || rows.length === 0, Array.isArray(rows) ? `${rows.length} row(s) visible` : `status ${r.status}`);
+    }
+    // The scoring functions run only for the server (service role).
+    const zero = '00000000-0000-4000-8000-000000000000';
+    const rpcBody = { match_answer: { p_session: zero, p_correct: true, p_stars: 3 }, match_next_seq: { p_match: zero }, match_use_charge: { p_player: zero }, match_refund_charge: { p_player: zero } };
+    for (const [fn, body] of Object.entries(rpcBody)) {
+      const r = await fetch(`${url}/rest/v1/rpc/${fn}`, { method: 'POST', headers: { apikey: anon, Authorization: `Bearer ${anon}`, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      check(`anon key cannot call ${fn}()`, r.status === 401 || r.status === 403 || r.status === 404, `status ${r.status}`);
     }
   }
 } catch {

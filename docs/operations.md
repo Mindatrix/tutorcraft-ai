@@ -73,6 +73,38 @@ Phục vụ model:
 - **Khi production:** đặt `NEXT_PUBLIC_ASSET_BASE_URL` trỏ tới CDN, trong đó có ba thư mục: `web/` (nội dung của `_optimized`), `low/` (nội dung của `_low`) và `hdri/` (các ảnh trời 2K trong `~/Documents/3D_tutorcraft/hdri`). Nên dùng Cloudflare R2 vì không tính phí băng thông: một lớp 50 em × khoảng 30 MB là khoảng 1,5 GB mỗi buổi, vượt xa gói Free của Supabase.
 - **Chưa có CDN:** mọi model trả về 404, và cảnh tự giữ mô hình dựng bằng code. Trời thì dùng bản 1K trong `public/`.
 
+## Trận chung cả lớp (giai đoạn B)
+
+Một lớp tối đa 60 em vào cùng một trận: cùng đồng hồ, cùng chặng, cùng sự kiện ngẫu nhiên, cùng bảng điểm. Mất mạng rồi vào lại không mất điểm. Máy chủ quyết định mọi thứ; máy học sinh chỉ vẽ.
+
+Luồng:
+1. Gia sư mở trận: `POST /api/match` với `{ battleId }` (cần đăng nhập). Trận nằm ở trạng thái `lobby`. Gọi lại khi trận chưa kết thúc thì nhận lại đúng trận đó.
+2. Học sinh vào đấu trường như cũ (`POST /api/session`), rồi vào phòng: `POST /api/match/join`, header `x-battle-session`. Game khủng long gửi thêm `{ species, color }`: được trùng loài, không được trùng cả loài lẫn màu.
+3. Gia sư bấm `POST /api/match/<id>` với `{ action }`. Thứ tự hợp lệ: `start` → `pause` / `resume` → `extend` (một lần, mở 2 chặng phụ) → `end`. Thao tác sai thứ tự bị từ chối (409).
+4. Máy học sinh nghe kênh Supabase Realtime `match:<id>`. Cứ 20 giây, và ngay khi có mạng lại, máy hỏi `GET /api/match/state`.
+5. Riêng Sinh tồn: các thao tác bắt, cướp lưới, đóng băng, giải cứu, lấy lại lưới đi qua `POST /api/match/action`.
+
+Những điểm chính:
+- **Đồng hồ:** 6 chặng × 5 phút; thêm 2 chặng phụ khi gia sư bấm "Kéo dài". Thời gian tạm dừng không tính. Máy chủ không chạy hẹn giờ (hàm Vercel ngủ giữa các lần gọi): yêu cầu đầu tiên sau mốc giờ sẽ làm trận sang chặng mới (phát tin `stage` đúng một lần) hoặc kết thúc trận (phát tin `ended` đúng một lần). Mỗi máy tự tính độ lệch giờ so với máy chủ, nên dù đồng hồ điện thoại sai vài phút vẫn thấy cùng chặng và cùng số giây còn lại.
+- **Chia đội lúc bấm bắt đầu** (`src/engine/match.ts` và `teams.ts`):
+  - Sinh tồn: Chạy Trốn / Săn Tìm theo tỉ lệ **60/40** đúng luật game (49 em → 29/20), cân trình độ theo độ chính xác gần đây của từng em, chia tiểu đội 4–5. Từ 1 đến 5 em thì tất cả là Chạy Trốn, đấu với 2–3 người máy.
+  - Kayak: hai đội 50/50.
+  - Khủng long: 1 em chơi một mình (vai Mốc); từ 2 em trở lên là một bầy, chia nhóm 4–5 em.
+  - Em vào muộn được xếp vào đội đang thiếu người, rồi vào nhóm ít người nhất.
+- **Điểm:** mỗi câu đúng được 1–3 sao theo tốc độ. Hàm `match_answer` trong database cộng điểm nguyên tử ngay trong lúc trận đang chạy; khi tạm dừng hoặc sau giờ, câu trả lời không được tính. Bảng điểm phát tối đa 2 giây một lần cho mỗi trận, dù lớp trả lời nhiều đến đâu.
+- **Luật Cướp Lưới** (`src/engine/survivalRules.ts`) bám đúng luật game trong database. Máy chủ kiểm tra đội, lượt nạp lưới, thời gian chờ, các cửa sổ 6 giây và 8 giây, ai đang tự do và ai đang trong chuồng. Thao tác sai luật không được áp dụng và bị đếm (`refused`) để gia sư xem. Riêng khoảng cách (ai đứng gần ai) do máy học sinh vẽ; giai đoạn D4 sẽ thêm phần kiểm tra vị trí.
+- **Tin có chữ ký:** kênh Realtime là kênh công khai. Ngày 27/10 tôi thử thì thấy một máy học sinh gửi được tin giả lên kênh, và các máy khác đều nhận. Vì vậy máy chủ ký mọi tin bằng ECDSA P-256, và máy học sinh kiểm chữ ký bằng Web Crypto rồi mới dùng. Tin sai chữ ký, tin của trận khác, tin cũ hơn hoặc tin phát lại đều bị bỏ.
+  - Khoá ký được suy ra từ `TUTORCRAFT_SESSION_SECRET`, hoặc từ khoá service role nếu biến đó chưa đặt. Không cần thêm biến môi trường mới.
+  - Đổi khoá bí mật thì máy học sinh tự nhận khoá mới ở lần hỏi trạng thái kế tiếp.
+- **Giới hạn tần suất:**
+  - Mỗi em: 5 yêu cầu/giây và 120 yêu cầu/phút (bộ nhớ từng máy chủ), cộng 60 câu trả lời/phút tính chung cho mọi máy chủ (bảng `rate_limits`, không mất khi Vercel khởi động lại hàm).
+  - Mỗi lớp: 3.000 câu trả lời/phút.
+  - Vào phòng: 150 lần/phút cho mỗi IP.
+  - Bước kiểm tra giới hạn dùng chung chạy song song với việc đọc phiên, nên không làm chậm câu trả lời.
+- **Bảng mới:** `matches`, `match_players`, cột `battle_sessions.match_id`, và hai cột `game_scenarios.solo_mode` / `class_mode` (migration `20261027_class_matches.sql`). RLS cho gia sư quản lý trận của mình; học sinh không đọc bảng trực tiếp.
+
+Thử tải: `node --env-file=.env.local scripts/match-load-test.mjs --students 50 --stage-seconds 300` (xem đầu file để biết cần build và chạy máy chủ trước). Script tạo một đấu trường gắn nhãn `[LOAD TEST]` rồi tự xoá sau khi chạy.
+
 ## Việc cần làm (phát sinh sau giai đoạn A, 27/10/2026)
 
 - **Thời gian chờ Gemini khi sinh câu hỏi.** Hiện chờ 17 s cho model chính và 27 s cho model phụ (`src/server/gemini.ts`, tính theo số câu × trọng số dạng bài). Ngày 26/10 đo thực tế mất khoảng 31 s cho 10 câu mức Beginner, nên dễ rơi về ngân hàng câu dự phòng.
