@@ -1,4 +1,6 @@
-// Nạp 25 kịch bản v2 (5 game × 5) + 300 nhân vật + luật chung từng game vào Supabase.
+// Nạp 30 kịch bản v2 (6 game × 5, gồm Hành trình khủng long) + 360 nhân vật + luật chung từng game
+// vào Supabase, kèm phụ đề 6 mức. Nguồn: content/scenarios_v2.json và content/game_worlds_v2.json.
+// (supabase/seed/scenarios_v2/*.sql là bản SQL tương đương, chép từ scripts/scenarios-v2/seed.)
 // Chạy trên máy bạn (cần mạng):  node --env-file=.env.local scripts/seed-scenarios-v2.mjs
 // An toàn khi chạy lại (upsert). Không xoá kịch bản cũ (đã lưu trữ active=false).
 import { readFileSync } from 'node:fs';
