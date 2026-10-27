@@ -721,7 +721,11 @@ function CastStage({ row, tier }: { row: Row; tier: GfxTier }) {
       const size = new THREE.Vector3();
       const center = new THREE.Vector3();
       const vHalf = Math.tan(THREE.MathUtils.degToRad(14));
-      list.forEach((c, i) => {
+      // Let every clip finish fading in, then draw the sheet twice: the first pass after a resize
+      // can frame a cell on stale matrices.
+      for (let k = 0; k < 8; k++) for (const c of list) c.avatar?.update(0.125);
+      for (const pass of [0, 1]) list.forEach((c, i) => {
+        void pass;
         if (!c.avatar) return;
         const x = (i % cols) * cellW;
         const y = (rows - 1 - Math.floor(i / cols)) * cellH;

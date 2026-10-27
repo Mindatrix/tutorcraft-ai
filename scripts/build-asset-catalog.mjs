@@ -60,12 +60,15 @@ export function glbInfo(file) {
   }
 }
 
+/** Every .glb under the category folders. Loose files at the library root, and raw downloads still
+ *  named "Meshy_AI_…", are not sorted yet (no id, not optimized): listed separately, never catalogued. */
+const loose = [];
 function walk(dir, out = []) {
   for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
-    if (e.name.startsWith('_') || e.name.startsWith('.')) continue;
+    if (e.name.startsWith('_') || e.name.startsWith('.') || (dir === ROOT && e.name === 'inbox')) continue;
     const p = path.join(dir, e.name);
     if (e.isDirectory()) walk(p, out);
-    else if (e.name.toLowerCase().endsWith('.glb')) out.push(p);
+    else if (e.name.toLowerCase().endsWith('.glb')) (dir === ROOT || /^Meshy_AI_/.test(e.name) ? loose : out).push(p);
   }
   return out;
 }
@@ -96,6 +99,9 @@ const aliases = Object.fromEntries(Object.entries(readJson('content/asset_aliase
 const stem = (i) => i.replace(/(__alt\d+|_\d+)$/, '');
 const usedBy = new Map(); // scenario asset id → set of games
 for (const s of scenarios) for (const a of s.asset_ids ?? []) (usedBy.get(a) ?? usedBy.set(a, new Set()).get(a)).add(s.game);
+// Multiverse rooms (D6) are used through content/multiverse_rooms.json: room "r_bedroom" covers
+// the library files r_bedroom, r_bedroom_a, r_bedroom_b…
+const roomIds = (readJson('content/multiverse_rooms.json', {}).rooms ?? []).map((r) => r.id).filter(Boolean);
 
 const catalog = [];
 for (const f of walk(ROOT).sort()) {
@@ -110,6 +116,7 @@ for (const f of walk(ROOT).sort()) {
     const target = aliases[a]?.to;
     if (a === id || stem(a) === id || a === stem(id) || target === id || (target && stem(id) === target)) gs.forEach((g) => games.add(g));
   }
+  if (roomIds.some((r) => id === r || id.startsWith(`${r}_`))) games.add('multiverse_portal');
   catalog.push({
     id,
     file: rel,
@@ -144,7 +151,12 @@ fs.writeFileSync('content/asset_catalog.json', `${JSON.stringify(catalog, null, 
 // Coverage: ids the scenarios ask for without a file, and files no scenario uses.
 const files = new Set(catalog.map((c) => c.id));
 const stems = new Set(catalog.map((c) => stem(c.id)));
-const resolved = (a) => files.has(a) || files.has(stem(a)) || stems.has(a) || (aliases[a] && ('file' in aliases[a] || files.has(aliases[a].to)));
+// Images (tex_*, water_*) live in <library>/textures/<id>.<ext>; fx_fire / fx_smoke / fx_spark are particles in code.
+const TEX = path.join(ROOT, 'textures');
+const images = new Set(fs.existsSync(TEX) ? fs.readdirSync(TEX).filter((f) => /\.(png|jpe?g|webp)$/i.test(f)).map((f) => f.replace(/\.[^.]+$/, '')) : []);
+const PROCEDURAL_IDS = new Set(['fx_fire', 'fx_smoke', 'fx_spark']);
+const resolved = (a) =>
+  files.has(a) || files.has(stem(a)) || stems.has(a) || images.has(a) || PROCEDURAL_IDS.has(a) || (aliases[a] && ('file' in aliases[a] || files.has(aliases[a].to)));
 const missing = [...usedBy.keys()].filter((a) => !resolved(a)).sort();
 const groups = {};
 for (const a of missing) (groups[a.match(/^[a-z]+/)?.[0] ?? 'other'] ??= []).push(a);
@@ -156,3 +168,4 @@ const over = catalog.filter((c) => (c.mb_web ?? c.mb_raw) > 8).map((c) => `${c.i
 console.log(`${catalog.length} model (${Object.entries(bySource).map(([k, v]) => `${k} ${v}`).join(', ')}) · chưa tối ưu: ${catalog.filter((c) => c.mb_web == null).length} · có bản thấp: ${catalog.filter((c) => c.mb_low != null).length}`);
 console.log(`kịch bản gọi ${usedBy.size} id · THIẾU file ${missing.length} · model chưa kịch bản nào dùng: ${unused.length ? unused.join(', ') : 'không'}`);
 if (over.length) console.log(`trên 8 MB (bản web): ${over.join(' · ')}`);
+if (loose.length) console.log(`bỏ qua ${loose.length} file chưa đặt tên (gốc thư viện hoặc Meshy_AI_…): ${loose.map((f) => path.relative(ROOT, f)).join(', ')}`);

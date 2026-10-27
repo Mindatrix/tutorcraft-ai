@@ -18,6 +18,8 @@ const eslintConfig = defineConfig([
     ".preview-tmp/**",
     "unity/**",
     "public/**",
+    // other sessions' git worktrees (each has its own .next build output)
+    ".claude/**",
   ]),
 ]);
 

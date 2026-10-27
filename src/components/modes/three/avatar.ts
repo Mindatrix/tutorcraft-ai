@@ -19,7 +19,8 @@ export const AVATAR_STATES: AvatarState[] = ['idle', 'run', 'happy', 'sad', 'cor
 
 /** Clip name patterns per state (first match wins). Clips seen in the library, 27/10. */
 const CLIP_RULES: Record<AvatarState, RegExp[]> = {
-  idle: [/idle/i],
+  // A standing idle only: not "Bar_Hang_Idle" (arms up) or "Idle_Step_Turn_Left" (walks away).
+  idle: [/^idle(_\d+)?$/i, /^(?!.*(hang|step|turn|jump|walk)).*idle/i],
   run: [/^run/i, /running/i, /walk/i],
   happy: [/wave|hello/i, /joyful|dance|groove|shuffle|pop/i, /bow/i],
   sad: [/sad|defeat|cry/i],
@@ -131,6 +132,9 @@ export class Avatar {
       rigOk = hipsY <= h * 3;
       if (!rigOk) console.warn(`[avatar] ${spec.model}: xương sai tỉ lệ (hông ở ${hipsY.toFixed(1)}, thân cao ${h.toFixed(2)}): tắt clip, dùng chuyển động bằng code`);
     }
+    // No idle clip (char_tpose_boy, char_grass_kid, char_iridescent_voyager): the rest pose is the
+    // T-pose it was rigged in. Lower the arms before the mixer saves the pose it blends back to.
+    if (sk && rigOk && !clips.some((c) => CLIP_RULES.idle.some((re) => re.test(c.name)))) relaxArms(model);
     this.rigged = !!sk && clips.length > 0 && rigOk;
     if (this.rigged) {
       this.mixer = new THREE.AnimationMixer(model);
@@ -230,6 +234,39 @@ export class Avatar {
     this.mixer?.stopAllAction();
     this.root.removeFromParent();
   }
+}
+
+/**
+ * Stand a T- or A-posed rig at ease: each upper arm is turned (in world space) to point down and
+ * slightly out, so the forearm and hand follow. Arms already pointing down are left alone.
+ * Works for Mixamo names ("mixamorigLeftArm") and plain ones ("LeftArm").
+ */
+export function relaxArms(model: THREE.Object3D): number {
+  model.updateMatrixWorld(true);
+  const bones: THREE.Bone[] = [];
+  model.traverse((o) => {
+    if ((o as THREE.Bone).isBone) bones.push(o as THREE.Bone);
+  });
+  let moved = 0;
+  for (const side of ['Left', 'Right']) {
+    const arm = bones.find((b) => new RegExp(`${side}Arm$`).test(b.name));
+    const fore = bones.find((b) => new RegExp(`${side}ForeArm$`).test(b.name));
+    if (!arm || !fore || !arm.parent) continue;
+    const a = arm.getWorldPosition(new THREE.Vector3());
+    const dir = fore.getWorldPosition(new THREE.Vector3()).sub(a).normalize();
+    if (dir.y < -0.8) continue;
+    const out = new THREE.Vector3(dir.x, 0, dir.z);
+    if (out.lengthSq() < 1e-6) continue;
+    out.normalize();
+    const target = new THREE.Vector3(0, -Math.cos(0.22), 0).addScaledVector(out, Math.sin(0.22)).normalize();
+    const delta = new THREE.Quaternion().setFromUnitVectors(dir, target);
+    const world = arm.getWorldQuaternion(new THREE.Quaternion());
+    const parent = arm.parent.getWorldQuaternion(new THREE.Quaternion());
+    arm.quaternion.copy(parent.invert().multiply(delta.multiply(world)));
+    arm.updateMatrixWorld(true);
+    moved++;
+  }
+  return moved;
 }
 
 function pickClip(clips: THREE.AnimationClip[], state: AvatarState): THREE.AnimationClip | null {

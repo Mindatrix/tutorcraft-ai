@@ -107,14 +107,18 @@ export function budget(rel, low = false) {
   const ground = /(^|\/)ground\//.test(rel);
   const big = !ground && (/(^|\/)(mini|the_gioi|cay_phu)\//.test(rel) || /backdrop|world_|(tree|bush|fern|cave|cabin|woodpile|island)/.test(rel));
   let b;
-  if (ground) b = { tris: 60000, tex: 1024, capMb: 4 };
+  // Multiverse rooms (D6.1) are seen from inside, up close: 2048 px textures, a 8 MB cap (low: 3 MB).
+  const room = /(^|\/)multiverse\/rooms\//.test(rel);
+  if (room) b = { tris: 250000, tex: 2048, capMb: 8 };
+  else if (ground) b = { tris: 60000, tex: 1024, capMb: 4 };
   else if (big) b = { tris: 150000, tex: 1024, capMb: 6 };
   else if (/(^|\/)(characters|khung_long|thu_nho)\//.test(rel) || /\/char_/.test(rel)) b = { tris: 20000, tex: 1024, capMb: 4 };
   else if (/multiverse\/mv_(hero|boss|npc|minion)/.test(rel)) b = { tris: 20000, tex: 1024, capMb: 4 };
   else if (/fishing\/ca\//.test(rel)) b = { tris: 8000, tex: 512, capMb: 1 };
   else if (/^river_world\//.test(rel)) b = { tris: 15000, tex: 1024, capMb: 2 };
   else b = { tris: 8000, tex: 1024, capMb: 1 };
-  if (low) b = { tris: Math.round(big ? b.tris / 5 : ground ? b.tris / 3 : b.tris / 2), tex: 512, capMb: big || ground ? 2 : Math.max(0.5, b.capMb / 2) };
+  if (low && room) b = { tris: 80000, tex: 1024, capMb: 3 };
+  else if (low) b = { tris: Math.round(big ? b.tris / 5 : ground ? b.tris / 3 : b.tris / 2), tex: 512, capMb: big || ground ? 2 : Math.max(0.5, b.capMb / 2) };
   const o = OVERRIDES[rel.split(path.sep).join('/')];
   if (o) b = { ...b, tris: low ? o.low : o.tris, capMb: low ? (o.lowCapMb ?? Math.max(b.capMb, 3)) : o.capMb };
   if (TRIS) b = { ...b, tris: low ? Math.round(TRIS / 2) : TRIS };

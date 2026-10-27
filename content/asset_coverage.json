@@ -1,7 +1,7 @@
 {
  "total_used": 280,
- "have_file": 236,
- "missing_count": 44,
+ "have_file": 239,
+ "missing_count": 41,
  "missing_by_group": {
   "anim": [
    "anim_cast",
@@ -44,11 +44,6 @@
    "food_fish_raw",
    "food_meat_raw",
    "food_sausage"
-  ],
-  "fx": [
-   "fx_fire",
-   "fx_smoke",
-   "fx_spark"
   ],
   "kayak": [
    "kayak_log_spinning"

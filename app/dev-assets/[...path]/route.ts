@@ -8,7 +8,7 @@ import { Readable } from 'node:stream';
 //   /dev-assets/low/<file>  → <library>/_low/<file>         (.glb)
 //   /dev-assets/mid/<file>  → <library>/_mid/<file>         (.glb, ~5 k triangle avatars)
 //   /dev-assets/hdri/<file> → <library>/hdri/<file>         (.hdr, 2K skies; the 1K ones are in /public)
-// Production uses NEXT_PUBLIC_ASSET_BASE_URL (a CDN with the same three folders); this route answers 404 there.
+// Production uses NEXT_PUBLIC_ASSET_BASE_URL (a CDN with web/, low/, mid/, hdri/: scripts/sync-assets-r2.mjs); this route answers 404 there.
 
 const ROOT = path.resolve((process.env.TC_3D_DIR || '~/Documents/3D_tutorcraft').replace(/^~/, os.homedir()));
 const DIRS: Record<string, { dir: string; ext: string; type: string }> = {

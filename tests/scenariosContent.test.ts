@@ -40,7 +40,10 @@ test('asset catalog: every model in the 3D folder is used by at least one scenar
   // biến thể: hậu tố __altN hoặc _N cùng nhóm với id gốc
   const stem = (id: string) => id.replace(/__alt\d+$/, '').replace(/_\d+$/, '');
   const usedStems = new Set([...used].map(stem));
-  const orphans = catalog.filter((c) => !used.has(c.id) && !usedStems.has(stem(c.id))).map((c) => c.id);
+  // Multiverse rooms are used through content/multiverse_rooms.json, not scenario asset lists.
+  const rooms: string[] = (JSON.parse(readFileSync(join(process.cwd(), 'content/multiverse_rooms.json'), 'utf8')).rooms ?? []).map((r: { id: string }) => r.id);
+  const isRoom = (id: string) => rooms.some((r) => id === r || id.startsWith(`${r}_`));
+  const orphans = catalog.filter((c) => !used.has(c.id) && !usedStems.has(stem(c.id)) && !isRoom(c.id)).map((c) => c.id);
   assert.deepEqual(orphans, []);
 });
 

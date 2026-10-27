@@ -104,7 +104,10 @@ test('A3.2 coverage: every model in the library is used by at least one scenario
       if (c) used.add(c.id);
     }
   }
-  const unused = catalog.filter((c) => !used.has(c.id) && !used.has(stem(c.id))).map((c) => c.id);
+  // Multiverse rooms are used through content/multiverse_rooms.json ("r_bedroom" → r_bedroom_a, r_bedroom_b).
+  const rooms: string[] = (JSON.parse(readFileSync('content/multiverse_rooms.json', 'utf8')).rooms ?? []).map((r: { id: string }) => r.id);
+  const isRoom = (id: string) => rooms.some((r) => id === r || id.startsWith(`${r}_`));
+  const unused = catalog.filter((c) => !used.has(c.id) && !used.has(stem(c.id)) && !isRoom(c.id)).map((c) => c.id);
   assert.deepEqual(unused, [], `models no scenario uses: ${unused.join(', ')}`);
   // The other direction is a to-do list for the content side (Meshy / downloads), not a failure.
   const missing = Array.from(new Set(scenarios.flatMap((s) => E.planScenarioAssets(s, catalog, aliases).missing))).sort();

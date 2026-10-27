@@ -57,6 +57,7 @@ Ngân sách của bộ tối ưu (số mặt, cạnh ảnh tối đa, trần dun
 | Mặt đất | 60 nghìn mặt | 20 nghìn mặt |
 | Nhân vật, khủng long | 20 nghìn mặt | 10 nghìn mặt |
 | Đồ nhỏ, cá | 8 nghìn mặt, dưới 1 MB | 4 nghìn mặt |
+| Phòng Multiverse (`multiverse/rooms/`) | 250 nghìn mặt, ảnh 2048, trần 8 MB | 80 nghìn mặt, ảnh 1024, trần 3 MB |
 
 Model quét từ Meshy chia UV thành hàng nghìn mảnh, nên bộ giản lược thường bị "kẹt". Script tự chuyển sang chế độ *Permissive* (có tính tới UV). Nếu vẫn quá nặng, script lùi về chế độ *Sloppy*.
 
@@ -69,9 +70,79 @@ Model quét từ Meshy chia UV thành hàng nghìn mảnh, nên bộ giản lư�
 - **Bản 2K** (4–7 MB mỗi ảnh, tổng 26 MB) **không** nằm trong git hay bản triển khai: `.gitignore` và `.vercelignore` chặn `public/assets/hdri/*_2k.hdr`. Bản này nằm cùng thư viện model, ở `~/Documents/3D_tutorcraft/hdri/`. Manifest lấy địa chỉ qua `hdri('<tên>')`, tức là `NEXT_PUBLIC_ASSET_BASE_URL/hdri/river_<tên>_2k.hdr`; khi dev thì route `/dev-assets/hdri/…` phục vụ.
 
 Phục vụ model:
-- **Khi dev:** route `/dev-assets/web|low/<file>` đọc thẳng thư viện trên máy.
-- **Khi production:** đặt `NEXT_PUBLIC_ASSET_BASE_URL` trỏ tới CDN, trong đó có ba thư mục: `web/` (nội dung của `_optimized`), `low/` (nội dung của `_low`) và `hdri/` (các ảnh trời 2K trong `~/Documents/3D_tutorcraft/hdri`). Nên dùng Cloudflare R2 vì không tính phí băng thông: một lớp 50 em × khoảng 30 MB là khoảng 1,5 GB mỗi buổi, vượt xa gói Free của Supabase.
+- **Khi dev:** route `/dev-assets/web|low|mid/<file>` đọc thẳng thư viện trên máy (khi `NEXT_PUBLIC_ASSET_BASE_URL` để trống).
+- **Khi production:** đặt `NEXT_PUBLIC_ASSET_BASE_URL` trỏ tới CDN có bốn thư mục:
+  - `web/`: nội dung của `_optimized`;
+  - `low/`: nội dung của `_low`;
+  - `mid/`: nội dung của `_mid`;
+  - `hdri/`: ảnh trời 2K.
+
+  Dùng Cloudflare R2 vì không tính phí băng thông: một lớp 50 em × khoảng 30 MB là khoảng 1,5 GB mỗi buổi.
 - **Chưa có CDN:** mọi model trả về 404, và cảnh tự giữ mô hình dựng bằng code. Trời thì dùng bản 1K trong `public/`.
+
+### Thư viện trên R2 (27/10)
+
+- **Lệnh đồng bộ:** `node scripts/sync-assets-r2.mjs`.
+  - Chạy không cờ là chạy khô: in danh sách, dung lượng, và file nào cần đẩy.
+  - `--apply` đẩy thật. Bỏ qua file đã có cùng nội dung (so MD5 với ETag).
+  - Khóa đọc từ `.env.local` (`R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET`). Script không in khóa.
+  - Chỉ đẩy bản đã tối ưu. `multiverse/rooms/` bị bỏ qua cho tới khi nội dung phòng được duyệt (cờ `--include-rooms`).
+- **Lần đẩy đầu, 27/10:** 522 file, 264,5 MB, không lỗi. Chạy lại cho kết quả 522 file giống hệt.
+
+  | Thư mục | Số file | Dung lượng |
+  |---|---|---|
+  | `web` | 244 | 173,8 MB |
+  | `low` | 244 | 58,2 MB |
+  | `mid` | 29 | 5,4 MB |
+  | `hdri` | 5 | 27,1 MB |
+
+  Có thêm `manifest.json` ở gốc bucket. Bản trên máy nằm ở `out/r2-manifest.json`.
+- **Header:**
+  - `Cache-Control: public, max-age=86400, stale-while-revalidate=604800`. Tên file không đổi khi tối ưu lại, nên không đặt `immutable`.
+  - `Content-Type` là `model/gltf-binary` cho GLB và `image/vnd.radiance` cho HDR.
+- **Còn phải làm trên Cloudflare** (khóa hiện có là loại đọc/ghi đối tượng, không đổi được cài đặt bucket):
+  - CORS hiện chỉ cho `http://localhost:3000`. Cần thêm tên miền production, và địa chỉ LAN nếu muốn thử điện thoại với R2.
+  - Link `r2.dev` bị giới hạn tốc độ, chỉ dùng để thử. Bản chính thức cần gắn tên miền riêng cho bucket, rồi đặt `NEXT_PUBLIC_ASSET_BASE_URL` trên Vercel.
+- **Mẫu biến môi trường:** `.env.example`.
+
+### Nhập tài nguyên mới (inbox)
+
+1. Thả file vào `~/Documents/3D_tutorcraft/inbox/`. Nhận `.glb`, `.gltf`, `.fbx`, `.obj`, và ảnh `.png`/`.jpg`/`.webp` cho mã `tex_*`, `water_*`.
+2. Điền `inbox/credits.csv` theo cột `file,id,title,author,source,license`.
+3. Chạy khô `node scripts/import-inbox.mjs`, rồi chạy thật với `--apply`.
+
+Script làm gì với từng file:
+- **Từ chối** khi:
+  - thiếu giấy phép;
+  - giấy phép không cho dùng thương mại (NC) hoặc không cho sửa (ND);
+  - thiếu nguồn;
+  - CC BY mà thiếu tác giả;
+  - mã đã có trong thư viện (trừ khi có `--replace`).
+- `fx_fire`, `fx_smoke`, `fx_spark` không nhập: làm bằng hạt trong `effects.ts`, và catalog tính là đã có.
+- `anim_*`: lưu ở `anim/`. Script đối chiếu tên xương với khung xương các nhân vật, rồi báo khớp với nhân vật nào. Xương kiểu Mixamo khớp `char_tpose_boy`, `char_iridescent_voyager`, `char_kid_dancer`, `char_generic_female_2`; khung xương Meshy (`char_sunny_boy`, `char_grass_kid`) có tên khác.
+- Model:
+  - đổi tên theo mã, đặt vào thư mục theo tiền tố;
+  - Blender đổi `.fbx`/`.obj`/`.gltf` sang `.glb`;
+  - tối ưu bản cao và bản thấp; nhân vật và khủng long thêm bản vừa.
+- Ghi `content/asset_credits.json` và nhật ký đổi tên `_report/doi_ten.json`, rồi chạy lại catalog. File đã nhập chuyển sang `inbox/_da_nhap/`.
+- Ngày 27/10 đã thử trên một thư viện giả: nhận 3 file (model, ảnh, hoạt ảnh), từ chối 3 (thiếu giấy phép, NC, `fx_fire`).
+
+Hiện thiếu **41/280** mã:
+- `anim` 8, `camp` 15, `food` 6, `fish` 5;
+- `tex` 2, `water` 2;
+- `kayak`, `river`, `surv` mỗi nhóm 1.
+
+### Dọn file gốc trước khi tối ưu
+
+`node scripts/clean-glb.mjs <file> --inspect` in các mặt phẳng lớn và các mảnh rời. Các cờ dọn:
+- `--drop-planes`: bỏ tấm phẳng;
+- `--drop-below y`: bỏ phần nằm dưới độ cao y (đĩa đất);
+- `--keep-within r`: chỉ giữ vật ở giữa;
+- `--keep-pieces-over k`: bỏ mảnh vụn.
+
+Bản gốc được sao vào `_backup/` trước khi ghi. Ngày 27/10:
+- `camp_grill`: `--keep-within 0.35` bỏ ba tấm phông và 25 mảnh cỏ đá (752/2.051 mặt, 82% bề mặt). Còn 1.299 mặt, Blender không báo lỗi; phần tối giảm từ 84% còn 29% (là lòng bếp màu đen).
+- `char_wanderer`: `--drop-below -0.885` rồi `--keep-pieces-over 0.001` bỏ đĩa cỏ (373 nghìn mặt). Bản cao 20 nghìn, thấp 10 nghìn, vừa 5 nghìn mặt.
 
 ## Trận chung cả lớp (giai đoạn B)
 
@@ -179,26 +250,109 @@ Số đo ngày 27/10 trên Mac (Apple M4), sau khi có 3 cấp chi tiết. Thờ
 4. Chụp 4 lần: (a) Bản cao; (b) Bản thấp; (c) Bản thấp + Máy yếu; (d) Màn hình gia sư 50 em. Nếu điện thoại tự hạ tầng (dòng đầu ghi "tầng low" dù đã chọn Bản cao), đó cũng là một kết quả cần ghi.
 5. Cổng đạt khi (c) có FPS trung bình từ 30 trở lên và giây tệ nhất từ 25 trở lên trên một điện thoại tầm thấp (ví dụ Android 3–4 năm tuổi, RAM 3–4 GB). Ghi thêm tên máy và kết quả vào bảng trên.
 
+### Số tam giác cảnh sông, tách theo phần (27/10)
+
+Đo tại `camp-01` chặng 1, có 50 học sinh và 12 nhân vật. Camera thấy chặng hiện tại và chặng kề, ở chặng 1 là 2 chặng. Đơn vị: nghìn tam giác.
+
+| Phần | Bản cao | Bản thấp |
+|---|---|---|
+| Thế giới | 1.447 | 469 |
+| ↳ cây cỏ đá rải hai bờ (fill) | 699 + 694 (2 chặng) | 219 + 212 |
+| ↳ vật chính của chặng (focal) | 60 | 32 |
+| ↳ mặt đất, nước, bờ | 11 | 11 |
+| 50 học sinh | 153 (6 gần × ~20, 10 vừa × 5) | 110 (6 × ~10, 10 × 5) |
+| 12 nhân vật truyện | 232 | 119 |
+| Vòng màu, chấm, bảng tên | 9 | 9 |
+| Lượt vẽ bóng | 1.799 (39 draw call) | 0 (tắt bóng) |
+| Tổng | 3.672 (không tính bóng: 1.873) | 739 |
+
+Ở chặng giữa camera thấy 3 chặng. Trường hợp nặng nhất trên 30 kịch bản là `dino-02` chặng 5: phần thế giới 2.242 nghìn ở bản cao (fill 2.072) và 735 nghìn ở bản thấp (fill 648).
+
+So với ngân sách 700 nghìn (cao) và 220 nghìn (thấp):
+- Fill của **từng chặng** nằm đúng trần (699/694 và 219/212). Lý do: `FILL_BUDGET` trong `sceneBuilder.ts` tính theo một chặng.
+- **Một cảnh** vượt 2–3 lần, vì ba nguyên nhân:
+  - camera thấy 2–3 chặng cùng lúc;
+  - mỗi cây dùng bản thấp vẫn tới khoảng 30 nghìn tam giác (`palm_b`, `tree_nursery_pot`);
+  - ở bản cao, lượt vẽ bóng vẽ lại gần như toàn bộ cảnh.
+- Thêm 12 nhân vật (232 / 119 nghìn) và 50 em (153 / 110 nghìn).
+- Ngân sách chưa sửa. Đề xuất, chờ duyệt:
+  1. Chặng kề chỉ vẽ fill trong khoảng gần ranh giới (khoảng 1/3 chặng), hoặc vẽ fill chặng kề bằng bản `_mid` / tấm ảnh phẳng. Dự kiến giảm 30–45% phần thế giới.
+  2. Fill không đổ bóng; chỉ vật chính, avatar và nhân vật đổ bóng. Lượt bóng dự kiến từ 1,8 triệu xuống khoảng 0,4 triệu.
+  3. Nhân vật truyện dùng 3 cấp chi tiết như học sinh: chỉ 3–4 nhân vật gần điểm hỏi dùng bản đầy đủ, còn lại bản vừa 5 nghìn. Dự kiến giảm từ 232 xuống khoảng 100 nghìn ở bản cao.
+  4. Đặt trần riêng cho cây khi dùng làm fill: bản thấp tối đa 10–15 nghìn mỗi cây.
+
+### Kế hoạch giảm bộ nhớ ảnh bản cao (~293 MB): chuẩn bị sẵn, chỉ làm khi số đo điện thoại cần
+
+Bộ nhớ ảnh đo ngày 27/10 ở `camp-01`, bản cao. Ảnh WebP được giải nén thành RGBA 8 bit, có mipmap:
+
+| Phần | Ước lượng |
+|---|---|
+| 32 ảnh 1024 px (12 nhân vật truyện, mỗi nhân vật 3–4 ảnh: màu, normal, roughness, emissive; cộng mô hình chính) | ~179 MB |
+| 24 ảnh 512 px (fill, học sinh) | ~34 MB |
+| Bầu trời HDR 2K | ~22 MB |
+| Bản môi trường PMREM | ~25 MB |
+| Bản đồ bóng 1024² | 4 MB |
+
+**Phương án A: nhân vật truyện dùng bản vừa** (nhanh, ít rủi ro, nên làm trước).
+- Cách làm: `createAvatar({ quality: 'mid' })` (ảnh 512 px, 5 nghìn tam giác) cho nhân vật truyện. Riêng 3–4 nhân vật gần điểm hỏi dùng bản đầy đủ, qua `LodAvatar` như học sinh.
+- Dự kiến giảm khoảng 130 MB, còn khoảng 160 MB. Kèm theo trên điện thoại: HDR 1K thay 2K (giảm khoảng 35 MB).
+- Công: khoảng nửa ngày. Đo lại bằng nút "Đo 10 giây" và dòng bộ nhớ trong trang thử.
+
+**Phương án B: KTX2 / Basis Universal** (ảnh nén ngay trên GPU, nhỏ hơn 4–8 lần).
+- Công cụ: cài `toktx` (KTX-Software) hoặc `basisu`; thêm bước `ktx2` vào `optimize-glb.mjs`. Ảnh màu dùng ETC1S, normal map dùng UASTC.
+- Trình duyệt: `KTX2Loader` của three.js cùng bộ giải mã (wasm, khoảng 200 KB) đặt trong `public/`; gọi `detectSupport(renderer)`; `withQuality` không đổi.
+- Dự kiến: bộ nhớ ảnh khoảng 40–60 MB ở bản cao; file tải về tương đương hoặc nhỏ hơn WebP.
+- Rủi ro:
+  - ETC1S làm mờ chi tiết ảnh Meshy;
+  - mã hoá chậm (vài phút cho cả thư viện);
+  - phải đẩy lại toàn bộ lên R2.
+- Công: 1–2 ngày, kèm kiểm ảnh bằng `validate-glb.py --thumbs`.
+
+**Khi nào làm:** khi một trong các điều sau xảy ra trên điện thoại thật:
+- trang tự tải lại hoặc mất ngữ cảnh WebGL;
+- dòng bộ nhớ ảnh trên 150 MB với máy RAM 3–4 GB;
+- FPS trung bình dưới 30 ở bản thấp mà draw call và tam giác vẫn trong ngân sách.
+
+Làm phương án A trước. Vẫn chưa đủ thì làm B.
+
+### Phòng Multiverse (D6.1, 27/10)
+
+Bản sao của 8 file Meshy trong `Multiverse Portal/` được đặt tên theo mã phòng ở `multiverse/rooms/`; bản gốc giữ nguyên chỗ cũ. Ngân sách riêng cho phòng: bản cao 250 nghìn mặt, ảnh 2048, trần 8 MB; bản thấp 80 nghìn mặt, ảnh 1024, trần 3 MB. Blender kiểm đạt cả 8 file.
+
+| Mã | Gốc | Bản cao | Bản thấp | Nội dung thật (ảnh chụp Blender) |
+|---|---|---|---|---|
+| `r_bedroom_a` | 42,9 MB | 2,20 MB | 0,90 MB | một cái giường có màu, không phải phòng |
+| `r_bedroom_b` | 19,4 MB | 1,04 MB | 0,35 MB | cùng cái giường, chưa tô màu |
+| `r_cyber` | 34,4 MB | 2,20 MB | 0,87 MB | một chiếc bàn, không phải phòng |
+| `r_courtyard` | 218,7 MB | 3,18 MB | 1,29 MB | sân vườn thu nhỏ (hồ cá, cây phong) |
+| `r_salon` | 59,6 MB | 4,24 MB | 1,49 MB | biệt thự hiện đại nhìn từ ngoài, không phải phòng khách cổ điển |
+| `r_fortress_a` | 21,8 MB | 2,83 MB | 1,17 MB | lâu đài tối nhìn từ ngoài |
+| `r_fortress_b` | 2,3 MB | 0,66 MB | 0,37 MB | pháo đài vuông, ít mặt |
+| `r_future` | 8,7 MB | 1,25 MB | 0,52 MB | khoang nhà tương lai nhìn từ ngoài |
+
+- Cả 8 file đạt mục tiêu dung lượng: tối đa 8 MB bản cao, 3 MB bản thấp.
+- **Nhưng không file nào là không gian đi vào được** để dùng với camera góc nhìn thứ nhất. Chúng hợp làm cảnh thu nhỏ (ví dụ ảnh xem trước trong cổng) hơn là phòng.
+- Chưa đổi bí danh `mv_world_castle` / `mv_world_cyberpunk`. Chưa đẩy lên R2.
+- Ba file còn lại trong thư mục đó không phải phòng: `Forest_Mage` và `Neon_Catgirl` là nhân vật, `Design_magical_func` chưa rõ. Cây thông 143 MB bỏ qua.
+
 ## Việc cần làm (phát sinh sau giai đoạn A, 27/10/2026)
 
 - **Thời gian chờ Gemini khi sinh câu hỏi.** Hiện chờ 17 s cho model chính và 27 s cho model phụ (`src/server/gemini.ts`, tính theo số câu × trọng số dạng bài). Ngày 26/10 đo thực tế mất khoảng 31 s cho 10 câu mức Beginner, nên dễ rơi về ngân hàng câu dự phòng.
   - Cần làm: nâng thời gian chờ theo số đo thật và thêm model dự phòng thứ ba, mà vẫn giữ tổng thời gian dưới giới hạn của hàm trên Vercel. Route sinh câu hỏi hiện chưa đặt `maxDuration`, nên chạy theo mặc định của Vercel.
   - Chữa tạm, không cần sửa code: đặt biến môi trường `GEMINI_PRIMARY_TIMEOUT_MS` (ví dụ `35000`) và `GEMINI_SECONDARY_TIMEOUT_MS` trên Vercel. Hai biến này thay hẳn công thức tính theo số câu.
   - Coi là xong khi: 10 lần sinh liên tiếp không lần nào phải dùng ngân hàng dự phòng.
-- **Bộ nhớ GPU trên điện thoại tầm trung.** Texture đang là WebP chứ không phải KTX2 (máy chưa có `toktx`), nên GPU phải giải nén mỗi ảnh ra RGBA đầy đủ.
+- **Bộ nhớ GPU trên điện thoại tầm trung.** Texture đang là WebP chứ không phải KTX2 (máy chưa có `toktx`), nên GPU phải giải nén mỗi ảnh ra RGBA đầy đủ. Kế hoạch giảm (chưa làm) ở mục "Kế hoạch giảm bộ nhớ ảnh" bên dưới.
   - Cần làm: đo khi chơi kịch bản nặng nhất trên 1–2 máy Android tầm trung và một iPad đời cũ. Ngày 27/10, kịch bản nặng nhất là `dino-01`: 36,2 MB bản cao / 13,0 MB bản thấp, tính cả bản `palm_b` và `tree_nursery_pot` mới có màu; xếp sau là `dino-02` với 33,5 / 10,5 MB. Nếu máy giật, tràn bộ nhớ hoặc mất ngữ cảnh WebGL thì chuyển bản cao sang KTX2.
   - Coi là xong khi: có số đo FPS và bộ nhớ, kèm quyết định giữ WebP hay chuyển KTX2.
-- **Model hỏng cần làm lại bên Meshy: `camp_grill`.** File mới thay ngày 27/10 vẫn còn hai tấm phông đen: 84% bề mặt, 93 trên 2.051 mặt nằm ở hai mặt phẳng y = ±0,95; cỏ và đá rơi vãi quanh. Lỗi nằm ở file gốc, không do tối ưu, và không vá được gọn bằng code.
-  - Cần làm: tạo lại một bếp nướng đứng riêng, không có nền hay mặt đất, rồi chạy `optimize-glb.mjs --files camp/camp_grill.glb --force` (bản cao và bản thấp) và `validate-glb.py`.
-  - Coi là xong khi: Blender không còn báo bề mặt đen cho file này.
+- ~~**`camp_grill` có hai tấm phông đen.**~~ Xong 27/10 bằng `scripts/clean-glb.mjs`, không cần tạo lại trên Meshy (xem mục "Dọn file gốc trước khi tối ưu").
 - **`char_sunny_boy` dùng đơn vị cm** (cao 155 đơn vị, khung xương không có tỉ lệ 0,01 như các nhân vật khác). Code đã tự quy đổi nên hiển thị đúng; nếu bên nội dung xuất lại với tỉ lệ 0,01 thì file sẽ gọn và đồng bộ hơn. `validate-glb.py` có thêm phép kiểm "xương sai tỉ lệ" cho trường hợp hỏng thật (hông nằm ngoài thân).
 
 - **Thiếu mô hình nhân vật truyện** (ảnh kiểm trùng ngày 27/10, chế độ "12 nhân vật truyện" trong trang thử). Thư viện có 16 mô hình người, trong đó:
   - Chỉ 2 bé gái (`char_hiker_girl`, `char_kid_dancer`): đây là phần lớn 33 lần lặp còn lại. Ví dụ `kayak-01` có 4 bé gái, nên mỗi mô hình dùng 2 lần.
   - Không có người già: bà dùng `char_female_b` (phụ nữ trẻ), ông dùng `char_wanderer`.
-  - `char_wanderer` có sẵn một đĩa cỏ dưới chân và trông như bù nhìn, không hợp vai thầy giáo hay ông bà.
+  - `char_wanderer` đã bỏ đĩa cỏ (27/10). Áo vải rách nên vẫn không hợp vai thầy giáo.
   - Nhân vật không phải người (robot "Bot Sóng Bạc", "Cá Heo Sông Nhí", "Sóc Hạt Dẻ") đang nhận mô hình người. Cách sửa: bên nội dung ghi `[asset_id]` ở đầu `clothing_text`, hoặc làm mô hình riêng.
-  - Đứng tư thế chữ T (không có hoạt ảnh đứng): `char_iridescent_voyager`, `char_tpose_boy`, `char_grass_kid`. `char_boy_1` đứng chữ A.
+  - Tư thế chữ T: 3 mô hình `char_iridescent_voyager`, `char_tpose_boy`, `char_grass_kid` không có đoạn hoạt ảnh đứng yên. Từ 27/10, `relaxArms()` trong `avatar.ts` hạ hai cánh tay xuống dọc thân khi mô hình có xương mà không có clip idle. `char_kid_dancer` cũng vậy, vì "Bar_Hang_Idle" là treo xà, tay giơ lên: luật chọn idle giờ bỏ qua các clip hang/step/turn/jump/walk. `char_boy_1` không có xương nên vẫn đứng chữ A.
   - Phong cách lẫn lộn: mô hình gần như ảnh thật (`char_female_a`, `char_female_b`, `char_skater_boy`, `char_boy_1`) đứng cạnh mô hình hoạt hình (`char_sunny_boy`, `char_hiker_girl`, `char_kid_dancer`).
   - Cần làm: tạo thêm ít nhất 4 bé gái, 2 người già (nam, nữ), 1 thầy giáo hoặc người lớn nam, cùng phong cách hoạt hình, có hoạt ảnh đứng. Chạy `optimize-glb.mjs` (bản cao, thấp và `--low --tris 10000` vào `_mid`) và `validate-glb.py`, rồi thêm vào `HUMAN_POOLS` trong `src/engine/avatars.ts`.
   - Coi là xong khi: số lần lặp trên 30 kịch bản (test trong `tests/scene.test.ts`) giảm xuống gần 0, và bảng ảnh kiểm trùng không còn ô đỏ.

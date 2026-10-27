@@ -99,18 +99,18 @@
  {
   "id": "camp_grill",
   "file": "camp/camp_grill.glb",
-  "mb_raw": 3.16,
-  "mb_web": 0.17,
-  "mb_low": 0.09,
+  "mb_raw": 3.14,
+  "mb_web": 0.15,
+  "mb_low": 0.07,
   "scope": "game",
   "game": "summer_camp",
   "games": [
    "summer_camp"
   ],
   "source": "self",
-  "tris_raw": 2051,
-  "tris_web": 2051,
-  "tris_low": 2051,
+  "tris_raw": 1299,
+  "tris_web": 1299,
+  "tris_low": 1299,
   "textures": 1,
   "animations": 0,
   "skinned": false
@@ -691,9 +691,9 @@
  {
   "id": "char_wanderer",
   "file": "characters/chua_co_xuong/char_wanderer.glb",
-  "mb_raw": 39.77,
+  "mb_raw": 35.29,
   "mb_web": 0.92,
-  "mb_low": 0.29,
+  "mb_low": 0.31,
   "scope": "shared",
   "game": null,
   "games": [
@@ -701,9 +701,9 @@
    "river_fishing"
   ],
   "source": "meshy",
-  "tris_raw": 753607,
-  "tris_web": 19782,
-  "tris_low": 9905,
+  "tris_raw": 380202,
+  "tris_web": 19999,
+  "tris_low": 9970,
   "textures": 3,
   "animations": 0,
   "skinned": false
@@ -2121,6 +2121,158 @@
   "skinned": false
  },
  {
+  "id": "r_bedroom_a",
+  "file": "multiverse/rooms/r_bedroom_a.glb",
+  "mb_raw": 42.89,
+  "mb_web": 2.2,
+  "mb_low": 0.9,
+  "scope": "game",
+  "game": "multiverse_portal",
+  "games": [
+   "multiverse_portal"
+  ],
+  "source": "meshy",
+  "tris_raw": 807516,
+  "tris_web": 249932,
+  "tris_low": 79974,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "r_bedroom_b",
+  "file": "multiverse/rooms/r_bedroom_b.glb",
+  "mb_raw": 19.37,
+  "mb_web": 1.04,
+  "mb_low": 0.35,
+  "scope": "game",
+  "game": "multiverse_portal",
+  "games": [
+   "multiverse_portal"
+  ],
+  "source": "meshy",
+  "tris_raw": 807516,
+  "tris_web": 249838,
+  "tris_low": 79828,
+  "textures": 0,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "r_courtyard",
+  "file": "multiverse/rooms/r_courtyard.glb",
+  "mb_raw": 218.68,
+  "mb_web": 3.18,
+  "mb_low": 1.29,
+  "scope": "game",
+  "game": "multiverse_portal",
+  "games": [
+   "multiverse_portal"
+  ],
+  "source": "meshy",
+  "tris_raw": 6475758,
+  "tris_web": 249830,
+  "tris_low": 79946,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "r_cyber",
+  "file": "multiverse/rooms/r_cyber.glb",
+  "mb_raw": 34.4,
+  "mb_web": 2.2,
+  "mb_low": 0.87,
+  "scope": "game",
+  "game": "multiverse_portal",
+  "games": [
+   "multiverse_portal"
+  ],
+  "source": "meshy",
+  "tris_raw": 464574,
+  "tris_web": 249990,
+  "tris_low": 79996,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "r_fortress_a",
+  "file": "multiverse/rooms/r_fortress_a.glb",
+  "mb_raw": 21.76,
+  "mb_web": 2.83,
+  "mb_low": 1.17,
+  "scope": "game",
+  "game": "multiverse_portal",
+  "games": [
+   "multiverse_portal"
+  ],
+  "source": "meshy",
+  "tris_raw": 589884,
+  "tris_web": 249993,
+  "tris_low": 79992,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "r_fortress_b",
+  "file": "multiverse/rooms/r_fortress_b.glb",
+  "mb_raw": 2.32,
+  "mb_web": 0.66,
+  "mb_low": 0.37,
+  "scope": "game",
+  "game": "multiverse_portal",
+  "games": [
+   "multiverse_portal"
+  ],
+  "source": "meshy",
+  "tris_raw": 24176,
+  "tris_web": 24176,
+  "tris_low": 24176,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "r_future",
+  "file": "multiverse/rooms/r_future.glb",
+  "mb_raw": 8.74,
+  "mb_web": 1.25,
+  "mb_low": 0.52,
+  "scope": "game",
+  "game": "multiverse_portal",
+  "games": [
+   "multiverse_portal"
+  ],
+  "source": "meshy",
+  "tris_raw": 9962,
+  "tris_web": 9962,
+  "tris_low": 9962,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "r_salon",
+  "file": "multiverse/rooms/r_salon.glb",
+  "mb_raw": 59.56,
+  "mb_web": 4.24,
+  "mb_low": 1.49,
+  "scope": "game",
+  "game": "multiverse_portal",
+  "games": [
+   "multiverse_portal"
+  ],
+  "source": "meshy",
+  "tris_raw": 1492879,
+  "tris_web": 249944,
+  "tris_low": 79980,
+  "textures": 4,
+  "animations": 0,
+  "skinned": false
+ },
+ {
   "id": "palm_a",
   "file": "river_world/cay_phu/palm_a.glb",
   "mb_raw": 2.46,
@@ -2142,38 +2294,38 @@
  {
   "id": "palm_b",
   "file": "river_world/cay_phu/palm_b.glb",
-  "mb_raw": 30.99,
-  "mb_web": 0.49,
-  "mb_low": 0.1,
+  "mb_raw": 11.91,
+  "mb_web": 1.99,
+  "mb_low": 0.53,
   "scope": "shared",
   "game": null,
   "games": [
    "dino_journey"
   ],
   "source": "meshy",
-  "tris_raw": 1726456,
-  "tris_web": 148370,
-  "tris_low": 29214,
-  "textures": 0,
+  "tris_raw": 160341,
+  "tris_web": 160341,
+  "tris_low": 29613,
+  "textures": 1,
   "animations": 0,
   "skinned": false
  },
  {
   "id": "tree_nursery_pot",
   "file": "river_world/cay_phu/tree_nursery_pot.glb",
-  "mb_raw": 32.15,
-  "mb_web": 0.5,
-  "mb_low": 0.11,
+  "mb_raw": 8.96,
+  "mb_web": 1.31,
+  "mb_low": 0.32,
   "scope": "shared",
   "game": null,
   "games": [
    "dino_journey"
   ],
   "source": "meshy",
-  "tris_raw": 1785950,
-  "tris_web": 149994,
-  "tris_low": 29984,
-  "textures": 0,
+  "tris_raw": 178494,
+  "tris_web": 178494,
+  "tris_low": 29998,
+  "textures": 1,
   "animations": 0,
   "skinned": false
  },
