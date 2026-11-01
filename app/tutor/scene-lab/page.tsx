@@ -26,6 +26,9 @@ import {
   type StoryCharacter,
 } from '../../../src/engine';
 import { browserSupabase } from '../../../src/client/supabaseBrowser';
+import { playFootstep } from '../../../src/client/audio';
+import SoundLab from '../../../src/components/SoundLab';
+import type { SoundPlace } from '../../../src/engine/audioPlan';
 import { createRuntime, runtimeCounters, type GfxTier, type RuntimeStats } from '../../../src/components/modes/three/SceneRuntime';
 import { buildRiverWorld } from '../../../src/components/modes/three/riverWorld';
 import { AVATAR_STATES, LodAvatar, avatarMaterialCount, createAvatar, type Avatar } from '../../../src/components/modes/three/avatar';
@@ -289,6 +292,7 @@ export default function SceneLab() {
           </pre>
         )}
       </div>
+      <SoundLab key={row?.game ?? 'menu'} initial={(row?.game as SoundPlace | undefined) ?? 'summer_camp'} />
     </main>
   );
 }
@@ -445,6 +449,8 @@ function RiverStage(props: { row: Row; stage: number; tier: GfxTier; weak: boole
       names.set(i, `Em ${i + 1}`, col.hex);
       kids.push({ lod, target: bankPoint(), wait: Math.random() * 2, walker: new FootprintWalker(trail, 0.5), color: new THREE.Color(col.hex), level: 'far' });
     }
+    // WP2: the first child's feet make the footstep sound (one player only, as in a game).
+    if (kids[0]) kids[0].lod.onStep = () => void playFootstep();
 
     const camPos = new THREE.Vector3();
     const nearestKid = () => {
@@ -554,6 +560,7 @@ function RiverStage(props: { row: Row; stage: number; tier: GfxTier; weak: boole
         }
         lod[k.level]++;
         const shown = k.lod.shown;
+        if (!shown && i === 0) k.lod.update(dt); // WP2: the footstep child keeps time while far
         if (shown) {
           lod.models++;
           k.lod.update(dt);

@@ -1,0 +1,827 @@
+[
+ {
+  "id": "beach_waves",
+  "kind": "ambient",
+  "file": "ambient/beach_waves.mp3",
+  "sec": 4,
+  "kb": 32,
+  "author": "transitking; jasinski",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/water-waves"
+ },
+ {
+  "id": "birds_wind",
+  "kind": "ambient",
+  "file": "ambient/birds_wind.mp3",
+  "sec": 83.8,
+  "kb": 655,
+  "author": "Spring Spring",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/birds-and-wind-ambient-birds-wind-and-synth"
+ },
+ {
+  "id": "campfire",
+  "kind": "ambient",
+  "file": "ambient/campfire.mp3",
+  "sec": 9.5,
+  "kb": 75,
+  "author": "SFXMint",
+  "license": "CC0 (âm thanh do AI/tổng hợp tạo)",
+  "source": "https://sfxmint.com/sounds/roaring-fireplace-sound-effect-01",
+  "ai": true
+ },
+ {
+  "id": "water_bubbles",
+  "kind": "ambient",
+  "file": "ambient/water_bubbles.mp3",
+  "sec": 6.97,
+  "kb": 55,
+  "author": "Écrivain",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/random-sfx"
+ },
+ {
+  "id": "waterfall",
+  "kind": "ambient",
+  "file": "ambient/waterfall.mp3",
+  "sec": 9.53,
+  "kb": 75,
+  "author": "Écrivain",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/random-sfx"
+ },
+ {
+  "id": "waterfall_crystal",
+  "kind": "ambient",
+  "file": "ambient/waterfall_crystal.mp3",
+  "sec": 6.71,
+  "kb": 53,
+  "author": "Écrivain",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/random-sfx"
+ },
+ {
+  "id": "waves_soft",
+  "kind": "ambient",
+  "file": "ambient/waves_soft.mp3",
+  "sec": 1.75,
+  "kb": 14,
+  "author": "transitking; jasinski",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/water-waves"
+ },
+ {
+  "id": "wind_hollow",
+  "kind": "ambient",
+  "file": "ambient/wind_hollow.mp3",
+  "sec": 10.12,
+  "kb": 80,
+  "author": "Écrivain",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/random-sfx"
+ },
+ {
+  "id": "wind_window",
+  "kind": "ambient",
+  "file": "ambient/wind_window.mp3",
+  "sec": 7.5,
+  "kb": 59,
+  "author": "SFXMint",
+  "license": "CC0 (âm thanh do AI/tổng hợp tạo)",
+  "source": "https://sfxmint.com/sounds/wind-through-a-window",
+  "ai": true
+ },
+ {
+  "id": "bamboo_blitz",
+  "kind": "music",
+  "place": "dino_journey",
+  "file": "music/dino_journey/bamboo_blitz.mp3",
+  "sec": 76.8,
+  "kb": 1051,
+  "author": "Tsorthan Grove",
+  "license": "CC0",
+  "source": ""
+ },
+ {
+  "id": "cinematic-calm",
+  "kind": "music",
+  "place": "multiverse_salon",
+  "file": "music/multiverse_salon/cinematic-calm.mp3",
+  "sec": 74.32,
+  "kb": 1017,
+  "author": "Wolfgang_",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/at-home-orchestral"
+ },
+ {
+  "id": "desert_loops_2",
+  "kind": "music",
+  "place": "sa_mac_dung_chung",
+  "file": "music/sa_mac_dung_chung/desert_loops_2.mp3",
+  "sec": 64,
+  "kb": 876,
+  "author": "iamoneabe",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/desert-loop-lo-fi-remaster"
+ },
+ {
+  "id": "dodging_lights",
+  "kind": "music",
+  "place": "river_survival_cang_thang",
+  "file": "music/river_survival_cang_thang/dodging_lights.mp3",
+  "sec": 34.99,
+  "kb": 479,
+  "author": "Umplix",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/sneaky-music-pack"
+ },
+ {
+  "id": "down_the_river",
+  "kind": "music",
+  "place": "kayak_rush",
+  "file": "music/kayak_rush/down_the_river.mp3",
+  "sec": 114.5,
+  "kb": 1566,
+  "author": "Komiku (Loyalty Freak Music)",
+  "license": "CC0 (theo ghi chú trước; chưa kiểm lại trang gốc)",
+  "source": "https://opengameart.org/content/down-the-river"
+ },
+ {
+  "id": "Emotional_Piano_Loop",
+  "kind": "music",
+  "place": "multiverse_phong_ngu",
+  "file": "music/multiverse_phong_ngu/Emotional_Piano_Loop.mp3",
+  "sec": 27.84,
+  "kb": 381,
+  "author": "extenz",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/emotional-piano-loop"
+ },
+ {
+  "id": "forest_2",
+  "kind": "music",
+  "place": "river_survival_yen_tinh",
+  "file": "music/river_survival_yen_tinh/forest_2.mp3",
+  "sec": 136.97,
+  "kb": 1874,
+  "author": "congusbongus",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/cathedral-in-the-forest-ambient-loop"
+ },
+ {
+  "id": "happy_adventure",
+  "kind": "music",
+  "place": "kayak_rush",
+  "file": "music/kayak_rush/happy_adventure.mp3",
+  "sec": 46.79,
+  "kb": 641,
+  "author": "TinyWorlds",
+  "license": "CC0 (theo ghi chú trước; chưa kiểm lại trang gốc)",
+  "source": "https://opengameart.org/content/happy-adventure-loop"
+ },
+ {
+  "id": "IntoTheStars",
+  "kind": "music",
+  "place": "multiverse_cyber",
+  "file": "music/multiverse_cyber/IntoTheStars.mp3",
+  "sec": 17.45,
+  "kb": 240,
+  "author": "KiluaBoy",
+  "license": "CC0 (theo ghi chú trước; chưa kiểm lại trang gốc)",
+  "source": ""
+ },
+ {
+  "id": "lofiagain",
+  "kind": "music",
+  "place": "summer_camp",
+  "file": "music/summer_camp/lofiagain.mp3",
+  "sec": 87.81,
+  "kb": 1201,
+  "author": "chưa ghi",
+  "license": "CC0 (theo ghi chú trước; chưa kiểm lại trang gốc)",
+  "source": ""
+ },
+ {
+  "id": "LofiLoop",
+  "kind": "music",
+  "place": "river_fishing",
+  "file": "music/river_fishing/LofiLoop.mp3",
+  "sec": 127.89,
+  "kb": 1749,
+  "author": "chưa ghi",
+  "license": "CC0 (theo ghi chú trước; chưa kiểm lại trang gốc)",
+  "source": ""
+ },
+ {
+  "id": "Production_Intro_Theme",
+  "kind": "music",
+  "place": "menu_intro",
+  "file": "music/menu_intro/Production_Intro_Theme.mp3",
+  "sec": 12,
+  "kb": 165,
+  "author": "nene",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/production-theme-intro-epic-orchestra"
+ },
+ {
+  "id": "alarm_short",
+  "kind": "sfx",
+  "file": "sfx/alarm_short.mp3",
+  "sec": 1.71,
+  "kb": 14,
+  "author": "yd",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/short-alarm"
+ },
+ {
+  "id": "camera_shutter",
+  "kind": "sfx",
+  "file": "sfx/camera_shutter.mp3",
+  "sec": 0.54,
+  "kb": 5,
+  "author": "FacadeGaikan",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/camerashudder"
+ },
+ {
+  "id": "cook_cut",
+  "kind": "sfx",
+  "file": "sfx/cook_cut.mp3",
+  "sec": 2.98,
+  "kb": 24,
+  "author": "TinyWorlds",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/adding-salt"
+ },
+ {
+  "id": "cook_cutlery",
+  "kind": "sfx",
+  "file": "sfx/cook_cutlery.mp3",
+  "sec": 1.44,
+  "kb": 12,
+  "author": "TinyWorlds",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/adding-salt"
+ },
+ {
+  "id": "cook_salt",
+  "kind": "sfx",
+  "file": "sfx/cook_salt.mp3",
+  "sec": 3.18,
+  "kb": 25,
+  "author": "TinyWorlds",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/adding-salt"
+ },
+ {
+  "id": "cook_stove_on",
+  "kind": "sfx",
+  "file": "sfx/cook_stove_on.mp3",
+  "sec": 0.54,
+  "kb": 5,
+  "author": "TinyWorlds",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/adding-salt"
+ },
+ {
+  "id": "crowd_cheer_kids",
+  "kind": "sfx",
+  "file": "sfx/crowd_cheer_kids.mp3",
+  "sec": 4,
+  "kb": 32,
+  "author": "SFXMint",
+  "license": "CC0 (âm thanh do AI/tổng hợp tạo)",
+  "source": "https://sfxmint.com/category/crowd",
+  "ai": true
+ },
+ {
+  "id": "crowd_giggle",
+  "kind": "sfx",
+  "file": "sfx/crowd_giggle.mp3",
+  "sec": 5.49,
+  "kb": 44,
+  "author": "Nocturnal_Vanguard",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/group-giggling"
+ },
+ {
+  "id": "jump_land",
+  "kind": "sfx",
+  "file": "sfx/jump_land.mp3",
+  "sec": 0.41,
+  "kb": 4,
+  "author": "MentalSanityOff",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/jump-landing-sound"
+ },
+ {
+  "id": "pop_1",
+  "kind": "sfx",
+  "file": "sfx/pop_1.mp3",
+  "sec": 0.05,
+  "kb": 1,
+  "author": "Écrivain (Random SFX)",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/random-sfx"
+ },
+ {
+  "id": "pop_2",
+  "kind": "sfx",
+  "file": "sfx/pop_2.mp3",
+  "sec": 0.05,
+  "kb": 1,
+  "author": "Écrivain (Random SFX)",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/random-sfx"
+ },
+ {
+  "id": "pop_3",
+  "kind": "sfx",
+  "file": "sfx/pop_3.mp3",
+  "sec": 0.05,
+  "kb": 1,
+  "author": "Écrivain (Random SFX)",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/random-sfx"
+ },
+ {
+  "id": "rope_winch",
+  "kind": "sfx",
+  "file": "sfx/rope_winch.mp3",
+  "sec": 1.82,
+  "kb": 15,
+  "author": "bart",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/chain-winch-sounds"
+ },
+ {
+  "id": "splash_1",
+  "kind": "sfx",
+  "file": "sfx/splash_1.mp3",
+  "sec": 1.12,
+  "kb": 9,
+  "author": "ezwa",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/6-short-water-splashes"
+ },
+ {
+  "id": "splash_2",
+  "kind": "sfx",
+  "file": "sfx/splash_2.mp3",
+  "sec": 0.42,
+  "kb": 4,
+  "author": "ezwa",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/6-short-water-splashes"
+ },
+ {
+  "id": "splash_3",
+  "kind": "sfx",
+  "file": "sfx/splash_3.mp3",
+  "sec": 0.72,
+  "kb": 6,
+  "author": "ezwa",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/6-short-water-splashes"
+ },
+ {
+  "id": "splash_4",
+  "kind": "sfx",
+  "file": "sfx/splash_4.mp3",
+  "sec": 1.32,
+  "kb": 11,
+  "author": "ezwa",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/6-short-water-splashes"
+ },
+ {
+  "id": "splash_5",
+  "kind": "sfx",
+  "file": "sfx/splash_5.mp3",
+  "sec": 0.18,
+  "kb": 2,
+  "author": "ezwa",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/6-short-water-splashes"
+ },
+ {
+  "id": "splash_6",
+  "kind": "sfx",
+  "file": "sfx/splash_6.mp3",
+  "sec": 1.16,
+  "kb": 10,
+  "author": "ezwa",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/6-short-water-splashes"
+ },
+ {
+  "id": "step_gravel",
+  "kind": "sfx",
+  "file": "sfx/step_gravel.mp3",
+  "sec": 0.72,
+  "kb": 6,
+  "author": "TinyWorlds ([kdd] Different steps)",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/different-steps-on-wood-stone-leaves-gravel-and-mud"
+ },
+ {
+  "id": "step_leaves_1",
+  "kind": "sfx",
+  "file": "sfx/step_leaves_1.mp3",
+  "sec": 0.41,
+  "kb": 4,
+  "author": "TinyWorlds ([kdd] Different steps)",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/different-steps-on-wood-stone-leaves-gravel-and-mud"
+ },
+ {
+  "id": "step_leaves_2",
+  "kind": "sfx",
+  "file": "sfx/step_leaves_2.mp3",
+  "sec": 0.48,
+  "kb": 4,
+  "author": "TinyWorlds ([kdd] Different steps)",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/different-steps-on-wood-stone-leaves-gravel-and-mud"
+ },
+ {
+  "id": "step_mud",
+  "kind": "sfx",
+  "file": "sfx/step_mud.mp3",
+  "sec": 0.27,
+  "kb": 3,
+  "author": "TinyWorlds ([kdd] Different steps)",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/different-steps-on-wood-stone-leaves-gravel-and-mud"
+ },
+ {
+  "id": "step_sand_l1",
+  "kind": "sfx",
+  "file": "sfx/step_sand_l1.mp3",
+  "sec": 0.44,
+  "kb": 4,
+  "author": "Fantozzi (qubodup đăng)",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/fantozzis-footsteps-grasssand-stone"
+ },
+ {
+  "id": "step_sand_l2",
+  "kind": "sfx",
+  "file": "sfx/step_sand_l2.mp3",
+  "sec": 0.34,
+  "kb": 3,
+  "author": "Fantozzi (qubodup đăng)",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/fantozzis-footsteps-grasssand-stone"
+ },
+ {
+  "id": "step_sand_l3",
+  "kind": "sfx",
+  "file": "sfx/step_sand_l3.mp3",
+  "sec": 0.3,
+  "kb": 3,
+  "author": "Fantozzi (qubodup đăng)",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/fantozzis-footsteps-grasssand-stone"
+ },
+ {
+  "id": "step_sand_r1",
+  "kind": "sfx",
+  "file": "sfx/step_sand_r1.mp3",
+  "sec": 0.43,
+  "kb": 4,
+  "author": "Fantozzi (qubodup đăng)",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/fantozzis-footsteps-grasssand-stone"
+ },
+ {
+  "id": "step_sand_r2",
+  "kind": "sfx",
+  "file": "sfx/step_sand_r2.mp3",
+  "sec": 0.34,
+  "kb": 3,
+  "author": "Fantozzi (qubodup đăng)",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/fantozzis-footsteps-grasssand-stone"
+ },
+ {
+  "id": "step_sand_r3",
+  "kind": "sfx",
+  "file": "sfx/step_sand_r3.mp3",
+  "sec": 0.33,
+  "kb": 3,
+  "author": "Fantozzi (qubodup đăng)",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/fantozzis-footsteps-grasssand-stone"
+ },
+ {
+  "id": "step_snow_01",
+  "kind": "sfx",
+  "file": "sfx/step_snow_01.mp3",
+  "sec": 0.44,
+  "kb": 4,
+  "author": "qubodup",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/9-wet-snow-steps"
+ },
+ {
+  "id": "step_snow_02",
+  "kind": "sfx",
+  "file": "sfx/step_snow_02.mp3",
+  "sec": 0.32,
+  "kb": 3,
+  "author": "qubodup",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/9-wet-snow-steps"
+ },
+ {
+  "id": "step_snow_03",
+  "kind": "sfx",
+  "file": "sfx/step_snow_03.mp3",
+  "sec": 0.44,
+  "kb": 4,
+  "author": "qubodup",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/9-wet-snow-steps"
+ },
+ {
+  "id": "step_snow_04",
+  "kind": "sfx",
+  "file": "sfx/step_snow_04.mp3",
+  "sec": 0.35,
+  "kb": 3,
+  "author": "qubodup",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/9-wet-snow-steps"
+ },
+ {
+  "id": "step_snow_05",
+  "kind": "sfx",
+  "file": "sfx/step_snow_05.mp3",
+  "sec": 0.2,
+  "kb": 2,
+  "author": "qubodup",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/9-wet-snow-steps"
+ },
+ {
+  "id": "step_snow_06",
+  "kind": "sfx",
+  "file": "sfx/step_snow_06.mp3",
+  "sec": 0.43,
+  "kb": 4,
+  "author": "qubodup",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/9-wet-snow-steps"
+ },
+ {
+  "id": "step_snow_07",
+  "kind": "sfx",
+  "file": "sfx/step_snow_07.mp3",
+  "sec": 0.25,
+  "kb": 2,
+  "author": "qubodup",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/9-wet-snow-steps"
+ },
+ {
+  "id": "step_snow_08",
+  "kind": "sfx",
+  "file": "sfx/step_snow_08.mp3",
+  "sec": 0.52,
+  "kb": 5,
+  "author": "qubodup",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/9-wet-snow-steps"
+ },
+ {
+  "id": "step_snow_09",
+  "kind": "sfx",
+  "file": "sfx/step_snow_09.mp3",
+  "sec": 0.67,
+  "kb": 6,
+  "author": "qubodup",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/9-wet-snow-steps"
+ },
+ {
+  "id": "step_stone",
+  "kind": "sfx",
+  "file": "sfx/step_stone.mp3",
+  "sec": 0.29,
+  "kb": 3,
+  "author": "TinyWorlds ([kdd] Different steps)",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/different-steps-on-wood-stone-leaves-gravel-and-mud"
+ },
+ {
+  "id": "step_stone_l1",
+  "kind": "sfx",
+  "file": "sfx/step_stone_l1.mp3",
+  "sec": 0.39,
+  "kb": 4,
+  "author": "Fantozzi (qubodup đăng)",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/fantozzis-footsteps-grasssand-stone"
+ },
+ {
+  "id": "step_stone_l2",
+  "kind": "sfx",
+  "file": "sfx/step_stone_l2.mp3",
+  "sec": 0.34,
+  "kb": 3,
+  "author": "Fantozzi (qubodup đăng)",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/fantozzis-footsteps-grasssand-stone"
+ },
+ {
+  "id": "step_stone_l3",
+  "kind": "sfx",
+  "file": "sfx/step_stone_l3.mp3",
+  "sec": 0.35,
+  "kb": 3,
+  "author": "Fantozzi (qubodup đăng)",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/fantozzis-footsteps-grasssand-stone"
+ },
+ {
+  "id": "step_stone_r1",
+  "kind": "sfx",
+  "file": "sfx/step_stone_r1.mp3",
+  "sec": 0.37,
+  "kb": 4,
+  "author": "Fantozzi (qubodup đăng)",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/fantozzis-footsteps-grasssand-stone"
+ },
+ {
+  "id": "step_stone_r2",
+  "kind": "sfx",
+  "file": "sfx/step_stone_r2.mp3",
+  "sec": 0.33,
+  "kb": 3,
+  "author": "Fantozzi (qubodup đăng)",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/fantozzis-footsteps-grasssand-stone"
+ },
+ {
+  "id": "step_stone_r3",
+  "kind": "sfx",
+  "file": "sfx/step_stone_r3.mp3",
+  "sec": 0.35,
+  "kb": 3,
+  "author": "Fantozzi (qubodup đăng)",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/fantozzis-footsteps-grasssand-stone"
+ },
+ {
+  "id": "step_wood_1",
+  "kind": "sfx",
+  "file": "sfx/step_wood_1.mp3",
+  "sec": 0.25,
+  "kb": 2,
+  "author": "TinyWorlds ([kdd] Different steps)",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/different-steps-on-wood-stone-leaves-gravel-and-mud"
+ },
+ {
+  "id": "step_wood_2",
+  "kind": "sfx",
+  "file": "sfx/step_wood_2.mp3",
+  "sec": 0.27,
+  "kb": 3,
+  "author": "TinyWorlds ([kdd] Different steps)",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/different-steps-on-wood-stone-leaves-gravel-and-mud"
+ },
+ {
+  "id": "step_wood_3",
+  "kind": "sfx",
+  "file": "sfx/step_wood_3.mp3",
+  "sec": 0.32,
+  "kb": 3,
+  "author": "TinyWorlds ([kdd] Different steps)",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/different-steps-on-wood-stone-leaves-gravel-and-mud"
+ },
+ {
+  "id": "ui_interface_1",
+  "kind": "sfx",
+  "file": "sfx/ui_interface_1.mp3",
+  "sec": 0.19,
+  "kb": 2,
+  "author": "artisticdude (RPG Sound Pack)",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/rpg-sound-pack"
+ },
+ {
+  "id": "ui_interface_2",
+  "kind": "sfx",
+  "file": "sfx/ui_interface_2.mp3",
+  "sec": 0.45,
+  "kb": 4,
+  "author": "artisticdude (RPG Sound Pack)",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/rpg-sound-pack"
+ },
+ {
+  "id": "ui_interface_3",
+  "kind": "sfx",
+  "file": "sfx/ui_interface_3.mp3",
+  "sec": 0.45,
+  "kb": 4,
+  "author": "artisticdude (RPG Sound Pack)",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/rpg-sound-pack"
+ },
+ {
+  "id": "ui_interface_4",
+  "kind": "sfx",
+  "file": "sfx/ui_interface_4.mp3",
+  "sec": 0.41,
+  "kb": 4,
+  "author": "artisticdude (RPG Sound Pack)",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/rpg-sound-pack"
+ },
+ {
+  "id": "ui_interface_5",
+  "kind": "sfx",
+  "file": "sfx/ui_interface_5.mp3",
+  "sec": 0.41,
+  "kb": 4,
+  "author": "artisticdude (RPG Sound Pack)",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/rpg-sound-pack"
+ },
+ {
+  "id": "ui_interface_6",
+  "kind": "sfx",
+  "file": "sfx/ui_interface_6.mp3",
+  "sec": 0.5,
+  "kb": 5,
+  "author": "artisticdude (RPG Sound Pack)",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/rpg-sound-pack"
+ },
+ {
+  "id": "ui_menu_choice",
+  "kind": "sfx",
+  "file": "sfx/ui_menu_choice.mp3",
+  "sec": 0.52,
+  "kb": 5,
+  "author": "Sudocolon",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/menu-choice"
+ },
+ {
+  "id": "whoosh_1",
+  "kind": "sfx",
+  "file": "sfx/whoosh_1.mp3",
+  "sec": 0.28,
+  "kb": 3,
+  "author": "qubodup (swoshes)",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/swish-bamboo-stick-weapon-swhosh-sounds"
+ },
+ {
+  "id": "whoosh_2",
+  "kind": "sfx",
+  "file": "sfx/whoosh_2.mp3",
+  "sec": 0.2,
+  "kb": 2,
+  "author": "qubodup (swoshes)",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/swish-bamboo-stick-weapon-swhosh-sounds"
+ },
+ {
+  "id": "whoosh_3",
+  "kind": "sfx",
+  "file": "sfx/whoosh_3.mp3",
+  "sec": 0.58,
+  "kb": 5,
+  "author": "qubodup (swoshes)",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/swish-bamboo-stick-weapon-swhosh-sounds"
+ },
+ {
+  "id": "whoosh_4",
+  "kind": "sfx",
+  "file": "sfx/whoosh_4.mp3",
+  "sec": 0.26,
+  "kb": 2,
+  "author": "qubodup (swoshes)",
+  "license": "CC0",
+  "source": "https://opengameart.org/content/swish-bamboo-stick-weapon-swhosh-sounds"
+ },
+ {
+  "id": "win",
+  "kind": "sfx",
+  "file": "sfx/win.mp3",
+  "sec": 4.45,
+  "kb": 35,
+  "author": "không ghi",
+  "license": "Public domain (theo trang)",
+  "source": "https://opengameart.org/content/win-sound-effect"
+ }
+]

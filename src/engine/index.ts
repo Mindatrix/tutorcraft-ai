@@ -41,3 +41,4 @@ export * from './questionSchedule';
 export * from './coins';
 export * from './hints';
 export * from './rescue';
+export * from './audioPlan';

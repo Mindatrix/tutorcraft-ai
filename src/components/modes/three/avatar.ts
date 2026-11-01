@@ -4,6 +4,7 @@ import * as THREE from 'three';
 import { clone as cloneSkinned } from 'three/examples/jsm/utils/SkeletonUtils.js';
 import { lib, withQuality, type AssetQuality } from '../../../config/assetLibrary';
 import type { LodLevel } from '../../../engine';
+import { cycleHits } from '../../../engine/audioPlan';
 import { loadGltf } from './assetLoader';
 
 // Student avatars and story characters (plan C2.2 / C2.3).
@@ -106,6 +107,9 @@ export class Avatar {
   private clock = 0;
   private phase = Math.random() * 10;
   private baseY = 0;
+  /** Called at each foot contact while running (WP2: footstep sound). Set it on the player only. */
+  onStep: (() => void) | null = null;
+  private stepPhase = 0;
 
   constructor(model: THREE.Object3D, clips: THREE.AnimationClip[], spec: AvatarSpec) {
     this.root.add(this.body);
@@ -163,6 +167,7 @@ export class Avatar {
   }
 
   setState(next: AvatarState) {
+    if (next === 'run' && this.state !== 'run') this.stepPhase = 0;
     this.state = next;
     this.since = this.clock;
     const action = this.actions.get(next) ?? (next === 'idle' ? null : null);
@@ -188,6 +193,15 @@ export class Avatar {
     const hold = HOLD[this.state];
     if (hold && age > hold) this.setState('idle');
     this.mixer?.update(dt);
+    if (this.state === 'run' && this.onStep) {
+      // A run clip touches the ground at 0 and ½ of its cycle (Mixamo cycles start on a contact);
+      // the code-driven bob |sin 9t| lands every π/9 s, i.e. a cycle of 2π/9 s.
+      const run = this.actions.get('run');
+      const rate = run ? run.getEffectiveTimeScale() / Math.max(0.1, run.getClip().duration) : 9 / (2 * Math.PI);
+      const prev = this.stepPhase;
+      this.stepPhase += dt * rate;
+      for (let i = cycleHits(prev, this.stepPhase); i > 0; i--) this.onStep();
+    }
     // Code-driven motion on top (the only motion for unrigged models).
     const b = this.body;
     const clip = this.actions.has(this.state);
@@ -311,6 +325,9 @@ export class LodAvatar {
   private models: Partial<Record<'near' | 'mid', Avatar>> = {};
   private loading = new Set<'near' | 'mid'>();
   private disposed = false;
+  /** Footstep callback, passed to whichever model is shown (WP2). */
+  onStep: (() => void) | null = null;
+  private stepPhase = 0;
 
   constructor(private spec: AvatarSpec & { nearQuality?: 'high' | 'low' }) {}
 
@@ -351,12 +368,23 @@ export class LodAvatar {
   }
 
   setState(s: AvatarState) {
+    if (s === 'run' && this.state !== 'run') this.stepPhase = 0;
     this.state = s;
     for (const m of Object.values(this.models)) m?.setState(s);
   }
 
   update(dt: number) {
-    this.shown?.update(dt);
+    const shown = this.shown;
+    if (shown) {
+      shown.onStep = this.onStep;
+      shown.update(dt);
+      return;
+    }
+    // Far or still loading: the steps keep the code-driven rhythm, so the sound does not stop.
+    if (this.state !== 'run' || !this.onStep) return;
+    const prev = this.stepPhase;
+    this.stepPhase += (dt * 9) / (2 * Math.PI);
+    for (let i = cycleHits(prev, this.stepPhase); i > 0; i--) this.onStep();
   }
 
   dispose() {

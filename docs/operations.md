@@ -243,6 +243,14 @@ Số đo ngày 27/10 trên Mac (Apple M4), sau khi có 3 cấp chi tiết. Thờ
 - Bộ nhớ ảnh là phần đáng lo nhất trên điện thoại: ảnh WebP được giải nén thành RGBA 8 bit trên GPU. Ở bản cao, ảnh 1024 px của 12 nhân vật truyện và ảnh 2K của bầu trời chiếm phần lớn. Nếu điện thoại thật bị tràn bộ nhớ (trang tự tải lại), hướng xử lý: nhân vật truyện dùng bản vừa trên tầng thấp, hoặc chuyển ảnh sang KTX2/Basis (nén ngay trên GPU, nhỏ hơn 4–8 lần).
 - Cổng "30 FPS trên máy yếu" CHƯA đạt: mới có số đo trên M4, mà GPU điện thoại tầm thấp chậm hơn vài chục lần. Cần số liệu từ điện thoại thật (cách đo ở mục dưới).
 
+### Âm thanh thật (WP2, 01/11)
+- Nguồn: `~/Documents/3D_tutorcraft/audio/{music,sfx,ambient}` + `AUDIO_MANIFEST.csv` (giấy phép). Nén: `node scripts/encode-audio.mjs` (Terminal trong VS Code; Blender làm việc nén vì máy không có ffmpeg) → `_audio_web/*.mp3` + `content/audio_catalog.json` + `audio_*` trong `content/asset_credits.json`. MP3 cho mọi file vì Safari iPhone cũ không giải mã OGG.
+- Số đo: 81 file. Nhạc 12 bài 56,0 → 11,0 MB (112 kbps), hiệu ứng 60 file 0,4 MB, nền 9 file 1,1 MB (64 kbps mono). Mỗi game tải 1–2 bài (1,2–3 MB).
+- Không dùng: `ambient/wind_snow.ogg` (giấy phép chờ xác nhận; dùng `wind_window`), mọi thứ trong `audio/_nguon_cc0/`. SFXMint (campfire, wind_window, crowd_cheer_kids) ghi "AI" trên `/credits`.
+- Phục vụ: dev `/dev-assets/audio/…`; production `NEXT_PUBLIC_ASSET_BASE_URL/audio/…` (`sync-assets-r2.mjs` có thư mục `audio/`). Tải lỗi → âm tổng hợp cũ.
+- Luật (`src/engine/audioPlan.ts`, test `tests/audio.test.ts`): 3 bus nhạc / hiệu ứng / nền; nút tắt riêng nhạc và hiệu ứng (nền đi theo hiệu ứng); gia sư tắt tiếng lớp thắng tất cả (`matchChannel.ts`); câu hỏi mở → nhạc −8 dB, nền −4 dB; lớp nhạc đổi sau 4 s (kayak: dẫn đầu hoặc 3 câu đúng liền → `happy_adventure`; survival: kẻ săn < 8 m hoặc đồng đội bị bắt < 10 s → `dodging_lights`), chuyển mờ 1,25 s; nhạc phát theo đoạn có khoảng lặng 6–8 s; đoạn nền ngắn lặp bằng bản chồng nhau + mờ 0,4 s; máy yếu → nền tổng hợp; bước chân theo nhịp chạm chân của clip chạy (0 và ½ chu kỳ), file theo mặt đất từng nơi, cát/đá trái–phải xen kẽ; mái chèo kayak và hiệu ứng `splash` phát tiếng nước; tiếng cười đám đông chỉ khi ≥ 8 người.
+- Kiểm: `/tutor/scene-lab` → khối "Âm thanh (WP2)" (chọn nơi, các công tắc, nghe từng tiếng, dòng trạng thái).
+
 ### Đo trên điện thoại thật
 
 1. Máy tính và điện thoại dùng chung một mạng Wi-Fi. Xem địa chỉ mạng nội bộ của máy bằng `ipconfig getifaddr en0` (ngày 27/10 là `192.168.1.253`; địa chỉ đổi khi đổi mạng). Build production (`npx next build`), rồi chạy `TC_SERVE_LOCAL_ASSETS=1 npx next start -H 192.168.1.253 -p 3005` (cấu hình `prod-lan` trong `.claude/launch.json`).

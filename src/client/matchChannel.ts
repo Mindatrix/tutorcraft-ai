@@ -1,4 +1,5 @@
 import type { RealtimeChannel, SupabaseClient } from '@supabase/supabase-js';
+import { setClassMuted } from './audio';
 import {
   MATCH_EVENT,
   clockOffsetNtp,
@@ -142,7 +143,11 @@ export async function connectMatch(opts: MatchConnectOptions): Promise<MatchConn
   let gapTimer: ReturnType<typeof setTimeout> | null = null;
   let lastGapRefresh = 0;
 
-  const emit = () => opts.onChange?.(snap);
+  const emit = () => {
+    // The tutor's "mute the class" (C3.2) reaches every sound of this device.
+    setClassMuted(!!snap.view?.muted);
+    opts.onChange?.(snap);
+  };
 
   async function call<T>(path: string, method: 'GET' | 'POST', body?: unknown): Promise<T> {
     const sent = local();

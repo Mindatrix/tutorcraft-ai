@@ -18,6 +18,8 @@ export type SceneCategory = 'ground' | 'tree' | 'bush' | 'rock' | 'reed' | 'wate
 export function sceneCategory(c: { id: string; file: string }): SceneCategory {
   const { id, file: f } = c;
   if (f.startsWith('fx/') || f.startsWith('fishing/ca/')) return 'skip'; // effects; fish appear when caught
+  // Mixamo clips (anim/*.glb, no mesh, not optimised): played on characters, never placed in the scene.
+  if (f.startsWith('anim/') || /^anim_/.test(id)) return 'skip';
   if (f.startsWith('characters/')) return 'character';
   if (f.startsWith('dino/khung_long/') || f.startsWith('dino/thu_nho/')) return 'creature';
   if (f.startsWith('river_world/ground/') || /^ground_/.test(id)) return 'ground';

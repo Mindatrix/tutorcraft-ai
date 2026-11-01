@@ -3,6 +3,7 @@
 import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from 'react';
 import { QUESTION_RULES, type GameMode, type HintPayload } from '../../engine';
 import { playQuestionSfx } from '../../client/questionSfx';
+import { holdDuck } from '../../client/audio';
 import RainbowEdge, { useReducedMotion } from '../fx/RainbowEdge';
 import type { RenderTier } from '../modes/gfxTier';
 import { answerLayout, skinFor, type TimerKind } from './skins';
@@ -117,6 +118,9 @@ function FrameInner(props: QuestionFrameProps) {
   const elapsed = Math.max(0, now - openedAt);
   const progress = Math.min(1, elapsed / limit);
   const done = useRef(false);
+
+  // Music 8 dB down while the question is being read and answered (WP2).
+  useEffect(() => (answered ? undefined : holdDuck()), [answered]);
 
   // Clock: 4 ticks a second while the question is open; time out once (a light wrong).
   useEffect(() => {

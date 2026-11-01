@@ -34,6 +34,25 @@ export function audioContext(): AudioContext | null {
   return ctx;
 }
 
+// Three buses under one output (WP2): music, sfx, ambient. src/client/audio.ts sets their levels
+// (switches, tutor mute, ducking); every sound connects to its bus, never straight to the speakers.
+let buses: Record<'music' | 'sfx' | 'ambient', GainNode> | null = null;
+
+/** A bus of the shared context (null before the first tap). */
+export function bus(name: 'music' | 'sfx' | 'ambient'): GainNode | null {
+  if (!ctx) return null;
+  if (!buses) {
+    const c = ctx;
+    const make = () => {
+      const g = c.createGain();
+      g.connect(c.destination);
+      return g;
+    };
+    buses = { music: make(), sfx: make(), ambient: make() };
+  }
+  return buses[name];
+}
+
 export function play(name: Sfx): void {
   if (muted || !ctx) return;
   if (ctx.state === 'suspended') void ctx.resume();
@@ -45,7 +64,7 @@ export function play(name: Sfx): void {
     osc.frequency.value = freq;
     gain.gain.setValueAtTime(0.12, t);
     gain.gain.exponentialRampToValueAtTime(0.001, t + ms / 1000);
-    osc.connect(gain).connect(ctx.destination);
+    osc.connect(gain).connect(bus('sfx') ?? ctx.destination);
     osc.start(t);
     osc.stop(t + ms / 1000);
     t += ms / 1000;

@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Zap, Shield, Snowflake, Eye, Timer, Volume2, VolumeX, RotateCcw, Trophy, Gift, WifiOff, Users, Lock, ScrollText, AlertTriangle, Loader2 } from 'lucide-react';
+import { Zap, Shield, Snowflake, Eye, Timer, Volume2, VolumeX, Music, RotateCcw, Trophy, Gift, WifiOff, Users, Lock, ScrollText, AlertTriangle, Loader2 } from 'lucide-react';
 import {
   FEEDBACK_MS,
   MAX_MP,
@@ -36,6 +36,7 @@ import {
 } from '../engine';
 import { dropResult, load, queueResult, remove, save, studentKey } from '../client/storage';
 import { initSfx, play, setMuted } from '../client/sfx';
+import { holdDuck, initAudio, setMoodSignals, setMusicEnabled, setSfxEnabled, setSoundPlace, stopSound } from '../client/audio';
 import { ApiError, sessionApi, type ActResponse, type FinalizeResponse, type SessionView } from '../client/sessionApi';
 import AnswerPanel, { type AnswerPayload } from './AnswerPanel';
 import BattleCanvas from './BattleCanvas';
@@ -140,6 +141,7 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
   const [starting, setStarting] = useState(false);
 
   const [muted, setMutedState] = useState(prefs.muted);
+  const [musicOn, setMusicOn] = useState(() => load<boolean>('tc:music', true));
   const [nickname, setNickname] = useState(() => prefs.profile?.nickname ?? `Hero${Math.floor(1000 + Math.random() * 9000)}`);
   const [avatar, setAvatar] = useState(prefs.profile?.avatar ?? PETS[0]);
   const [anonymous, setAnonymous] = useState(prefs.profile?.anonymous ?? false);
@@ -224,6 +226,7 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
           if (v.status !== 'active') return remove(tokenKey);
           setToken(saved);
           initSfx(prefs.muted);
+          initAudio();
           if (v.state.phase === 'playing') {
             applyView(v);
             setPhase('playing');
@@ -368,6 +371,7 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
 
   const start = async () => {
     initSfx(muted);
+    initAudio();
     save('tc:profile', { nickname, avatar, anonymous });
     setStarting(true);
     setNetError(null);
@@ -416,8 +420,35 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
     const m = !muted;
     setMutedState(m);
     setMuted(m);
-    save('tc:muted', m);
+    setSfxEnabled(!m);
   };
+
+  const toggleMusic = () => {
+    const on = !musicOn;
+    setMusicOn(on);
+    setMusicEnabled(on);
+  };
+
+  // Sound (WP2): the world's music and ambience while playing (weak phones: synthesized ambience),
+  // music layers by mood (kayak: leading or 3 right in a row), music 8 dB down while a question is open.
+  useEffect(() => {
+    if (phase !== 'playing' || !gamified) return;
+    setSoundPlace(world ?? 'menu', { lowPower: renderTier !== 'high' });
+    return () => stopSound();
+  }, [phase, gamified, world, renderTier]);
+  const moodRef = useRef({ leading: false, streak: 0 });
+  const leading = !!race && race.playerPos > race.botPos;
+  const streak = display?.combo ?? 0;
+  useEffect(() => {
+    moodRef.current = { leading, streak };
+  }, [leading, streak]);
+  useEffect(() => {
+    if (phase !== 'playing') return;
+    const id = setInterval(() => setMoodSignals(moodRef.current), 1000);
+    return () => clearInterval(id);
+  }, [phase]);
+  const questionOpen = phase === 'playing' && !!question && !feedback;
+  useEffect(() => (questionOpen ? holdDuck() : undefined), [questionOpen]);
 
   const openChest = () => {
     const item = rollGacha(Math.random());
@@ -467,7 +498,13 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
                 <WifiOff className="w-3.5 h-3.5" /> Offline
               </span>
             )}
-            <button onClick={toggleMute} aria-label={muted ? 'Bật âm thanh' : 'Tắt âm thanh'} className={`p-2 rounded-xl border ${gamified ? 'border-slate-700 hover:bg-slate-800' : 'border-slate-300 hover:bg-slate-100'}`}>
+            {gamified && (
+              <button onClick={toggleMusic} aria-pressed={musicOn} aria-label={musicOn ? 'Tắt nhạc' : 'Bật nhạc'} title={musicOn ? 'Tắt nhạc' : 'Bật nhạc'} className={`relative p-2 rounded-xl border border-slate-700 hover:bg-slate-800 ${musicOn ? '' : 'text-slate-500'}`}>
+                <Music className="w-4 h-4" />
+                {!musicOn && <span aria-hidden className="absolute left-1/2 top-1/2 h-0.5 w-5 -translate-x-1/2 -translate-y-1/2 -rotate-45 bg-current" />}
+              </button>
+            )}
+            <button onClick={toggleMute} aria-pressed={!muted} aria-label={muted ? 'Bật hiệu ứng âm thanh' : 'Tắt hiệu ứng âm thanh'} title={muted ? 'Bật hiệu ứng' : 'Tắt hiệu ứng'} className={`p-2 rounded-xl border ${gamified ? 'border-slate-700 hover:bg-slate-800' : 'border-slate-300 hover:bg-slate-100'}`}>
               {muted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
             </button>
           </div>

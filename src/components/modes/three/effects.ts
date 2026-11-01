@@ -1,6 +1,7 @@
 'use client';
 
 import * as THREE from 'three';
+import { playCue } from '../../../client/audio';
 import { Sparks } from '../kit';
 
 // Shared effects (plan C3.1): bubbles (fx_bubbles), water splash, right / wrong answer bursts and
@@ -27,6 +28,8 @@ export class Effects {
   private clock = 0;
   /** Milliseconds spent in the last update(). */
   lastMs = 0;
+  /** Play the splash sound with the splash (WP2). Off for scenes that are only watched (tutor board). */
+  sound = true;
 
   constructor(opts: { max?: number } = {}) {
     const max = opts.max ?? 400;
@@ -86,6 +89,7 @@ export class Effects {
   }
 
   splash(at: THREE.Vector3, strength = 1) {
+    if (this.sound) playCue('splash', Math.min(1, 0.4 + 0.4 * strength));
     this.matter.emit(at, Math.round(26 * strength), { color: 0xd9f4ff, speed: 2.6 * strength, up: 3.2 * strength, gravity: 9, life: 0.9, size: 1.1, spread: new THREE.Vector3(0.6, 0, 0.6) });
     this.matter.emit(at, Math.round(10 * strength), { color: 0x7fd3f7, speed: 1.2, up: 1.2, gravity: 6, life: 0.6, size: 0.8 });
   }

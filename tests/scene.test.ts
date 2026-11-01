@@ -20,6 +20,7 @@ test('C1.4 categories from folder and id', () => {
   assert.equal(cat('river_dock'), 'structure');
   assert.equal(cat('dino_trex_brown'), 'creature');
   assert.equal(cat('char_sunny_boy'), 'character');
+  assert.equal(cat('anim_kneel_work'), 'skip', 'Mixamo clips are played, never placed (01/11: 404 in the scene)');
   const groundIds = catalog.filter((c) => c.file.startsWith('river_world/ground/')).map((c) => c.id);
   assert.ok(groundIds.length > 0 && groundIds.every((id) => cat(id) === 'ground'));
 });

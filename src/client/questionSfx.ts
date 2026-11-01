@@ -1,7 +1,8 @@
 'use client';
 
-import { isMuted } from './audio';
-import { audioContext } from './sfx';
+import { QUESTION_SFX_CUE } from '../engine/audioPlan';
+import { effectsOn, playCue } from './audio';
+import { audioContext, bus } from './sfx';
 
 // C4.4 sounds of the six games: every `sfx` key of content/consequences_v2.json plus the frame's
 // opening sound per coat. Synthesised (no files to download), only right / wrong cues, never the
@@ -56,7 +57,11 @@ let noise: AudioBuffer | null = null;
 export function playQuestionSfx(key: string): void {
   const ctx = audioContext();
   const r = R[key];
-  if (!ctx || !r || isMuted()) return;
+  if (!ctx || !r || !effectsOn()) return;
+  const out = bus('sfx') ?? ctx.destination;
+  // A recorded splash / whoosh / rope replaces the synthesized noise when it is loaded.
+  const cue = QUESTION_SFX_CUE[key];
+  const recorded = cue ? playCue(cue, 0.8) : false;
   if (ctx.state === 'suspended') void ctx.resume();
   let t = ctx.currentTime;
   for (const [f, ms, type, g = 0.11, to] of r.tones ?? []) {
@@ -67,12 +72,12 @@ export function playQuestionSfx(key: string): void {
     if (to) osc.frequency.exponentialRampToValueAtTime(to, t + ms / 1000);
     gain.gain.setValueAtTime(g, t);
     gain.gain.exponentialRampToValueAtTime(0.0008, t + ms / 1000);
-    osc.connect(gain).connect(ctx.destination);
+    osc.connect(gain).connect(out);
     osc.start(t);
     osc.stop(t + ms / 1000 + 0.02);
     t += ms / 1000;
   }
-  if (r.noise) {
+  if (r.noise && !recorded) {
     const n = r.noise;
     if (!noise || noise.sampleRate !== ctx.sampleRate) {
       noise = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate);
@@ -89,7 +94,7 @@ export function playQuestionSfx(key: string): void {
     const gain = ctx.createGain();
     gain.gain.setValueAtTime(n.gain, at);
     gain.gain.exponentialRampToValueAtTime(0.0008, at + n.ms / 1000);
-    src.connect(bp).connect(gain).connect(ctx.destination);
+    src.connect(bp).connect(gain).connect(out);
     src.start(at);
     src.stop(at + n.ms / 1000 + 0.02);
   }

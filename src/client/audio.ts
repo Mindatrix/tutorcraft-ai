@@ -1,41 +1,101 @@
 'use client';
 
-import { audioContext, initSfx, play, setMuted as setSfxMuted } from './sfx';
+import audioCatalog from '../../content/audio_catalog.json';
+import {
+  MUSIC_XFADE_S,
+  ambienceFor,
+  busGains,
+  cueId,
+  footstepId,
+  loopCrossfade,
+  musicFor,
+  musicPhrase,
+  preloadIds,
+  stepMood,
+  surfaceFor,
+  wantedMood,
+  type AudioBus,
+  type Cue,
+  type MoodSignals,
+  type MoodState,
+  type SoundPlace,
+  type Surface,
+  type SynthAmbience,
+} from '../engine/audioPlan';
+import { audioContext, bus, initSfx, play, setMuted as setSfxMuted } from './sfx';
+import { load, save } from './storage';
 
-// One switchboard for every sound of a game (plan C3.2): effects (sfx.ts) and a background layer,
-// synthesized with Web Audio so nothing has to download (river, campfire, night crickets, wind).
-// Two independent mutes: the student's own switch and the tutor's "mute the class" (it arrives
-// with the match state, see matchChannel.ts). Sound plays only when neither is on.
-// Licensed recordings (plan C3.3) can replace the synthesized layers later without touching callers.
+// One switchboard for every sound of a game (WP2, 01/11/2026). Three buses under a master:
+//   music    one track per place, layers by mood (kayak: calm ⇄ boost, survival: calm ⇄ tense),
+//            crossfaded 1.25 s, played in phrases with a short silence, 8 dB down while a question is open;
+//   sfx      recorded effects (footsteps, splashes, cheers) + the synthesized cues of sfx.ts / questionSfx.ts;
+//   ambient  short recorded loops overlapped with a 0.4 s crossfade so they never click; the old
+//            synthesized layers stay as the fallback (file failed, or a weak phone).
+// Switches: the student's music and effects (separately, remembered), and the tutor's "mute the class"
+// (arrives with the match state, matchChannel.ts), which wins over both. Sound starts after a tap.
+// Files: content/audio_catalog.json, served from NEXT_PUBLIC_ASSET_BASE_URL/audio (dev: app/dev-assets).
 
-export type Ambience = 'river' | 'camp' | 'night' | 'wind';
+export type Ambience = SynthAmbience;
 
-let userMuted = false;
+interface Entry {
+  id: string;
+  file: string;
+  sec: number | null;
+}
+const FILES = new Map((audioCatalog as Entry[]).map((e) => [e.id, e]));
+const base = () => (process.env.NEXT_PUBLIC_ASSET_BASE_URL || '/dev-assets').replace(/\/$/, '');
+export const audioUrl = (file: string) => `${base()}/audio/${file}`;
+
+let musicOn = true;
+let sfxOn = true;
 let classMuted = false;
-let master: GainNode | null = null;
-let layer: { stop: () => void; kind: Ambience } | null = null;
-const listeners = new Set<(muted: boolean) => void>();
+let duckHolds = 0;
+const listeners = new Set<(s: SoundSwitches) => void>();
 
-export const isMuted = () => userMuted || classMuted;
+export interface SoundSwitches {
+  music: boolean;
+  sfx: boolean;
+  classMuted: boolean;
+}
+export const soundSwitches = (): SoundSwitches => ({ music: musicOn, sfx: sfxOn, classMuted });
+/** Everything silent (tutor mute, or both switches off). */
+export const isMuted = () => classMuted || (!musicOn && !sfxOn);
 export const isClassMuted = () => classMuted;
+/** Effects allowed right now (used by the synthesized cues). */
+export const effectsOn = () => sfxOn && !classMuted;
 
 function apply() {
-  const m = isMuted();
-  setSfxMuted(m);
+  setSfxMuted(!effectsOn());
   const ctx = audioContext();
-  if (master && ctx) master.gain.setTargetAtTime(m ? 0 : 0.5, ctx.currentTime, 0.15);
-  for (const l of listeners) l(m);
+  const g = busGains({ music: musicOn, sfx: sfxOn, classMuted, ducked: duckHolds > 0 });
+  if (ctx) for (const k of ['music', 'sfx', 'ambient'] as AudioBus[]) bus(k)?.gain.setTargetAtTime(g[k], ctx.currentTime, 0.15);
+  for (const l of listeners) l(soundSwitches());
 }
 
-/** Call from a user gesture (browsers start audio only after a tap). */
-export function initAudio(muted = false) {
-  userMuted = muted;
-  initSfx(isMuted());
+/** Call from a user gesture (browsers start audio only after a tap). Reads the saved switches. */
+export function initAudio() {
+  musicOn = load<boolean>('tc:music', true);
+  sfxOn = !load<boolean>('tc:muted', false);
+  initSfx(!effectsOn());
   apply();
 }
 
+export function setMusicEnabled(v: boolean) {
+  musicOn = v;
+  save('tc:music', v);
+  apply();
+}
+
+export function setSfxEnabled(v: boolean) {
+  sfxOn = v;
+  save('tc:muted', !v);
+  apply();
+}
+
+/** Old single switch: both music and effects. */
 export function setUserMuted(v: boolean) {
-  userMuted = v;
+  musicOn = !v;
+  sfxOn = !v;
   apply();
 }
 
@@ -46,13 +106,273 @@ export function setClassMuted(v: boolean) {
   apply();
 }
 
-export function onMuteChange(fn: (muted: boolean) => void): () => void {
+export function onSoundChange(fn: (s: SoundSwitches) => void): () => void {
   listeners.add(fn);
   return () => listeners.delete(fn);
 }
 
+/** Lower the music while a question is open. Returns the release (holds nest: frame + arena). */
+export function holdDuck(): () => void {
+  duckHolds++;
+  apply();
+  let done = false;
+  return () => {
+    if (done) return;
+    done = true;
+    duckHolds = Math.max(0, duckHolds - 1);
+    apply();
+  };
+}
+
 export { play as playSfx };
 
+// ---------------------------------------------------------------- files
+const buffers = new Map<string, Promise<AudioBuffer | null>>();
+const ready = new Map<string, AudioBuffer>();
+let warned = false;
+
+function loadBuffer(id: string): Promise<AudioBuffer | null> {
+  const ctx = audioContext();
+  const e = FILES.get(id);
+  if (!ctx || !e) return Promise.resolve(null);
+  let p = buffers.get(id);
+  if (!p) {
+    p = fetch(audioUrl(e.file))
+      .then((r) => (r.ok ? r.arrayBuffer() : Promise.reject(new Error(`HTTP ${r.status}`))))
+      .then((b) => ctx.decodeAudioData(b))
+      .then((buf) => {
+        ready.set(id, buf);
+        return buf;
+      })
+      .catch((err: Error) => {
+        if (!warned) console.warn(`[audio] không tải được ${e.file} (${err.message}): dùng âm tổng hợp`);
+        warned = true;
+        return null;
+      });
+    buffers.set(id, p);
+  }
+  return p;
+}
+
+export function preloadSounds(ids: string[]) {
+  for (const id of ids) void loadBuffer(id);
+}
+
+/** Play a loaded file on the effects bus. False when it is not loaded yet (caller may synthesize). */
+export function playFile(id: string, gain = 1, rate = 1): boolean {
+  const ctx = audioContext();
+  const buf = ready.get(id);
+  const out = bus('sfx');
+  if (!ctx || !out || !buf || !effectsOn()) {
+    if (!buf) void loadBuffer(id);
+    return false;
+  }
+  if (ctx.state === 'suspended') void ctx.resume();
+  const src = ctx.createBufferSource();
+  src.buffer = buf;
+  src.playbackRate.value = rate;
+  const g = ctx.createGain();
+  g.gain.value = gain;
+  src.connect(g).connect(out);
+  src.start();
+  return true;
+}
+
+const counters = new Map<string, number>();
+const next = (k: string) => {
+  const n = counters.get(k) ?? 0;
+  counters.set(k, n + 1);
+  return n;
+};
+
+export function playCue(cue: Cue, gain = 1): boolean {
+  // A slight pitch spread so repeated splashes and steps do not sound copy-pasted.
+  return playFile(cueId(cue, next(cue)), gain, 0.94 + Math.random() * 0.12);
+}
+
+let surface: Surface = 'stone';
+export function playFootstep(on: Surface = surface, gain = 0.6): boolean {
+  return playFile(footstepId(on, next(`step_${on}`)), gain, 0.95 + Math.random() * 0.1);
+}
+
+// ---------------------------------------------------------------- music
+let place: SoundPlace | null = null;
+let mood: MoodState = { mood: 'calm', pending: null, since: 0 };
+let music: { id: string; gain: GainNode; stop: () => void } | null = null;
+
+function startMusic(id: string | null) {
+  const ctx = audioContext();
+  const out = bus('music');
+  if (music?.id === id) return;
+  const old = music;
+  music = null;
+  if (old && ctx) {
+    old.gain.gain.setTargetAtTime(0, ctx.currentTime, MUSIC_XFADE_S / 4);
+    setTimeout(old.stop, MUSIC_XFADE_S * 1000 + 200);
+  } else old?.stop();
+  if (!id || !ctx || !out) return;
+  const gain = ctx.createGain();
+  gain.gain.value = 0;
+  gain.connect(out);
+  let src: AudioBufferSourceNode | null = null;
+  let timer: ReturnType<typeof setTimeout> | null = null;
+  let stopped = false;
+  const me = {
+    id,
+    gain,
+    stop: () => {
+      stopped = true;
+      if (timer) clearTimeout(timer);
+      try {
+        src?.stop();
+      } catch {
+        /* not started */
+      }
+      gain.disconnect();
+    },
+  };
+  music = me;
+  // One phrase: the track (short loops repeated to about a minute), then a short silence, again.
+  const phrase = (buf: AudioBuffer) => {
+    if (stopped) return;
+    const { repeats, gapSec } = musicPhrase(buf.duration);
+    const t = ctx.currentTime + 0.05;
+    const len = buf.duration * repeats;
+    src = ctx.createBufferSource();
+    src.buffer = buf;
+    src.loop = repeats > 1;
+    src.connect(gain);
+    gain.gain.cancelScheduledValues(t);
+    gain.gain.setValueAtTime(0, t);
+    gain.gain.linearRampToValueAtTime(1, t + MUSIC_XFADE_S);
+    gain.gain.setValueAtTime(1, t + Math.max(MUSIC_XFADE_S, len - 1.5));
+    gain.gain.linearRampToValueAtTime(0, t + len);
+    src.start(t);
+    src.stop(t + len);
+    timer = setTimeout(() => phrase(buf), (len + gapSec) * 1000);
+  };
+  void loadBuffer(id).then((buf) => {
+    if (buf && music === me) phrase(buf);
+  });
+}
+
+/** Tell the music what is happening (kayak: leading / streak; survival: pursuer distance). */
+export function setMoodSignals(s: MoodSignals) {
+  if (!place) return;
+  const now = (audioContext()?.currentTime ?? performance.now() / 1000) || 0;
+  const was = mood.mood;
+  mood = stepMood(mood, wantedMood(place, s), now);
+  if (mood.mood !== was) startMusic(musicFor(place, mood.mood));
+}
+
+// ---------------------------------------------------------------- ambience
+let ambience: { key: string; stop: () => void } | null = null;
+
+/** A recorded loop with overlapping crossfaded copies (seamless however short the clip). */
+function fileLoop(buf: AudioBuffer, level: number, out: AudioNode): () => void {
+  const ctx = audioContext()!;
+  const xf = loopCrossfade(buf.duration);
+  const period = buf.duration - xf;
+  let at = ctx.currentTime + 0.05;
+  const live = new Set<AudioBufferSourceNode>();
+  const schedule = () => {
+    while (at < ctx.currentTime + 2) {
+      const s = ctx.createBufferSource();
+      s.buffer = buf;
+      const g = ctx.createGain();
+      g.gain.setValueAtTime(0, at);
+      g.gain.linearRampToValueAtTime(level, at + xf);
+      g.gain.setValueAtTime(level, at + period);
+      g.gain.linearRampToValueAtTime(0, at + buf.duration);
+      s.connect(g).connect(out);
+      s.start(at);
+      s.stop(at + buf.duration + 0.01);
+      live.add(s);
+      s.onended = () => live.delete(s);
+      at += period;
+    }
+  };
+  schedule();
+  const timer = setInterval(schedule, 500);
+  return () => {
+    clearInterval(timer);
+    for (const s of live) {
+      try {
+        s.stop();
+      } catch {
+        /* already stopped */
+      }
+    }
+  };
+}
+
+function startAmbienceFor(p: SoundPlace, lowPower: boolean) {
+  const key = `${p}:${lowPower ? 'synth' : 'file'}`;
+  if (ambience?.key === key) return;
+  stopAmbience();
+  const { files, synth } = ambienceFor(p);
+  const out = bus('ambient');
+  const ctx = audioContext();
+  if (!ctx || !out) return;
+  const stops: (() => void)[] = [];
+  let alive = true;
+  ambience = {
+    key,
+    stop: () => {
+      alive = false;
+      for (const s of stops) s();
+    },
+  };
+  const fallback = () => {
+    if (alive && synth) stops.push(synthAmbience(synth, out));
+  };
+  if (lowPower || !files.length) return fallback();
+  void Promise.all(files.map((f) => loadBuffer(f.id))).then((bufs) => {
+    if (!alive) return;
+    if (bufs.some((b) => !b)) return fallback();
+    bufs.forEach((b, i) => stops.push(fileLoop(b!, files[i].gain, out)));
+  });
+}
+
+export function stopAmbience() {
+  ambience?.stop();
+  ambience = null;
+}
+
+/** Old entry point: synthesized layer only. */
+export function startAmbience(kind: Ambience) {
+  const out = bus('ambient');
+  if (!out) return;
+  stopAmbience();
+  ambience = { key: `synth:${kind}`, stop: synthAmbience(kind, out) };
+}
+
+// ---------------------------------------------------------------- places
+/**
+ * Enter a place (a game, the menu, a Multiverse space): its music, ambience, footstep surface, and a
+ * preload of what it needs. `lowPower` (weak phone): synthesized ambience instead of files.
+ */
+export function setSoundPlace(p: SoundPlace | null, opts: { lowPower?: boolean } = {}) {
+  if (!audioContext()) return;
+  if (!p) return stopSound();
+  if (place !== p) {
+    place = p;
+    mood = { mood: 'calm', pending: null, since: 0 };
+    surface = surfaceFor(p);
+    preloadSounds(preloadIds(p));
+    startMusic(musicFor(p, 'calm'));
+  }
+  startAmbienceFor(p, !!opts.lowPower);
+  apply();
+}
+
+export function stopSound() {
+  place = null;
+  startMusic(null);
+  stopAmbience();
+}
+
+// ---------------------------------------------------------------- synthesized fallback
 function noiseBuffer(ctx: AudioContext, seconds: number, brown: boolean): AudioBuffer {
   const buf = ctx.createBuffer(1, Math.floor(ctx.sampleRate * seconds), ctx.sampleRate);
   const d = buf.getChannelData(0);
@@ -67,21 +387,13 @@ function noiseBuffer(ctx: AudioContext, seconds: number, brown: boolean): AudioB
   return buf;
 }
 
-/** Start (or switch) the background layer. */
-export function startAmbience(kind: Ambience) {
-  const ctx = audioContext();
-  if (!ctx) return;
-  if (layer?.kind === kind) return;
-  stopAmbience();
-  if (!master) {
-    master = ctx.createGain();
-    master.connect(ctx.destination);
-  }
-  master.gain.value = isMuted() ? 0 : 0.5;
+/** River, campfire, night crickets or wind made with Web Audio (no download). Returns its stop. */
+function synthAmbience(kind: Ambience, dest: AudioNode): () => void {
+  const ctx = audioContext()!;
   const nodes: AudioScheduledSourceNode[] = [];
   const timers: ReturnType<typeof setInterval>[] = [];
   const out = ctx.createGain();
-  out.connect(master);
+  out.connect(dest);
   const loopNoise = (brown: boolean, type: BiquadFilterType, freq: number, q: number, gain: number) => {
     const src = ctx.createBufferSource();
     src.buffer = noiseBuffer(ctx, 4, brown);
@@ -149,23 +461,29 @@ export function startAmbience(kind: Ambience) {
       }, 900),
     );
   }
-  layer = {
-    kind,
-    stop: () => {
-      for (const n of nodes) {
-        try {
-          n.stop();
-        } catch {
-          /* already stopped */
-        }
+  return () => {
+    for (const n of nodes) {
+      try {
+        n.stop();
+      } catch {
+        /* already stopped */
       }
-      for (const t of timers) clearInterval(t);
-      out.disconnect();
-    },
+    }
+    for (const t of timers) clearInterval(t);
+    out.disconnect();
   };
 }
 
-export function stopAmbience() {
-  layer?.stop();
-  layer = null;
+/** State for the scene lab readout. */
+export function soundDebug() {
+  return {
+    place,
+    track: music?.id ?? null,
+    mood: mood.mood,
+    pending: mood.pending,
+    ambience: ambience?.key ?? null,
+    ducked: duckHolds > 0,
+    loaded: ready.size,
+    ...soundSwitches(),
+  };
 }

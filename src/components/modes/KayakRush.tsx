@@ -5,6 +5,8 @@ import * as THREE from 'three';
 import { THREE_ASSET_MANIFEST, assetUrl } from '../../config/threeAssets';
 import { Sparks, canvasTexture, clamp, createStage, damp, glow, hashStr, lowpoly, mesh, roughen, skyDome, swapInGlb, textSprite, toon } from './kit';
 import type { SceneEvent } from './types';
+import { playCue } from '../../client/audio';
+import { cycleHits } from '../../engine/audioPlan';
 
 // GAME 1 — Kayak Rush 3D (upgrade of Boat Race; the server-authoritative race logic is unchanged).
 // Turquoise low-poly river, kayaks with modular hats on `hat_attachment_slot`, spinning logs,
@@ -420,6 +422,8 @@ export default function KayakRush(props: KayakRushProps) {
 
     const cur = { p: live.current.playerPos, b: live.current.botPos, pv: 0, bv: 0 };
     const st = { boost: -1e9, crit: false, bump: -1e9, cheer: -1e9 };
+    // Paddle splash (WP2): the blade enters the water twice a stroke, where sin(stroke) crosses 0.
+    let lastStroke = 0;
     const handle = (ev: NonNullable<SceneEvent>, t: number) => {
       const k = ev.kind;
       if (k === 'correct' || k === 'critical' || k === 'ultimate' || k === 'victory') {
@@ -454,6 +458,9 @@ export default function KayakRush(props: KayakRushProps) {
       me.body.rotation.x = -boost * 0.12;
       const strokeP = t * (5 + boost * 6);
       me.paddle.rotation.set(0, Math.sin(strokeP) * 0.5, Math.sin(strokeP) * 0.5);
+      // The stroke rate jumps with a boost: count at most one dip a frame.
+      if (Math.min(1, cycleHits(lastStroke, strokeP / (2 * Math.PI))) > 0) playCue('splash', 0.25 + boost * 0.35);
+      lastStroke = strokeP / (2 * Math.PI);
       bot.paddle.rotation.set(0, Math.sin(t * 5.5) * 0.5, Math.sin(t * 5.5) * 0.5);
       for (const k of [me, bot]) {
         const spin = k.hatSlot.getObjectByName('spin');

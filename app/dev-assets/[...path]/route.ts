@@ -9,7 +9,8 @@ import { Readable } from 'node:stream';
 //   /dev-assets/mid/<file>  → <library>/_mid/<file>         (.glb, ~5 k triangle avatars)
 //   /dev-assets/fill/<file>, /dev-assets/fill_low/<file> → _fill, _fill_low (scattered scenery, ≤ 8 k / 3 k)
 //   /dev-assets/hdri/<file> → <library>/hdri/<file>         (.hdr, 2K skies; the 1K ones are in /public)
-// Production uses NEXT_PUBLIC_ASSET_BASE_URL (a CDN with web/, low/, mid/, fill/, fill_low/, hdri/: scripts/sync-assets-r2.mjs).
+//   /dev-assets/audio/<file> → <library>/_audio_web/<file>  (.mp3, scripts/encode-audio.mjs)
+// Production uses NEXT_PUBLIC_ASSET_BASE_URL (a CDN with web/, low/, mid/, fill/, fill_low/, hdri/, audio/: scripts/sync-assets-r2.mjs).
 // This route answers 404 in production, unless TC_SERVE_LOCAL_ASSETS=1 (a production build tested on the LAN).
 
 const ROOT = path.resolve((process.env.TC_3D_DIR || '~/Documents/3D_tutorcraft').replace(/^~/, os.homedir()));
@@ -20,6 +21,7 @@ const DIRS: Record<string, { dir: string; ext: string; type: string }> = {
   fill: { dir: '_fill', ext: '.glb', type: 'model/gltf-binary' },
   fill_low: { dir: '_fill_low', ext: '.glb', type: 'model/gltf-binary' },
   hdri: { dir: 'hdri', ext: '.hdr', type: 'image/vnd.radiance' },
+  audio: { dir: '_audio_web', ext: '.mp3', type: 'audio/mpeg' },
 };
 
 export async function GET(_req: Request, ctx: RouteContext<'/dev-assets/[...path]'>) {
