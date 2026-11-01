@@ -98,6 +98,13 @@ const OVERRIDES = {
   'river_world/river_reed.glb': { tris: 120000, low: 120000, capMb: 4, lowCapMb: 4 },
   // A smooth egg-shaped bush: 15k looked identical to the 1.5M original, 150k only cost download size.
   'river_world/cay_phu/tree_x08_verdant.glb': { tris: 20000, low: 10000, capMb: 1 },
+  // 01/11 import (C2): at the 8k / 4k prop default the matches broke, the log's cut end tore, the
+  // sofa edges wobbled (seen up close in rooms) and the pavilion roof went blotchy.
+  'camp/camp_matchbox.glb': { tris: 20000, low: 4000, capMb: 2 }, // low stays 4k: 7k did not fix the box and broke camp-01's 300k
+  'camp/camp_tarp_3.glb': { tris: 20000, low: 4000, capMb: 2 },
+  'kayak/kayak_log_spinning.glb': { tris: 20000, low: 10000, capMb: 2 },
+  'multiverse/mv_salon_furniture.glb': { tris: 20000, low: 10000, capMb: 2 },
+  'multiverse/mv_salon_furniture_2.glb': { tris: 20000, low: 10000, capMb: 2 },
 };
 
 /**
