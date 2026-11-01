@@ -1,41 +1,16 @@
 {
  "total_used": 280,
- "have_file": 239,
- "missing_count": 41,
+ "have_file": 266,
+ "missing_count": 14,
  "missing_by_group": {
   "anim": [
-   "anim_cast",
-   "anim_cheer",
-   "anim_cook",
-   "anim_kneel_work",
-   "anim_pull_fish",
-   "anim_rope_rub",
-   "anim_sad",
-   "anim_wave"
+   "anim_cook"
   ],
   "camp": [
-   "camp_axe",
-   "camp_bench",
-   "camp_bottle",
-   "camp_bucket",
-   "camp_bunting",
-   "camp_chair",
-   "camp_firstaid",
-   "camp_lantern",
-   "camp_marshmallow_stick",
-   "camp_matchbox",
-   "camp_sleeping_bag",
-   "camp_string_lights",
-   "camp_table",
-   "camp_tarp",
-   "camp_water_filter"
+   "camp_chair"
   ],
   "fish": [
-   "fish_bait",
-   "fish_bobber",
-   "fish_hook",
-   "fish_net",
-   "fish_reel"
+   "fish_net"
   ],
   "food": [
    "food_apple",
@@ -45,14 +20,8 @@
    "food_meat_raw",
    "food_sausage"
   ],
-  "kayak": [
-   "kayak_log_spinning"
-  ],
   "river": [
    "river_shed"
-  ],
-  "surv": [
-   "surv_broom"
   ],
   "tex": [
    "tex_mud",
@@ -63,5 +32,29 @@
    "water_normal"
   ]
  },
- "unused_models": []
+ "unused_models": [
+  "anim_beckon",
+  "anim_fishing_idle",
+  "anim_sit_female",
+  "anim_sit_male",
+  "dino_footprint",
+  "dino_sand",
+  "dino_sand_2",
+  "mv_castle_module",
+  "mv_castle_module_2",
+  "mv_castle_module_3",
+  "mv_castle_module_4",
+  "mv_cyber_room",
+  "mv_salon_furniture",
+  "mv_salon_furniture_2",
+  "mv_salon_furniture_3",
+  "mv_scene",
+  "mv_scene_2",
+  "mv_scene_3",
+  "mv_torch",
+  "mv_torch_2",
+  "mv_torch_3",
+  "mv_torch_4",
+  "mv_torch_5"
+ ]
 }

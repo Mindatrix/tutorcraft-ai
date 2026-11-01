@@ -109,8 +109,11 @@ const OVERRIDES = {
  */
 export function budget(rel, low = false) {
   // Terrain slabs are nearly flat: far fewer triangles keep the same look.
-  const ground = /(^|\/)ground\//.test(rel);
-  const big = !ground && (/(^|\/)(mini|the_gioi|cay_phu)\//.test(rel) || /backdrop|world_|(tree|bush|fern|cave|cabin|woodpile|island)/.test(rel));
+  // dino_sand / dino_footprint are sand slabs too (01/11 import: the 8k prop default flattened them).
+  const ground = /(^|\/)ground\//.test(rel) || /\/dino_(sand|footprint)/.test(rel);
+  // mv_scene* are far backdrops seen through portals; castle modules and the cyber room are scanned
+  // structures with many UV islands, like cabins (01/11 import: 1.8M → 8k triangles at the prop default).
+  const big = !ground && (/(^|\/)(mini|the_gioi|cay_phu)\//.test(rel) || /backdrop|world_|mv_scene|mv_castle_module|mv_cyber_room|(tree|bush|fern|cave|cabin|woodpile|island)/.test(rel));
   let b;
   // Multiverse rooms (D6.1) are seen from inside, up close: 2048 px textures, a 8 MB cap (low: 3 MB).
   const room = /(^|\/)multiverse\/rooms\//.test(rel);

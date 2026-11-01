@@ -88,8 +88,11 @@ const aliases = Object.fromEntries(Object.entries(JSON.parse(readFileSync('conte
 const scenarios = JSON.parse(readFileSync('content/scenarios_v2.json', 'utf8')) as E.ScenarioAssets[];
 
 test('A3: every library model has real geometry in both variants (no empty / broken files)', () => {
-  const bad = (catalog as (E.CatalogAsset & { tris_web?: number | null; tris_low?: number | null })[])
-    .filter((c) => !(Number(c.tris_web) > 0) || !(Number(c.tris_low) > 0) || !(Number(c.mb_web) > 0.005))
+  type Row = E.CatalogAsset & { tris_web?: number | null; tris_low?: number | null; tris_raw?: number | null; animations?: number | null };
+  // anim_* are Mixamo clips without skin (no mesh, not optimised): they must carry at least one clip instead.
+  const isClip = (c: Row) => c.id.startsWith('anim_');
+  const bad = (catalog as Row[])
+    .filter((c) => (isClip(c) ? !(Number(c.animations) > 0) : !(Number(c.tris_web) > 0) || !(Number(c.tris_low) > 0) || !(Number(c.mb_web) > 0.005)))
     .map((c) => c.id);
   assert.deepEqual(bad, [], `broken or empty: ${bad.slice(0, 10).join(', ')}`);
 });

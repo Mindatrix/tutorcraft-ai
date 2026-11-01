@@ -22,6 +22,7 @@
 //  - ghi tác giả, nguồn, giấy phép vào content/asset_credits.json; file đã nhập chuyển sang inbox/_da_nhap/.
 // Cuối cùng chạy lại build-asset-catalog.mjs (catalog + coverage) và in số mã còn thiếu.
 import { execFileSync } from 'node:child_process';
+import crypto from 'node:crypto';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -145,6 +146,37 @@ for (const f of files) {
   row.rel = path.relative(ROOT, row.target).split(path.sep).join('/');
 }
 
+// Size and raw triangle count. optimize-glb.mjs decimates on import, but a model far over these
+// numbers usually needs a by-hand pass (C2, 01/11) before it still looks right.
+const HEAVY_MB = 25;
+const HEAVY_TRIS = 300000;
+/** Triangles drawn by a GLB, read from the JSON chunk only (instanced meshes counted per node). */
+function glbTris(file) {
+  const g = glbJson(file);
+  if (!g?.meshes) return null;
+  const uses = new Map();
+  for (const n of g.nodes ?? []) if (n.mesh !== undefined) uses.set(n.mesh, (uses.get(n.mesh) ?? 0) + 1);
+  let tris = 0;
+  g.meshes.forEach((m, mi) => {
+    for (const p of m.primitives ?? []) {
+      if ((p.mode ?? 4) !== 4) continue;
+      const count = g.accessors?.[p.indices ?? p.attributes?.POSITION]?.count ?? 0;
+      tris += Math.floor(count / 3) * (uses.get(mi) ?? 1);
+    }
+  });
+  return tris;
+}
+const byHash = new Map();
+for (const row of plan) {
+  const file = path.join(INBOX, row.f);
+  row.mb = fs.statSync(file).size / 1e6;
+  if (row.ext === '.glb') row.tris = glbTris(file);
+  if (row.mb > HEAVY_MB || row.tris > HEAVY_TRIS) row.notes.push(`nặng (${row.mb.toFixed(1)} MB${row.tris ? `, ${row.tris.toLocaleString('vi-VN')} mặt` : ''}): cần giảm nặng và xem lại hình sau khi tối ưu (C2)`);
+  const h = crypto.createHash('sha1').update(fs.readFileSync(file)).digest('hex');
+  if (byHash.has(h)) row.problems.push(`trùng nội dung với ${byHash.get(h)}`);
+  else byHash.set(h, row.f);
+}
+
 // Animations: check bones against the character rigs (needs a GLB; others are converted first).
 for (const row of plan.filter((r) => r.id.startsWith('anim_') && !r.problems.length)) {
   let file = path.join(INBOX, row.f);
@@ -165,7 +197,15 @@ for (const row of plan.filter((r) => r.id.startsWith('anim_') && !r.problems.len
     continue;
   }
   const bones = new Set(anims.flatMap((a) => a.listChannels().map((ch) => clean(ch.getTargetNode()?.getName()))).filter(Boolean));
-  const fits = [...rigs].map(([rid, names]) => [rid, [...bones].filter((b) => names.has(b)).length / Math.max(1, bones.size)]).sort((a, b) => b[1] - a[1]);
+  // Fit = share of the character's real bones the clip drives. Mixamo clips also carry finger bones the
+  // Meshy rigs lack (65 vs ~24), and leaf helpers (*_End, headfront) are never animated, so neither counts.
+  const helper = (b) => /_end$|^headfront$/i.test(b);
+  const fits = [...rigs]
+    .map(([rid, names]) => {
+      const real = [...names].filter((b) => !helper(b));
+      return [rid, real.filter((b) => bones.has(b)).length / Math.max(1, real.length)];
+    })
+    .sort((a, b) => b[1] - a[1]);
   row.anim = { clips: anims.map((a) => a.getName()), bones: bones.size, fits: fits.filter(([, k]) => k >= 0.9).map(([rid]) => rid) };
   if (!row.anim.fits.length) row.problems.push(`xương không khớp nhân vật nào (gần nhất: ${fits.slice(0, 2).map(([rid, k]) => `${rid} ${Math.round(k * 100)}%`).join(', ') || 'không có'})`);
 }
@@ -173,7 +213,8 @@ for (const row of plan.filter((r) => r.id.startsWith('anim_') && !r.problems.len
 const ok = plan.filter((r) => !r.problems.length);
 console.log(`inbox: ${files.length} file · nhận ${ok.length} · từ chối ${plan.length - ok.length}`);
 for (const r of plan) {
-  const head = `${r.problems.length ? '✗' : '✓'} ${r.f} → ${r.rel}`;
+  const size = `${r.mb.toFixed(1)} MB${r.tris ? `, ${r.tris.toLocaleString('vi-VN')} mặt` : ''}`;
+  const head = `${r.problems.length ? '✗' : '✓'} ${r.f} → ${r.rel} (${size})`;
   console.log(`${head}${r.anim ? ` · ${r.anim.clips.length} đoạn, khớp: ${r.anim.fits.join(', ') || '—'}` : ''}`);
   for (const p of r.problems) console.log(`    ✗ ${p}`);
   for (const n of r.notes) console.log(`    · ${n}`);

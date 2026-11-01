@@ -50,5 +50,725 @@
   ],
   "license": "CC0",
   "downloaded": "2026-10-26"
+ },
+ "anim_beckon": {
+  "file": "anim/anim_beckon.glb",
+  "title": "Beckoning.fbx",
+  "source": "mixamo.com",
+  "authors": [
+   "Adobe Mixamo"
+  ],
+  "license": "Mixamo (Adobe, free)",
+  "downloaded": "2026-11-01"
+ },
+ "anim_cast": {
+  "file": "anim/anim_cast.glb",
+  "title": "Fishing Cast.fbx",
+  "source": "mixamo.com",
+  "authors": [
+   "Adobe Mixamo"
+  ],
+  "license": "Mixamo (Adobe, free)",
+  "downloaded": "2026-11-01"
+ },
+ "anim_cheer": {
+  "file": "anim/anim_cheer.glb",
+  "title": "Victory.fbx",
+  "source": "mixamo.com",
+  "authors": [
+   "Adobe Mixamo"
+  ],
+  "license": "Mixamo (Adobe, free)",
+  "downloaded": "2026-11-01"
+ },
+ "anim_cheer_2": {
+  "file": "anim/anim_cheer_2.glb",
+  "title": "Victory_ban2.fbx",
+  "source": "mixamo.com",
+  "authors": [
+   "Adobe Mixamo"
+  ],
+  "license": "Mixamo (Adobe, free)",
+  "downloaded": "2026-11-01"
+ },
+ "anim_fishing_idle": {
+  "file": "anim/anim_fishing_idle.glb",
+  "title": "Fishing Idle.fbx",
+  "source": "mixamo.com",
+  "authors": [
+   "Adobe Mixamo"
+  ],
+  "license": "Mixamo (Adobe, free)",
+  "downloaded": "2026-11-01"
+ },
+ "anim_kneel_work": {
+  "file": "anim/anim_kneel_work.glb",
+  "title": "Kneeling.fbx",
+  "source": "mixamo.com",
+  "authors": [
+   "Adobe Mixamo"
+  ],
+  "license": "Mixamo (Adobe, free)",
+  "downloaded": "2026-11-01"
+ },
+ "anim_kneel_work_2": {
+  "file": "anim/anim_kneel_work_2.glb",
+  "title": "Kneel.fbx",
+  "source": "mixamo.com",
+  "authors": [
+   "Adobe Mixamo"
+  ],
+  "license": "Mixamo (Adobe, free)",
+  "downloaded": "2026-11-01"
+ },
+ "anim_pull_fish": {
+  "file": "anim/anim_pull_fish.glb",
+  "title": "Pulling A Rope.fbx",
+  "source": "mixamo.com",
+  "authors": [
+   "Adobe Mixamo"
+  ],
+  "license": "Mixamo (Adobe, free)",
+  "downloaded": "2026-11-01"
+ },
+ "anim_rope_rub": {
+  "file": "anim/anim_rope_rub.glb",
+  "title": "Shoulder Rubbing.fbx",
+  "source": "mixamo.com",
+  "authors": [
+   "Adobe Mixamo"
+  ],
+  "license": "Mixamo (Adobe, free)",
+  "downloaded": "2026-11-01"
+ },
+ "anim_rope_rub_2": {
+  "file": "anim/anim_rope_rub_2.glb",
+  "title": "Rifle Rubbing Eyes.fbx",
+  "source": "mixamo.com",
+  "authors": [
+   "Adobe Mixamo"
+  ],
+  "license": "Mixamo (Adobe, free)",
+  "downloaded": "2026-11-01"
+ },
+ "anim_sad": {
+  "file": "anim/anim_sad.glb",
+  "title": "Sad Idle.fbx",
+  "source": "mixamo.com",
+  "authors": [
+   "Adobe Mixamo"
+  ],
+  "license": "Mixamo (Adobe, free)",
+  "downloaded": "2026-11-01"
+ },
+ "anim_sad_2": {
+  "file": "anim/anim_sad_2.glb",
+  "title": "Defeated.fbx",
+  "source": "mixamo.com",
+  "authors": [
+   "Adobe Mixamo"
+  ],
+  "license": "Mixamo (Adobe, free)",
+  "downloaded": "2026-11-01"
+ },
+ "anim_sit_female": {
+  "file": "anim/anim_sit_female.glb",
+  "title": "Female Sitting Pose.fbx",
+  "source": "mixamo.com",
+  "authors": [
+   "Adobe Mixamo"
+  ],
+  "license": "Mixamo (Adobe, free)",
+  "downloaded": "2026-11-01"
+ },
+ "anim_sit_male": {
+  "file": "anim/anim_sit_male.glb",
+  "title": "Male Sitting Pose.fbx",
+  "source": "mixamo.com",
+  "authors": [
+   "Adobe Mixamo"
+  ],
+  "license": "Mixamo (Adobe, free)",
+  "downloaded": "2026-11-01"
+ },
+ "anim_wave": {
+  "file": "anim/anim_wave.glb",
+  "title": "Waving.fbx",
+  "source": "mixamo.com",
+  "authors": [
+   "Adobe Mixamo"
+  ],
+  "license": "Mixamo (Adobe, free)",
+  "downloaded": "2026-11-01"
+ },
+ "anim_wave_2": {
+  "file": "anim/anim_wave_2.glb",
+  "title": "Waving_ban2.fbx",
+  "source": "mixamo.com",
+  "authors": [
+   "Adobe Mixamo"
+  ],
+  "license": "Mixamo (Adobe, free)",
+  "downloaded": "2026-11-01"
+ },
+ "camp_axe": {
+  "file": "camp/camp_axe.glb",
+  "title": "Meshy_AI_Red_Hatchet_1027180437_texture.glb",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "camp_bench": {
+  "file": "camp/camp_bench.glb",
+  "title": "Meshy_AI_Carved_old_oak_log_be_1027180554_texture.glb",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "camp_bench_2": {
+  "file": "camp/camp_bench_2.glb",
+  "title": "Meshy_AI_Rustic_Bench_1027180652_texture.glb",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "camp_bottle": {
+  "file": "camp/camp_bottle.glb",
+  "title": "Meshy_AI_Black_Water_Bottle_1027180118_texture.glb",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "camp_bottle_2": {
+  "file": "camp/camp_bottle_2.glb",
+  "title": "Meshy_AI_IMSDAL_Water_Bottle_1027174629_texture.glb",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "camp_bottle_3": {
+  "file": "camp/camp_bottle_3.glb",
+  "title": "Meshy_AI_Crushed_Water_Bottle__1027174709_texture.glb",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "camp_bottle_4": {
+  "file": "camp/camp_bottle_4.glb",
+  "title": "Meshy_AI_Water_Bottle_on_Table_1027174600_texture.glb",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "camp_bucket": {
+  "file": "camp/camp_bucket.glb",
+  "title": "Meshy_AI_Wooden_Bucket_1027174801_texture.glb",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "camp_bucket_2": {
+  "file": "camp/camp_bucket_2.glb",
+  "title": "Meshy_AI_wooden_bucket_1027174829_texture.glb",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "camp_bunting": {
+  "file": "camp/camp_bunting.glb",
+  "title": "Meshy_AI_Colorful_pennant_bunt_1027175344_texture.glb",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "camp_firstaid": {
+  "file": "camp/camp_firstaid.glb",
+  "title": "Meshy_AI_First_Aid_Kit_1027181237_texture.glb",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "camp_firstaid_2": {
+  "file": "camp/camp_firstaid_2.glb",
+  "title": "Meshy_AI_First_Aid_Kit_1027181353_texture.glb",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "camp_firstaid_3": {
+  "file": "camp/camp_firstaid_3.glb",
+  "title": "Meshy_AI_First_Aid_Kit_Essenti_1027181340_texture.glb",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "camp_grill_2": {
+  "file": "camp/camp_grill_2.glb",
+  "title": "Meshy_AI_Weathered_Steel_Campi_1027175133_texture.glb",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "camp_lantern": {
+  "file": "camp/camp_lantern.glb",
+  "title": "Meshy_AI_Hanging_lantern_tied__1027174451_texture.glb",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "camp_lantern_2": {
+  "file": "camp/camp_lantern_2.glb",
+  "title": "Meshy_AI_LAnterne_1027164852_texture.glb",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "camp_lantern_3": {
+  "file": "camp/camp_lantern_3.glb",
+  "title": "Meshy_AI_a_realistic_glowing__1027174459_texture.glb",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "camp_marshmallow_stick": {
+  "file": "camp/camp_marshmallow_stick.glb",
+  "title": "Meshy_AI_marshmallow_on_a_stic_1027180831_texture.glb",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "camp_matchbox": {
+  "file": "camp/camp_matchbox.glb",
+  "title": "Meshy_AI_match_box_1027180909_texture.glb",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "camp_sleeping_bag": {
+  "file": "camp/camp_sleeping_bag.glb",
+  "title": "Meshy_AI_Camouflage_Mummy_Slee_1027180943_texture.glb",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "camp_sleeping_bag_2": {
+  "file": "camp/camp_sleeping_bag_2.glb",
+  "title": "Meshy_AI_Sleeping_Bag_Cocoon_1027181015_texture.glb",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "camp_string_lights": {
+  "file": "camp/camp_string_lights.glb",
+  "title": "Meshy_AI_Christmas_fairy_light_1027175756_texture.glb",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "camp_string_lights_2": {
+  "file": "camp/camp_string_lights_2.glb",
+  "title": "Meshy_AI_Create_a_pack_of_25_l_1027183902_texture.glb",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "camp_table": {
+  "file": "camp/camp_table.glb",
+  "title": "Meshy_AI_Folding_Camping_Table_1027175028_generate.glb",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "camp_tarp": {
+  "file": "camp/camp_tarp.glb",
+  "title": "Meshy_AI_Camp_Shelter_1027175837_texture.glb",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "camp_tarp_2": {
+  "file": "camp/camp_tarp_2.glb",
+  "title": "Meshy_AI_Canvas_Shelter_1027175851_texture.glb",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "camp_tarp_3": {
+  "file": "camp/camp_tarp_3.glb",
+  "title": "Meshy_AI_Rustic_Shelter_1027175937_texture.glb",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "camp_water_filter": {
+  "file": "camp/camp_water_filter.glb",
+  "title": "Meshy_AI_Create_a_way_to_filte_1027180204_texture.glb",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "camp_water_filter_2": {
+  "file": "camp/camp_water_filter_2.glb",
+  "title": "Meshy_AI_Soft_flexible_vacuum_1027183635_texture.glb",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "dino_footprint": {
+  "file": "dino/dino_footprint.glb",
+  "title": "Meshy_AI_Footprints_in_Sand__1027185100_texture.glb",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "dino_sand": {
+  "file": "dino/dino_sand.glb",
+  "title": "Meshy_AI_Pile_of_Sand_1027184607_texture.glb",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "dino_sand_2": {
+  "file": "dino/dino_sand_2.glb",
+  "title": "Meshy_AI_Sand_Ripples_1027184555_texture.glb",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "fish_bait": {
+  "file": "fishing/fish_bait.glb",
+  "title": "Meshy_AI_worm_on_hook_1027181559_texture.glb",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "fish_bait_2": {
+  "file": "fishing/fish_bait_2.glb",
+  "title": "Meshy_AI_Colorful_Fishing_Lure_1027181506_generate.glb",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "fish_bait_3": {
+  "file": "fishing/fish_bait_3.glb",
+  "title": "Meshy_AI_articulated_fish_Lure_1027181642_texture.glb",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "fish_bobber": {
+  "file": "fishing/fish_bobber.glb",
+  "title": "Meshy_AI_Fishing_Bobber_Icon_1027182242_texture.glb",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "fish_hook": {
+  "file": "fishing/fish_hook.glb",
+  "title": "Meshy_AI_Fishing_Hook_1027182804_texture.glb",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "fish_reel": {
+  "file": "fishing/fish_reel.glb",
+  "title": "Meshy_AI_Vintage_hand_crank_fi_1027182715_generate.glb",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "kayak_log_spinning": {
+  "file": "kayak/kayak_log_spinning.glb",
+  "title": "Meshy_AI_Low_poly_wood_log_wit_1027183412_texture.glb",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "mv_castle_module": {
+  "file": "multiverse/mv_castle_module.glb",
+  "title": "Meshy_AI_Imperial_Lantern_Brid_1027165036_texture.glb",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "mv_castle_module_2": {
+  "file": "multiverse/mv_castle_module_2.glb",
+  "title": "Meshy_AI_Object_A_modular_fo_1027181114_texture.glb",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "mv_castle_module_3": {
+  "file": "multiverse/mv_castle_module_3.glb",
+  "title": "Meshy_AI_Object_A_modular_fo_1027181201_texture.glb",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "mv_castle_module_4": {
+  "file": "multiverse/mv_castle_module_4.glb",
+  "title": "Meshy_AI_realistic_medieval_br_1027182936_texture.glb",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "mv_cyber_room": {
+  "file": "multiverse/mv_cyber_room.glb",
+  "title": "Meshy_AI_Esports_Room_1027164957_texture.glb",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "mv_salon_furniture": {
+  "file": "multiverse/mv_salon_furniture.glb",
+  "title": "Meshy_AI_Chesterfield_Roll_Arm_1027173817_texture.glb",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "mv_salon_furniture_2": {
+  "file": "multiverse/mv_salon_furniture_2.glb",
+  "title": "Meshy_AI_Chesterfield_Sofa_in__1027173918_texture.glb",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "mv_salon_furniture_3": {
+  "file": "multiverse/mv_salon_furniture_3.glb",
+  "title": "Meshy_AI_Old_Used_Armchair_H_1026182637_texture.glb",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "mv_scene": {
+  "file": "multiverse/mv_scene.glb",
+  "title": "Meshy_AI_Pavilions_in_the_Moun_1027164932_texture.glb",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "mv_scene_2": {
+  "file": "multiverse/mv_scene_2.glb",
+  "title": "Meshy_AI_Snowbound_Caldera_1027033233_texture.glb",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "mv_scene_3": {
+  "file": "multiverse/mv_scene_3.glb",
+  "title": "Meshy_AI_Floating_Stones_1027183031_texture.glb",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "mv_torch": {
+  "file": "multiverse/mv_torch.glb",
+  "title": "Meshy_AI_Blazing_Torch_1027164407_texture.glb",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "mv_torch_2": {
+  "file": "multiverse/mv_torch_2.glb",
+  "title": "Meshy_AI_Iron_Torch_Sconce_1027164504_texture.glb",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "mv_torch_3": {
+  "file": "multiverse/mv_torch_3.glb",
+  "title": "Meshy_AI_Stone_Torch_Stand_1027164428_texture.glb",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "mv_torch_4": {
+  "file": "multiverse/mv_torch_4.glb",
+  "title": "Meshy_AI_Wall_Torch_1027164519_texture.glb",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "mv_torch_5": {
+  "file": "multiverse/mv_torch_5.glb",
+  "title": "Meshy_AI_medieval_torch_1027164447_texture.glb",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "surv_broom": {
+  "file": "survival/surv_broom.glb",
+  "title": "Meshy_AI_witch_broom_1026205301_texture.glb",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
  }
 }
