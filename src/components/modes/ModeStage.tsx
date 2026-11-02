@@ -1,7 +1,8 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { useCallback, useState, type ComponentType, type CSSProperties, type ReactNode } from 'react';
+import { useCallback, useEffect, useState, type ComponentType, type CSSProperties, type ReactNode } from 'react';
+import ArenaHUD, { type ArenaHUDProps } from '../hud/ArenaHUD';
 import { GAME_MODES, type GameMode } from '../../engine';
 import { BEVEL_CLIP, canUseWebGL } from './gfx';
 import { readTier, saveTier, type RenderTier } from './gfxTier';
@@ -76,9 +77,19 @@ function Pop({ event }: { event: SceneEvent }) {
   );
 }
 
-export default function ModeStage({ mode, scene, fallback }: { mode: BossMode; scene: Omit<BossSceneProps, 'onUnavailable'>; fallback: ReactNode }) {
+/** What the in-game HUD needs from the arena (WP10); the stage adds the game, tier and layout. */
+export type StageHud = Omit<ArenaHUDProps, 'game' | 'tier' | 'onTier' | 'docked'>;
+
+export default function ModeStage({ mode, scene, fallback, hud, onTier }: { mode: BossMode; scene: Omit<BossSceneProps, 'onUnavailable'>; fallback: ReactNode; hud?: StageHud; onTier?: (t: RenderTier) => void }) {
   const [tier, setTier] = useState<RenderTier>(readTier);
   const def = GAME_MODES[mode];
+  // Tell the arena which renderer is up (it hides its own skill buttons while the 3D HUD shows them).
+  useEffect(() => onTier?.(SCENES[mode] ? tier : '2d'), [onTier, tier, mode]);
+  const pickTier = (t: RenderTier) => {
+    saveTier(t);
+    setTier(t === '2d' || canUseWebGL() ? t : '2d');
+  };
+  const docked = hud ? <ArenaHUD {...hud} game={mode} tier={SCENES[mode] ? tier : '2d'} onTier={pickTier} docked /> : null;
   const lite = useCallback(() => {
     saveTier('2d');
     setTier('2d');
@@ -95,6 +106,7 @@ export default function ModeStage({ mode, scene, fallback }: { mode: BossMode; s
   if (!Scene) {
     return (
       <div className="space-y-1">
+        {docked}
         {fallback}
         <p className="text-right text-[11px] text-slate-400">{def.icon} {def.nameVi} · bản 3D đang được dựng, tạm chơi bản 2D</p>
       </div>
@@ -104,6 +116,7 @@ export default function ModeStage({ mode, scene, fallback }: { mode: BossMode; s
   if (!three) {
     return (
       <div className="space-y-1">
+        {docked}
         {fallback}
         <p className="flex items-center justify-end gap-2 text-[11px] text-slate-400">
           {def.icon} {def.nameVi} · chế độ nhẹ 2D cho máy này
@@ -114,15 +127,18 @@ export default function ModeStage({ mode, scene, fallback }: { mode: BossMode; s
   }
 
   return (
-    <StageFrame className="h-64 sm:h-80">
-      <Scene {...scene} tier={tier === 'low' ? 'low' : 'high'} onLowQuality={lower} onUnavailable={lite} />
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 flex items-start justify-between gap-2 px-6 pt-3">
+    <StageFrame className={hud ? 'h-80 sm:h-[min(26rem,calc(100dvh-1rem))]' : 'h-64 sm:h-80'}>
+      <Scene key={tier} {...scene} tier={tier === 'low' ? 'low' : 'high'} onLowQuality={lower} onUnavailable={lite} />
+      {hud && <ArenaHUD {...hud} game={mode} tier={tier} onTier={pickTier} />}
+      <div className={`pointer-events-none absolute inset-x-0 top-0 z-10 flex items-start justify-between gap-2 px-6 ${hud ? 'pt-[56px]' : 'pt-3'}`}>
         <Bar label={def.hud.hero} value={scene.hp} max={scene.hpMax} tone="linear-gradient(90deg,#34d399,#10b981)" align="left" />
         <Bar label={def.hud.boss} value={scene.bossHp} max={scene.bossMax} tone="linear-gradient(90deg,#fb7185,#f59e0b)" align="right" />
       </div>
-      <span className="pointer-events-none absolute bottom-2 right-6 z-10 bg-black/55 px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-widest text-amber-200">
-        {def.icon} {def.name}
-      </span>
+      {!hud && (
+        <span className="pointer-events-none absolute bottom-2 right-6 z-10 bg-black/55 px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-widest text-amber-200">
+          {def.icon} {def.name}
+        </span>
+      )}
       <Pop event={scene.event} />
     </StageFrame>
   );

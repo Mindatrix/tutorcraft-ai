@@ -1,22 +1,41 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
 import { CircleHelp, Eye, LogOut, Maximize, Minimize, Settings, Shield, Snowflake, Sparkles, Trophy, UserRound, Volume2, VolumeX } from 'lucide-react';
-import { MAX_MP, SKILLS, SKILL_IDS, type SkillId } from '../../engine';
+import { GAME_MODES, MAX_MP, SKILLS, SKILL_IDS, type GameMode, type SkillId } from '../../engine';
 import { GAME_GUIDES } from '../../config/gameGuides';
 import { useSoundSwitches } from '../../client/audio';
-import GameHUD, { SkillButton, SteerPad, type HudTool } from './GameHUD';
+import GameHUD, { SkillButton, type HudTool } from './GameHUD';
 import SettingsPanel, { SoundRows } from './SettingsPanel';
 import type { RenderTier } from '../modes/gfxTier';
 
-// Kayak Rush HUD (WP10 U1/U2 on one game first, 02/11/2026). Toolbar: sound, character, skills,
-// how to play, ranking, settings, fullscreen, leave. Left: steering. Right: the three session skills
-// (same server call as the buttons under the question). The rage boost (U5) and the minimap /
-// coordinate bar (U3) come later.
+// HUD of a game in the arena (WP10, 02/11/2026; Kayak first, then every game). Toolbar: sound,
+// character, skills, how to play, ranking / progress, settings, fullscreen, leave. Left: the game's
+// movement control when it has one (Kayak: steering). Right: the three session skills (same server
+// call as the buttons under the question). `docked`: a 2D world draws its own bars at the top, so
+// the toolbar sits above it instead of over it, and the skills stay under the question.
+// Minimap / coordinate bar (U3) and the Kayak rage boost (U5) come later.
 
 const SKILL_ICONS: Record<SkillId, typeof Shield> = { shield: Shield, freeze: Snowflake, eye_of_truth: Eye };
 
-export interface KayakHUDProps {
+/** Kayak ranking rows: share of the course, leader first. */
+export function raceStanding(me: string, mine: number, bot: string, theirs: number): ArenaHUDProps['standing'] {
+  const pct = (v: number) => `${Math.round(Math.min(1, Math.max(0, v)) * 100)}% đường đua`;
+  const mineRow = { name: me, value: pct(mine), me: true };
+  const botRow = { name: bot, value: pct(theirs) };
+  return mine >= theirs ? [mineRow, botRow] : [botRow, mineRow];
+}
+
+export interface ArenaHUDProps {
+  game: GameMode;
+  /** Short status next to the game name ("Đang dẫn"). */
+  status?: string;
+  /** Ranking (Kayak) or progress (boss worlds) rows, already sorted. */
+  standing: { name: string; value: string; me?: boolean }[];
+  standingLabel?: string;
+  /** Movement control for the left corner (none: the world has no movement yet). */
+  move?: ReactNode;
+  docked?: boolean;
   playerName: string;
   avatar: string;
   levelText: string;
@@ -24,25 +43,21 @@ export interface KayakHUDProps {
   combo: number;
   correct: number;
   total: number;
-  playerPos: number;
-  botPos: number;
-  botName: string;
   /** Skills can be cast now (a question is open, no answer pending). */
   canCast: boolean;
   onCast: (id: SkillId) => void;
-  onSteer: (x: number) => void;
   quiet: boolean;
   tier: RenderTier;
   onTier: (t: RenderTier) => void;
   onLeave: () => void;
 }
 
-export default function KayakHUD(p: KayakHUDProps) {
+export default function ArenaHUD(p: ArenaHUDProps) {
   const sound = useSoundSwitches();
   const [full, setFull] = useState(false);
   const canFullscreen = typeof document !== 'undefined' && !!document.fullscreenEnabled;
-  const guide = GAME_GUIDES.kayak_rush;
-  const ahead = p.playerPos >= p.botPos;
+  const guide = GAME_GUIDES[p.game] ?? GAME_GUIDES.kayak_rush;
+  const def = GAME_MODES[p.game];
 
   const tools: HudTool[] = useMemo(
     () => [
@@ -103,24 +118,19 @@ export default function KayakHUD(p: KayakHUDProps) {
       },
       {
         id: 'rank',
-        label: 'Xếp hạng',
+        label: p.standingLabel ?? 'Xếp hạng',
         icon: Trophy,
         panel: () => (
           <div className="tc-hud-panel-body">
-            {[
-              { n: p.playerName, v: p.playerPos, me: true },
-              { n: p.botName, v: p.botPos, me: false },
-            ]
-              .sort((a, b) => b.v - a.v)
-              .map((r, i) => (
-                <div key={r.n} className="tc-hud-row">
-                  <span style={{ fontWeight: r.me ? 800 : 500 }}>
-                    {i + 1}. {r.n}
-                    {r.me && <small>Bạn</small>}
-                  </span>
-                  <span style={{ fontVariantNumeric: 'tabular-nums' }}>{Math.round(Math.min(1, r.v) * 100)}% đường đua</span>
-                </div>
-              ))}
+            {p.standing.map((r, i) => (
+              <div key={r.name} className="tc-hud-row">
+                <span style={{ fontWeight: r.me ? 800 : 500 }}>
+                  {p.standingLabel ? r.name : `${i + 1}. ${r.name}`}
+                  {r.me && <small>Bạn</small>}
+                </span>
+                <span style={{ fontVariantNumeric: 'tabular-nums' }}>{r.value}</span>
+              </div>
+            ))}
           </div>
         ),
       },
@@ -153,20 +163,25 @@ export default function KayakHUD(p: KayakHUDProps) {
     ],
     [p, sound.music, sound.sfx, full, canFullscreen, guide],
   );
+  // Vietnamese name, last word in the accent colour ("Sinh Tồn Sông <b>Nước</b>").
+  const words = (def?.nameVi ?? 'TutorCraft').split(' ');
+  const word = words.slice(0, -1).join(' ');
+  const rest = words.slice(-1);
 
   return (
     <GameHUD
       title={
         <>
-          Kayak <b>Rush</b>
-          <span style={{ marginLeft: 8, fontWeight: 600, letterSpacing: 0, textTransform: 'none', opacity: 0.8 }}>{ahead ? 'Đang dẫn' : 'Đang đuổi'}</span>
+          {word} <b>{rest.join(' ')}</b>
+          {p.status && <span style={{ marginLeft: 8, fontWeight: 600, letterSpacing: 0, textTransform: 'none', opacity: 0.8 }}>{p.status}</span>}
         </>
       }
       tools={tools}
       quiet={p.quiet}
       lite={p.tier !== 'high'}
-      move={<SteerPad onSteer={p.onSteer} />}
-      skills={SKILL_IDS.map((id, i) => (
+      docked={p.docked}
+      move={p.move}
+      skills={p.docked ? undefined : SKILL_IDS.map((id, i) => (
         <SkillButton
           key={id}
           icon={SKILL_ICONS[id]}

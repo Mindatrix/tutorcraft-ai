@@ -34,12 +34,14 @@ export interface GameHUDProps {
   quiet?: boolean;
   /** No backdrop blur (weak phones, 2D tier). */
   lite?: boolean;
+  /** Toolbar above the stage instead of over it (2D worlds draw their own bars at the top). */
+  docked?: boolean;
   /** Open a panel from outside (e.g. the guide on the first visit). */
   openPanel?: string | null;
   onPanelChange?: (id: string | null) => void;
 }
 
-export default function GameHUD({ title, tools, move, skills, quiet, lite, openPanel, onPanelChange }: GameHUDProps) {
+export default function GameHUD({ title, tools, move, skills, quiet, lite, docked, openPanel, onPanelChange }: GameHUDProps) {
   const s = useHudSettings();
   const [open, setOpen] = useState<string | null>(null);
   const shown = openPanel !== undefined ? openPanel : open;
@@ -67,7 +69,7 @@ export default function GameHUD({ title, tools, move, skills, quiet, lite, openP
   const runTool = (t: HudTool) => (t.panel ? setShown(t.id) : (setShown(null), t.onClick?.()));
   const tool = tools.find((t) => t.id === shown && t.panel);
   const style = { '--hud-scale': s.fontScale, '--hud-size': `${BUTTON_PX[s.buttonSize]}px`, '--hud-size-base': `${BUTTON_PX[s.buttonSize]}px`, '--hud-opacity': s.controlOpacity } as CSSProperties;
-  const cls = ['tc-hud', s.moveHand === 'right' ? 'tc-hud-swap' : '', quiet ? 'tc-hud-quiet' : '', lite ? 'tc-hud-lite' : '', s.toolbarLabels ? 'tc-hud-labels' : ''].filter(Boolean).join(' ');
+  const cls = ['tc-hud', s.moveHand === 'right' ? 'tc-hud-swap' : '', quiet ? 'tc-hud-quiet' : '', lite ? 'tc-hud-lite' : '', docked ? 'tc-hud-docked' : '', s.toolbarLabels ? 'tc-hud-labels' : ''].filter(Boolean).join(' ');
 
   return (
     <div ref={root} className={cls} style={style}>

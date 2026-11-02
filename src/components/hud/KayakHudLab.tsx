@@ -2,7 +2,8 @@
 
 import { useEffect, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
-import KayakHUD from './KayakHUD';
+import ArenaHUD, { raceStanding } from './ArenaHUD';
+import { SteerPad } from './GameHUD';
 import { BRIGHTNESS_FILTER, useHudSettings } from '../../client/hudSettings';
 import { initAudio, setSoundPlace, stopSound } from '../../client/audio';
 import { initSfx } from '../../client/sfx';
@@ -64,7 +65,11 @@ export default function KayakHudLab() {
         <div className="absolute inset-0" style={hud.brightness === 3 ? undefined : { filter: `brightness(${BRIGHTNESS_FILTER[hud.brightness]})` }}>
           <KayakRush key={tier} playerPos={race.player} botPos={race.bot} heroName="Minh An" botName="Bot Dễ" event={null} finished={false} result={null} tier={tier === 'low' ? 'low' : 'high'} steer={steer} hideRank />
         </div>
-        <KayakHUD
+        <ArenaHUD
+          game="kayak_rush"
+          status={race.player >= race.bot ? 'Đang dẫn' : 'Đang đuổi'}
+          standing={raceStanding('Minh An', race.player, 'Bot Dễ', race.bot)}
+          move={<SteerPad onSteer={(x) => (steer.current = x)} />}
           playerName="Minh An"
           avatar="🦊"
           levelText="Dễ · A1"
@@ -72,12 +77,8 @@ export default function KayakHudLab() {
           combo={race.combo}
           correct={race.correct}
           total={20}
-          playerPos={race.player}
-          botPos={race.bot}
-          botName="Bot Dễ"
           canCast
           onCast={cast}
-          onSteer={(x) => (steer.current = x)}
           quiet={quiet}
           tier={tier}
           onTier={(t) => {

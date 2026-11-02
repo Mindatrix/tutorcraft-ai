@@ -53,6 +53,7 @@ const Multiverse = dynamic(() => import('../../../src/components/modes/Multivers
 const TeacherBoard = dynamic(() => import('../../../src/components/TeacherBoard'), { ssr: false });
 const QuestionLab = dynamic(() => import('../../../src/components/question/QuestionLab'), { ssr: false });
 const KayakHudLab = dynamic(() => import('../../../src/components/hud/KayakHudLab'), { ssr: false });
+const BossHudLab = dynamic(() => import('../../../src/components/hud/BossHudLab'), { ssr: false });
 import type { BoardStats } from '../../../src/components/TeacherBoard';
 import AvatarPicker from '../../../src/components/AvatarPicker';
 import type { Look, MatchView } from '../../../src/engine';
@@ -121,7 +122,7 @@ export default function SceneLab() {
   const [seed, setSeed] = useState(20261027);
   const [level, setLevel] = useState(3);
   const [mount, setMount] = useState(0);
-  const [view, setView] = useState<'river' | 'cast' | 'board' | 'picker' | 'multiverse' | 'question' | 'hud'>('river');
+  const [view, setView] = useState<'river' | 'cast' | 'board' | 'picker' | 'multiverse' | 'question' | 'hud' | 'hud2'>('river');
   const [hud, setHud] = useState<Hud | null>(null);
   const [leak, setLeak] = useState<string | null>(null);
   const api = useRef<LabApi | null>(null);
@@ -176,6 +177,7 @@ export default function SceneLab() {
           <option value="multiverse">Multiverse (kiểm tách lõi)</option>
           <option value="question">Khung hỏi + RainbowEdge (C4)</option>
           <option value="hud">HUD Kayak (WP10)</option>
+          <option value="hud2">HUD 5 game còn lại (WP10)</option>
         </select>
         {(view === 'river' || view === 'cast') && (
           <select className={field} value={scenarioId} onChange={(e) => setScenarioId(e.target.value)}>
@@ -289,6 +291,7 @@ export default function SceneLab() {
         {view === 'picker' && <PickerStage />}
         {view === 'question' && <QuestionLab key={`q-${mount}`} tier={tier} />}
         {view === 'hud' && <KayakHudLab key={`hud-${mount}`} />}
+        {view === 'hud2' && <BossHudLab key={`hud2-${mount}`} />}
         {hud && (
           <pre className="pointer-events-none absolute left-2 top-2 max-w-[calc(100%-1rem)] whitespace-pre-wrap bg-black/70 p-2 text-[11px] leading-4 text-emerald-200">
             {[

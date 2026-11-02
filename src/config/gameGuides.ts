@@ -1,5 +1,5 @@
 // How-to-play text per game (WP10, 02/11/2026). Opened from the toolbar ("Cách chơi").
-// Kayak only for now; U4 moves this to content/game_guides.json for every game.
+// The six games; U4 moves this to content/game_guides.json (content side can then edit it).
 
 export interface GameGuide {
   goal: string;
@@ -8,11 +8,44 @@ export interface GameGuide {
   tips: string[];
 }
 
+const SHARED_CONTROLS = ['Trả lời câu hỏi ở khung bên dưới cảnh.', 'Kỹ năng: nút tròn bên phải cảnh (bản 3D) hoặc các nút dưới câu hỏi; phím 1, 2, 3 trên máy tính.', 'Thanh công cụ trên cùng: âm thanh, cài đặt, cách chơi, rời trận.'];
+const SHARED_SKILLS = ['Khiên: chặn hình phạt của một lần trả lời sai.', 'Đóng băng: dừng đồng hồ 30 giây để suy nghĩ.', 'Mắt thần: bỏ bớt 2 đáp án sai.'];
+
 export const GAME_GUIDES: Record<string, GameGuide> = {
   kayak_rush: {
     goal: 'Về đích trước thuyền máy. Mỗi câu trả lời đúng là một nhịp chèo mạnh về phía trước; trả lời đúng và nhanh thì thuyền bứt tốc.',
     controls: ['Lái thuyền: phím A / D hoặc ← / →; trên điện thoại kéo thanh lái ở góc dưới bên trái.', 'Trả lời câu hỏi ở khung bên dưới cảnh sông.', 'Kỹ năng: bấm nút tròn bên phải, hoặc phím 1, 2, 3.'],
     skills: ['Khiên: chặn hình phạt của một lần trả lời sai.', 'Đóng băng: dừng đồng hồ 30 giây để suy nghĩ.', 'Mắt thần: bỏ bớt 2 đáp án sai.'],
     tips: ['Kỹ năng tốn MP; MP tăng khi trả lời đúng.', 'Sai không bị trừ xu, cứ bình tĩnh đọc kỹ câu hỏi.', 'Muốn nghe rõ câu hỏi hơn: tắt nhạc ở nút Âm thanh, hiệu ứng vẫn còn.'],
+  },
+  multiverse_portal: {
+    goal: 'Cùng nữ chiến binh Scarlet đánh bại Boss. Mỗi câu trả lời đúng là một nhát chém; Boss yếu đi thì vết nứt không gian mở sang thế giới mới.',
+    controls: SHARED_CONTROLS,
+    skills: SHARED_SKILLS,
+    tips: ['Trả lời đúng liên tiếp để ra đòn mạnh hơn.', 'Boss sang hình dạng thứ hai khi còn một nửa máu: đọc câu hỏi chậm lại.', 'Sai không bị trừ xu.'],
+  },
+  summer_camp: {
+    goal: 'Hoàn thành nhiệm vụ trại hè bên sông: dựng lều, nhóm lửa, nướng xiên, lọc nước. Mỗi câu đúng mở khóa một công cụ dã ngoại.',
+    controls: SHARED_CONTROLS,
+    skills: SHARED_SKILLS,
+    tips: ['Thanh "Nhiệm vụ trại" giảm dần khi em trả lời đúng; về 0 là xong trại.', 'Giữ thanh "Năng lượng" bằng cách trả lời cẩn thận.', 'Sai không bị trừ xu.'],
+  },
+  river_fishing: {
+    goal: 'Đứng trên thuyền nhỏ, quăng cần và kéo cá. Trả lời đúng để nâng cần, đổi mồi và bắt được cá hiếm.',
+    controls: SHARED_CONTROLS,
+    skills: SHARED_SKILLS,
+    tips: ['"Độ bền dây" giảm khi trả lời sai: dùng Khiên để giữ dây.', 'Cá khủng hết sức là lên thuyền.', 'Sai không bị trừ xu.'],
+  },
+  river_survival: {
+    goal: 'Thoát khỏi trại, giải mật mã, lẩn trốn trong bụi cây; cướp công cụ của đội Săn Tìm để đuổi ngược và giải cứu đồng đội.',
+    controls: SHARED_CONTROLS,
+    skills: SHARED_SKILLS,
+    tips: ['Giữ "Sức bền": trả lời đúng để đội Săn Tìm yếu đi.', 'Đóng băng thời gian khi gặp câu dài.', 'Sai không bị trừ xu.'],
+  },
+  dino_journey: {
+    goal: 'Khủng long con theo bố đi săn, tìm nước, vượt đêm bão; cuối hành trình đứng lên bảo vệ người cha già. Mỗi câu đúng giúp cả bầy vượt thử thách.',
+    controls: SHARED_CONTROLS,
+    skills: SHARED_SKILLS,
+    tips: ['"Sức khỏe của bầy" giảm khi trả lời sai.', 'Cả lớp là một bầy: mỗi em trả lời đúng đều giúp bầy.', 'Sai không bị trừ xu.'],
   },
 };

@@ -47,7 +47,8 @@ import Scenery from './scenery/Scenery';
 import ModeStage, { StageFrame } from './modes/ModeStage';
 import { readTier, saveTier, type RenderTier } from './modes/gfxTier';
 import SubtitleBar from './modes/SubtitleBar';
-import KayakHUD from './hud/KayakHUD';
+import ArenaHUD, { raceStanding } from './hud/ArenaHUD';
+import { SteerPad } from './hud/GameHUD';
 import { BRIGHTNESS_FILTER, useHudSettings } from '../client/hudSettings';
 
 // Three.js is heavy: load it only when a Boat Race actually starts.
@@ -456,6 +457,9 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
   const router = useRouter();
   const hud = useHudSettings();
   const kayakHud = isRace && renderer === 'three' && phase === 'playing';
+  // Boss worlds (WP10): the stage reports its renderer; on 3D the HUD carries the skills.
+  const [stageTier, setStageTier] = useState<RenderTier>('2d');
+  const bossHud3d = !isRace && gamified && phase === 'playing' && stageTier !== '2d';
   useEffect(() => (questionOpen ? holdDuck() : undefined), [questionOpen]);
 
   const openChest = () => {
@@ -579,7 +583,11 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
               <KayakRush playerPos={race.playerPos} botPos={race.botPos} heroName={playerName} botName={`Bot ${levelLabel(config.level)}`} event={display.event} finished={phase === 'result'} result={final?.race?.result ?? null} tier={renderTier === 'low' ? 'low' : 'high'} onLowQuality={lower3d} onUnavailable={no3d} steer={steer} hideRank={kayakHud} />
             </div>
             {kayakHud && (
-              <KayakHUD
+              <ArenaHUD
+                game="kayak_rush"
+                status={race.playerPos >= race.botPos ? 'Đang dẫn' : 'Đang đuổi'}
+                standing={raceStanding(playerName, race.playerPos, `Bot ${levelLabel(config.level)}`, race.botPos)}
+                move={<SteerPad onSteer={(x) => (steer.current = x)} />}
                 playerName={playerName}
                 avatar={avatar}
                 levelText={levelLabel(config.level)}
@@ -587,12 +595,8 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
                 combo={display.combo}
                 correct={race.playerCorrect}
                 total={race.total}
-                playerPos={race.playerPos}
-                botPos={race.botPos}
-                botName={`Bot ${levelLabel(config.level)}`}
                 canCast={!feedback && !pending && !halted}
                 onCast={(id) => void cast(id)}
-                onSteer={(x) => (steer.current = x)}
                 quiet={questionOpen}
                 tier={renderTier}
                 onTier={(t) => {
@@ -669,6 +673,30 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
                 onPickOption: phase === 'playing' && question?.type === 'mcq' && !feedback && !pending ? (i) => void submit({ chosenIdx: i }) : undefined,
                 onFocusQuestion: () => document.getElementById('tc-question')?.scrollIntoView({ behavior: 'smooth', block: 'center' }),
               }}
+              onTier={setStageTier}
+              hud={
+                phase === 'playing'
+                  ? {
+                      standingLabel: 'Tiến độ',
+                      standing: [
+                        { name: 'Câu đã trả lời', value: `${display.answers.length}/${view?.totalQuestions ?? battle.totalQuestions}`, me: true },
+                        { name: GAME_MODES[world].hud.boss, value: `${Math.round((display.bossHp / Math.max(1, scaling.bossHp)) * 100)}% còn lại` },
+                        { name: GAME_MODES[world].hud.hero, value: `${Math.round((display.hp / Math.max(1, scaling.playerHp)) * 100)}%` },
+                      ],
+                      playerName,
+                      avatar,
+                      levelText: levelLabel(config.level),
+                      mp: display.mp,
+                      combo: display.combo,
+                      correct: display.correct,
+                      total: view?.totalQuestions ?? battle.totalQuestions,
+                      canCast: !feedback && !pending && !halted,
+                      onCast: (id) => void cast(id),
+                      quiet: questionOpen,
+                      onLeave: () => router.push('/student'),
+                    }
+                  : undefined
+              }
             />
           );
         })()}
@@ -744,7 +772,7 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
               </div>
             )}
 
-            {gamified && !kayakHud && (
+            {gamified && !kayakHud && !bossHud3d && (
               <div className={`border rounded-2xl p-3 space-y-3 ${card}`}>
                 <div className="flex items-center gap-2 text-xs font-bold text-sky-400">
                   <Zap className="w-3.5 h-3.5" /> MP {display.mp} / {MAX_MP}
