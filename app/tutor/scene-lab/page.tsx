@@ -61,6 +61,7 @@ const TeacherBoard = dynamic(() => import('../../../src/components/TeacherBoard'
 const QuestionLab = dynamic(() => import('../../../src/components/question/QuestionLab'), { ssr: false });
 const KayakHudLab = dynamic(() => import('../../../src/components/hud/KayakHudLab'), { ssr: false });
 const BossHudLab = dynamic(() => import('../../../src/components/hud/BossHudLab'), { ssr: false });
+const PhoneticStonesStage = dynamic(() => import('../../../src/components/modes/PhoneticStonesStage'), { ssr: false });
 import type { BoardStats } from '../../../src/components/TeacherBoard';
 import AvatarPicker from '../../../src/components/AvatarPicker';
 import type { Look, MatchView } from '../../../src/engine';
@@ -129,7 +130,7 @@ export default function SceneLab() {
   const [seed, setSeed] = useState(20261027);
   const [level, setLevel] = useState(3);
   const [mount, setMount] = useState(0);
-  const [view, setView] = useState<'river' | 'cast' | 'board' | 'picker' | 'multiverse' | 'question' | 'hud' | 'hud2'>('river');
+  const [view, setView] = useState<'river' | 'cast' | 'board' | 'picker' | 'multiverse' | 'question' | 'hud' | 'hud2' | 'stones'>('river');
   const [hud, setHud] = useState<Hud | null>(null);
   const [leak, setLeak] = useState<string | null>(null);
   const api = useRef<LabApi | null>(null);
@@ -174,7 +175,7 @@ export default function SceneLab() {
           value={view}
           onChange={(e) => {
             setHud(null);
-            setView(e.target.value as 'river' | 'cast' | 'board' | 'picker' | 'multiverse' | 'question');
+            setView(e.target.value as 'river' | 'cast' | 'board' | 'picker' | 'multiverse' | 'question' | 'hud' | 'hud2' | 'stones');
           }}
         >
           <option value="river">Thế giới sông / đồng cỏ</option>
@@ -185,6 +186,7 @@ export default function SceneLab() {
           <option value="question">Khung hỏi + RainbowEdge (C4)</option>
           <option value="hud">HUD Kayak (WP10)</option>
           <option value="hud2">HUD 5 game còn lại (WP10)</option>
+          <option value="stones">Đá Phát Âm 3D + Pet (WP Voice)</option>
         </select>
         {(view === 'river' || view === 'cast') && (
           <select className={field} value={scenarioId} onChange={(e) => setScenarioId(e.target.value)}>
@@ -299,6 +301,7 @@ export default function SceneLab() {
         {view === 'question' && <QuestionLab key={`q-${mount}`} tier={tier} />}
         {view === 'hud' && <KayakHudLab key={`hud-${mount}`} />}
         {view === 'hud2' && <BossHudLab key={`hud2-${mount}`} />}
+        {view === 'stones' && <PhoneticStonesStage key={`stones-${mount}-${tier}-${level}`} tier={tier} level={level} className="h-full w-full" />}
         {hud && (
           <pre className="pointer-events-none absolute bottom-2 left-2 z-30 max-w-[calc(100%-1rem)] whitespace-pre-wrap bg-black/70 p-2 text-[11px] leading-4 text-emerald-200">
             {[

@@ -1,6 +1,7 @@
 'use client';
 
 import type { AnswerReveal, BattleScore, BattleState, PublicQuestion, RaceOutcome, SkillId } from '../engine';
+import type { PhoneticStoneTarget, SpeechAttemptRequest, SpeechAttemptResponse, VoiceConfig } from './phoneticStonesMock';
 
 // Thin client for the server-authoritative battle session API.
 
@@ -70,4 +71,8 @@ export const sessionApi = {
     call<ActResponse>('/api/session/pair', { method: 'POST', token, body: JSON.stringify({ questionId, left, right }) }),
   cast: (token: string, skill: SkillId) => call<ActResponse>('/api/session/cast', { method: 'POST', token, body: JSON.stringify({ skill }) }),
   finalize: (token: string) => call<FinalizeResponse>('/api/battle-result', { method: 'POST', token, body: '{}' }),
+  speechTargets: (token: string) =>
+    call<{ voice: VoiceConfig; targets: PhoneticStoneTarget[] }>('/api/session/speech', { method: 'GET', token }),
+  speechAttempt: (token: string, payload: SpeechAttemptRequest) =>
+    call<SpeechAttemptResponse>('/api/session/speech', { method: 'POST', token, body: JSON.stringify(payload) }),
 };
