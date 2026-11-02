@@ -251,6 +251,7 @@ type SpeechAttemptResponse = {
   hint?: 'mouth_shape';    // after the 2nd miss
   coins?: number;          // only present when coins were paid (≥ 0)
   detail?: { wordScore: number; phonemeScore: number; confScore: number | null };   // shadow only
+  effect?: SpeechGameEffect;   // WP8 in-world effect (kayak nitro / decoder clue / portal), see docs/wp8_phonetic_worlds_handoff.md
 };
 ```
 

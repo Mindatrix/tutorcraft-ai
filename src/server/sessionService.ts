@@ -349,6 +349,7 @@ export function createSessionService(deps: SessionDeps) {
         level: ctx.config.level ?? 3,
         questions: ctx.questions,
         answeredIds: state.answers.map((a) => a.questionId),
+        game: ctx.config.gameMode ?? null,
       };
     },
 

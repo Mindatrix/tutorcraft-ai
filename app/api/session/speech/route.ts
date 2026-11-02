@@ -34,8 +34,8 @@ export async function POST(req: Request) {
   const burst = rateLimit(`speech-burst:${sid}`, 2, 1000);
   const byIp = rateLimit(`speech-ip:${clientKey(req)}`, 600, 60_000);
   if (!burst.ok || !byIp.ok) return Response.json({ error: 'Quá nhiều yêu cầu.', reason: 'rate_limited', retryAfterSec: Math.max(burst.retryAfterSec, byIp.retryAfterSec, 1) }, { status: 429 });
-  const perMin = await rateLimitShared(`speech:${sid}`, speechRules().submissionsPerMinute, 60_000);
-  if (!perMin.ok) return Response.json({ error: `Nói chậm lại một chút. Thử lại sau ${perMin.retryAfterSec}s.`, reason: 'rate_limited', retryAfterSec: perMin.retryAfterSec }, { status: 429 });
+  // The shared counter (a database round trip) runs in parallel with reading the body and the session.
+  const perMinP = rateLimitShared(`speech:${sid}`, speechRules().submissionsPerMinute, 60_000);
 
   let body: Record<string, unknown>;
   try {
@@ -46,7 +46,8 @@ export async function POST(req: Request) {
     return Response.json({ error: 'Body không phải JSON hợp lệ.' }, { status: 400 });
   }
   try {
-    const ctx = await sessions.speechContext(token);
+    const [perMin, ctx] = await Promise.all([perMinP, sessions.speechContext(token)]);
+    if (!perMin.ok) return Response.json({ error: `Nói chậm lại một chút. Thử lại sau ${perMin.retryAfterSec}s.`, reason: 'rate_limited', retryAfterSec: perMin.retryAfterSec }, { status: 429 });
     return Response.json(await speechService().submit(ctx, body), { headers: noStore });
   } catch (e) {
     return speechErrorResponse(e) ?? sessionErrorResponse(e);

@@ -10,9 +10,11 @@ import {
   scoreRepeat,
   scoreSpeech,
   speechAttemptOutcome,
+  speechGameEffect,
   speechTargetsFor,
   type Question,
   type SpeechAlternative,
+  type SpeechGameEffect,
   type SpeechMode,
   type SpeechRules,
   type SpeechTarget,
@@ -153,6 +155,8 @@ export interface SpeechContext {
   level: number;
   questions: Question[];
   answeredIds: number[];
+  /** The battle's game world (`config.gameMode`), for the in-world effect (WP8). */
+  game?: string | null;
 }
 
 export type SpeechRefusal = 'too_short' | 'no_attempts_left' | 'voice_disabled' | 'unknown_target';
@@ -172,6 +176,8 @@ export interface SpeechReply {
   hint?: 'mouth_shape';
   coins?: number;
   detail?: { wordScore: number; phonemeScore: number; confScore: number | null };
+  /** WP8: what this attempt does in the game world (nitro, decoder clue, portal). Decided here. */
+  effect?: SpeechGameEffect;
 }
 
 export interface VoiceConfig {
@@ -304,7 +310,8 @@ export function createSpeechService(deps: {
 
       // Coins: only the step up to a better star level, never for a flagged attempt, never negative.
       let coins: number | undefined;
-      const svc = deps.rewards();
+      // The demo is never stored: no coins (a demo session must not create wallets in the database).
+      const svc = isDemoBattleId(ctx.battleId) ? null : deps.rewards();
       if (svc && outcome.coins > 0 && !flags.length) {
         try {
           const paid = await svc.speech({ studentKey: ctx.studentKey, sessionId: ctx.sessionId, matchId: ctx.matchId, targetId, stars: outcome.bestStars, coins: outcome.coins });
@@ -313,6 +320,18 @@ export function createSpeechService(deps: {
           console.warn('speech coins skipped:', (e as Error).message);
         }
       }
+
+      // WP8: the in-world effect. A target is "done" once passed or completed by listen-and-repeat.
+      const done = (x: { passed: boolean; mode: SpeechMode }) => x.passed || x.mode === 'repeat';
+      const effect = speechGameEffect({
+        game: ctx.game,
+        success: mode === 'repeat' || scored.passed,
+        prevBestStars: best.bestStars,
+        bestStars: outcome.bestStars,
+        alreadyDone: mine.some(done),
+        doneBefore: new Set(rows.filter((x) => x.targetId !== targetId && done(x)).map((x) => x.targetId)).size,
+        flagged: flags.length > 0,
+      });
 
       return {
         targetId,
@@ -328,6 +347,7 @@ export function createSpeechService(deps: {
         ...(outcome.hint ? { hint: outcome.hint } : {}),
         ...(coins !== undefined ? { coins } : {}),
         ...(scored.detail ? { detail: scored.detail } : {}),
+        ...(effect ? { effect } : {}),
       };
     },
   };
