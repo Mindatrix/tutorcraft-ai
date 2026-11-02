@@ -1,6 +1,6 @@
 # TutorCraft AI: trạng thái dự án
 
-Cập nhật: 03/11/2026. Nhánh `feat/3d-lego-engine`, đã push lên `origin` (đồng bộ). Đã gộp PR #1 của Antigravity (Đá Phát Âm 3D, `agy/phonetic-stones-ui`). Backend phát âm đã xong; migration `speech_attempts` đã áp lên database (03/11) và đã kiểm (mục 7.1).
+Cập nhật: 03/11/2026. Nhánh `feat/3d-lego-engine`. Đã gộp PR #1, #3 (Antigravity) và #2 (Jules). Backend phát âm xong, migration `speech_attempts` đã áp và kiểm. WP8 Đá Phát Âm: **phía server xong cho cả 6 thế giới, phần đặt đá trong cảnh 3D chưa** (mục 7.1). Có công cụ thử tải giọng nói 50 học sinh (`scripts/speech-load-test.mjs`).
 
 Tài liệu này tổng hợp bối cảnh, tiến độ, cấu trúc thư mục và các việc đang dở. Chi tiết vận hành (số đo, lệnh, quy trình) nằm trong `docs/operations.md`. Các đặc tả nằm trong `docs/specs/`. Bản trước của file này (01/11) là commit `104ee00`.
 
@@ -100,7 +100,9 @@ WP2 → WP1 → **U0 → U1+U2** → WP3–WP5 → **U3, U4** → WP6 → WP7 �
 | U6 | Viết lại demo chơi thử | **Xong** `cae867d` |
 | U7 | Responsive 5 cỡ màn hình | **Xong** `6130d4d` |
 | Phát âm (backend) | Bộ chấm điểm, `speech_attempts`, `/api/session/speech`, `content/speech_rules.json` (xu 0/3/5/8) | **Xong** `bb86db0`, `84b71e6`. Migration đã áp và kiểm 03/11 |
-| Phát âm (UI) | Đá Phát Âm 3D + Pet + HUD, chạy bằng dữ liệu giả trong scene-lab | **Đã gộp** PR #1 Antigravity; chưa nối route thật |
+| Phát âm (UI) | Đá Phát Âm 3D + Pet + HUD; luật Bảng nhiệm vụ trại hè, hệ số cân cá | **Đã gộp** PR #1, #3 Antigravity; chỉ chạy trong scene-lab, chưa nối route thật |
+| WP8 Đá Phát Âm (server) | Hiệu ứng do server quyết: Nitro Kayak, manh mối Thợ giải mã (Chuồng Gỗ → Lưới), mở cổng Multiverse + Lumi; `src/engine/speechGameEffects.ts`, trường `effect` trong `/api/session/speech` | **Xong** (03/11) |
+| WP8 Đá Phát Âm (3D) | Đặt đá vào phao Kayak, khu rừng River Survival, bệ thờ Multiverse; nối 5 thế giới vào trận thật | **Chưa** — giao Antigravity, `docs/wp8_phonetic_worlds_handoff.md` |
 | U8 | Màn chờ + chọn nhân vật theo game | Chưa. Chờ chốt phạm vi |
 | WP5 | Nhân vật một mô hình nhiều vai (`character_casting.json`) | Chưa |
 | WP6 | Multiverse RoomKit, D6 | Chưa (đã có dải thẻ không gian từ U3) |
@@ -113,7 +115,8 @@ WP2 → WP1 → **U0 → U1+U2** → WP3–WP5 → **U3, U4** → WP6 → WP7 �
 - **Tài nguyên:** catalog 332 model; mã kịch bản gọi 280, có file 273, **thiếu 7** (`anim_cook`, `food_fish_raw`, `food_sausage`, `tex_mud`, `tex_sand`, `water_foam`, `water_normal`). Trước đợt 01/11 thiếu 41.
 - **Dung lượng trận nặng nhất:** `dino-01` 37,9 MB (cao) / 13,5 MB (thấp), dưới ngân sách 40 / 15 MB. Cảnh thấp nặng nhất < 300 nghìn tam giác.
 - **Âm thanh:** nhạc nén 56 → 11 MB; 81 file.
-- **Test (03/11, sau khi gộp PR #1):** 195 đạt, 0 hỏng, 2 bỏ qua (2 test độ phủ model tạm `skip` kèm TODO, chờ Claude chat gán kịch bản cho 23 model). Type check sạch; lint 0 lỗi (49 cảnh báo cũ); `test:security` 30/30 trên bản build production.
+- **Thử tải giọng nói (03/11, bản build production trên máy, 50 học sinh × 60 s × 6 lượt/phút, cùng một IP lớp):** 333 lượt, p50 193 ms, p95 236 ms, p99 294 ms (mục tiêu p95 ≤ 200 ms chưa đạt: sàn là một vòng gọi Supabase ~200 ms cho bộ đếm giới hạn dùng chung); 0 lỗi, 0 lượt 429 với học sinh đúng nhịp; học sinh gửi nhanh bị chặn đúng ở lượt thứ 7; RSS server 67 → đỉnh 183 MB → 64 MB. Chưa đo ghi `speech_attempts`/`coin_ledger` dưới tải (cần một trận thật, sẽ ghi dữ liệu thật).
+- **Test (03/11, sau khi gộp PR #1–#3 và WP8 server):** 225 đạt, 0 hỏng, 2 bỏ qua (2 test độ phủ model tạm `skip` kèm TODO, chờ Claude chat gán kịch bản cho 23 model). Type check sạch; lint 0 lỗi (49 cảnh báo cũ); `test:security` 30/30 trên bản build production.
 
 ## 5. Commit gần nhất
 
@@ -232,8 +235,11 @@ Thay game mới.pdf            yêu cầu giao diện WP10 (14 trang)
   - có index `speech_attempts_lookup`, ràng buộc 3 lượt mỗi mục, khoá ngoại tới `battle_sessions`;
   - `coin_ledger_reason_check` và `coin_apply` đã nhận `'speech'`; chỉ `service_role` gọi được `coin_apply`.
   - Thử bằng khóa anon: đọc ra rỗng, ghi bị từ chối (401), gọi `coin_apply` bị từ chối (401).
-- **Jules:** chưa có nhánh `jules/*` hay PR nào (03/11); `tests/pronunciation.test.ts` chưa có.
-- **Antigravity:** UI đá phát âm mới chạy bằng dữ liệu giả trong `/tutor/scene-lab` (mục "Đá Phát Âm 3D + Pet"); `sessionApi.speechTargets/speechAttempt` đã có nhưng chưa được gọi. Bộ chấm giả lập dùng `DEFAULT_SPEECH_RULES` (xu 0), khác xu thật 0/3/5/8.
+- **Jules (PR #2, đã gộp):** test của Jules được viết lại để kiểm bộ chấm thật (Jules tự viết một bộ chấm song song); bắt được lỗi số 21–29.
+- **Antigravity (PR #1, #3, đã gộp):** Đá Phát Âm chỉ chạy trong `/tutor/scene-lab`. 2 dòng nối vào trận thật Summer Camp / River Fishing (`ModeStage.tsx`) đã bị giữ lại vì trong trận vẫn dùng dữ liệu giả: micro luôn bật, từ cứng, điểm và xu tính trong trình duyệt, nút debug hiện cho học sinh. Điều kiện để nối: mục 4 của `docs/wp8_phonetic_worlds_handoff.md`.
+- **WP8 3D (Antigravity):** đặt đá theo `docs/wp8_phonetic_worlds_handoff.md`; còn một chỗ cấp phát mỗi lần raycast (`intersectObjects` trả mảng mới).
+- **Vai Thợ giải mã:** server chưa có vai theo học sinh (chỉ có đội), nên chưa chặn vai phía server; muốn chặn phải đổi schema (cần duyệt).
+- **Lỗi có từ trước: phiên demo vẫn ghi xu vào database thật qua `/api/session/answer`** (mỗi người chơi demo tạo một ví). Route giọng nói đã sửa (demo không trả xu). Dữ liệu thử của lần thử tải 03/11 còn trên database: ví và dòng xu có `student_key` bắt đầu bằng `ltmvzu` (88 ví, 336 dòng) — chờ người dùng cho phép dọn.
 - **Công tắc giọng nói cho giáo viên:** chưa có (đổi schema, cần duyệt). Hiện chỉ demo bật micro; lớp thật chỉ có gõ chính tả và nghe-nhắc lại.
 
 ### 7.2. Câu hỏi chờ người dùng trả lời
