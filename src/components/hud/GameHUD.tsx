@@ -4,6 +4,7 @@ import { useCallback, useEffect, useId, useRef, useState, type CSSProperties, ty
 import { createPortal } from 'react-dom';
 import { Ellipsis, X, type LucideIcon } from 'lucide-react';
 import { BUTTON_PX, useHudSettings } from '../../client/hudSettings';
+import RainbowEdge from '../fx/RainbowEdge';
 import './hud.css';
 
 // Shared in-game HUD (WP10 U1, 02/11/2026): a frosted toolbar across the top, the movement control
@@ -20,6 +21,8 @@ export interface HudTool {
   onClick?: () => void;
   pressed?: boolean;
   hidden?: boolean;
+  /** Panel framed like the question frame (rainbow edge): the how-to-play guide. */
+  rainbow?: boolean;
 }
 
 export interface GameHUDProps {
@@ -121,7 +124,7 @@ export default function GameHUD({ title, tools, move, skills, quiet, lite, docke
         </HudPanel>
       )}
       {tool?.panel && (
-        <HudPanel title={tool.label} onClose={() => setShown(null)}>
+        <HudPanel title={tool.label} onClose={() => setShown(null)} rainbow={tool.rainbow}>
           {tool.panel()}
         </HudPanel>
       )}
@@ -134,7 +137,7 @@ export default function GameHUD({ title, tools, move, skills, quiet, lite, docke
  * Rendered into the fullscreen element when there is one, else into <body> (the stage frame has a
  * CSS filter, which would trap a fixed panel inside it).
  */
-export function HudPanel({ title, onClose, children, wide }: { title: ReactNode; onClose: () => void; children: ReactNode; wide?: boolean }) {
+export function HudPanel({ title, onClose, children, wide, rainbow }: { title: ReactNode; onClose: () => void; children: ReactNode; wide?: boolean; rainbow?: boolean }) {
   const titleId = useId();
   const box = useRef<HTMLDivElement>(null);
   const [target, setTarget] = useState<Element | null>(null);
@@ -155,17 +158,27 @@ export function HudPanel({ title, onClose, children, wide }: { title: ReactNode;
     };
   }, [onClose, target]);
   if (!target) return null;
+  const panel = (
+    <div ref={box} className={`tc-hud-panel${rainbow ? ' tc-hud-panel-rb' : ''}`} role="dialog" aria-modal="true" aria-labelledby={titleId} style={wide ? { width: 'min(820px, 100%)' } : undefined}>
+      <div className="tc-hud-panel-head">
+        <h2 id={titleId}>{title}</h2>
+        <button type="button" className="tc-hud-close" onClick={onClose} aria-label="Đóng">
+          <X size={18} aria-hidden />
+        </button>
+      </div>
+      {children}
+    </div>
+  );
   return createPortal(
     <div className="tc-hud-scrim" onPointerDown={(e) => e.target === e.currentTarget && onClose()}>
-      <div ref={box} className="tc-hud-panel" role="dialog" aria-modal="true" aria-labelledby={titleId} style={wide ? { width: 'min(820px, 100%)' } : undefined}>
-        <div className="tc-hud-panel-head">
-          <h2 id={titleId}>{title}</h2>
-          <button type="button" className="tc-hud-close" onClick={onClose} aria-label="Đóng">
-            <X size={18} aria-hidden />
-          </button>
-        </div>
-        {children}
-      </div>
+      {rainbow ? (
+        // Same frame as the question frame (C4.1); the CSS version keeps WebGL contexts for the scene.
+        <RainbowEdge mode="css" radius={14} style={{ width: 'min(680px, 100%)' }}>
+          {panel}
+        </RainbowEdge>
+      ) : (
+        panel
+      )}
     </div>,
     target,
   );

@@ -269,7 +269,7 @@ Số đo ngày 27/10 trên Mac (Apple M4), sau khi có 3 cấp chi tiết. Thờ
 - Kiểm: `/tutor/scene-lab` → khối "Âm thanh (WP2)" (chọn nơi, các công tắc, nghe từng tiếng, dòng trạng thái).
 
 ### Giao diện trong game (WP10, 02/11)
-- HUD chung `src/components/hud/` (GameHUD, ArenaHUD, SettingsPanel, MapHud): thanh công cụ kính mờ, kỹ năng phải, điều khiển trái (Kayak: lái), Cài đặt 4 tab (`tc:hud` trong localStorage), Cách chơi (`src/config/gameGuides.ts`). Kayak + Multiverse: HUD phủ cảnh 3D; 4 game còn 2D: thanh công cụ gắn trên khung.
+- HUD chung `src/components/hud/` (GameHUD, ArenaHUD, SettingsPanel, MapHud): thanh công cụ kính mờ, kỹ năng phải, điều khiển trái (Kayak: lái), Cài đặt 4 tab (`tc:hud` trong localStorage), Cách chơi: nội dung `content/game_guides.json` (U4), khung viền cầu vồng như khung câu hỏi, tự mở 1 lần mỗi game (`seen_guide_<game>`); đồng hồ câu hỏi do máy chủ giữ nên vẫn chạy (khung ghi rõ). Kayak + Multiverse: HUD phủ cảnh 3D; 4 game còn 2D: thanh công cụ gắn trên khung.
 - U3: minimap + thanh tọa độ cho Kayak (đường sông dọc, đoạn 20 m tô cam = nhiều chướng ngại, xanh = trống; `src/engine/kayakCourse.ts` dùng chung với cảnh 3D) và thế giới sông/đồng cỏ (bản đồ tròn từ `SceneLayout`, chỉ có trong scene-lab đến khi WP8 đưa cảnh 3D vào trận). Nút "Bản đồ nhỏ" đổi trái ↔ phải; Cài đặt: Trái/Phải/Tắt, thanh tọa độ Hiện/Ẩn. Multiverse không có.
 - Kiểm: `/tutor/scene-lab` → "HUD Kayak (WP10)", "HUD 5 game còn lại (WP10)", "Thế giới sông / đồng cỏ". Ảnh: `3D_tutorcraft/_report/ui/2026-11-02/`.
 

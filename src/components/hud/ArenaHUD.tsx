@@ -1,9 +1,9 @@
 'use client';
 
-import { useMemo, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { CircleHelp, Eye, LogOut, Map as MapIcon, Maximize, Minimize, Settings, Shield, Snowflake, Sparkles, Trophy, UserRound, Volume2, VolumeX } from 'lucide-react';
 import { GAME_MODES, MAX_MP, SKILLS, SKILL_IDS, type GameMode, type SkillId } from '../../engine';
-import { GAME_GUIDES } from '../../config/gameGuides';
+import { GAME_GUIDES, firstGuideVisit, markGuideSeen } from '../../config/gameGuides';
 import { useSoundSwitches } from '../../client/audio';
 import { setHudSettings, useHudSettings } from '../../client/hudSettings';
 import GameHUD, { SkillButton, type HudTool } from './GameHUD';
@@ -61,6 +61,11 @@ export interface ArenaHUDProps {
 export default function ArenaHUD(p: ArenaHUDProps) {
   const sound = useSoundSwitches();
   const hs = useHudSettings();
+  // U4: the guide opens by itself the first time a player enters this game on this device.
+  const [panel, setPanel] = useState<string | null>(() => (typeof window !== 'undefined' && firstGuideVisit(p.game) ? 'guide' : null));
+  useEffect(() => {
+    if (panel === 'guide') markGuideSeen(p.game);
+  }, [panel, p.game]);
   const [full, setFull] = useState(false);
   const canFullscreen = typeof document !== 'undefined' && !!document.fullscreenEnabled;
   const guide = GAME_GUIDES[p.game] ?? GAME_GUIDES.kayak_rush;
@@ -110,8 +115,10 @@ export default function ArenaHUD(p: ArenaHUDProps) {
         id: 'guide',
         label: 'Cách chơi',
         icon: CircleHelp,
+        rainbow: true,
         panel: () => (
           <div className="tc-hud-panel-body">
+            <p className="tc-hud-note">Đồng hồ câu hỏi vẫn chạy khi khung này mở. Đọc xong bấm Đóng hoặc phím Esc.</p>
             <h3>Mục tiêu</h3>
             <p style={{ margin: 0 }}>{guide.goal}</p>
             <h3>Điều khiển</h3>
@@ -193,6 +200,8 @@ export default function ArenaHUD(p: ArenaHUDProps) {
         </>
       }
       tools={tools}
+      openPanel={panel}
+      onPanelChange={setPanel}
       quiet={p.quiet}
       lite={p.tier !== 'high'}
       docked={p.docked}

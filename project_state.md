@@ -1,8 +1,8 @@
 # TutorCraft AI: trạng thái dự án
 
-Cập nhật: 01/11/2026. Nhánh `feat/3d-lego-engine`, HEAD `5f4984a`, đi trước `origin/feat/3d-lego-engine` 19 commit (chưa push).
+Cập nhật: 02/11/2026. Nhánh `feat/3d-lego-engine`, HEAD `cdd9d4b`, đi trước `origin/feat/3d-lego-engine` **32 commit** (chưa push). U4 đã làm xong nhưng **chưa commit** (mục 7.1).
 
-Tài liệu này tổng hợp bối cảnh, tiến độ, cấu trúc thư mục và các việc đang dở. Chi tiết vận hành (số đo, lệnh, quy trình) nằm trong `docs/operations.md`. Các đặc tả nằm trong `docs/specs/`.
+Tài liệu này tổng hợp bối cảnh, tiến độ, cấu trúc thư mục và các việc đang dở. Chi tiết vận hành (số đo, lệnh, quy trình) nằm trong `docs/operations.md`. Các đặc tả nằm trong `docs/specs/`. Bản trước của file này (01/11) là commit `104ee00`.
 
 ---
 
@@ -31,6 +31,7 @@ Tài liệu này tổng hợp bối cảnh, tiến độ, cấu trúc thư mục
   | `multiverse_portal` | Multiverse Portal RPG |
 
   Mỗi kịch bản có 8 chặng (6 chặng chính + 2 chặng kéo dài) và 12 nhân vật truyện. Tổng cộng 360 nhân vật.
+- **Hiện trạng chơi được:** Kayak Rush và Multiverse có cảnh 3D trong trận. Bốn game còn lại (Summer Camp, River Fishing, River Survival, Dino Journey) trong trận vẫn là khung 2D; thế giới 3D của chúng (sông / đồng cỏ) mới chạy trong `/tutor/scene-lab` và sẽ vào trận ở WP8.
 - **Câu hỏi:** có 6 dạng bài, chấm theo rubric AI; 7 cấp độ (Beginner = cấp 0 tới cấp 6); có phụ đề truyện theo cấp. Phần nội dung câu hỏi làm chung với bên nội dung (Claude chat).
 
 ## 2. Công nghệ và hạ tầng
@@ -38,15 +39,16 @@ Tài liệu này tổng hợp bối cảnh, tiến độ, cấu trúc thư mục
 | Phần | Chi tiết |
 |---|---|
 | Khung | Next.js **16.4.2** (App Router, Turbopack, `proxy.ts` thay middleware, `cacheComponents`, `RouteContext`). Bản này khác bản cũ: đọc `node_modules/next/dist/docs/` trước khi viết code đặc thù Next (xem `AGENTS.md`) |
-| Giao diện | React 19.3, Tailwind 4. Turbopack biến mọi file `.css` thành CSS toàn cục (CSS module không chạy), nên dùng tiền tố `tc-rb-`, `tc-qf-` |
+| Giao diện | React 19.3, Tailwind 4. Turbopack biến mọi file `.css` thành CSS toàn cục (CSS module không chạy), nên dùng tiền tố `tc-hud-`, `tc-rb-`, `tc-qf-`. Luật lint React 19: không đọc/ghi ref trong lúc render, không `setState` trong effect (dùng điều chỉnh lúc render hoặc `useSyncExternalStore`) |
 | 3D | three.js 0.170; lõi chung `SceneRuntime`; instancing; 3 cấp chi tiết avatar; bầu trời HDRI |
-| Cơ sở dữ liệu | Supabase project `zzkwcjakdoprxurtapen`. 23 bảng đều bật RLS; 25 migration đã áp (mới nhất `20261027161930 coins_seasons`). Repo có 14 file trong `supabase/migrations/` (đặt tên theo ngày giờ Việt Nam). Migration áp qua MCP `apply_migration` |
+| Âm thanh | 3 bus (nhạc / hiệu ứng / nền) trong `src/client/audio.ts`, file MP3 từ `content/audio_catalog.json`; âm tổng hợp Web Audio làm đường lùi |
+| Cơ sở dữ liệu | Supabase project `zzkwcjakdoprxurtapen`. 23 bảng đều bật RLS; 25 migration đã áp (mới nhất `20261027161930 coins_seasons`). Repo có 14 file trong `supabase/migrations/`. Migration áp qua MCP `apply_migration`. **Không đổi schema DB** trong đợt hiện tại |
 | Realtime | Kênh `match:<id>`; tin phát qua REST có chữ ký ECDSA P-256; chống phát lại theo `seq`; đồng bộ đồng hồ kiểu NTP |
-| AI | Gemini `gemini-flash-lite-latest`, chờ 20 s. Lỗi thì thử lại 1 lần bằng `gemini-3.1-flash-lite` (20 s), rồi lấy từ kho câu soạn sẵn. Route `generate-battle` đặt `maxDuration = 60` (Vercel Fluid: Hobby tối đa 300 s, Pro 800 s) |
-| Thư viện 3D | Nằm ngoài repo: `~/Documents/3D_tutorcraft` (13 GB; xem `00_HUONG_DAN.md` trong đó). Bản tối ưu: `_optimized` (cao), `_low`, `_mid` (avatar ~5 nghìn mặt), `_fill` / `_fill_low` (cây rải ≤ 8 / 3 nghìn mặt), `hdri/` |
-| CDN | Cloudflare R2, bucket `tutorcraft-assets`, đẩy bằng `scripts/sync-assets-r2.mjs` (27/10: 670 file, 287,8 MB). Thư mục: `web/ 244 · low/ 244 · mid/ 29 · fill/ 74 · fill_low/ 74 · hdri/ 5`. CORS cho `https://tutorcraft-ai.vercel.app` và `http://localhost:3000`. Link đang là r2.dev (giới hạn tốc độ) |
+| AI | Gemini `gemini-flash-lite-latest`, chờ 20 s. Lỗi thì thử lại 1 lần bằng `gemini-3.1-flash-lite` (20 s), rồi lấy từ kho câu soạn sẵn. Route `generate-battle` đặt `maxDuration = 60` |
+| Thư viện 3D | Nằm ngoài repo: `~/Documents/3D_tutorcraft` (xem `00_HUONG_DAN.md` trong đó). Bản tối ưu: `_optimized` (cao), `_low`, `_mid` (avatar), `_fill` / `_fill_low` (cây rải), `_audio_web` (âm thanh MP3), `hdri/`. Catalog: **332 model** |
+| CDN | Cloudflare R2, bucket `tutorcraft-assets`, đẩy bằng `scripts/sync-assets-r2.mjs` (lần cuối 27/10; các file nhập từ 01/11 và âm thanh **chưa đẩy**). Link đang là r2.dev (giới hạn tốc độ) |
 | Triển khai | Vercel (chưa đặt `NEXT_PUBLIC_ASSET_BASE_URL`, chưa có tên miền riêng cho R2) |
-| Biến môi trường | Mẫu trong `.env.example`: `NEXT_PUBLIC_ASSET_BASE_URL`, `R2_*`, các biến Gemini (`GEMINI_PRIMARY_MODEL`, `GEMINI_RETRY_MODEL`, `GEMINI_*_TIMEOUT_MS`). `.env.local` không bao giờ commit, không in khóa |
+| Biến môi trường | Mẫu trong `.env.example`. `.env.local` không bao giờ commit, không in khóa |
 
 **Bảng trong cơ sở dữ liệu:**
 - Nội dung: `game_scenarios` (30), `scenario_characters` (360), `game_worlds`, `difficulty_levels`, `game_rules`, `character_parts`.
@@ -58,82 +60,77 @@ Tài liệu này tổng hợp bối cảnh, tiến độ, cấu trúc thư mục
 
 ## 3. Quy ước làm việc (người dùng đã chốt)
 
-- Báo cáo bằng **tiếng Việt**, ngắn, có số đo. Mỗi mục ghi rõ: xong / chưa / vướng.
-- **KHÔNG push GitHub.** Chỉ commit khi người dùng bảo; mỗi đợt một commit riêng, cuối message có dòng `Co-Authored-By`.
-- Không sửa `content/` và `scripts/scenarios-v2/`, vì phần đó Claude chat lo. Ngoại lệ là khi được cho phép, ví dụ catalog sinh bằng script.
-- Đổi schema (bảng, cột, JSON schema câu hỏi): báo kế hoạch trước, chờ đồng ý.
-- Không xoá file trong thư viện `3D_tutorcraft`. File vô dụng thì chuyển vào `_de_xoa/` để người dùng tự xoá. Sửa file gốc thì sao lưu vào `_backup/` trước.
-- Ngân sách mặt giữ nguyên:
-  - cây rải mỗi chặng 700 nghìn (cao) / 220 nghìn (thấp);
-  - mỗi bản sao cây rải ≤ 8 nghìn / 3 nghìn;
-  - mỗi trận ≤ 40 MB (cao) / 15 MB (thấp).
-- Không tạo tài khoản, không nhập mật khẩu hay khóa thay người dùng. Không gửi email của người dùng đi đâu.
-- Lệnh dán cho người dùng chạy phải ghi rõ là "Terminal trong VS Code" hay "app Terminal của Mac".
-- Lệnh dài chạy nền; không chờ ở tiền cảnh lâu (người dùng từng dừng phiên vì việc này).
+- Báo cáo bằng **tiếng Việt**, ngắn, có số đo. Mỗi gói việc làm xong thì dừng, báo cáo và chờ duyệt rồi mới sang gói sau.
+- **KHÔNG push GitHub.** Chỉ commit khi người dùng nói "commit"; mỗi gói một commit riêng, cuối message có dòng `Co-Authored-By`.
+- **Không bao giờ commit `scripts/meshy-models-extra.mjs`**: file này do người khác sửa.
+- Không sửa `content/` và `scripts/scenarios-v2/` (phần của Claude chat). Ngoại lệ: `content/asset_aliases.json`, file sinh bằng script (catalog, coverage, audio_catalog), và file mới đã được duyệt trong spec (`scene_kits.json`, `game_guides.json`, sắp tới `kayak_rage.json`).
+- Đổi schema (bảng, cột, JSON schema câu hỏi) hoặc bảng xu / cửa hàng: báo kế hoạch trước, chờ đồng ý.
+- Không xoá file trong thư viện `3D_tutorcraft`. File vô dụng thì chuyển vào `_de_xoa/`. Sửa file gốc thì sao lưu vào `_backup/` trước.
+- **Không chạy lại script Meshy** (tốn credit; còn khoảng 380).
+- Ảnh game thương mại trong "Thay game mới.pdf": chỉ học **bố cục**; không chép icon, phông, tên, logo.
+- Ngân sách: cây rải mỗi chặng 700 nghìn / 220 nghìn mặt; cảnh ≤ 1,3 triệu (cao) / 300 nghìn (thấp) tam giác; đồ đi kèm bộ cảnh ≤ 60 nghìn / 20 nghìn mỗi chặng; mỗi trận ≤ 40 MB (cao) / 15 MB (thấp); không GLB bản thấp nào > 25 MB.
+- Không tạo tài khoản, không nhập mật khẩu hay khóa thay người dùng.
+- Lệnh dán cho người dùng chạy phải ghi rõ là "Terminal trong VS Code" hay "app Terminal của Mac". Lệnh dài chạy nền.
 
 ## 4. Lộ trình và tiến độ
 
-Theo tài liệu "Nhiệm vụ phần code" (Claude Docs, đã ghim) và `docs/specs/C4-spec.md`.
+Hai tài liệu điều phối hiện tại: `docs/specs/code-next-steps.md` (WP1–WP9) và `docs/specs/ui-upgrade-spec.md` (WP10, U0–U8). Thứ tự chung (spec §4):
 
-| Giai đoạn | Nội dung | Trạng thái |
+WP2 → WP1 → **U0 → U1+U2** → WP3–WP5 → **U3, U4** → WP6 → WP7 → **U5** → **U6** → **U7** → WP8 → WP9.
+
+| Gói | Nội dung | Trạng thái |
 |---|---|---|
-| A | Thư viện 3D: tối ưu, kiểm Blender, catalog, nạp model theo game; phụ đề 25 kịch bản; bỏ Unity; HDRI 2K ra khỏi git | **Xong** |
-| B | Trận chung cả lớp: đồng hồ máy chủ, lệnh gia sư, sao, đội 60/40, luật Sinh tồn, tin có chữ ký, thử tải 50 máy | **Xong**, đạt cổng 6/6 (27/10) |
-| C | Cảnh 3D dùng chung (`SceneRuntime`, dựng cảnh từ dữ liệu, dấu chân, hiệu ứng), avatar 3 cấp chi tiết, chọn avatar, âm thanh tổng hợp, tắt tiếng lớp, đạo diễn camera, trang thử `/tutor/scene-lab` | **Code xong. Cổng CHƯA đạt:** chờ số đo FPS trên điện thoại thật |
-| C4 | Khung hỏi trong cảnh + RainbowEdge, bộ lập lịch câu hỏi, gợi ý 2 bậc (máy chủ), hệ quả đúng/sai, cứu hộ, xu/điểm/hộp quà/top 3 | **Xong** phần làm được bây giờ (gộp `80c3116`). Còn 4 việc chuyển sang D (mục 7.2) |
-| Đợt tài nguyên 01/11 | Nhập 73 file inbox, giảm nặng, âm thanh, biến thể theo seed, bộ cảnh theo cấp, nhân vật nhiều vai, Multiverse RoomKit | **Chưa bắt đầu** phần Code (mục 7.1) |
-| D | Game đầu tiên làm trọn; D4 kiểm vị trí Sinh tồn; D6 Multiverse (vòng lặp phòng và cổng) | **Chưa bắt đầu.** Chờ cổng C |
-| E | Các game còn lại làm trọn, hệ quả riêng từng game (C4.15) | Chưa |
-| G | Đo trên thiết bị thật (cổng 30 FPS máy yếu) | Đang chờ người dùng |
+| A, B, C, C4 | Thư viện 3D, trận lớp (đạt cổng 6/6), cảnh 3D dùng chung, khung hỏi + xu | **Xong**. Cổng C còn chờ số đo điện thoại |
+| C1 | Nhập 72 file inbox (56 model + 16 clip Mixamo), `promote-candidate.mjs` | **Xong** `b1e0689` |
+| C2 | Giảm nặng theo ngân sách từng file | **Xong** `f1a28d6` (GLB thấp lớn nhất 2,24 MB) |
+| WP2 | Âm thanh thật: 81 file MP3, 3 bus, ducking 8 dB, bước chân theo mặt đất | **Xong** `e9256f3` |
+| WP1 | Nhập đợt 2 (8 model), gỡ đế, bí danh | **Xong** `03620b8`. `food_sausage` ra hình chuối, chưa nhập |
+| WP3 | Biến thể theo seed `pickVariant` | **Xong** `9332428` |
+| WP4 | Bộ cảnh theo cấp độ | **Xong cho `summer_camp`** `dc334eb`; 4 game còn lại chưa |
+| WP10 đọc PDF | Đối chiếu "Thay game mới.pdf" (14 trang, 49 điểm) | **Xong** `4546d17` (`ui-pdf-checklist.md`) |
+| U0 | Slogan của chủ dự án dưới slogan cong, trong meta và og | **Xong** `2670ca0` |
+| U1+U2 | `GameHUD` + Cài đặt trên Kayak | **Xong** `9c7c312` |
+| HUD 6 game | `ArenaHUD` cho mọi game | **Xong** `4ed66dd` |
+| U3 | Minimap + thanh tọa độ; thẻ không gian Multiverse | **Xong** `130ed25`, `cdd9d4b` |
+| U4 | Khung "Cách chơi" viền cầu vồng, tự mở lần đầu | **Xong, chưa commit** |
+| U5 | Thanh Nộ Kayak | Chưa. **Chờ người dùng trả lời** "quá 10" (mục 7.2) |
+| U6 | Viết lại demo chơi thử | Chưa. Cần 20 câu hiện tại đơn từ Claude chat |
+| U7 | Responsive 3 thiết bị (chụp 5 cỡ) | Chưa |
+| U8 | Màn chờ + chọn nhân vật theo game | Chưa. Chờ chốt phạm vi |
+| WP5 | Nhân vật một mô hình nhiều vai (`character_casting.json`) | Chưa |
+| WP6 | Multiverse RoomKit, D6 | Chưa (đã có dải thẻ không gian từ U3) |
+| WP7 | Việc D còn từ C4 | Chưa (một mục đổi schema, phải báo trước) |
+| WP8, WP9 | Từng game làm trọn; F và G | Chưa. WP8 chỉ bắt đầu khi có số đo điện thoại hoặc người dùng nói "qua" |
 
 ### Kết quả đo chính
 
-- **Thử tải pha B** (50 máy × 30 phút, bản production):
-  - 2/42.055 lượt nhận bị lỡ, đều tự bù trong ≤ 3,3 s;
-  - độ trễ trung bình 134 ms (p95 214 ms);
-  - đồng hồ các máy lệch nhau 489 ms; 0 lần lệch chặng;
-  - 10/10 lần kết nối lại giữ đúng điểm; 50/50 điểm khớp;
-  - dồn dập: 95 lần bị chặn 429, không em nào khác bị chặn.
-- **Cảnh sông** `camp-01` chặng 1, 50 em + 12 nhân vật, sau đợt giảm tam giác ngày 27/10:
-  - bản cao 1.571 nghìn tam giác (trước đó 3.672), lượt vẽ bóng 421 nghìn;
-  - bản thấp 432 nghìn (trước đó 739); phần thế giới 161 nghìn, dưới ngân sách 220 nghìn;
-  - cảnh nặng nhất trên 30 kịch bản (chỉ phần thế giới): 1,18 triệu (cao) / 262 nghìn (thấp).
-- **Bộ nhớ ảnh ước lượng:** bản cao ~293 MB (phần lớn là ảnh 1024 px của 12 nhân vật và bầu trời 2K); chế độ máy yếu ~93 MB. Đã có kế hoạch giảm (mục 7.4).
-- **Trên Mac M4:** bản cao 1,0 ms/khung; máy yếu 0,4 ms/khung.
-- **Vào ra cảnh 10 lần:** còn 1 runtime sống, heap 86 → 87 MB.
-- **Nhân vật truyện:**
-  - lặp mô hình trên 30 kịch bản: 59 → 33 lần;
-  - camp-01 dùng 12/12 mô hình khác nhau;
-  - không còn ai đứng chữ T (tay được hạ xuống khi mô hình thiếu clip idle).
-- **Test:** 168/168 đạt (01/11). Lint và type check sạch.
+- **Thử tải pha B** (50 máy × 30 phút): 2/42.055 lượt nhận bị lỡ (tự bù ≤ 3,3 s), trễ trung bình 134 ms (p95 214 ms), 0 lần lệch chặng, 50/50 điểm khớp.
+- **Tài nguyên:** catalog 332 model; mã kịch bản gọi 280, có file 273, **thiếu 7** (`anim_cook`, `food_fish_raw`, `food_sausage`, `tex_mud`, `tex_sand`, `water_foam`, `water_normal`). Trước đợt 01/11 thiếu 41.
+- **Dung lượng trận nặng nhất:** `dino-01` 37,9 MB (cao) / 13,5 MB (thấp), dưới ngân sách 40 / 15 MB. Cảnh thấp nặng nhất < 300 nghìn tam giác.
+- **Âm thanh:** nhạc nén 56 → 11 MB; 81 file.
+- **Test:** 183/185 đạt (02/11). 2 test hỏng là test độ phủ đã biết: 23 model mới chưa có kịch bản hoặc bí danh (việc B3 của Claude chat). Type check sạch; lint 0 lỗi (49 cảnh báo cũ).
 
 ## 5. Commit gần nhất
 
-`origin/feat/3d-lego-engine` dừng ở `b96bd24` (25/10). 19 commit sau đây chỉ có trên máy:
+`origin/feat/3d-lego-engine` dừng ở `b96bd24` (25/10). 32 commit sau chỉ có trên máy. 13 commit từ bản trạng thái trước:
 
-| Commit | Nội dung |
-|---|---|
-| `5f4984a` | perf(scene): bản cây rải `_fill`/`_fill_low`, chặng kề chỉ vẽ gần ranh giới, cây rải không đổ bóng; Gemini 20 s + 1 lần thử lại; ảnh phòng Multiverse ở tầm mắt; cấu hình `prod-lan`; danh sách việc D |
-| `80c3116` | merge: gộp C4 vào nhánh (đổi tên migration thành `20261027_coins_seasons.sql` cho khớp bản đã áp) |
-| `ea988b8` | feat(c4): khung hỏi, bộ lập lịch, gợi ý, hệ quả, xu (41 file) |
-| `3518638` | chore(assets): đồng bộ R2, nhập inbox, dọn GLB (`camp_grill`, `char_wanderer`), phòng Multiverse, hạ tay cho mô hình chữ T |
-| `4f8babd` | content: khung dữ liệu phòng Multiverse (D6) và nhân vật cửa hàng xu cho Meshy |
-| `7547b18` | feat(scene): lõi cảnh 3D, avatar 3 cấp chi tiết, đạo diễn camera (pha C) |
-| `5f637a4` | content: hệ quả đúng/sai cho 6 game (`consequences_v2.json`) |
-| `0291289` | feat(match): kênh máy học sinh, thử tải 50 máy, kiểm bảo mật, tài liệu vận hành |
-| `69972cb` | feat(match): trận lớp trên máy chủ (bảng, tin có chữ ký, API, giới hạn bền) |
-| `d936996` | feat(match): engine trận lớp (đồng hồ, lệnh gia sư, sao, đội, luật Sinh tồn) |
-| `c9e2acc` | chore(seed): 30 kịch bản (có Dino Journey) trong bản sao SQL |
-| `033ed08` | chore(assets): HDRI 2K ra khỏi git, ghi GLB an toàn, kiểm ảnh tối |
-| `a037c3c` | content(subtitles): phụ đề theo cấp cho 25 kịch bản |
-| `18693ce` | chore(kayak): bỏ Unity, Kayak Rush chạy bằng three.js |
-| `79624a1` | fix(arena): dừng vòng trả lời khi mất phiên; giãn nhịp thử lại mạng |
-| `04fe613` | feat(assets): đường ống thư viện 3D (tối ưu, kiểm Blender, catalog, nạp theo game) |
-| `9d07d47` | feat(subtitles): phụ đề truyện 6 cấp, chạm từ khoá để nghe |
-| `e89a478` | feat(levels): cấp Beginner (cấp 0) |
-| `deb1866` | content: bộ 6 thế giới, 30 kịch bản v2, sự kiện chạy, manifest thư viện 3D |
+| Commit | Ngày | Nội dung |
+|---|---|---|
+| `cdd9d4b` | 02/11 | U3: dải thẻ "không gian tiếp theo" của Multiverse (`portalRail.ts`, `PortalCardRail`) |
+| `130ed25` | 02/11 | U3: minimap (Kayak dọc, tô đoạn dày/trống; sông/đồng cỏ tròn, hướng bắc lên) và thanh tọa độ la bàn |
+| `4ed66dd` | 02/11 | HUD trên cả 6 game (`ArenaHUD`); thanh công cụ gắn trên khung 2D của 4 game chưa có 3D |
+| `9c7c312` | 02/11 | U1+U2: `GameHUD`, `SettingsPanel` 4 thẻ, cần lái Kayak, kỹ năng 1–3, âm lượng từng bus |
+| `2670ca0` | 02/11 | U0: slogan của chủ dự án |
+| `4546d17` | 02/11 | Spec WP10 đối chiếu PDF: `ui-pdf-checklist.md`, 10 chỗ sửa "Sửa 02/11 (Code)" |
+| `dc334eb` | 02/11 | WP4: `scene_kits.json` (5 nhóm summer_camp), `sceneKits.ts`, chặn trần cảnh |
+| `9332428` | 02/11 | WP3: `variantFamily` / `pickVariant` |
+| `03620b8` | 02/11 | WP1: nhập 8 model, gỡ đế, 3 bí danh |
+| `e9256f3` | 01/11 | WP2: `encode-audio.mjs`, `audioPlan.ts`, 3 bus, ducking, `/credits` mục âm thanh |
+| `f1a28d6` | 01/11 | C2: ngân sách từng file |
+| `b1e0689` | 01/11 | C1: nhập 72 file, `promote-candidate.mjs`, IP LAN `192.168.11.125` |
+| `104ee00` | 01/11 | docs: bản `project_state.md` trước |
 
-Không còn ảnh HDRI 2K trong nhánh nào; chỉ còn trong reflog trên máy, và push không gửi reflog. Vì vậy không cần viết lại lịch sử trước khi push.
+Các commit cũ hơn (A, B, C, C4, từ `deb1866` tới `5f4984a`) xem `git log`.
 
 ## 6. Cấu trúc thư mục
 
@@ -141,147 +138,147 @@ Không còn ảnh HDRI 2K trong nhánh nào; chỉ còn trong reflog trên máy,
 
 ```
 app/                         Next.js App Router
-  page.tsx                   trang chủ (landing)
-  tutor/                     /tutor → /tutor/create (Studio 3 bước: tài liệu → game → mở trận)
+  page.tsx                   trang chủ (landing, có slogan U0)
+  tutor/                     /tutor → /tutor/create (Studio 3 bước)
     create/  characters/  animation-lab/
-    scene-lab/               trang thử cảnh 3D: sông/đồng cỏ, 12 nhân vật (kiểm trùng), màn gia sư 50 em,
-                             chọn avatar, Multiverse, "Khung hỏi + RainbowEdge (C4)"; đo 10 giây, máy yếu,
-                             nút camera/hệ quả, vào ra 10 lần
-  student/                   /student (nhập mã), /student/[id], /student/play
-  credits/                   ghi công tài nguyên
-  dev-assets/[...path]/      phục vụ thư viện 3D trên máy (dev; production chỉ khi TC_SERVE_LOCAL_ASSETS=1)
-  api/
-    generate-battle/         Gemini sinh câu (maxDuration 60) + kho câu dự phòng
-    battles/ battle-result/ scenarios/ cron/retry-results/
-    session/                 phiên học: answer, cast, pair, hint (C4), golden (C4), coins (C4)
-    match/                   trận lớp: tạo, [id], join, leave, state, action, box (hộp quà), rescue (cứu hộ)
+    scene-lab/               trang thử: cảnh sông/đồng cỏ, 12 nhân vật, màn gia sư 50 em, Multiverse,
+                             khung hỏi, SoundLab, chọn cấp bộ cảnh, "HUD Kayak (WP10)",
+                             "HUD 5 game còn lại", HUD sông có minimap
+  student/                   /student (demo, nhập mã), /student/[id], /student/play
+  credits/                   ghi công mô hình và âm thanh
+  dev-assets/[...path]/      phục vụ thư viện trên máy: web/low/mid/fill/hdri/audio
+  api/                       generate-battle, battles, battle-result, scenarios, cron,
+                             session/ (answer, cast, pair, hint, golden, coins),
+                             match/ (tạo, join, leave, state, action, box, rescue)
 src/
-  engine/                    luật thuần (có test): match, teams, survivalRules, questionSchedule, hints,
-                             consequences, coins, rescue, sceneBuilder, avatars, director, assetLoader,
-                             variants, scoring, grading, levels, subtitles, schema, …
-  server/                    chạy trên máy chủ: matchService/Store/Broadcast, sessionService, coinStore,
-                             rewardService, gemini, prompt, grader, documents, rateLimit, auth, …
-  client/                    trình duyệt: matchChannel (kênh trận, NTP), audio (âm nền tổng hợp, tắt tiếng),
-                             sfx, questionSfx, sessionApi, supabaseBrowser
-  config/                    assetLibrary (lib(), withQuality, hdri()), threeAssets (manifest 6 thế giới)
+  engine/                    luật thuần, có test: match, teams, survivalRules, questionSchedule, hints,
+                             consequences, coins, rescue, sceneBuilder, sceneKits, variants, assetCategory,
+                             assetLoader, audioPlan, kayakCourse, portalRail, avatars, director, levels, …
+  server/                    matchService/Store/Broadcast, sessionService, coinStore, rewardService,
+                             gemini, prompt, grader, documents, rateLimit, auth
+  client/                    audio (3 bus), hudSettings (localStorage 'tc:hud'), sfx, questionSfx,
+                             matchChannel, sessionApi, supabaseBrowser
+  config/                    assetLibrary, threeAssets, gameGuides (đọc content/game_guides.json), brand
   components/
-    modes/                   KayakRush, MultiversePortalRPG, ModeStage, gfxTier (cao/thấp/2D), kit
-      three/                 SceneRuntime, cameraDirector, director (playOutcome), avatar (LodAvatar,
-                             relaxArms), riverWorld, instancing, effects, footprints, nameBoard,
-                             questionCamera, sceneTimer, consequenceHooks, rainbowEdgeMaterial
-    question/                QuestionFrame (khung hỏi), QuestionLab (demo), skins (6 "áo" theo game)
-    fx/                      RainbowEdge (shader + CSS conic + giảm chuyển động)
-    TeacherBoard, AvatarPicker, ClassPodium, BattleArena, …
-content/                     DO PHẦN NỘI DUNG GIỮ: scenarios_v2, consequences_v2, multiverse_rooms,
-                             game_worlds_v2, asset_aliases, asset_credits;
-                             asset_catalog + asset_coverage (sinh bằng scripts/build-asset-catalog.mjs)
-scripts/
-  optimize-glb.mjs           tối ưu GLB (cao / --low / --tris / --tex), ghi an toàn
-  build-asset-catalog.mjs    script DUY NHẤT ghi catalog + coverage
-  validate-glb.py            kiểm bằng Blender (ảnh tối, sai đơn vị, xương sai tỉ lệ, ảnh chụp)
-  clean-glb.mjs              gỡ tấm phông, đĩa đất, mảnh vụn khỏi file gốc (có sao lưu)
-  import-inbox.mjs           inbox → thư viện (kiểm giấy phép, đổi tên theo mã, tối ưu, credits)
-  sync-assets-r2.mjs         đẩy bản tối ưu lên R2 (mặc định chạy khô, không in khóa)
-  room-eye-views.py          chụp phòng Multiverse ở tầm mắt 1,6 m
-  match-load-test.mjs        thử tải 50 máy; security-check.mjs; seed-scenarios-v2.mjs
-  generate-meshy-models.mjs + meshy-models-extra.mjs, fetch-hdri.mjs, fetch-sketchfab-models.mjs
-  scenarios-v2/              (phần nội dung)
-supabase/migrations/         14 file SQL (bản sao các migration đã áp)
-supabase/seed/               bản sao SQL 30 kịch bản
-tests/                       23 file test (node --test), 168 test
+    hud/                     GameHUD (thanh công cụ, "Thêm", HudPanel), ArenaHUD (theo game),
+                             SettingsPanel, MapHud (Minimap + CoordBar), kayakMap, riverMap,
+                             PortalCardRail, KayakHudLab, BossHudLab, hud.css
+    modes/                   KayakRush, MultiversePortalRPG, ModeStage, gfxTier, three/ (SceneRuntime, …)
+    question/                QuestionFrame, skins
+    fx/                      RainbowEdge (shader + CSS)
+    BattleArena, TeacherBoard, AvatarPicker, ClassPodium, SoundLab, …
+content/                     PHẦN CỦA CLAUDE CHAT: scenarios_v2, consequences_v2, multiverse_rooms,
+                             game_worlds_v2, character_casting (chưa commit), asset_credits
+                             Code được sửa: asset_aliases; sinh bằng script: asset_catalog,
+                             asset_coverage, audio_catalog; file mới đã duyệt: scene_kits,
+                             game_guides (chưa commit)
+scripts/                     optimize-glb, build-asset-catalog, validate-glb.py, clean-glb, import-inbox,
+                             promote-candidate, encode-audio, sync-assets-r2, room-eye-views.py,
+                             match-load-test, security-check, seed-scenarios-v2, generate-meshy-models,
+                             meshy-models-extra (KHÔNG commit), fetch-hdri, fetch-sketchfab-models
+supabase/migrations/         14 file SQL; supabase/seed/ bản sao 30 kịch bản
+tests/                       29 file test (node --test, biên dịch vào .test-build)
 docs/
-  operations.md              tài liệu vận hành chính (số đo, quy trình, việc cần làm, việc của D)
-  specs/                     C4-spec.md (đã commit); asset-reuse-plan.md, code-tasks-asset-reuse.md,
-                             tasks-2026-11-01.md (mới, chưa commit)
-  images/rooms-eye/          2 bảng ảnh phòng ở tầm mắt + views.jsonl
-public/assets/               hdri 1K (trong git), 3d, textures
-out/                         (git bỏ qua) cast-check/, rooms-eye/, backups/, r2-manifest.json
-.claude/launch.json          dev (3000), prod (3001), prod-lan (3005)
+  operations.md              tài liệu vận hành chính
+  specs/                     C4-spec, ui-upgrade-spec (WP10), ui-pdf-checklist, wp4-scene-kits-design
+                             (đã commit); code-next-steps, asset-reuse-plan, asset-reuse-matrix,
+                             code-tasks-asset-reuse, tasks-2026-11-01, ui-reference/ (chưa commit)
+  images/rooms-eye/          ảnh phòng Multiverse ở tầm mắt
+.claude/launch.json          dev (3000), prod (3001), prod-lan (3005, IP 192.168.11.125)
 proxy.ts                     giới hạn tốc độ theo IP cho /api
 ```
 
 ### Thư viện `~/Documents/3D_tutorcraft` (ngoài repo)
 
 ```
-camp/ fishing/ survival/ dino/ kayak/ river_world/ multiverse/ characters/ fx/ hdri/
-                             file gốc theo mã (đã nhập kho)
-multiverse/rooms/            8 phòng Meshy đặt tên theo mã (r_bedroom_a/b, r_cyber, r_courtyard,
-                             r_salon, r_fortress_a/b, r_future)
-_optimized/ _low/ _mid/ _fill/ _fill_low/
-                             bản do script sinh ra: không sửa tay
-_backup/                     bản gốc trước khi clean-glb.mjs sửa
-inbox/                       73 file chờ nhập (57 GLB + 16 FBX Mixamo) + credits.csv (73 dòng)
-_ung_vien/                   ứng viên chưa vào game (nhân vật, Multiverse, vật phẩm, Mixamo, …),
-                             MANIFEST.csv 226 dòng
-audio/                       nhạc đã duyệt (music/<vị trí>/), sfx/ và ambient/ (chưa có), AUDIO_MANIFEST.csv
+camp/ fishing/ survival/ dino/ kayak/ river_world/ multiverse/ characters/ food/ anim/ fx/ hdri/
+                             file gốc theo mã
+_optimized/ _low/ _mid/ _fill/ _fill_low/ _audio_web/
+                             bản do script sinh: không sửa tay
+_backup/                     bản gốc trước khi clean-glb sửa
+inbox/                       chờ nhập; inbox/_cho_xem/ có food_sausage (ra hình chuối)
+_ung_vien/                   ứng viên chưa vào game (MANIFEST.csv)
+audio/                       music/, sfx/ (60), ambient/ (10), AUDIO_MANIFEST.csv, _nguon_cc0/
 _de_xoa/                     file để người dùng tự xoá
-_report/                     doi_ten.json (nhật ký đổi tên), ảnh, báo cáo
-Multiverse Portal/           12 file Meshy gốc (bản sao phòng đã ở multiverse/rooms/)
-00_HUONG_DAN.md              bản đồ thư mục (01/11)
+_report/                     ui/2026-11-02/ (ảnh HUD 5 cỡ, ảnh U4), c2/, blender_prev/, doi_ten.json
+Thay game mới.pdf            yêu cầu giao diện WP10 (14 trang)
+00_HUONG_DAN.md              bản đồ thư mục
 ```
 
 ## 7. Việc đang dở và việc chờ
 
-### 7.1. Đợt tài nguyên 01/11 (`docs/specs/tasks-2026-11-01.md`, `code-tasks-asset-reuse.md`): chưa bắt đầu
+### 7.1. U4 làm xong, chờ lệnh "commit"
 
-Phần của Claude Code. Làm theo thứ tự, mỗi bước dừng báo cáo và chờ duyệt.
+File thuộc U4:
+- `content/game_guides.json` (mới): hướng dẫn 6 game (`goal`, `controls`, `skills`, `tips`, mỗi mục 1–6 dòng).
+- `src/config/gameGuides.ts`: đọc file trên; cờ `seen_guide_<game>` trong localStorage.
+- `src/components/hud/GameHUD.tsx`: tùy chọn `rainbow` cho khung, bọc `RainbowEdge` bản CSS.
+- `src/components/hud/ArenaHUD.tsx`: tự mở "Cách chơi" ở lần đầu vào mỗi game; dòng nhắc đồng hồ.
+- `src/components/hud/hud.css`: `.tc-hud-panel-rb`, `.tc-hud-note`.
+- `tests/gameGuides.test.ts` (mới); `docs/operations.md` (dòng HUD).
 
-| Bước | Việc | Ghi chú |
-|---|---|---|
-| C1 | Viết `scripts/promote-candidate.mjs` (từ `_ung_vien/` sang `inbox/<mã>.glb` + một dòng `credits.csv`). Chạy khô `import-inbox.mjs` cho 73 file đang chờ; báo file bị từ chối, trùng mã, vượt ngân sách. Chỉ `--apply` khi được đồng ý | FBX Mixamo `anim_*`: kiểm bản "Without Skin", thử gắn lên một nhân vật mẫu |
-| C2 | Giảm nặng các file lớn: Snow_3 163 MB, A_low_poly 124 MB, Medieval_Throne_Room, Old_Teddy_Bear, Desert_Citadel, Pavilions, Stone_Torch_Stand, …; báo trước/sau | Không file nào > 25 MB ở bản thấp |
-| C3–C4 | Hệ thống âm thanh: nén nhạc; `AudioManager` 3 bus (nhạc, hiệu ứng, nền) với nút tắt riêng; hạ nhỏ nhạc khi câu hỏi hiện; nhạc đổi lớp theo trạng thái; tiếng bước chân, tiếng quẫy khớp hoạt ảnh | Credits ghi vào `asset_credits.json` |
-| C5 | `pickVariant(id, seed, slotKey)` (có test); `planScenarioAssets` tải cả họ biến thể `_2`, `_3`, tính ngân sách theo bản nặng nhất | |
-| C6 | `content/scene_kits.json`: bộ cảnh theo cấp độ; báo thiết kế trước; làm summer_camp đầu tiên | Không đổi schema cũ |
-| C7 | Nhân vật một mô hình nhiều vai: mở rộng `HUMAN_POOLS` theo bảng do Claude chat cung cấp; tint; phụ kiện mua bằng xu | Báo trước khi đụng bảng cửa hàng/xu |
-| C8 | Multiverse `RoomKit` (dựng phòng bằng hình khối + nội thất); cảnh lớn làm cảnh xa; render 6 góc ở tầm mắt có ánh sáng | |
-| C9 | Instancing/LOD, đo lại cảnh xấu nhất, đồng bộ R2 (khi được đồng ý), cập nhật tài liệu | |
+Đã kiểm trên trình duyệt (Kayak, Multiverse): tự mở một lần, Esc đóng, tải lại không mở lại.
+**Hạn chế đã ghi rõ trên khung:** đồng hồ câu hỏi do máy chủ giữ nên vẫn chạy khi khung mở; muốn dừng thật phải sửa API phiên chơi.
 
-Phần của Claude chat (B1–B7) và của người dùng (giấy phép nhạc Heavenly Loop, dọn `_de_xoa/`) nằm trong cùng file.
+Khi commit: **không** đưa `scripts/meshy-models-extra.mjs` vào.
 
-### 7.2. Việc của giai đoạn D (đã ghi trong `docs/operations.md`, chưa làm)
+### 7.2. Câu hỏi chờ người dùng trả lời
 
-1. Nối bộ lập lịch câu hỏi (`src/engine/questionSchedule.ts`) vào luồng câu thật. Hiện phiên của em vẫn phát câu tuần tự.
-2. Thử thách vàng chọn câu khó hơn; hiện chỉ nhân đôi xu.
-3. `ClassPodium` (top 3) cho màn của em; hiện mới có trên màn gia sư và trong demo.
-4. Trường "nghĩa tiếng Việt" trong schema câu hỏi, prompt Gemini và kho câu, dùng cho gợi ý bậc 1. **Báo người dùng trước khi sửa schema.**
+1. **U5 thanh Nộ:** "dùng thanh nộ quá 10" là quá 10 **giây** trong một lần dùng, hay quá 10 **lần** trong trận? Mốc trên 30 s tích / 30 s dùng; đề xuất bắt đầu ở tích 30 s / dùng tối đa 8–10 s, số đặt trong `content/kayak_rage.json`.
+2. Danh sách nút thanh công cụ đã đủ chưa (có thêm "chụp màn hình" không).
+3. Lớp thật có lọc nhân vật theo game không (demo thì hiện tất cả, PDF đã nói).
+4. Slogan có thêm viết hoa / dấu câu không.
+5. Nhãn "learn more" hay "Xem thêm / Thu gọn" ở demo.
+6. Phạm vi U8 màn chờ: cả lớp thật hay chỉ demo.
+7. `camp_grill`: thay bản cũ hay thêm làm biến thể.
 
-D chỉ bắt đầu sau khi có số đo điện thoại.
+### 7.3. Việc kế tiếp theo spec WP10
 
-### 7.3. Cổng C: đo trên điện thoại thật (người dùng làm, đang chờ)
+- **U5 Kayak:** thanh Nộ (tăng tốc) bên phải, không dùng được khi khung hỏi đang mở, không bỏ qua cổng câu hỏi; mô phỏng một trận để chỉnh số, ghi số đo.
+- **U6 demo:** chọn 1 trong 6 game; ô tên viền đèn 7 màu chạy quanh; thẻ toàn bộ nhân vật xoay 360° (ảnh quay vòng 24 góc dựng sẵn bằng Blender, chỉ 1 canvas WebGL); nút "Tạo game" ở giữa, phía trên là hướng dẫn và điều khoản; vào chơi bằng cảnh 3D thật + GameHUD; **20 câu thì hiện tại đơn** (Claude chat soạn trong `content/`, Code nối; ngân hàng demo hiện có 8 câu quá khứ đơn / bị động). Đo: từ "Tạo game" tới khung đầu ≤ 5 s ở tầng thấp.
+- **U7:** chụp 1440×900, 1024×768, 820×1180, 390×844, 844×390 vào `_report/ui/<ngày>/`; chạm ≥ 44 px, chữ ≥ 16 px, không cuộn ngang.
+- **U8:** màn chờ và chọn nhân vật theo từng game (sau U6, dùng chung thành phần).
+- Chưa làm từ spec §3: `docs/specs/ui-reference-notes.md`, `src/styles/hud-tokens.css`, đo kích thước JS HUD (≤ 60 KB gz) và Lighthouse.
 
-- Chưa có số đo nào. Hiện không có server nào chạy.
-- Địa chỉ LAN của máy đã đổi thành **`192.168.11.125`**, nên cần sửa `prod-lan` trong `.claude/launch.json` (đang là `192.168.1.253`).
-- Cách chạy lại (Terminal trong VS Code):
-  1. `npx next build`
-  2. `TC_SERVE_LOCAL_ASSETS=1 npx next start -H 192.168.11.125 -p 3005`
-- Mở `http://192.168.11.125:3005/tutor/scene-lab` trên điện thoại, bấm "Đo 10 giây" và chụp 4 lần: Bản cao; Bản thấp; Bản thấp + Máy yếu; Màn hình gia sư 50 em.
-- **Đạt cổng khi:** chế độ máy yếu có FPS trung bình ≥ 30 và giây tệ nhất ≥ 25 trên điện thoại tầm thấp.
+### 7.4. Các gói WP còn lại
 
-### 7.4. Kế hoạch chờ kích hoạt (chỉ làm khi số đo điện thoại cho thấy cần)
+- **WP4:** bộ cảnh cho river_fishing, river_survival, dino_journey, kayak_rush.
+- **WP5:** nhân vật nhiều vai theo `content/character_casting.json` (62 mô hình); nhập theo đợt; phụ kiện mua bằng xu phải báo trước.
+- **WP6:** Multiverse RoomKit (phòng ngủ và cyber dựng bằng hình khối + nội thất, cảnh khác làm cảnh xa), D6.1–D6.8, ảnh xem trước 512 px cho thẻ phòng.
+- **WP7:** nối `questionSchedule.ts` vào luồng câu thật; thử thách vàng chọn câu khó hơn; `ClassPodium` cho màn của em; trường "nghĩa tiếng Việt" (**đổi schema, báo trước**).
+- **WP8:** từng game làm trọn, theo thứ tự Summer Camp → River Fishing → Kayak Rush → River Survival → Dino Journey → Multiverse. Đưa minimap / thanh tọa độ của thế giới sông vào trận.
+- **WP9:** F (6 thẻ game ở Studio và trang chủ, ảnh bìa) và G (kiểm thử, bảo mật, đo GPU điện thoại, R2 tên miền riêng).
 
-- **Giảm bộ nhớ ảnh bản cao (~293 MB):**
-  - phương án A: nhân vật truyện dùng bản vừa và bầu trời 1K trên điện thoại (khoảng nửa ngày);
-  - phương án B: chuyển ảnh sang KTX2/Basis (1–2 ngày).
-- **Nhân vật truyện dùng 3 cấp chi tiết:** dự kiến 232 → khoảng 100 nghìn tam giác ở bản cao; đây là phần còn nặng nhất của cảnh.
+### 7.5. Cổng C: đo trên điện thoại thật (người dùng làm, vẫn chờ)
 
-### 7.5. Việc mở khác
+Cách chạy (Terminal trong VS Code, ở thư mục dự án):
 
-- **Phòng Multiverse** (ảnh ở tầm mắt, `docs/images/rooms-eye/`):
-  - đi vào được: `r_future`, `r_salon` (tối, thô), `r_courtyard` (ngoài trời);
-  - không đi vào được: giường (`r_bedroom_a/b`), bàn (`r_cyber`), `r_fortress_a`; `r_fortress_b` chỉ một phần;
-  - đề xuất của người dùng: phòng ngủ và cyber dựng bằng hình học + nội thất, các cảnh còn lại phóng to. **Chờ chốt.**
-  - Chưa đổi bí danh `mv_world_castle` / `mv_world_cyberpunk`, chưa đẩy phòng lên R2.
-- **Thiếu mô hình:**
-  - catalog: 252 model, kịch bản gọi 280 mã, **thiếu 41** (`anim` 8, `camp` 15, `food` 6, `fish` 5, `tex` 2, `water` 2, `kayak`/`river`/`surv` mỗi nhóm 1); con số này tính trước khi nhập 73 file inbox;
-  - nhân vật truyện: chỉ có 2 mô hình bé gái, không có người già, một số nhân vật không phải người đang nhận mô hình người.
-- **Gemini:** kiểm 10 lần sinh liên tiếp có tài liệu, xem có lần nào phải dùng kho câu không. Lần đo 26/10 có tài liệu mất khoảng 31 s, dài hơn mức chờ 20 s.
-- **R2:**
-  - gắn tên miền riêng cho bucket rồi đặt `NEXT_PUBLIC_ASSET_BASE_URL` trên Vercel (người dùng làm);
-  - CORS chưa có địa chỉ LAN, vì thế khi thử điện thoại thì dùng thư viện trên máy.
-- **File chưa theo dõi trong repo (không phải của phiên Code):** `docs/specs/{asset-reuse-plan,code-tasks-asset-reuse,tasks-2026-11-01}.md`, `.archify/`, `.taste-skill/`, `animasyon-stil-katalogu/` (một kho git riêng), `.claude/settings.json`. Chưa commit.
-- **Các file tài liệu trống:** `CLAUDE.md`, `DESIGN.md`, `doc.md`, `road_map.md` đang rỗng (0 byte).
-- **Push:** 19 commit chờ. Chỉ push khi người dùng nói.
+```bash
+npx next build
+```
+
+```bash
+TC_SERVE_LOCAL_ASSETS=1 npx next start -H 192.168.11.125 -p 3005
+```
+
+Mở `http://192.168.11.125:3005/tutor/scene-lab` trên điện thoại, bấm "Đo 10 giây", chụp 4 lần: Bản cao; Bản thấp; Bản thấp + Máy yếu; Màn hình gia sư 50 em. **Đạt** khi máy yếu có FPS trung bình ≥ 30 và giây tệ nhất ≥ 25.
+
+### 7.6. Việc của Claude chat (Code chờ)
+
+- Soạn 20 câu hiện tại đơn cho demo (U6).
+- Gán kịch bản hoặc bí danh cho 23 model mới (B3), để 2 test độ phủ hết hỏng.
+- Đổi tên các file đặt sai tên: `camp_lantern`, `camp_grill_2`, `camp_water_filter_2`, `camp_string_lights_2`, `camp_backpack`, `camp_cup`, `camp_firepit__alt1`, `camp_tent_stage__alt2/3`.
+- Prompt Meshy mới cho `food_sausage`; bản có texture cho `camp_table`, `fish_reel`, `fish_bait_2`.
+- Bổ sung ghi công còn thiếu cho vài file âm thanh.
+
+### 7.7. Việc mở khác
+
+- **R2:** chưa đẩy các file nhập từ 01/11 và thư mục `audio/`; `sync-assets-r2.mjs --apply` chỉ khi được đồng ý. Gắn tên miền riêng + `NEXT_PUBLIC_ASSET_BASE_URL` (người dùng làm).
+- **Gemini:** kiểm 10 lần sinh liên tiếp có tài liệu (lần đo 26/10 mất ~31 s, quá mức chờ 20 s).
+- **Bộ nhớ ảnh bản cao (~293 MB):** kế hoạch giảm (nhân vật bản vừa + trời 1K, hoặc KTX2) chỉ làm khi số đo điện thoại cho thấy cần.
+- **File chưa theo dõi không thuộc gói nào:** `.archify/`, `.taste-skill/`, `animasyon-stil-katalogu/` (kho git riêng), `.claude/settings.json`, các file `docs/specs/*` và `content/character_casting.json` của Claude chat. Chỉ commit khi người dùng bảo.
+- **File tài liệu trống:** `CLAUDE.md`, `DESIGN.md`, `doc.md`, `road_map.md` (0 byte); hỏi trước khi ghi.
+- **Push:** 32 commit chờ. Chỉ push khi người dùng nói.
 
 ## 8. Lệnh thường dùng (Terminal trong VS Code, ở thư mục dự án)
 
@@ -302,10 +299,6 @@ npx tsc --noEmit
 ```
 
 ```bash
-npx next build
-```
-
-```bash
 node scripts/build-asset-catalog.mjs
 ```
 
@@ -314,23 +307,26 @@ node scripts/import-inbox.mjs
 ```
 
 ```bash
+node scripts/encode-audio.mjs
+```
+
+```bash
 node scripts/sync-assets-r2.mjs
 ```
 
-Ghi chú cho từng lệnh:
+Ghi chú:
 - `npm test` dựng `.test-build` rồi chạy toàn bộ test.
-- `node scripts/import-inbox.mjs` là chạy khô; thêm `--apply` để nhập thật.
-- `node scripts/sync-assets-r2.mjs` là chạy khô; thêm `--apply` để đẩy thật.
-- Tối ưu một file: `node --max-old-space-size=12288 scripts/optimize-glb.mjs ~/Documents/3D_tutorcraft ~/Documents/3D_tutorcraft/_optimized --files <đường dẫn> --force`. Bản thấp thì đổi đích thành `_low` và thêm `--low`.
+- `import-inbox.mjs`, `promote-candidate.mjs`, `sync-assets-r2.mjs` mặc định chạy khô; thêm `--apply` để làm thật.
+- Tối ưu một file: `node --max-old-space-size=12288 scripts/optimize-glb.mjs ~/Documents/3D_tutorcraft ~/Documents/3D_tutorcraft/_optimized --files <đường dẫn> --force` (bản thấp: đích `_low` và thêm `--low`).
 - Kiểm bằng Blender: `/Applications/Blender.app/Contents/MacOS/Blender --background --python scripts/validate-glb.py -- <thư mục> <báo cáo.json> --only <chuỗi> --thumbs <thư mục ảnh>`.
-- Thử tải: `node --env-file=.env.local scripts/match-load-test.mjs --students 50 --stage-seconds 300` (cần build và chạy server trước).
 
 ## 9. Tài liệu tham chiếu
 
-- `docs/operations.md`: vận hành, số đo, quy trình thư viện, R2, inbox, đo điện thoại, việc cần làm, việc của D.
-- `docs/specs/C4-spec.md`: đặc tả C4 và D6 (Multiverse).
-- `docs/specs/tasks-2026-11-01.md`, `code-tasks-asset-reuse.md`, `asset-reuse-plan.md`: đợt tài nguyên 01/11.
+- `docs/operations.md`: vận hành, số đo, quy trình thư viện, R2, âm thanh, HUD, đo điện thoại.
+- `docs/specs/code-next-steps.md`: WP1–WP9 và luật chung.
+- `docs/specs/ui-upgrade-spec.md`: WP10 (U0–U8), thứ tự §4, câu hỏi chờ chốt §5.
+- `docs/specs/ui-pdf-checklist.md`: 49 điểm của PDF → mục spec → trạng thái.
+- `docs/specs/wp4-scene-kits-design.md`: thiết kế bộ cảnh theo cấp.
+- `docs/specs/C4-spec.md`: C4 và D6 (Multiverse).
 - `~/Documents/3D_tutorcraft/00_HUONG_DAN.md`: bản đồ thư viện 3D.
-- `content/consequences_v2.json`: luật chung (25 s mỗi câu, gợi ý sau 8 s, xu, độ khó, cứu hộ) và hệ quả từng game.
 - `AGENTS.md`: Next.js 16 khác bản cũ, đọc tài liệu trong `node_modules/next/dist/docs/`.
-- Tài liệu "Nhiệm vụ phần code" (Claude Docs, đã ghim): lộ trình các giai đoạn A–G.

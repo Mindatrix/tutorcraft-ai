@@ -563,6 +563,20 @@
   box-shadow: 0 24px 60px rgb(0 0 0 / 0.45);
   overflow: hidden;
 }
+.tc-hud-panel-rb {
+  width: 100%;
+  border: 0;
+  box-shadow: none;
+  background: rgb(12 17 34 / 0.62);
+}
+.tc-hud-note {
+  margin: 0 0 10px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: rgb(251 191 36 / 0.12);
+  color: #fde68a;
+  font-size: 12.5px;
+}
 .tc-hud-panel-head {
   display: flex;
   align-items: center;
