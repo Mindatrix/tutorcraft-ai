@@ -22,6 +22,20 @@
   --radius-xl: 0.3rem;
   --radius-2xl: 0.4rem;
   --radius-3xl: 0.5rem;
+  --color-ink: #1b1448;
+  --color-night: #0b0b2e;
+  --color-sun: #fcd34d;
+  --color-sun-deep: #f59e0b;
+  --color-ember: #fb923c;
+  --color-pink: #ec4899;
+  --color-rose: #fb7185;
+  --color-lilac: #c4b5fd;
+  --color-sky: #7dd3fc;
+  --color-mint: #6ee7b7;
+  --color-paper: #fff7e0;
+  --color-podium-gold: #f5c542;
+  --color-podium-silver: #c9d3df;
+  --color-podium-bronze: #d08a4f;
 }
 
 @media (prefers-color-scheme: dark) {
