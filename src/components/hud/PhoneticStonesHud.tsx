@@ -23,8 +23,11 @@ import {
   FISHING_DOCK_SPECS,
   MOCK_SPEECH_RESPONSES,
   MOCK_SPEECH_RULES,
+  selectPetDialogue,
   type CampQuestBoardState,
   type FishingDockState,
+  type PetDialogueEntry,
+  type PetDialogueMode,
   type PetState,
   type PhoneticStoneMachineSnapshot,
   type PhoneticStoneState,
@@ -94,6 +97,8 @@ export interface PhoneticStonesHudProps {
   showMockPresets?: boolean;
   /** Active 3D game world (`summer_camp` or `river_fishing`) */
   worldMode?: 'summer_camp' | 'river_fishing';
+  /** Pet dialogue script mode (`survival` or `kayak`) from `src/content/pet_dialogues.json` */
+  dialogueMode?: PetDialogueMode;
   /** Optional world switcher callback for `/tutor/scene-lab` */
   onWorldModeChange?: (mode: 'summer_camp' | 'river_fishing') => void;
   /** Summer Camp Quest Board progress & tent stars (`summer_camp` world) */
@@ -108,12 +113,23 @@ export default function PhoneticStonesHud({
   machine,
   showMockPresets = true,
   worldMode,
+  dialogueMode,
   onWorldModeChange,
   campBoard,
   fishingDock,
   onCastFishingRod,
 }: PhoneticStonesHudProps) {
   const [snap, setSnap] = useState<PhoneticStoneMachineSnapshot>(() => machine.getSnapshot());
+  const [activePetDialogue, setActivePetDialogue] = useState<PetDialogueEntry | null>(() => {
+    const initial = machine.getSnapshot();
+    return selectPetDialogue({
+      petState: initial.petState,
+      mode: dialogueMode ?? worldMode,
+      attemptNo: initial.lastResult?.attemptNo,
+      hint: initial.petHint ?? initial.lastResult?.hint,
+      reason: initial.lastResult?.reason,
+    });
+  });
   const [typedText, setTypedText] = useState('');
   const [micConsentGiven, setMicConsentGiven] = useState(false);
   const [privacyDialogOpen, setPrivacyDialogOpen] = useState(false);
@@ -123,19 +139,36 @@ export default function PhoneticStonesHud({
   useEffect(() => {
     const unsubState = machine.bus.on('state:change', ({ snapshot }) => {
       setSnap(snapshot);
+      if (snapshot.petState !== 'coach' && snapshot.petState !== 'celebrate') {
+        setActivePetDialogue(null);
+      }
     });
     const unsubHover = machine.bus.on('stone:hover', () => {
       setSnap(machine.getSnapshot());
     });
-    const unsubPet = machine.bus.on('pet:state', () => {
-      setSnap(machine.getSnapshot());
+    const unsubPet = machine.bus.on('pet:state', ({ state, hint }) => {
+      const current = machine.getSnapshot();
+      setSnap(current);
+      if (state === 'coach' || state === 'celebrate') {
+        setActivePetDialogue(
+          selectPetDialogue({
+            petState: state,
+            mode: dialogueMode ?? worldMode,
+            attemptNo: current.lastResult?.attemptNo,
+            hint: hint ?? current.lastResult?.hint,
+            reason: current.lastResult?.reason,
+          }),
+        );
+      } else {
+        setActivePetDialogue(null);
+      }
     });
     return () => {
       unsubState();
       unsubHover();
       unsubPet();
     };
-  }, [machine]);
+  }, [machine, dialogueMode, worldMode]);
 
   // Create lazy recognizer controller bound to machine callbacks
   useEffect(() => {
@@ -269,6 +302,32 @@ export default function PhoneticStonesHud({
             )}
           </div>
         </div>
+
+        {/* Small speech bubble DOM overlay positioned near the 3D Pet Companion when in `coach` or `celebrate` */}
+        {activePetDialogue && (snap.petState === 'coach' || snap.petState === 'celebrate') && (
+          <div
+            data-testid="pet-speech-bubble"
+            data-dialogue-mode={activePetDialogue.mode}
+            data-dialogue-trigger={activePetDialogue.trigger}
+            role="status"
+            aria-live="polite"
+            className="pointer-events-auto relative mx-auto max-w-xs rounded-[var(--radius-xl)] border-2 border-[var(--color-sun)] bg-[#182238]/95 px-3.5 py-2.5 text-xs font-bold text-amber-100 shadow-[4px_4px_0_var(--color-ink)] sm:mt-1"
+          >
+            <div className="mb-0.5 flex items-center justify-between gap-2 text-[10px] font-extrabold uppercase tracking-wider text-[var(--color-sun)]">
+              <span>🦊 Lời nhắc Thú Cưng ({activePetDialogue.mode})</span>
+              <span className="rounded bg-white/10 px-1.5 py-0.5 font-mono text-[9px] text-amber-200">
+                {activePetDialogue.trigger}
+              </span>
+            </div>
+            <p className="text-sm font-bold leading-snug text-white">
+              “{activePetDialogue.text_vi}”
+            </p>
+            <span
+              aria-hidden
+              className="pointer-events-none absolute -bottom-2 left-1/2 h-3.5 w-3.5 -translate-x-1/2 rotate-45 border-b-2 border-r-2 border-[var(--color-sun)] bg-[#182238]"
+            />
+          </div>
+        )}
 
         <div className="flex max-w-full flex-col items-end gap-2">
           {/* Optional 3D World Mode Switcher (Summer Camp Quests vs River Fishing Challenge) */}
