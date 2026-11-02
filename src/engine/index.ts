@@ -47,3 +47,4 @@ export * from './sceneKits';
 export * from './kayakCourse';
 export * from './kayakRage';
 export * from './portalRail';
+export * from './pronunciation';

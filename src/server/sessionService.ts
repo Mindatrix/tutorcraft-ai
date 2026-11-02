@@ -333,6 +333,25 @@ export function createSessionService(deps: SessionDeps) {
       };
     },
 
+    /**
+     * Pronunciation layer: who is speaking and which questions are already answered (their answers
+     * were revealed, so their words can be speech targets). `questions` holds answer keys: server only.
+     */
+    async speechContext(token: unknown) {
+      const { rec, ctx } = await resolve(token);
+      const state = rebuildSession(ctx, rec.startedAt, rec.log).state;
+      return {
+        sessionId: rec.id,
+        battleId: rec.battleId,
+        studentKey: rec.studentKey,
+        matchId: rec.matchId ?? null,
+        status: rec.status,
+        level: ctx.config.level ?? 3,
+        questions: ctx.questions,
+        answeredIds: state.answers.map((a) => a.questionId),
+      };
+    },
+
     async finalize(token: unknown): Promise<FinalizeResult> {
       const { store, rec, battle, ctx } = await resolve(token);
       return finalizeRecord(store, rec, battle, ctx);

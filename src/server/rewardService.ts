@@ -126,6 +126,19 @@ export function createRewardService(deps: { coins: CoinStore; now?: () => number
       return Promise.all(a.pay.map((p) => coins.apply({ studentKey: p.studentKey, delta: p.coins, reason: 'rescue', ref: a.requestId, matchId: a.matchId }, { matchCap: COIN_LIMITS.perMatch }, now())));
     },
 
+    /**
+     * Pronunciation layer: pays the step up to a better star level on one target, once per level
+     * (ref = session + target + stars). Misses never cost coins.
+     */
+    async speech(a: { studentKey: string; sessionId: string; matchId: string | null; targetId: string; stars: number; coins: number }) {
+      if (a.coins <= 0) return null;
+      return coins.apply(
+        { studentKey: a.studentKey, delta: a.coins, reason: 'speech', ref: `${a.sessionId}:${a.targetId}:s${a.stars}`, matchId: a.matchId, sessionId: a.sessionId, meta: { stars: a.stars } },
+        { perMinute: COIN_LIMITS.answerAwardsPerMinute, matchCap: COIN_LIMITS.perMatch },
+        now(),
+      );
+    },
+
     balance: (studentKey: string) => coins.balance(studentKey),
   };
 }

@@ -9,8 +9,9 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 //  - a per-day cap on one reason (gift boxes).
 // MemoryCoinStore mirrors those rules for tests.
 
-export type CoinReason = 'answer' | 'chot' | 'stage' | 'golden_accept' | 'hint' | 'box' | 'rescue';
-export const COIN_REASONS: CoinReason[] = ['answer', 'chot', 'stage', 'golden_accept', 'hint', 'box', 'rescue'];
+// 'speech' (pronunciation layer) needs migration 20261103_speech_attempts.sql on the database.
+export type CoinReason = 'answer' | 'chot' | 'stage' | 'golden_accept' | 'hint' | 'box' | 'rescue' | 'speech';
+export const COIN_REASONS: CoinReason[] = ['answer', 'chot', 'stage', 'golden_accept', 'hint', 'box', 'rescue', 'speech'];
 
 export interface CoinEntry {
   studentKey: string;
