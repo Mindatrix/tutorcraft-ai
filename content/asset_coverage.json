@@ -1,27 +1,14 @@
 {
  "total_used": 280,
- "have_file": 266,
- "missing_count": 14,
+ "have_file": 273,
+ "missing_count": 7,
  "missing_by_group": {
   "anim": [
    "anim_cook"
   ],
-  "camp": [
-   "camp_chair"
-  ],
-  "fish": [
-   "fish_net"
-  ],
   "food": [
-   "food_apple",
-   "food_bread",
-   "food_corn",
    "food_fish_raw",
-   "food_meat_raw",
    "food_sausage"
-  ],
-  "river": [
-   "river_shed"
   ],
   "tex": [
    "tex_mud",
@@ -40,11 +27,6 @@
   "dino_footprint",
   "dino_sand",
   "dino_sand_2",
-  "mv_castle_module",
-  "mv_castle_module_2",
-  "mv_castle_module_3",
-  "mv_castle_module_4",
-  "mv_cyber_room",
   "mv_salon_furniture",
   "mv_salon_furniture_2",
   "mv_salon_furniture_3",

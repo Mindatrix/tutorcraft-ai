@@ -527,6 +527,44 @@
   "skinned": false
  },
  {
+  "id": "camp_chair",
+  "file": "camp/camp_chair.glb",
+  "mb_raw": 8.88,
+  "mb_web": 0.18,
+  "mb_low": 0.08,
+  "scope": "game",
+  "game": "summer_camp",
+  "games": [
+   "summer_camp"
+  ],
+  "source": "download",
+  "tris_raw": 262191,
+  "tris_web": 7999,
+  "tris_low": 3999,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "camp_chair_2",
+  "file": "camp/camp_chair_2.glb",
+  "mb_raw": 8.74,
+  "mb_web": 0.16,
+  "mb_low": 0.08,
+  "scope": "game",
+  "game": "summer_camp",
+  "games": [
+   "summer_camp"
+  ],
+  "source": "download",
+  "tris_raw": 263640,
+  "tris_web": 8000,
+  "tris_low": 4000,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
   "id": "camp_cup",
   "file": "camp/camp_cup.glb",
   "mb_raw": 21.68,
@@ -2686,6 +2724,25 @@
   "skinned": false
  },
  {
+  "id": "fish_net",
+  "file": "fishing/fish_net.glb",
+  "mb_raw": 4.07,
+  "mb_web": 0.23,
+  "mb_low": 0.11,
+  "scope": "game",
+  "game": "river_fishing",
+  "games": [
+   "river_fishing"
+  ],
+  "source": "download",
+  "tris_raw": 2151,
+  "tris_web": 2151,
+  "tris_low": 2151,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
   "id": "fish_record_board",
   "file": "fishing/fish_record_board.glb",
   "mb_raw": 3.87,
@@ -2858,6 +2915,83 @@
   "skinned": false
  },
  {
+  "id": "food_apple",
+  "file": "food/food_apple.glb",
+  "mb_raw": 2.73,
+  "mb_web": 0.08,
+  "mb_low": 0.04,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "kayak_rush",
+   "summer_camp"
+  ],
+  "source": "download",
+  "tris_raw": 611,
+  "tris_web": 611,
+  "tris_low": 611,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "food_bread",
+  "file": "food/food_bread.glb",
+  "mb_raw": 2.39,
+  "mb_web": 0.1,
+  "mb_low": 0.05,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "summer_camp"
+  ],
+  "source": "download",
+  "tris_raw": 1077,
+  "tris_web": 1077,
+  "tris_low": 1077,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "food_corn",
+  "file": "food/food_corn.glb",
+  "mb_raw": 2.67,
+  "mb_web": 0.14,
+  "mb_low": 0.07,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "summer_camp"
+  ],
+  "source": "download",
+  "tris_raw": 1463,
+  "tris_web": 1463,
+  "tris_low": 1463,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "food_meat_raw",
+  "file": "food/food_meat_raw.glb",
+  "mb_raw": 2.69,
+  "mb_web": 0.1,
+  "mb_low": 0.05,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "summer_camp"
+  ],
+  "source": "download",
+  "tris_raw": 675,
+  "tris_web": 675,
+  "tris_low": 675,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
   "id": "fx_bubbles",
   "file": "fx/fx_bubbles.glb",
   "mb_raw": 6.97,
@@ -2963,7 +3097,9 @@
   "scope": "game",
   "game": "kayak_rush",
   "games": [
-   "kayak_rush"
+   "dino_journey",
+   "kayak_rush",
+   "summer_camp"
   ],
   "source": "download",
   "tris_raw": 454118,
@@ -3039,7 +3175,9 @@
   "mb_low": 0.3,
   "scope": "game",
   "game": "multiverse_portal",
-  "games": [],
+  "games": [
+   "multiverse_portal"
+  ],
   "source": "download",
   "tris_raw": 9144,
   "tris_web": 9144,
@@ -3056,7 +3194,9 @@
   "mb_low": 0.3,
   "scope": "game",
   "game": "multiverse_portal",
-  "games": [],
+  "games": [
+   "multiverse_portal"
+  ],
   "source": "download",
   "tris_raw": 262191,
   "tris_web": 149997,
@@ -3073,7 +3213,9 @@
   "mb_low": 0.3,
   "scope": "game",
   "game": "multiverse_portal",
-  "games": [],
+  "games": [
+   "multiverse_portal"
+  ],
   "source": "download",
   "tris_raw": 263640,
   "tris_web": 150000,
@@ -3090,7 +3232,9 @@
   "mb_low": 0.37,
   "scope": "game",
   "game": "multiverse_portal",
-  "games": [],
+  "games": [
+   "multiverse_portal"
+  ],
   "source": "download",
   "tris_raw": 30300,
   "tris_web": 30300,
@@ -3107,7 +3251,9 @@
   "mb_low": 0.41,
   "scope": "game",
   "game": "multiverse_portal",
-  "games": [],
+  "games": [
+   "multiverse_portal"
+  ],
   "source": "download",
   "tris_raw": 22822,
   "tris_web": 22822,
@@ -5355,8 +5501,7 @@
   "games": [
    "dino_journey",
    "kayak_rush",
-   "river_survival",
-   "summer_camp"
+   "river_survival"
   ],
   "source": "meshy",
   "tris_raw": 1858047,
@@ -5751,6 +5896,25 @@
   "tris_fill_low": 929,
   "mb_fill_low": 0.11,
   "textures": 4,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "river_shed",
+  "file": "river_world/river_shed.glb",
+  "mb_raw": 3.65,
+  "mb_web": 0.22,
+  "mb_low": 0.13,
+  "scope": "shared",
+  "game": null,
+  "games": [
+   "summer_camp"
+  ],
+  "source": "download",
+  "tris_raw": 3872,
+  "tris_web": 3872,
+  "tris_low": 3872,
+  "textures": 1,
   "animations": 0,
   "skinned": false
  },

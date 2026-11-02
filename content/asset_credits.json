@@ -1504,5 +1504,85 @@
    "không ghi"
   ],
   "license": "Public domain (theo trang)"
+ },
+ "camp_chair": {
+  "file": "camp/camp_chair.glb",
+  "title": "Meshy_AI_Object_A_modular_fo_1027181114_texture.glb",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "camp_chair_2": {
+  "file": "camp/camp_chair_2.glb",
+  "title": "Meshy_AI_Object_A_modular_fo_1027181201_texture.glb",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "fish_net": {
+  "file": "fishing/fish_net.glb",
+  "title": "fish_net (Meshy text-to-3D 01/11/2026)",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "food_apple": {
+  "file": "food/food_apple.glb",
+  "title": "food_apple (Meshy text-to-3D 01/11/2026)",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "food_bread": {
+  "file": "food/food_bread.glb",
+  "title": "food_bread (Meshy text-to-3D 01/11/2026)",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "food_corn": {
+  "file": "food/food_corn.glb",
+  "title": "food_corn (Meshy text-to-3D 01/11/2026)",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "food_meat_raw": {
+  "file": "food/food_meat_raw.glb",
+  "title": "food_meat_raw (Meshy text-to-3D 01/11/2026)",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
+ },
+ "river_shed": {
+  "file": "river_world/river_shed.glb",
+  "title": "river_shed (Meshy text-to-3D 01/11/2026)",
+  "source": "meshy.ai",
+  "authors": [
+   "Meshy AI"
+  ],
+  "license": "Meshy Pro plan (commercial)",
+  "downloaded": "2026-11-01"
  }
 }

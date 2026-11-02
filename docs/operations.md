@@ -133,6 +133,12 @@ Hiện thiếu **41/280** mã:
 - `tex` 2, `water` 2;
 - `kayak`, `river`, `surv` mỗi nhóm 1.
 
+### Nhập kho đợt 2 (WP1, 01/11)
+- 8 file: `camp_chair`, `camp_chair_2` (promote từ `_ung_vien/vat_pham/camp_chair`, 262k → 8k / 4k mặt), `fish_net`, `food_apple`, `food_bread`, `food_corn`, `food_meat_raw`, `river_shed` (Meshy). Catalog 332 model; kịch bản gọi 280 mã, **thiếu 7**: `anim_cook`, `food_fish_raw`, `food_sausage`, `tex_mud`, `tex_sand`, `water_foam`, `water_normal`.
+- Gỡ đế (cắt theo độ cao vì cả file là một khối liền; bản gốc ở `_backup/`): `food_apple` `--drop-below 0.38`, `food_meat_raw` `--drop-below -0.13`, `river_shed` `--drop-below -0.56`; `food_bread` bỏ vụn bánh rời `--keep-pieces-over 0.05`.
+- `food_sausage` ra nải chuối: không nhập, để ở `inbox/_cho_xem/` (chờ prompt Meshy mới). `camp_grill` (bản 11,4 MB) vẫn chờ quyết định thay hay làm biến thể.
+- Alias: `mv_world_castle` → `mv_castle_module`, `mv_world_cyberpunk` → `mv_cyber_room`, `river_log_fallen` → `kayak_log_spinning`.
+
 ### Dọn file gốc trước khi tối ưu
 
 `node scripts/clean-glb.mjs <file> --inspect` in các mặt phẳng lớn và các mảnh rời. Các cờ dọn:

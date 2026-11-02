@@ -57,7 +57,7 @@ test('A3.6: manifest points at real library models; packs are non-empty id lists
   assert.equal(m.gameModes.dino_journey.dinoIds.length, 8, 'dino pack: 8 dinosaurs');
   assert.ok(m.gameModes.dino_journey.dinoIds.includes('dino_trex_brown'), 'the father T-Rex is in the pack');
   // Aliases resolve to a stand-in model while the right one is made.
-  assert.match(lib('mv_world_castle'), /mv_world_ruin_candidate\.glb$/);
+  assert.match(lib('mv_world_castle'), /mv_castle_module\.glb$/, 'WP1 01/11: castle = the 4 castle modules');
   assert.match(lib('surv_holding_pen'), /surv_pen_wall_stone\.glb$/);
   assert.match(lib('does_not_exist'), /^\[ĐIỀN TẠI ĐÂY/);
   assert.equal(withQuality(lib('kayak_boat'), 'low').replace(/^.*\/low\//, ''), 'kayak/kayak_boat.glb');
