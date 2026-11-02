@@ -89,6 +89,18 @@ export function rageAddCharge(s: RageState, chargeSec: number, cfg: RageConfig =
   return { ...s, meter: Math.min(1, s.meter + chargeSec / cfg.chargeSec) };
 }
 
+/**
+ * River Survival: may a student open a Phonetic Stone right now? Never while a question frame is open
+ * or while the server's timed "Né lưới" (dodge, 6 s) / "Cướp lưới" (snatch, 8 s) window is running for
+ * them: voice must not eat into those windows. Times are server ms (the match clock).
+ */
+export function survivalStonesOpen(s: { now: number; questionOpen?: boolean; dodgeUntil?: number | null; snatchUntil?: number | null }): boolean {
+  if (s.questionOpen) return false;
+  if (s.dodgeUntil != null && s.now < s.dodgeUntil) return false;
+  if (s.snatchUntil != null && s.now < s.snatchUntil) return false;
+  return true;
+}
+
 /** Pet / Lumi pose for a step of the stone state machine (blueprint §3.5). */
 export function petStateFor(step: 'idle' | 'selected' | 'modeling' | 'listening' | 'scoring' | 'passed' | 'retry' | 'fallback', hint?: 'mouth_shape'): PetState {
   switch (step) {

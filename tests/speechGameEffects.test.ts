@@ -1,6 +1,8 @@
 import { describe, it } from 'node:test';
 import * as assert from 'node:assert';
-import { DEFAULT_SPEECH_RULES, SPEECH_GAME_HOOKS, petStateFor, rageAddCharge, rageInit, rageStart, rageTick, speechGameEffect, type Question } from '../src/engine';
+import { DEFAULT_SPEECH_RULES, SPEECH_GAME_HOOKS, petStateFor, rageAddCharge, rageInit, rageStart, rageTick, speechGameEffect, survivalStonesOpen, type Question } from '../src/engine';
+import { applySurvivalSpeechEffect } from '../src/components/modes/three/RiverSurvival/speechEffects';
+import { RIVER_SURVIVAL_ZONES } from '../src/components/modes/three/RiverSurvival/zones';
 import { MemorySpeechStore, createSpeechService, type SpeechContext } from '../src/server/speech';
 
 // WP8: the in-world effect of a successful pronunciation attempt is decided on the server.
@@ -109,5 +111,36 @@ describe('speech service returns the effect (server-decided)', () => {
     assert.deepStrictEqual(first.effect, { kind: 'portal_open', pet: 'celebrate' });
     const second = await s.submit(c, { targetId: 'q3w', mode: 'shadow', transcript: 'tent', durationMs: 700 });
     assert.strictEqual(second.effect, undefined);
+  });
+});
+
+describe('River Survival wiring (stones never block the timed windows)', () => {
+  it('locks stones during a question, the 6 s dodge and the 8 s snatch window', () => {
+    const now = 100_000;
+    assert.strictEqual(survivalStonesOpen({ now }), true);
+    assert.strictEqual(survivalStonesOpen({ now, questionOpen: true }), false);
+    assert.strictEqual(survivalStonesOpen({ now, dodgeUntil: now + 6_000 }), false);
+    assert.strictEqual(survivalStonesOpen({ now, snatchUntil: now + 8_000 }), false);
+    assert.strictEqual(survivalStonesOpen({ now, dodgeUntil: now - 1, snatchUntil: now - 1 }), true);
+  });
+
+  it('plays the server decoder_clue in the scene: beacon pulse, camera to the zone, clue spot', () => {
+    const calls: string[] = [];
+    const pen = { pulseCipherClue: () => calls.push('pulse') };
+    const env = { woodenPens: { zone_alpha: pen, zone_bravo: pen, zone_charlie: pen }, focusZone: (z: string) => calls.push(`focus:${z}`) } as never;
+    const progress = applySurvivalSpeechEffect(env, { kind: 'decoder_clue', solved: 1, nextAt: 2, unlocked: [], newlyUnlocked: null, pet: 'celebrate' }, 'zone_bravo');
+    assert.deepStrictEqual(progress, { reveal: null, progress: { solved: 1, nextAt: 2 } });
+    const pen2 = applySurvivalSpeechEffect(env, { kind: 'decoder_clue', solved: 2, nextAt: 4, unlocked: ['pen'], newlyUnlocked: 'pen', pet: 'celebrate' }, 'zone_bravo');
+    const bravo = RIVER_SURVIVAL_ZONES.find((z) => z.id === 'zone_bravo')!;
+    assert.deepStrictEqual(pen2.reveal, { clue: 'pen', zoneId: 'zone_bravo', position: bravo.penPosition });
+    const net = applySurvivalSpeechEffect(env, { kind: 'decoder_clue', solved: 4, nextAt: null, unlocked: ['pen', 'net'], newlyUnlocked: 'net', pet: 'celebrate' }, 'zone_bravo');
+    assert.deepStrictEqual(net.reveal?.position, bravo.netStationPosition);
+    assert.deepStrictEqual(calls, ['pulse', 'pulse', 'focus:zone_bravo', 'pulse', 'focus:zone_bravo']);
+  });
+
+  it('ignores effects of other worlds and missing effects', () => {
+    const env = { woodenPens: {}, focusZone: () => assert.fail('no camera move') } as never;
+    assert.deepStrictEqual(applySurvivalSpeechEffect(env, { kind: 'kayak_nitro', chargeSec: 4, pet: 'celebrate' }, 'zone_alpha'), { reveal: null, progress: null });
+    assert.deepStrictEqual(applySurvivalSpeechEffect(env, undefined, 'zone_alpha'), { reveal: null, progress: null });
   });
 });

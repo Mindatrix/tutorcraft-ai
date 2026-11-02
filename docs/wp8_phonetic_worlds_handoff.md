@@ -67,6 +67,27 @@ No effect comes back for:
 - **Effect:** `portal_open` on the first success on a stone. Play the portal transition along the card rail (`portalRail.ts`) and set Lumi to `effect.pet` (`celebrate`).
 - **Unchanged:** this is visual only. The story **stage** still follows the server schedule, so do not advance the stage from the client.
 
+## 2b. Wiring already in place (03/11, after merging PR #4)
+
+| World | Hook to call with the server's `reply.effect` |
+|---|---|
+| Kayak | `useKayakRage(...).addCharge(effect.chargeSec)` (`src/components/hud/KayakRage.tsx`) for `kayak_nitro` |
+| River Survival | `applySurvivalSpeechEffect(environment, effect, zoneId)` (`three/RiverSurvival/speechEffects.ts`) for `decoder_clue` |
+| River Survival (gate) | `survivalStonesOpen({ now, questionOpen, dodgeUntil, snatchUntil })` (`src/engine`) |
+
+What `applySurvivalSpeechEffect` does:
+- pulses the zone's cipher beacon (`pulseCipherClue`);
+- on a newly unlocked clue, moves the camera to the zone (`focusZone`);
+- returns `{ reveal: { clue, zoneId, position }, progress: { solved, nextAt } }` for a HUD marker or a minimap ping. `position` is the zone's `penPosition` or `netStationPosition`.
+
+`survivalStonesOpen` returns false while a question, the 6 s dodge or the 8 s snatch window is open. Call it before `machine.selectStone()`.
+
+**Still to do (Antigravity):**
+- Place the clearing stones in `RiverSurvivalScene` (none yet) and route their `stone:result` effect to `applySurvivalSpeechEffect`.
+- Place buoy-gate stones in `KayakRush.tsx` and route `kayak_nitro` to `rage.addCharge`.
+- Add a `stone:effect` event, or the effect in the `stone:result` payload, to the machine's bus.
+- `RiverSurvivalStage` is not in a match or scene-lab yet. Its debug buttons (open the pen gate, throw the net) must not reach students.
+
 ## 3. State machine, events, raycasting
 
 **Events:** the bus in `src/client/phoneticStones.ts` already has every event the brief asks for: `stone:select`, `stone:model`, `speech:start`, `speech:final`, `stone:result`, `pet:state`, plus hover, interim, error and state.

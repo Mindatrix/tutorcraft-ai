@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Flame } from 'lucide-react';
-import { KAYAK_RAGE, rageCanStart, rageInit, rageStart, rageStop, rageTick, type RageState } from '../../engine';
+import { KAYAK_RAGE, rageAddCharge, rageCanStart, rageInit, rageStart, rageStop, rageTick, type RageState } from '../../engine';
 import { SkillButton } from './GameHUD';
 
 // Kayak rage boost (WP10 U5, 02/11/2026): the bar fills while the race runs; when full it can be
@@ -17,6 +17,11 @@ export interface KayakRage {
   boost: { current: number };
   ready: boolean;
   toggle: () => void;
+  /**
+   * WP8: Nitro charge from a Phonetic Stone on a buoy gate. Pass only `effect.chargeSec` of a
+   * `kayak_nitro` effect from the SERVER's speech reply (never a number made in the browser).
+   */
+  addCharge: (chargeSec: number) => void;
 }
 
 export function useKayakRage(running: boolean, questionOpen: boolean): KayakRage {
@@ -45,7 +50,11 @@ export function useKayakRage(running: boolean, questionOpen: boolean): KayakRage
     boost.current = st.current.boosting ? 1 : 0;
     setState(st.current);
   }, [questionOpen]);
-  return { state, boost, ready: rageCanStart(state, questionOpen), toggle };
+  const addCharge = useCallback((chargeSec: number) => {
+    st.current = rageAddCharge(st.current, chargeSec);
+    setState(st.current);
+  }, []);
+  return { state, boost, ready: rageCanStart(state, questionOpen), toggle, addCharge };
 }
 
 /** Round "Nộ" button: fill ring = the bar; blinks when it can be started; counts seconds while on. */
