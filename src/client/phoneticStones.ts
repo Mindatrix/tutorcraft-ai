@@ -30,6 +30,7 @@ export {
   MOCK_SPEECH_TARGETS,
   MOCK_VOICE_CONFIG,
 } from './phoneticStonesMock';
+export * from './phoneticWorldRules';
 
 /**
  * Client state machine states from `docs/pronunciation_logic_handoff.md` §3.4 & `docs/TECHNICAL_BLUEPRINT.md` §3.5:

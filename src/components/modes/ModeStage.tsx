@@ -22,6 +22,8 @@ function Loading() {
 // Worlds without a scene yet (3D still being built) play on the 2D canvas, without marking the device as weak.
 const SCENES: Partial<Record<BossMode, ComponentType<BossSceneProps>>> = {
   multiverse_portal: dynamic(() => import('./MultiversePortalRPG'), { ssr: false, loading: Loading }),
+  summer_camp: dynamic(() => import('./SummerCampQuests3D'), { ssr: false, loading: Loading }),
+  river_fishing: dynamic(() => import('./RiverFishingChallenge3D'), { ssr: false, loading: Loading }),
 };
 
 /** Bevelled "game screen" frame (no rounded rectangles). */
