@@ -1,4 +1,4 @@
-import { DEMO_BATTLE_ID } from '../engine';
+import { isDemoBattleId } from '../engine';
 import { loadBattle } from './battles';
 import { realtimeBroadcaster } from './matchBroadcast';
 import { createMatchService, MatchError, type MatchService } from './matchService';
@@ -38,7 +38,7 @@ export function answerGuard(token: string): ActGuard | undefined {
   const p = peekSession(token);
   if (!p) return undefined;
   const checks = [rateLimitShared(`answer:${p.sid}`, 60, 60_000)];
-  if (p.bid !== DEMO_BATTLE_ID) checks.push(rateLimitShared(`answer-class:${p.bid}`, 3000, 60_000));
+  if (!isDemoBattleId(p.bid)) checks.push(rateLimitShared(`answer-class:${p.bid}`, 3000, 60_000));
   return Promise.all(checks).then((r) => r.find((x) => !x.ok) ?? r[0]);
 }
 

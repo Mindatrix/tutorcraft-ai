@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import {
+  isDemoBattleId,
   MAX_QUESTIONS,
   computeScaling,
   defaultBoss,
@@ -73,7 +74,7 @@ export async function GET(req: Request) {
   const code = normalizeBattleCode(params.get('code'));
   if (!id && !code) return NextResponse.json({ error: 'Mã đấu trường không hợp lệ.' }, { status: 400 });
 
-  const battle = id === 'demo' ? demoLoadedBattle() : id ? await loadBattle(id) : await loadBattleByCode(code!);
+  const battle = isDemoBattleId(id) ? demoLoadedBattle(id!) : id ? await loadBattle(id) : await loadBattleByCode(code!);
   if (!battle) return NextResponse.json({ error: 'Không tìm thấy đấu trường.' }, { status: 404 });
 
   // Never the questions or answers — those are served one at a time by /api/session.

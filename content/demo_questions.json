@@ -1,0 +1,326 @@
+{
+  "version": 1,
+  "note": "20 câu demo đơn giản (từ vựng trại hè/sông/khủng long). Nghĩa tiếng Việt nằm trong explanation vì thêm field mới cần duyệt schema.",
+  "questions": [
+    {
+      "type": "mcq",
+      "question": "Which animal lives in water, and you catch it with a rod?",
+      "options": [
+        "bird",
+        "fish",
+        "horse",
+        "cat"
+      ],
+      "correct_idx": 1,
+      "difficulty": "easy",
+      "topic": "animals",
+      "skill_tag": "vocabulary",
+      "hint": "Nó bơi dưới nước.",
+      "explanation": "fish = con cá."
+    },
+    {
+      "type": "mcq",
+      "question": "Which word means \"con sông\"?",
+      "options": [
+        "mountain",
+        "river",
+        "forest",
+        "desert"
+      ],
+      "correct_idx": 1,
+      "difficulty": "easy",
+      "topic": "nature",
+      "skill_tag": "vocabulary",
+      "hint": "Thuyền kayak đi trên nó.",
+      "explanation": "river = con sông."
+    },
+    {
+      "type": "mcq",
+      "question": "We sleep in a _____ at the summer camp.",
+      "options": [
+        "boat",
+        "kitchen",
+        "tent",
+        "bridge"
+      ],
+      "correct_idx": 2,
+      "difficulty": "easy",
+      "topic": "camp",
+      "skill_tag": "vocabulary",
+      "hint": "Nhà vải dựng ngoài trời.",
+      "explanation": "tent = lều."
+    },
+    {
+      "type": "mcq",
+      "question": "I am hungry. I want to eat some _____.",
+      "options": [
+        "rope",
+        "bread",
+        "stone",
+        "water bottle"
+      ],
+      "correct_idx": 1,
+      "difficulty": "easy",
+      "topic": "food",
+      "skill_tag": "vocabulary",
+      "hint": "Thứ ăn được, làm từ bột mì.",
+      "explanation": "bread = bánh mì."
+    },
+    {
+      "type": "mcq",
+      "question": "The opposite of \"big\" is _____.",
+      "options": [
+        "small",
+        "tall",
+        "fast",
+        "heavy"
+      ],
+      "correct_idx": 0,
+      "difficulty": "easy",
+      "topic": "antonyms",
+      "skill_tag": "vocabulary",
+      "hint": "Con kiến thì...",
+      "explanation": "small = nhỏ; big = to."
+    },
+    {
+      "type": "mcq",
+      "question": "It is dark. Please turn on the _____.",
+      "options": [
+        "river",
+        "fish",
+        "apple",
+        "light"
+      ],
+      "correct_idx": 3,
+      "difficulty": "easy",
+      "topic": "daily",
+      "skill_tag": "vocabulary",
+      "hint": "Bật cái này để nhìn thấy.",
+      "explanation": "light = đèn / ánh sáng."
+    },
+    {
+      "type": "mcq",
+      "question": "A baby dinosaur is very _____ — it is not old.",
+      "options": [
+        "wet",
+        "hungry",
+        "young",
+        "angry"
+      ],
+      "correct_idx": 2,
+      "difficulty": "easy",
+      "topic": "dino",
+      "skill_tag": "vocabulary",
+      "hint": "Trái nghĩa với old.",
+      "explanation": "young = trẻ, nhỏ tuổi."
+    },
+    {
+      "type": "mcq",
+      "question": "Which one is a fruit?",
+      "options": [
+        "log",
+        "apple",
+        "corn stick",
+        "fish net"
+      ],
+      "correct_idx": 1,
+      "difficulty": "easy",
+      "topic": "food",
+      "skill_tag": "vocabulary",
+      "hint": "Màu đỏ hoặc xanh, mọc trên cây.",
+      "explanation": "apple = quả táo."
+    },
+    {
+      "type": "mcq",
+      "question": "We cook sausages on the _____ at camp.",
+      "options": [
+        "grill",
+        "tent",
+        "paddle",
+        "raft"
+      ],
+      "correct_idx": 0,
+      "difficulty": "easy",
+      "topic": "camp",
+      "skill_tag": "vocabulary",
+      "hint": "Vỉ nướng, đặt trên lửa.",
+      "explanation": "grill = vỉ nướng."
+    },
+    {
+      "type": "mcq",
+      "question": "Use a _____ to move your kayak in the water.",
+      "options": [
+        "pillow",
+        "spoon",
+        "book",
+        "paddle"
+      ],
+      "correct_idx": 3,
+      "difficulty": "easy",
+      "topic": "kayak",
+      "skill_tag": "vocabulary",
+      "hint": "Mái chèo.",
+      "explanation": "paddle = mái chèo."
+    },
+    {
+      "type": "mcq",
+      "question": "Look! A big _____ is lying on the river. Watch out!",
+      "options": [
+        "hat",
+        "chair",
+        "log",
+        "cloud"
+      ],
+      "correct_idx": 2,
+      "difficulty": "easy",
+      "topic": "kayak",
+      "skill_tag": "vocabulary",
+      "hint": "Khúc gỗ trôi trên sông.",
+      "explanation": "log = khúc gỗ."
+    },
+    {
+      "type": "mcq",
+      "question": "\"Fast\" means:",
+      "options": [
+        "chạy nhanh",
+        "chậm",
+        "nặng",
+        "lạnh"
+      ],
+      "correct_idx": 0,
+      "difficulty": "easy",
+      "topic": "vocabulary",
+      "skill_tag": "vocabulary",
+      "hint": "Kayak tăng tốc là fast.",
+      "explanation": "fast = nhanh."
+    },
+    {
+      "type": "mcq",
+      "question": "The sun is _____ in the morning, so it is a new day.",
+      "options": [
+        "rising",
+        "sleeping",
+        "cooking",
+        "swimming"
+      ],
+      "correct_idx": 0,
+      "difficulty": "medium",
+      "topic": "nature",
+      "skill_tag": "vocabulary",
+      "hint": "Mặt trời mọc.",
+      "explanation": "rising = đang mọc."
+    },
+    {
+      "type": "mcq",
+      "question": "Which word is a place where many trees grow?",
+      "options": [
+        "kitchen",
+        "bridge",
+        "boat",
+        "forest"
+      ],
+      "correct_idx": 3,
+      "difficulty": "medium",
+      "topic": "nature",
+      "skill_tag": "vocabulary",
+      "hint": "Rừng.",
+      "explanation": "forest = khu rừng."
+    },
+    {
+      "type": "mcq",
+      "question": "She _____ a fish every morning at the lake.",
+      "options": [
+        "catching",
+        "caught",
+        "catches",
+        "catch"
+      ],
+      "correct_idx": 2,
+      "difficulty": "medium",
+      "topic": "grammar",
+      "skill_tag": "grammar",
+      "hint": "Chủ ngữ số ít, thì hiện tại đơn → thêm -es.",
+      "explanation": "She catches... : he/she/it + động từ thêm s/es."
+    },
+    {
+      "type": "mcq",
+      "question": "A _____ is a safe place to cross a river.",
+      "options": [
+        "hat",
+        "bridge",
+        "pillow",
+        "fork"
+      ],
+      "correct_idx": 1,
+      "difficulty": "medium",
+      "topic": "places",
+      "skill_tag": "vocabulary",
+      "hint": "Bắc qua sông.",
+      "explanation": "bridge = cây cầu."
+    },
+    {
+      "type": "mcq",
+      "question": "\"Brave\" means someone who is not _____.",
+      "options": [
+        "afraid",
+        "tired",
+        "funny",
+        "tall"
+      ],
+      "correct_idx": 0,
+      "difficulty": "medium",
+      "topic": "antonyms",
+      "skill_tag": "vocabulary",
+      "hint": "Dũng cảm là không sợ.",
+      "explanation": "brave = dũng cảm; afraid = sợ."
+    },
+    {
+      "type": "mcq",
+      "question": "Which word means \"đi bộ đường dài trong núi\"?",
+      "options": [
+        "cooking",
+        "drawing",
+        "sleeping",
+        "hiking"
+      ],
+      "correct_idx": 3,
+      "difficulty": "medium",
+      "topic": "camp",
+      "skill_tag": "vocabulary",
+      "hint": "Hoạt động ở trại hè.",
+      "explanation": "hiking = đi bộ đường dài."
+    },
+    {
+      "type": "mcq",
+      "question": "Choose the correct word: \"We _____ a big fire to keep warm.\"",
+      "options": [
+        "makes",
+        "making",
+        "made",
+        "maked"
+      ],
+      "correct_idx": 2,
+      "difficulty": "medium",
+      "topic": "grammar",
+      "skill_tag": "grammar",
+      "hint": "Quá khứ bất quy tắc của make.",
+      "explanation": "made = quá khứ của make (đã làm / đã nhóm)."
+    },
+    {
+      "type": "mcq",
+      "question": "A dinosaur lived a very long time _____.",
+      "options": [
+        "next",
+        "ago",
+        "before ago",
+        "after"
+      ],
+      "correct_idx": 1,
+      "difficulty": "medium",
+      "topic": "dino",
+      "skill_tag": "vocabulary",
+      "hint": "Trước đây rất lâu.",
+      "explanation": "ago = cách đây (a long time ago = cách đây rất lâu)."
+    }
+  ]
+}

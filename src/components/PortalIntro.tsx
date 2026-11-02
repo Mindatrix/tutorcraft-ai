@@ -90,11 +90,19 @@ export default function PortalIntro({ onDone, duration = 1600 }: { onDone: () =>
       if (fade) fade.style.opacity = String(Math.max(0, (k - 0.7) / 0.3));
       renderer.render(scene, cam);
       if (k < 1) raf = requestAnimationFrame(frame);
-      else if (!finished) { finished = true; done.current(); }
+      else finish();
+    };
+    const finish = () => {
+      if (finished) return;
+      finished = true;
+      done.current();
     };
     raf = requestAnimationFrame(frame);
+    // A hidden or covered tab pauses requestAnimationFrame: never hold the game behind the intro (U6).
+    const guard = window.setTimeout(finish, total + 600);
     return () => {
       cancelAnimationFrame(raf);
+      window.clearTimeout(guard);
       renderer.dispose();
       geo.dispose();
       el.removeChild(renderer.domElement);

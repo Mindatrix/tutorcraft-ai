@@ -1,0 +1,815 @@
+{
+ "_note": "Ghép nhân vật mới, xem bằng Blender 01/11/2026. file tính từ 3D_tutorcraft. suit=game nên dùng (mv=Multiverse, kayak, camp, fish, surv, dino). Chưa nhập kho.",
+ "characters": [
+  {
+   "file": "_ung_vien/nhan_vat/da_rig/Meshy_AI_Astronaut_All_Animations.glb",
+   "proposed_id": "char_astronaut_a",
+   "kind": "human",
+   "age_group": "adult",
+   "gender": "n",
+   "suit": [
+    "mv",
+    "kayak"
+   ],
+   "note": "phi hành gia mũ kín: vai trung tính/AI",
+   "rigged": true
+  },
+  {
+   "file": "_ung_vien/nhan_vat/da_rig/Meshy_AI_Britain_Old_Woman_All_Animations.glb",
+   "proposed_id": "char_britain_old_woman",
+   "kind": "human",
+   "age_group": "adult",
+   "gender": "f",
+   "suit": [
+    "camp",
+    "mv"
+   ],
+   "note": "váy nâu cổ; nhìn trung niên",
+   "rigged": true
+  },
+  {
+   "file": "_ung_vien/nhan_vat/da_rig/Meshy_AI_Character_design_for__All_Animations.glb",
+   "proposed_id": "char_hoodie_man",
+   "kind": "human",
+   "age_group": "adult",
+   "gender": "m",
+   "suit": [
+    "surv",
+    "mv"
+   ],
+   "note": "hoodie tối, 2 hoạt ảnh",
+   "rigged": true
+  },
+  {
+   "file": "_ung_vien/nhan_vat/da_rig/Meshy_AI_Character_output-10.glb",
+   "proposed_id": "animal_dove",
+   "kind": "animal",
+   "age_group": "child",
+   "gender": "n",
+   "suit": [
+    "mv",
+    "camp"
+   ],
+   "note": "bồ câu dang cánh",
+   "rigged": true
+  },
+  {
+   "file": "_ung_vien/nhan_vat/da_rig/Meshy_AI_Character_output-11.glb",
+   "proposed_id": "animal_dolphin",
+   "kind": "animal",
+   "age_group": "child",
+   "gender": "n",
+   "suit": [
+    "kayak",
+    "fish"
+   ],
+   "note": "cá heo xanh",
+   "rigged": true
+  },
+  {
+   "file": "_ung_vien/nhan_vat/da_rig/Meshy_AI_Character_output-12.glb",
+   "proposed_id": "animal_cat_bow",
+   "kind": "animal",
+   "age_group": "child",
+   "gender": "n",
+   "suit": [
+    "camp",
+    "fish",
+    "mv"
+   ],
+   "note": "mèo xám nơ đỏ, 226k mặt nặng",
+   "rigged": true
+  },
+  {
+   "file": "_ung_vien/nhan_vat/da_rig/Meshy_AI_Character_output-13.glb",
+   "proposed_id": "animal_puppy_a",
+   "kind": "animal",
+   "age_group": "child",
+   "gender": "n",
+   "suit": [
+    "camp",
+    "surv",
+    "dino"
+   ],
+   "note": "cún nâu trắng",
+   "rigged": true
+  },
+  {
+   "file": "_ung_vien/nhan_vat/da_rig/Meshy_AI_Character_output-14.glb",
+   "proposed_id": "animal_mallard",
+   "kind": "animal",
+   "age_group": "child",
+   "gender": "n",
+   "suit": [
+    "kayak",
+    "fish"
+   ],
+   "note": "vịt trời, bỏ đế tròn",
+   "rigged": true
+  },
+  {
+   "file": "_ung_vien/nhan_vat/da_rig/Meshy_AI_Character_output-15.glb",
+   "proposed_id": "animal_duck_white",
+   "kind": "animal",
+   "age_group": "child",
+   "gender": "n",
+   "suit": [
+    "kayak",
+    "fish"
+   ],
+   "note": "vịt trắng KHÔNG texture, 35MB",
+   "rigged": true
+  },
+  {
+   "file": "_ung_vien/nhan_vat/da_rig/Meshy_AI_Character_output-16.glb",
+   "proposed_id": "animal_frog",
+   "kind": "animal",
+   "age_group": "child",
+   "gender": "n",
+   "suit": [
+    "fish",
+    "dino"
+   ],
+   "note": "ếch xanh",
+   "rigged": true
+  },
+  {
+   "file": "_ung_vien/nhan_vat/da_rig/Meshy_AI_Character_output-17.glb",
+   "proposed_id": "char_glasses_teen_m",
+   "kind": "human",
+   "age_group": "teen",
+   "gender": "m",
+   "suit": [
+    "kayak",
+    "camp",
+    "fish"
+   ],
+   "note": "áo thun trắng, quần xanh rêu, kính",
+   "rigged": true
+  },
+  {
+   "file": "_ung_vien/nhan_vat/da_rig/Meshy_AI_Character_output-18.glb",
+   "proposed_id": "char_white_dress_f",
+   "kind": "human",
+   "age_group": "adult",
+   "gender": "f",
+   "suit": [
+    "camp",
+    "mv"
+   ],
+   "note": "váy trắng, cần kiểm tra chất liệu",
+   "rigged": true
+  },
+  {
+   "file": "_ung_vien/nhan_vat/da_rig/Meshy_AI_Character_output-19.glb",
+   "proposed_id": "char_techwear_m",
+   "kind": "human",
+   "age_group": "adult",
+   "gender": "m",
+   "suit": [
+    "surv",
+    "mv"
+   ],
+   "note": "techwear đen cam 9k mặt",
+   "rigged": true
+  },
+  {
+   "file": "_ung_vien/nhan_vat/da_rig/Meshy_AI_Character_output-29.glb",
+   "proposed_id": "animal_dragon_green",
+   "kind": "fantasy",
+   "age_group": "child",
+   "gender": "n",
+   "suit": [
+    "dino",
+    "mv"
+   ],
+   "note": "rồng con xanh lá",
+   "rigged": true
+  },
+  {
+   "file": "_ung_vien/nhan_vat/da_rig/Meshy_AI_Character_output-20.glb",
+   "proposed_id": "char_white_hair_girl",
+   "kind": "human",
+   "age_group": "teen",
+   "gender": "f",
+   "suit": [
+    "mv",
+    "camp"
+   ],
+   "note": "tóc trắng đồ trắng",
+   "rigged": true
+  },
+  {
+   "file": "_ung_vien/nhan_vat/da_rig/Meshy_AI_Character_output-21.glb",
+   "proposed_id": "char_chibi_knight",
+   "kind": "human",
+   "age_group": "child",
+   "gender": "m",
+   "suit": [
+    "mv",
+    "surv"
+   ],
+   "note": "hiệp sĩ chibi cầm kiếm",
+   "rigged": true
+  },
+  {
+   "file": "_ung_vien/nhan_vat/da_rig/Meshy_AI_Character_output-22.glb",
+   "proposed_id": "char_black_jacket_m",
+   "kind": "human",
+   "age_group": "adult",
+   "gender": "m",
+   "suit": [
+    "kayak",
+    "surv"
+   ],
+   "note": "áo khoác đen 10k mặt 46MB",
+   "rigged": true
+  },
+  {
+   "file": "_ung_vien/nhan_vat/da_rig/Meshy_AI_Character_output-23.glb",
+   "proposed_id": "char_dark_soldier",
+   "kind": "human",
+   "age_group": "adult",
+   "gender": "m",
+   "suit": [
+    "surv",
+    "mv"
+   ],
+   "note": "lính giáp đen T-pose",
+   "rigged": true
+  },
+  {
+   "file": "_ung_vien/nhan_vat/da_rig/Meshy_AI_Character_output-24.glb",
+   "proposed_id": "char_black_swordsman",
+   "kind": "human",
+   "age_group": "adult",
+   "gender": "m",
+   "suit": [
+    "mv"
+   ],
+   "note": "áo choàng đen cổ trang",
+   "rigged": true
+  },
+  {
+   "file": "_ung_vien/nhan_vat/da_rig/Meshy_AI_Character_output-25.glb",
+   "proposed_id": "char_hanbok_scholar",
+   "kind": "human",
+   "age_group": "adult",
+   "gender": "m",
+   "suit": [
+    "mv",
+    "camp"
+   ],
+   "note": "áo dài xanh kiểu Hàn + mũ",
+   "rigged": true
+  },
+  {
+   "file": "_ung_vien/nhan_vat/da_rig/Meshy_AI_Character_output-26.glb",
+   "proposed_id": "char_ranger_boy",
+   "kind": "human",
+   "age_group": "teen",
+   "gender": "m",
+   "suit": [
+    "camp",
+    "surv",
+    "dino"
+   ],
+   "note": "thợ săn trẻ, ba lô",
+   "rigged": true
+  },
+  {
+   "file": "_ung_vien/nhan_vat/da_rig/Meshy_AI_Character_output-27.glb",
+   "proposed_id": "char_denim_girl",
+   "kind": "human",
+   "age_group": "adult",
+   "gender": "f",
+   "suit": [
+    "kayak",
+    "camp",
+    "fish"
+   ],
+   "note": "áo da, quần đùi jeans",
+   "rigged": true
+  },
+  {
+   "file": "_ung_vien/nhan_vat/da_rig/Meshy_AI_Character_output-28.glb",
+   "proposed_id": "char_jeans_man_tpose",
+   "kind": "human",
+   "age_group": "adult",
+   "gender": "m",
+   "suit": [
+    "kayak",
+    "fish"
+   ],
+   "note": "áo khoác jeans T-pose",
+   "rigged": true
+  },
+  {
+   "file": "_ung_vien/nhan_vat/da_rig/Meshy_AI_Character_output-29.glb",
+   "proposed_id": "char_sweater_boy",
+   "kind": "human",
+   "age_group": "child",
+   "gender": "m",
+   "suit": [
+    "kayak",
+    "camp",
+    "fish",
+    "dino"
+   ],
+   "note": "bé trai áo len đen T-pose",
+   "rigged": true
+  },
+  {
+   "file": "_ung_vien/nhan_vat/da_rig/Meshy_AI_Character_output-2__b.glb",
+   "proposed_id": "char_braids_girl",
+   "kind": "human",
+   "age_group": "child",
+   "gender": "f",
+   "suit": [
+    "camp",
+    "fish",
+    "dino"
+   ],
+   "note": "bé gái tết hai bím váy xanh",
+   "rigged": true
+  },
+  {
+   "file": "_ung_vien/nhan_vat/da_rig/Meshy_AI_Character_output-3.glb",
+   "proposed_id": "char_astronaut_b",
+   "kind": "human",
+   "age_group": "adult",
+   "gender": "n",
+   "suit": [
+    "mv"
+   ],
+   "note": "phi hành gia thứ hai",
+   "rigged": true
+  },
+  {
+   "file": "_ung_vien/nhan_vat/da_rig/Meshy_AI_Character_output-30.glb",
+   "proposed_id": "char_green_archer_girl",
+   "kind": "human",
+   "age_group": "teen",
+   "gender": "f",
+   "suit": [
+    "mv",
+    "surv"
+   ],
+   "note": "đồ xanh lá bốt dài 4k mặt",
+   "rigged": true
+  },
+  {
+   "file": "_ung_vien/nhan_vat/da_rig/Meshy_AI_Character_output-31.glb",
+   "proposed_id": "char_toddler_girl",
+   "kind": "human",
+   "age_group": "child",
+   "gender": "f",
+   "suit": [
+    "camp",
+    "dino"
+   ],
+   "note": "bé gái nhỏ áo trắng búi tóc",
+   "rigged": true
+  },
+  {
+   "file": "_ung_vien/nhan_vat/da_rig/Meshy_AI_Character_output-3__b.glb",
+   "proposed_id": "char_white_tee_girl",
+   "kind": "human",
+   "age_group": "teen",
+   "gender": "f",
+   "suit": [
+    "kayak",
+    "camp",
+    "fish"
+   ],
+   "note": "tóc đen ngắn áo thun trắng short",
+   "rigged": true
+  },
+  {
+   "file": "_ung_vien/nhan_vat/da_rig/Meshy_AI_Character_output-4.glb",
+   "proposed_id": "animal_otter",
+   "kind": "animal",
+   "age_group": "child",
+   "gender": "n",
+   "suit": [
+    "kayak",
+    "fish"
+   ],
+   "note": "rái cá nâu",
+   "rigged": true
+  },
+  {
+   "file": "_ung_vien/nhan_vat/da_rig/Meshy_AI_Character_output-4__b.glb",
+   "proposed_id": "char_superhero_blue",
+   "kind": "fantasy",
+   "age_group": "adult",
+   "gender": "m",
+   "suit": [
+    "mv"
+   ],
+   "note": "siêu nhân xanh áo choàng",
+   "rigged": true
+  },
+  {
+   "file": "_ung_vien/nhan_vat/da_rig/Meshy_AI_Character_output-5.glb",
+   "proposed_id": "char_old_man_jacket",
+   "kind": "human",
+   "age_group": "elder",
+   "gender": "m",
+   "suit": [
+    "camp",
+    "fish"
+   ],
+   "note": "ông cụ tóc bạc áo khoác nâu",
+   "rigged": true
+  },
+  {
+   "file": "_ung_vien/nhan_vat/da_rig/Meshy_AI_Character_output-6.glb",
+   "proposed_id": "char_granny_green",
+   "kind": "human",
+   "age_group": "elder",
+   "gender": "f",
+   "suit": [
+    "camp",
+    "fish",
+    "kayak"
+   ],
+   "note": "bà cụ kính áo xanh T-pose",
+   "rigged": true
+  },
+  {
+   "file": "_ung_vien/nhan_vat/da_rig/Meshy_AI_Character_output-7.glb",
+   "proposed_id": "char_blonde_girl",
+   "kind": "human",
+   "age_group": "adult",
+   "gender": "f",
+   "suit": [
+    "kayak",
+    "fish"
+   ],
+   "note": "tóc vàng áo trắng váy jeans",
+   "rigged": true
+  },
+  {
+   "file": "_ung_vien/nhan_vat/da_rig/Meshy_AI_Character_output-8.glb",
+   "proposed_id": "animal_rabbit_white",
+   "kind": "animal",
+   "age_group": "child",
+   "gender": "n",
+   "suit": [
+    "camp",
+    "mv"
+   ],
+   "note": "thỏ trắng mắt đỏ",
+   "rigged": true
+  },
+  {
+   "file": "_ung_vien/nhan_vat/da_rig/Meshy_AI_Character_output-9.glb",
+   "proposed_id": "animal_rabbit_brown",
+   "kind": "animal",
+   "age_group": "child",
+   "gender": "n",
+   "suit": [
+    "camp",
+    "dino"
+   ],
+   "note": "thỏ nâu cam",
+   "rigged": true
+  },
+  {
+   "file": "_ung_vien/nhan_vat/da_rig/Meshy_AI_Character_output.glb",
+   "proposed_id": "animal_dragon_white",
+   "kind": "fantasy",
+   "age_group": "child",
+   "gender": "n",
+   "suit": [
+    "mv",
+    "dino"
+   ],
+   "note": "rồng con trắng cánh cam",
+   "rigged": true
+  },
+  {
+   "file": "_ung_vien/nhan_vat/da_rig/Meshy_AI_Character_output__b.glb",
+   "proposed_id": "char_armored_girl",
+   "kind": "fantasy",
+   "age_group": "teen",
+   "gender": "f",
+   "suit": [
+    "mv"
+   ],
+   "note": "nữ chiến binh giáp áo choàng xanh",
+   "rigged": true
+  },
+  {
+   "file": "_ung_vien/nhan_vat/da_rig/Meshy_AI_Nordic_Old_Man_All_Animations.glb",
+   "proposed_id": "char_nordic_elder",
+   "kind": "human",
+   "age_group": "elder",
+   "gender": "m",
+   "suit": [
+    "mv",
+    "camp"
+   ],
+   "note": "ông cụ râu trắng áo choàng xanh 20 hoạt ảnh",
+   "rigged": true
+  },
+  {
+   "file": "_ung_vien/nhan_vat/da_rig/Meshy_AI_Old_woman_holding_a_s_All_Animations.glb",
+   "proposed_id": "char_hooded_crone",
+   "kind": "human",
+   "age_group": "elder",
+   "gender": "f",
+   "suit": [
+    "mv",
+    "surv"
+   ],
+   "note": "bà cụ trùm đầu u ám: vai bí ẩn",
+   "rigged": true
+  },
+  {
+   "file": "_ung_vien/nhan_vat/da_rig/Meshy_AI_Open_Arms_on_Green_Ba_All_Animations.glb",
+   "proposed_id": "char_footballer",
+   "kind": "human",
+   "age_group": "adult",
+   "gender": "m",
+   "suit": [
+    "kayak",
+    "surv"
+   ],
+   "note": "cầu thủ áo trắng",
+   "rigged": true
+  },
+  {
+   "file": "_ung_vien/nhan_vat/da_rig/Meshy_AI_Open_Chest_Power_All_Animations.glb",
+   "proposed_id": "char_bearded_man",
+   "kind": "human",
+   "age_group": "adult",
+   "gender": "m",
+   "suit": [
+    "camp",
+    "fish"
+   ],
+   "note": "chú râu quai nón áo sơ mi",
+   "rigged": true
+  },
+  {
+   "file": "_ung_vien/nhan_vat/da_rig/Meshy_AI_Police_All_Animations.glb",
+   "proposed_id": "char_police_a",
+   "kind": "human",
+   "age_group": "adult",
+   "gender": "m",
+   "suit": [
+    "surv"
+   ],
+   "note": "cảnh sát",
+   "rigged": true
+  },
+  {
+   "file": "_ung_vien/nhan_vat/da_rig/Meshy_AI_Robot_All_Animations.glb",
+   "proposed_id": "robot_cute_white",
+   "kind": "robot",
+   "age_group": "child",
+   "gender": "n",
+   "suit": [
+    "mv",
+    "kayak"
+   ],
+   "note": "robot trắng-xanh dễ thương",
+   "rigged": true
+  },
+  {
+   "file": "_ung_vien/nhan_vat/da_rig/Meshy_AI_Robot_Guardian_All_Animations-2.glb",
+   "proposed_id": "robot_yellow",
+   "kind": "robot",
+   "age_group": "adult",
+   "gender": "n",
+   "suit": [
+    "mv",
+    "surv"
+   ],
+   "note": "robot vàng: boss",
+   "rigged": true
+  },
+  {
+   "file": "_ung_vien/nhan_vat/da_rig/Meshy_AI_Robot_Guardian_All_Animations-2.glb",
+   "proposed_id": "robot_guardian_blue",
+   "kind": "robot",
+   "age_group": "adult",
+   "gender": "n",
+   "suit": [
+    "mv",
+    "surv"
+   ],
+   "note": "robot xanh cam: đối thủ máy",
+   "rigged": true
+  },
+  {
+   "file": "_ung_vien/nhan_vat/da_rig/Meshy_AI_Shree_is_a_23_year_ol_All_Animations.glb",
+   "proposed_id": "char_shree",
+   "kind": "human",
+   "age_group": "adult",
+   "gender": "f",
+   "suit": [
+    "kayak",
+    "camp"
+   ],
+   "note": "giới chưa chắc",
+   "rigged": true
+  },
+  {
+   "file": "_ung_vien/nhan_vat/da_rig/Meshy_AI_Strongman_Style_All_Animations.glb",
+   "proposed_id": "char_strongman",
+   "kind": "human",
+   "age_group": "adult",
+   "gender": "m",
+   "suit": [
+    "kayak",
+    "surv"
+   ],
+   "note": "vạm vỡ áo ba lỗ",
+   "rigged": true
+  },
+  {
+   "file": "_ung_vien/nhan_vat/da_rig/Meshy_AI_T_Pose_Police_Officer_All_Animations.glb",
+   "proposed_id": "char_police_b",
+   "kind": "human",
+   "age_group": "adult",
+   "gender": "n",
+   "suit": [
+    "surv"
+   ],
+   "note": "cảnh sát nhỏ nhắn: giới chưa rõ",
+   "rigged": true
+  },
+  {
+   "file": "_ung_vien/nhan_vat/da_rig/Meshy_AI_T_Pose_Stance_All_Animations.glb",
+   "proposed_id": "char_dark_tee_man",
+   "kind": "human",
+   "age_group": "adult",
+   "gender": "m",
+   "suit": [
+    "kayak",
+    "fish"
+   ],
+   "note": "áo thun xanh đen",
+   "rigged": true
+  },
+  {
+   "file": "_ung_vien/nhan_vat/da_rig/Meshy_AI_Ultra_realistic_full__All_Animations.glb",
+   "proposed_id": "char_bearded_traveler",
+   "kind": "human",
+   "age_group": "adult",
+   "gender": "m",
+   "suit": [
+    "surv",
+    "mv"
+   ],
+   "note": "lữ hành râu áo choàng",
+   "rigged": true
+  },
+  {
+   "file": "_ung_vien/nhan_vat/da_rig/Meshy_AI_Winter_s_Resolve_All_Animations.glb",
+   "proposed_id": "char_winter_man",
+   "kind": "human",
+   "age_group": "adult",
+   "gender": "m",
+   "suit": [
+    "surv",
+    "mv"
+   ],
+   "note": "áo khoác mùa đông râu",
+   "rigged": true
+  },
+  {
+   "file": "_ung_vien/nhan_vat/da_rig/Meshy_AI_girl_All_Animations.glb",
+   "proposed_id": "char_orange_jacket_girl",
+   "kind": "human",
+   "age_group": "teen",
+   "gender": "f",
+   "suit": [
+    "kayak",
+    "camp",
+    "fish"
+   ],
+   "note": "tóc trắng dài áo cam",
+   "rigged": true
+  },
+  {
+   "file": "_ung_vien/nhan_vat/da_rig/Meshy_AI_old_woman_All_Animations.glb",
+   "proposed_id": "char_grey_robe_elder",
+   "kind": "human",
+   "age_group": "elder",
+   "gender": "f",
+   "suit": [
+    "mv",
+    "camp"
+   ],
+   "note": "người già áo choàng xám: giới chưa chắc",
+   "rigged": true
+  },
+  {
+   "file": "_ung_vien/nhan_vat/da_rig/Meshy_AI_robot_All_Animations-2.glb",
+   "proposed_id": "robot_white_humanoid",
+   "kind": "robot",
+   "age_group": "adult",
+   "gender": "n",
+   "suit": [
+    "mv"
+   ],
+   "note": "robot người trắng",
+   "rigged": true
+  },
+  {
+   "file": "_ung_vien/nhan_vat/dong_vat_da_rig/Meshy_AI_A_cute_but_dangerous__All_Animations.glb",
+   "proposed_id": "animal_small_dog",
+   "kind": "animal",
+   "age_group": "child",
+   "gender": "n",
+   "suit": [
+    "camp",
+    "dino"
+   ],
+   "note": "chó rất nhỏ trong khung: chỉnh tỉ lệ",
+   "rigged": true
+  },
+  {
+   "file": "_ung_vien/nhan_vat/dong_vat_da_rig/Meshy_AI_Stylized_cute_puppy_d_All_Animations.glb",
+   "proposed_id": "animal_puppy_b",
+   "kind": "animal",
+   "age_group": "child",
+   "gender": "n",
+   "suit": [
+    "camp",
+    "surv"
+   ],
+   "note": "cún hoạt hình, render trống: kiểm tra lại",
+   "rigged": true
+  },
+  {
+   "file": "_ung_vien/nhan_vat/dong_vat_tinh/Meshy_AI_A_cute_cartoon_owl_ch_1028090453_texture.glb",
+   "proposed_id": "animal_owl",
+   "kind": "animal",
+   "age_group": "child",
+   "gender": "n",
+   "suit": [
+    "mv",
+    "surv"
+   ],
+   "note": "cú kính phi công: KHÔNG xương, 342k mặt",
+   "rigged": false
+  },
+  {
+   "file": "_ung_vien/nhan_vat/dong_vat_tinh/Meshy_AI_A_cute_duck_clean_li_1028084509_texture.glb",
+   "proposed_id": "animal_duck_goose",
+   "kind": "animal",
+   "age_group": "child",
+   "gender": "n",
+   "suit": [
+    "kayak",
+    "fish"
+   ],
+   "note": "ngỗng/vịt trắng: KHÔNG xương, 388k mặt",
+   "rigged": false
+  },
+  {
+   "file": "_ung_vien/nhan_vat/chua_rig/Meshy_AI_Rocker_Pose_1027172539_texture.glb",
+   "proposed_id": "char_rocker",
+   "kind": "human",
+   "age_group": "adult",
+   "gender": "m",
+   "suit": [
+    "kayak",
+    "fish"
+   ],
+   "note": "áo band quần rách: CHƯA xương",
+   "rigged": false
+  },
+  {
+   "file": "_ung_vien/nhan_vat/chua_rig/Meshy_AI_Sailor_School_Uniform_1027172216_texture.glb",
+   "proposed_id": "char_sailor_girl",
+   "kind": "human",
+   "age_group": "teen",
+   "gender": "f",
+   "suit": [
+    "kayak",
+    "camp"
+   ],
+   "note": "đồng phục thủy thủ: CHƯA xương",
+   "rigged": false
+  },
+  {
+   "file": "_ung_vien/nhan_vat/chua_rig/Meshy_AI_T_Pose_Schoolgirl_in__1027033604_texture.glb",
+   "proposed_id": "char_blazer_girl",
+   "kind": "human",
+   "age_group": "teen",
+   "gender": "f",
+   "suit": [
+    "kayak",
+    "camp"
+   ],
+   "note": "đồng phục blazer: CHƯA xương",
+   "rigged": false
+  }
+ ]
+}

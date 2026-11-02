@@ -1,4 +1,4 @@
-import { DEMO_BATTLE_ID, gradeAnswer, isAnswerCorrect, needsReview, nextReview, questionTimeLimit, questionType } from '../engine';
+import { isDemoBattleId, gradeAnswer, isAnswerCorrect, needsReview, nextReview, questionTimeLimit, questionType } from '../engine';
 import { gradeOpenResponse } from './grader';
 import { loadBattleCached } from './battles';
 import { serverSupabase } from './supabase-server';
@@ -9,7 +9,7 @@ const demoStore = new MemorySessionStore();
 let dbStore: SupabaseSessionStore | null = null;
 
 function storeFor(battleId: string): SessionStore {
-  if (battleId === DEMO_BATTLE_ID) return demoStore;
+  if (isDemoBattleId(battleId)) return demoStore;
   const db = serverSupabase();
   if (!db) throw new SessionError(503, 'Chưa cấu hình Supabase.');
   dbStore ??= new SupabaseSessionStore(db);
@@ -41,7 +41,7 @@ function openResponses(rec: Parameters<SessionDeps['persistResult']>[0]['rec'], 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 const persistResult: SessionDeps['persistResult'] = async ({ battle, rec, ctx, state, score, hpRemaining }) => {
-  if (battle.id === DEMO_BATTLE_ID) return 'skipped';
+  if (isDemoBattleId(battle.id)) return 'skipped';
   const db = serverSupabase();
   if (!db) return 'skipped';
 

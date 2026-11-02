@@ -1,0 +1,363 @@
+/* Demo entry (WP10 U6, 02/11/2026). Turbopack makes every .css global: everything is tc-demo-. */
+.tc-demo {
+  --demo-bg: #0b1020;
+  --demo-panel: rgb(255 255 255 / 0.05);
+  --demo-line: rgb(255 255 255 / 0.12);
+  --demo-ink: #f1f5f9;
+  --demo-dim: #a5b4cb;
+  --demo-accent: #5eead4;
+  min-height: 100dvh;
+  background:
+    radial-gradient(1200px 600px at 15% -10%, rgb(94 234 212 / 0.12), transparent 60%),
+    radial-gradient(900px 600px at 100% 0%, rgb(249 115 22 / 0.1), transparent 60%),
+    var(--demo-bg);
+  color: var(--demo-ink);
+  padding: 20px 16px 40px;
+  font-size: 16px;
+}
+.tc-demo h2 {
+  margin: 0 0 10px;
+  font-size: 17px;
+  font-weight: 800;
+}
+.tc-demo h3 {
+  margin: 14px 0 6px;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--demo-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.tc-demo-head {
+  max-width: 1360px;
+  margin: 0 auto 18px;
+}
+.tc-demo-head h1 {
+  margin: 6px 0 2px;
+  font-size: clamp(26px, 4vw, 36px);
+  font-weight: 900;
+}
+.tc-demo-head p {
+  margin: 0;
+  color: var(--demo-dim);
+}
+.tc-demo-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  color: var(--demo-dim);
+  text-decoration: none;
+}
+.tc-demo-back:hover {
+  color: var(--demo-ink);
+}
+
+/* Desktop: games + name | rules + create (centre) | characters. */
+.tc-demo-layout {
+  max-width: 1360px;
+  margin: 0 auto;
+  display: grid;
+  gap: 18px;
+  grid-template-columns: minmax(260px, 330px) minmax(300px, 1fr) minmax(320px, 1.25fr);
+  align-items: start;
+}
+.tc-demo-left,
+.tc-demo-mid,
+.tc-demo-right {
+  background: var(--demo-panel);
+  border: 1px solid var(--demo-line);
+  border-radius: 16px;
+  padding: 16px;
+  min-width: 0;
+}
+.tc-demo-mid {
+  position: sticky;
+  top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-items: stretch;
+}
+
+/* Games */
+.tc-demo-games {
+  display: grid;
+  gap: 8px;
+}
+.tc-demo-game {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 56px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--demo-line);
+  background: rgb(255 255 255 / 0.03);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.tc-demo-game span {
+  display: grid;
+}
+.tc-demo-game b {
+  font-size: 16px;
+}
+.tc-demo-game small {
+  font-size: 13px;
+  color: var(--demo-dim);
+}
+.tc-demo-game:hover {
+  background: rgb(255 255 255 / 0.07);
+}
+.tc-demo-game[aria-checked='true'] {
+  border-color: var(--demo-accent);
+  background: rgb(94 234 212 / 0.12);
+  box-shadow: inset 0 0 0 1px var(--demo-accent);
+}
+.tc-demo-goal {
+  margin: 10px 0 18px;
+  font-size: 14px;
+  color: var(--demo-dim);
+}
+
+/* Name: a 7-colour light running round the box. */
+@property --tc-demo-turn {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+.tc-demo-name {
+  --tc-demo-turn: 0deg;
+  padding: 3px;
+  border-radius: 14px;
+  background: conic-gradient(from var(--tc-demo-turn), #ef4444, #f97316, #facc15, #22c55e, #3b82f6, #6366f1, #a855f7, #ef4444);
+  animation: tc-demo-run 3s linear infinite;
+  box-shadow: 0 0 18px rgb(168 85 247 / 0.35);
+}
+.tc-demo-name input {
+  display: block;
+  width: 100%;
+  min-height: 48px;
+  padding: 10px 14px;
+  border: 0;
+  border-radius: 11px;
+  background: #0f172a;
+  color: var(--demo-ink);
+  font: inherit;
+  font-size: 18px;
+  font-weight: 700;
+  outline: none;
+}
+.tc-demo-name:focus-within {
+  box-shadow: 0 0 26px rgb(94 234 212 / 0.5);
+}
+@keyframes tc-demo-run {
+  to {
+    --tc-demo-turn: 360deg;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tc-demo-name {
+    animation: none;
+  }
+}
+
+/* Rules + create */
+.tc-demo-rules p {
+  margin: 0 0 8px;
+}
+/* Opened details scroll inside the box, so "Tạo game" stays on screen. */
+#demo-rules-more {
+  max-height: max(160px, calc(100dvh - 520px));
+  overflow-y: auto;
+  padding-right: 4px;
+}
+.tc-demo-rules ul {
+  margin: 0;
+  padding-left: 20px;
+  font-size: 15px;
+  line-height: 1.5;
+}
+.tc-demo-rules li + li {
+  margin-top: 4px;
+}
+.tc-demo-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 44px;
+  margin-top: 6px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid var(--demo-line);
+  background: transparent;
+  color: var(--demo-accent);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.tc-demo-pick {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  border-radius: 12px;
+  background: rgb(0 0 0 / 0.25);
+}
+.tc-demo-pick img {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+}
+.tc-demo-pick span {
+  display: grid;
+  min-width: 0;
+}
+.tc-demo-pick small {
+  color: var(--demo-dim);
+  font-size: 14px;
+}
+.tc-demo-create {
+  align-self: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-width: min(100%, 280px);
+  min-height: 60px;
+  padding: 0 28px;
+  border: 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #f97316, #facc15);
+  color: #1c1006;
+  font: inherit;
+  font-size: 22px;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 10px 30px rgb(249 115 22 / 0.35);
+}
+.tc-demo-create:hover {
+  filter: brightness(1.06);
+}
+.tc-demo-create:focus-visible,
+.tc-demo-game:focus-visible,
+.tc-demo-card:focus-visible,
+.tc-demo-more:focus-visible {
+  outline: 3px solid #fde68a;
+  outline-offset: 2px;
+}
+
+/* Characters: one shared canvas over the active card. */
+.tc-demo-grid-box {
+  position: relative;
+  max-height: calc(100dvh - 190px);
+  overflow-y: auto;
+  padding-right: 4px;
+}
+.tc-demo-group:first-of-type h3 {
+  margin-top: 0;
+}
+.tc-demo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: 8px;
+}
+.tc-demo-card {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  aspect-ratio: 3 / 4;
+  padding: 4px 4px 6px;
+  border-radius: 12px;
+  border: 1px solid var(--demo-line);
+  background: radial-gradient(circle at 50% 35%, rgb(255 255 255 / 0.14), rgb(255 255 255 / 0.02) 70%);
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  min-width: 0;
+}
+.tc-demo-card img {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  object-fit: contain;
+  transition: opacity 0.2s;
+}
+.tc-demo-card span {
+  font-size: 12px;
+  line-height: 1.2;
+  color: var(--demo-dim);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tc-demo-card:hover {
+  border-color: rgb(255 255 255 / 0.3);
+}
+.tc-demo-card[aria-checked='true'] {
+  border-color: var(--demo-accent);
+  box-shadow: inset 0 0 0 2px var(--demo-accent);
+}
+.tc-demo-card[aria-checked='true'] span {
+  color: var(--demo-ink);
+  font-weight: 700;
+}
+.tc-demo-card-live img {
+  opacity: 0;
+}
+.tc-demo-spin {
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+/* Tablet: rules + create on top, games and characters under. */
+@media (max-width: 1100px) {
+  .tc-demo-layout {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+  }
+  .tc-demo-mid {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    position: static;
+  }
+}
+/* Phone: one column; "Tạo game" stays reachable at the bottom. */
+@media (max-width: 700px) {
+  .tc-demo {
+    padding-bottom: 110px;
+  }
+  .tc-demo-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .tc-demo-mid {
+    grid-row: auto;
+  }
+  .tc-demo-left {
+    order: 1;
+  }
+  .tc-demo-right {
+    order: 2;
+  }
+  .tc-demo-mid {
+    order: 3;
+  }
+  .tc-demo-grid-box {
+    max-height: none;
+    overflow: visible;
+  }
+  .tc-demo-games {
+    grid-template-columns: 1fr 1fr;
+  }
+  .tc-demo-create {
+    position: fixed;
+    left: 16px;
+    right: 16px;
+    bottom: max(16px, env(safe-area-inset-bottom));
+    z-index: 20;
+  }
+}

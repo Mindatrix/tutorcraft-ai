@@ -193,7 +193,7 @@ function typedBattle(): LoadedBattle {
     topic: 'Formats',
     config: { ...E.DEMO_CONFIG, classCode: 'K1' },
     boss: E.DEMO_BOSS,
-    questions: E.demoQuestions(),
+    questions: E.formatShowcaseQuestions(),
     tutorName: 'Cô Lan',
   };
 }

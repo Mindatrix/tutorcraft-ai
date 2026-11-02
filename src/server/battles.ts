@@ -1,5 +1,7 @@
 import {
   DEMO_BATTLE_ID,
+  demoGameOf,
+  isDemoBattleId,
   computeScaling,
   defaultBoss,
   demoBattle,
@@ -54,10 +56,11 @@ function legacyDuration(row: { questions?: unknown[] }, cfg: Record<string, unkn
   return Math.max(1, Math.round(n / 1.5));
 }
 
-export function demoLoadedBattle(): LoadedBattle {
-  const d = demoBattle();
+/** The demo battle of one game ("demo-<game>"; plain "demo" = the default game). */
+export function demoLoadedBattle(id: string = DEMO_BATTLE_ID): LoadedBattle {
+  const d = demoBattle(demoGameOf(id) ?? undefined);
   return {
-    id: DEMO_BATTLE_ID,
+    id: isDemoBattleId(id) ? id : DEMO_BATTLE_ID,
     code: null,
     topic: d.topic,
     config: { ...d.config, classCode: 'demo' },
@@ -86,7 +89,7 @@ export async function loadBattleCached(id: string): Promise<LoadedBattle | null>
 
 /** Load a battle with server credentials and re-validate its questions. */
 export async function loadBattle(id: string): Promise<LoadedBattle | null> {
-  if (id === DEMO_BATTLE_ID) return demoLoadedBattle();
+  if (isDemoBattleId(id)) return demoLoadedBattle(id);
   if (!UUID.test(id)) return null;
   const db = serverSupabase();
   if (!db) return null;

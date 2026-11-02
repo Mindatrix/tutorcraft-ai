@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Loader2 } from 'lucide-react';
 import { defaultBoss, normalizeConfig, sanitizeBoss, sanitizeSubtitleMap } from '../engine';
-import BattleArena, { type ArenaBattle, type Prefs } from './BattleArena';
+import BattleArena, { type ArenaAutostart, type ArenaBattle, type Prefs } from './BattleArena';
 import { load, save } from '../client/storage';
 
 /** Re-validate the public battle info from the network or cache. Contains no questions or answers. */
@@ -31,7 +31,7 @@ async function fetchBattle(query: string): Promise<ArenaBattle> {
   return parse(await res.json());
 }
 
-export default function BattleLoader({ battleId, code }: { battleId?: string; code?: string }) {
+export default function BattleLoader({ battleId, code, autostart }: { battleId?: string; code?: string; autostart?: ArenaAutostart }) {
   const [state, setState] = useState<{ data: ArenaBattle; variant: number | null; prefs: Prefs } | null>(null);
   const [error, setError] = useState<'not_found' | 'offline' | null>(null);
 
@@ -100,5 +100,5 @@ export default function BattleLoader({ battleId, code }: { battleId?: string; co
   }
 
   const { data, variant, prefs } = state;
-  return <BattleArena battle={data} variant={variant} prefs={prefs} />;
+  return <BattleArena battle={data} variant={variant} prefs={prefs} autostart={autostart} />;
 }

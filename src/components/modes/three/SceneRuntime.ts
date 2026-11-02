@@ -293,6 +293,7 @@ export function createRuntime(el: HTMLElement, opts: RuntimeOptions = {}): Scene
       };
     },
     run(frame) {
+      let firstDrawn = false;
       let frames = 0;
       let since = 0;
       let busy = 0;
@@ -325,6 +326,10 @@ export function createRuntime(el: HTMLElement, opts: RuntimeOptions = {}): Scene
         camera.position.x -= ox;
         camera.position.y -= oy;
         director.restore();
+        if (!firstDrawn) {
+          firstDrawn = true;
+          markFirstFrame();
+        }
         busy += performance.now() - t0;
         if (raw > 0.5) {
           frames = 0;
@@ -452,4 +457,19 @@ export function gpuMemory(scene: THREE.Scene, renderer: THREE.WebGLRenderer): { 
   }
   const mb = (n: number) => Math.round((n / 1e6) * 10) / 10;
   return { textureMB: mb([...textures.values()].reduce((a, b) => a + b, 0)), geometryMB: mb([...geos.values()].reduce((a, b) => a + b, 0)) };
+}
+
+/**
+ * U6 measure: the first drawn frame of a 3D scene. After the demo's "Tạo game" (mark
+ * 'tc:demo-create'), logs the time from the click to this frame, e.g. "[U6] Tạo game → khung đầu: 2.9 s".
+ */
+function markFirstFrame() {
+  try {
+    if (!performance.getEntriesByName('tc:demo-create').length || performance.getEntriesByName('tc:demo-first-frame').length) return;
+    performance.mark('tc:demo-first-frame');
+    const m = performance.measure('tc:demo-create→first-frame', 'tc:demo-create', 'tc:demo-first-frame');
+    console.info(`[U6] Tạo game → khung đầu: ${(m.duration / 1000).toFixed(2)} s`);
+  } catch {
+    /* no User Timing */
+  }
 }

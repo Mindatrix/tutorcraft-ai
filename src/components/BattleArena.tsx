@@ -14,6 +14,7 @@ import {
   botPosition,
   botStepTimes,
   computeScaling,
+  isDemoBattleId,
   raceSeed,
   rollGacha,
   themeForQuestion,
@@ -102,7 +103,15 @@ interface Feedback {
   question: PublicQuestion;
 }
 
-export default function BattleArena({ battle, variant, prefs }: { battle: ArenaBattle; variant: number | null; prefs: Prefs }) {
+/** Demo entry (U6): the player already chose a name and a character, so the arena starts at once. */
+export interface ArenaAutostart {
+  nickname: string;
+  avatar: string;
+  /** Back to the demo picker. */
+  onLeave?: () => void;
+}
+
+export default function BattleArena({ battle, variant, prefs, autostart }: { battle: ArenaBattle; variant: number | null; prefs: Prefs; autostart?: ArenaAutostart }) {
   const { config, boss } = battle;
   const baseScaling = useMemo(() => computeScaling(config, battle.totalQuestions), [config, battle.totalQuestions]);
   const tokenKey = `tc:session:${battle.id}:${variant ?? 0}`;
@@ -152,9 +161,9 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
 
   const [muted, setMutedState] = useState(prefs.muted);
   const [musicOn, setMusicOn] = useState(() => load<boolean>('tc:music', true));
-  const [nickname, setNickname] = useState(() => prefs.profile?.nickname ?? `Hero${Math.floor(1000 + Math.random() * 9000)}`);
-  const [avatar, setAvatar] = useState(prefs.profile?.avatar ?? PETS[0]);
-  const [anonymous, setAnonymous] = useState(prefs.profile?.anonymous ?? false);
+  const [nickname, setNickname] = useState(() => autostart?.nickname || prefs.profile?.nickname || `Hero${Math.floor(1000 + Math.random() * 9000)}`);
+  const [avatar, setAvatar] = useState(autostart?.avatar ?? prefs.profile?.avatar ?? PETS[0]);
+  const [anonymous, setAnonymous] = useState(autostart ? false : (prefs.profile?.anonymous ?? false));
   const [online, setOnline] = useState(prefs.online);
   const [sid] = useState(() => studentKey());
 
@@ -408,6 +417,13 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
     }
   };
 
+  // U6 demo: no lobby, start right away (a timer, so React's dev double-mount cancels the first one).
+  useEffect(() => {
+    if (!autostart) return;
+    const t = setTimeout(() => void start(), 0);
+    return () => clearTimeout(t);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   const cast = async (skill: SkillId) => {
     if (!token || pending || feedback || halted) return;
     setPending(true);
@@ -461,6 +477,8 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
   // In-game HUD (WP10, Kayak first): steering through a ref (dragging must not re-render the arena).
   const steer = useRef(0);
   const router = useRouter();
+  // Demo (U6): /student is the demo entry itself, so leaving goes back to its picker.
+  const leave = () => (autostart?.onLeave ? autostart.onLeave() : router.push('/student'));
   // Minimap / coordinate bar read the race through a ref (10 fps map, per-frame compass).
   const kayakLive = useRef<KayakLive>({ player: 0, bot: 0, steer: 0, botName: '' });
   const hud = useHudSettings();
@@ -537,8 +555,22 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
           </div>
         </div>
 
+        {/* Demo (U6): opening the game, or the reason it did not open */}
+        {phase === 'lobby' && autostart && !portal && (
+          <div className={`border rounded-2xl p-6 text-center space-y-3 ${card}`}>
+            {netError ? (
+              <>
+                <p role="alert" className="text-sm text-rose-400">{netError}</p>
+                <button onClick={start} disabled={starting} className="tc-sticker mx-auto !py-2.5 !text-sm">Thử lại</button>
+              </>
+            ) : (
+              <p className="flex items-center justify-center gap-2 font-bold"><Loader2 className="w-5 h-5 animate-spin" /> Đang mở game…</p>
+            )}
+          </div>
+        )}
+
         {/* Lobby */}
-        {phase === 'lobby' && (
+        {phase === 'lobby' && !autostart && (
           <div className={`border rounded-2xl p-6 space-y-5 ${card}`}>
             {gamified && (
               <div className="flex items-center gap-4">
@@ -628,7 +660,7 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
                   saveTier(t);
                   setRenderTier(t);
                 }}
-                onLeave={() => router.push('/student')}
+                onLeave={leave}
               />
             )}
           </StageFrame>
@@ -719,7 +751,7 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
                       canCast: !feedback && !pending && !halted,
                       onCast: (id) => void cast(id),
                       quiet: questionOpen,
-                      onLeave: () => router.push('/student'),
+                      onLeave: leave,
                     }
                   : undefined
               }
@@ -941,7 +973,7 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
                 </ol>
               </div>
             )}
-            {final && (scenario.allowRetry || battle.id === 'demo') && (
+            {final && (scenario.allowRetry || isDemoBattleId(battle.id)) && (
               <button onClick={start} className="tc-sticker w-full max-w-sm mx-auto !bg-emerald-300">
                 <RotateCcw className="w-5 h-5" /> Play Again
               </button>

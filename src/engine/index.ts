@@ -18,6 +18,7 @@ export * from './race';
 export * from './teams';
 export * from './rewards';
 export * from './demo';
+export * from './demoCharacters';
 export * from './battleState';
 export * from './boss';
 export * from './code';
