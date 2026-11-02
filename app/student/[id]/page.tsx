@@ -6,7 +6,7 @@ async function Battle({ params }: { params: Promise<{ id: string }> }) {
   return <BattleLoader key={id} battleId={id} />;
 }
 
-export default function StudentBattlePage({ params }: PageProps<'/student/[id]'>) {
+export default function StudentBattlePage({ params }: { params: Promise<{ id: string }> }) {
   return (
     <Suspense fallback={<div className="min-h-screen bg-slate-950" />}>
       <Battle params={params} />
