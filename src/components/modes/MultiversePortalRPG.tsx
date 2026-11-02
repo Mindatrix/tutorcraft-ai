@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { THREE_ASSET_MANIFEST, assetUrl } from '../../config/threeAssets';
+import { lib } from '../../config/assetLibrary';
 import type { BossAvatar } from '../../engine';
 import { Sparks, canvasTexture, clamp, createStage, damp, easeInOut, easeOut, glow, lowpoly, mesh, roughen, skyDome, swapInGlb, textSprite, toon } from './kit';
 import type { BossSceneProps, SceneEvent } from './types';
@@ -109,14 +110,29 @@ function buildCastle(zc: number): World {
     tower.add(win);
   }
   g.add(mesh(new THREE.SphereGeometry(4, 20, 14), glow(0xe2e8ff), [-22, 26, -80]));
-  // Torches.
-  const flames: THREE.Mesh[] = [];
+  // Torches (02/11/2026): library models (stone-pillar torches in front, wrapped wooden torches at the
+  // back), swapped in over a code-built stick + flame; a soft glow over each flame keeps the flicker.
+  // Small on screen, so the low variant on every tier (87–146 KB each).
+  const flames: THREE.Object3D[] = [];
   const flameMat = glow(0xff9a3c, 0.95, true);
-  for (const [x, z] of [[-5.5, -1], [5.5, -1], [-5.5, -8], [5.5, -8]] as const) {
-    g.add(mesh(new THREE.CylinderGeometry(0.07, 0.09, 2.2, 6), lowpoly(0x4a3424), [x, 1.1, z]));
-    const f = mesh(new THREE.ConeGeometry(0.22, 0.6, 7), flameMat, [x, 2.45, z]);
-    flames.push(f);
-    g.add(f);
+  const TORCHES = [
+    { x: -5.5, z: -1, id: 'mv_torch_3', h: 1.9 },
+    { x: 5.5, z: -1, id: 'mv_torch_3', h: 1.9 },
+    { x: -5.5, z: -8, id: 'mv_torch', h: 2.6 },
+    { x: 5.5, z: -8, id: 'mv_torch', h: 2.6 },
+  ];
+  for (const t of TORCHES) {
+    const holder = new THREE.Group();
+    holder.position.set(t.x, 0, t.z);
+    holder.rotation.y = Math.atan2(-t.x, -2 - t.z); // face the arena centre
+    holder.add(mesh(new THREE.CylinderGeometry(0.07, 0.09, t.h - 0.3, 6), lowpoly(0x4a3424), [0, (t.h - 0.3) / 2, 0]));
+    holder.add(mesh(new THREE.ConeGeometry(0.22, 0.6, 7), flameMat, [0, t.h - 0.1, 0]));
+    const halo = mesh(new THREE.SphereGeometry(0.32, 10, 8), glow(0xffb347, 0.35, true), [0, t.h - 0.05, 0]);
+    halo.userData.keep = true;
+    holder.add(halo);
+    flames.push(halo);
+    g.add(holder);
+    swapInGlb(holder, assetUrl(lib(t.id, 'low')), t.h);
   }
   const torch = new THREE.PointLight(0xff9a3c, 14, 16, 2);
   torch.position.set(0, 3, -4);
