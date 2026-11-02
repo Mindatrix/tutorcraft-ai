@@ -44,4 +44,5 @@ export * from './rescue';
 export * from './audioPlan';
 export * from './sceneKits';
 export * from './kayakCourse';
+export * from './kayakRage';
 export * from './portalRail';

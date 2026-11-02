@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import ArenaHUD, { raceStanding } from './ArenaHUD';
 import { SteerPad } from './GameHUD';
 import { CoordBar, Minimap } from './MapHud';
+import { RageButton, useKayakRage } from './KayakRage';
 import { drawKayakMap, kayakCoord, type KayakLive } from './kayakMap';
 import { BRIGHTNESS_FILTER, useHudSettings } from '../../client/hudSettings';
 import { initAudio, setSoundPlace, stopSound } from '../../client/audio';
@@ -29,6 +30,8 @@ export default function KayakHudLab() {
     live.current = { ...live.current, player: race.player, bot: race.bot };
   }, [race.player, race.bot]);
   const hud = useHudSettings();
+  // U5: untick "Câu hỏi đang mở" to play the gap between questions (the only time rage can start).
+  const rage = useKayakRage(true, quiet);
   useEffect(() => {
     const id = setInterval(
       () =>
@@ -69,7 +72,7 @@ export default function KayakHudLab() {
       </div>
       <StageFrame tone="#5eead4" className="h-80 sm:h-[min(26rem,calc(100dvh-1rem))]">
         <div className="absolute inset-0" style={hud.brightness === 3 ? undefined : { filter: `brightness(${BRIGHTNESS_FILTER[hud.brightness]})` }}>
-          <KayakRush key={tier} playerPos={race.player} botPos={race.bot} heroName="Minh An" botName="Bot Dễ" event={null} finished={false} result={null} tier={tier === 'low' ? 'low' : 'high'} steer={steer} hideRank />
+          <KayakRush key={tier} playerPos={race.player} botPos={race.bot} heroName="Minh An" botName="Bot Dễ" event={null} finished={false} result={null} tier={tier === 'low' ? 'low' : 'high'} steer={steer} hideRank rage={rage.boost} />
         </div>
         <ArenaHUD
           game="kayak_rush"
@@ -85,6 +88,7 @@ export default function KayakHudLab() {
           }
           minimap={<Minimap draw={drawKayakMap} source={live} label="Bản đồ đường sông" size={96} tall={1.6} />}
           coordBar={<CoordBar source={live} state={kayakCoord} />}
+          rage={<RageButton rage={rage} questionOpen={quiet} />}
           playerName="Minh An"
           avatar="🦊"
           levelText="Dễ · A1"
@@ -103,7 +107,7 @@ export default function KayakHudLab() {
           onLeave={() => setLog((l) => ['rời trận', ...l].slice(0, 3))}
         />
       </StageFrame>
-      <p className="mt-2 text-xs text-slate-400">Giả lập: thuyền tự tiến, MP tăng 4 mỗi giây. Phím A/D hoặc ←/→ để lái, 1/2/3 cho kỹ năng.</p>
+      <p className="mt-2 text-xs text-slate-400">Giả lập: thuyền tự tiến, MP tăng 4 mỗi giây. Phím A/D hoặc ←/→ để lái, 1/2/3 cho kỹ năng, 4 cho Nộ (đầy sau 30 giây; chỉ bấm được khi bỏ chọn “Câu hỏi đang mở”).</p>
     </div>
   );
 }

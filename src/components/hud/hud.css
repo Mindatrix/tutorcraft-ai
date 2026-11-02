@@ -261,6 +261,51 @@
   --hud-size: calc(var(--hud-size-base, 58px) * 1.25);
 }
 
+/* Kayak rage (U5): orange ring; blinks when it can be started; red past the long-use mark. */
+.tc-hud-rage {
+  --hud-accent: #f97316;
+}
+.tc-hud-rage-ready {
+  animation: tc-hud-rage-blink 0.6s ease-in-out infinite alternate;
+}
+.tc-hud-rage-on > span {
+  background: radial-gradient(circle, rgb(249 115 22 / 0.85), rgb(194 65 12 / 0.9));
+}
+.tc-hud-rage-long {
+  --hud-accent: #ef4444;
+}
+.tc-hud-rage-long i {
+  background: #b91c1c;
+}
+/* Narrow stage: four buttons would run into the steering pad, so rage sits above the skills. */
+@container tc-hud (max-width: 520px) {
+  .tc-hud-skills .tc-hud-rage {
+    position: absolute;
+    right: 0;
+    bottom: calc(100% + 12px);
+  }
+  .tc-hud-swap .tc-hud-skills .tc-hud-rage {
+    right: auto;
+    left: 0;
+  }
+}
+@keyframes tc-hud-rage-blink {
+  from {
+    box-shadow: 0 0 0 0 rgb(249 115 22 / 0.2);
+    transform: scale(1);
+  }
+  to {
+    box-shadow: 0 0 18px 6px rgb(249 115 22 / 0.75);
+    transform: scale(1.08);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tc-hud-rage-ready {
+    animation: none;
+    box-shadow: 0 0 14px 4px rgb(249 115 22 / 0.7);
+  }
+}
+
 /* Steering pad: a horizontal track; touch drags the thumb, keys move it. */
 .tc-hud-steer {
   position: relative;

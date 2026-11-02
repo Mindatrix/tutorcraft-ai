@@ -52,6 +52,7 @@ import ArenaHUD, { raceStanding } from './hud/ArenaHUD';
 import { SteerPad } from './hud/GameHUD';
 import { CoordBar, Minimap } from './hud/MapHud';
 import { drawKayakMap, kayakCoord, type KayakLive } from './hud/kayakMap';
+import { RageButton, useKayakRage } from './hud/KayakRage';
 import PortalCardRail from './hud/PortalCardRail';
 import multiverseRooms from '../../content/multiverse_rooms.json';
 import { BRIGHTNESS_FILTER, useHudSettings } from '../client/hudSettings';
@@ -464,6 +465,8 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
   const kayakLive = useRef<KayakLive>({ player: 0, bot: 0, steer: 0, botName: '' });
   const hud = useHudSettings();
   const kayakHud = isRace && renderer === 'three' && phase === 'playing';
+  // U5: rage boost (fills while racing, starts only between questions; look only, result unchanged).
+  const rage = useKayakRage(kayakHud && !halted, questionOpen);
   const raceNow = race ? { player: race.playerPos, bot: race.botPos } : null;
   const botLabel = `Bot ${levelLabel(config.level)}`;
   useEffect(() => {
@@ -592,7 +595,7 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
         {isRace && race && renderer === 'three' && phase !== 'lobby' && display && (
           <StageFrame tone="#5eead4" className={kayakHud ? 'h-80 sm:h-[min(26rem,calc(100dvh-1rem))]' : undefined}>
             <div className="absolute inset-0" style={hud.brightness === 3 ? undefined : { filter: `brightness(${BRIGHTNESS_FILTER[hud.brightness]})` }}>
-              <KayakRush playerPos={race.playerPos} botPos={race.botPos} heroName={playerName} botName={`Bot ${levelLabel(config.level)}`} event={display.event} finished={phase === 'result'} result={final?.race?.result ?? null} tier={renderTier === 'low' ? 'low' : 'high'} onLowQuality={lower3d} onUnavailable={no3d} steer={steer} hideRank={kayakHud} />
+              <KayakRush playerPos={race.playerPos} botPos={race.botPos} heroName={playerName} botName={`Bot ${levelLabel(config.level)}`} event={display.event} finished={phase === 'result'} result={final?.race?.result ?? null} tier={renderTier === 'low' ? 'low' : 'high'} onLowQuality={lower3d} onUnavailable={no3d} steer={steer} hideRank={kayakHud} rage={rage.boost} />
             </div>
             {kayakHud && (
               <ArenaHUD
@@ -609,6 +612,7 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
                 }
                 minimap={<Minimap draw={drawKayakMap} source={kayakLive} label="Bản đồ đường sông" size={96} tall={1.6} />}
                 coordBar={<CoordBar source={kayakLive} state={kayakCoord} />}
+                rage={<RageButton rage={rage} questionOpen={questionOpen} />}
                 playerName={playerName}
                 avatar={avatar}
                 levelText={levelLabel(config.level)}

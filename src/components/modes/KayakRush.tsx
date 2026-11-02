@@ -41,6 +41,8 @@ export interface KayakRushProps {
   steer?: { current: number };
   /** Hide the rank chip (the HUD shows the standing). */
   hideRank?: boolean;
+  /** Rage boost from the HUD (U5): 1 while on (a ref). Look only: the race stays server-side. */
+  rage?: { current: number };
 }
 
 type HatId = 'propeller' | 'wizard' | 'jester' | 'hardhat';
@@ -144,6 +146,8 @@ function waterMaterial() {
   return new THREE.ShaderMaterial({
     uniforms: {
       uTime: { value: 0 },
+      /** Flow clock: runs faster during a rage boost (the river rushes past). */
+      uFlow: { value: 0 },
       uShallow: { value: new THREE.Color(RIVER) },
       uDeep: { value: new THREE.Color(DEEP) },
       uFoam: { value: new THREE.Color(FOAM) },
@@ -160,7 +164,7 @@ function waterMaterial() {
         gl_Position = projectionMatrix * mv;
       }`,
     fragmentShader: /* glsl */ `
-      uniform float uTime; uniform vec3 uShallow; uniform vec3 uDeep; uniform vec3 uFoam; uniform vec3 uFog;
+      uniform float uTime; uniform float uFlow; uniform vec3 uShallow; uniform vec3 uDeep; uniform vec3 uFoam; uniform vec3 uFog;
       varying vec2 vW; varying float vDist;
       float h(vec2 p){ return fract(sin(dot(p, vec2(41.3, 289.1))) * 43758.5453); }
       float n(vec2 p){ vec2 i = floor(p), f = fract(p); f = f*f*(3.0-2.0*f);
@@ -168,9 +172,9 @@ function waterMaterial() {
       void main(){
         float edge = smoothstep(4.0, 7.6, abs(vW.x));
         vec3 col = mix(uDeep, uShallow, 0.55 + 0.45 * edge);
-        vec2 flow = vec2(vW.x * 0.9, vW.y * 0.35 - uTime * 1.1);
+        vec2 flow = vec2(vW.x * 0.9, vW.y * 0.35 - uFlow * 1.1);
         float streak = smoothstep(0.72, 0.8, n(flow * vec2(1.6, 1.0))) * 0.55;
-        float bankFoam = smoothstep(7.2, 7.9, abs(vW.x)) * (0.6 + 0.4 * n(vec2(vW.y * 1.5 - uTime * 2.0, vW.x)));
+        float bankFoam = smoothstep(7.2, 7.9, abs(vW.x)) * (0.6 + 0.4 * n(vec2(vW.y * 1.5 - uFlow * 2.0, vW.x)));
         col = mix(col, uFoam, clamp(streak + bankFoam, 0.0, 1.0));
         col = mix(col, uFog, smoothstep(35.0, 95.0, vDist));
         gl_FragColor = vec4(col, 1.0);
@@ -427,7 +431,11 @@ export default function KayakRush(props: KayakRushProps) {
     const st = { boost: -1e9, crit: false, bump: -1e9, cheer: -1e9 };
     // Paddle splash (WP2): the blade enters the water twice a stroke, where sin(stroke) crosses 0.
     let lastStroke = 0;
+    let stroke = 0;
     let steerX = 0;
+    // Rage boost (U5): eased 0..1, and whether it was on last frame (a whoosh when it starts).
+    let rage = 0;
+    let rageWas = false;
     const handle = (ev: NonNullable<SceneEvent>, t: number) => {
       const k = ev.kind;
       if (k === 'correct' || k === 'critical' || k === 'ultimate' || k === 'victory') {
@@ -443,6 +451,11 @@ export default function KayakRush(props: KayakRushProps) {
     stage.run((dt, t) => {
       const p = live.current;
       wu.uTime.value = t;
+      const rageOn = (p.rage?.current ?? 0) > 0.5;
+      if (rageOn && !rageWas) playCue('whoosh', 0.8);
+      rageWas = rageOn;
+      rage = damp(rage, rageOn ? 1 : 0, rageOn ? 4 : 2, dt);
+      wu.uFlow.value += dt * (1 + rage * 1.8);
       const ev = events.current.shift();
       if (ev) handle(ev, t);
       const prevP = cur.p;
@@ -462,8 +475,10 @@ export default function KayakRush(props: KayakRushProps) {
       bot.root.position.set(LANE + Math.sin(t * 1.1 + 1) * 0.15, Math.sin(t * 2.2 + 1.3) * 0.05, bz);
       me.body.rotation.z = Math.sin(t * 2.2) * 0.04 + Math.sin(t * 25) * bump * 0.25;
       bot.body.rotation.z = Math.sin(t * 2.2 + 1) * 0.04;
-      me.body.rotation.x = -boost * 0.12;
-      const strokeP = t * (5 + boost * 6);
+      me.body.rotation.x = -boost * 0.12 - rage * 0.08;
+      // Stroke phase accumulates so a rate change (answer burst, rage) never jumps the paddle.
+      stroke += dt * (5 + boost * 6 + rage * 5);
+      const strokeP = stroke;
       me.paddle.rotation.set(0, Math.sin(strokeP) * 0.5, Math.sin(strokeP) * 0.5);
       // The stroke rate jumps with a boost: count at most one dip a frame.
       if (Math.min(1, cycleHits(lastStroke, strokeP / (2 * Math.PI))) > 0) playCue('splash', 0.25 + boost * 0.35);
@@ -479,7 +494,8 @@ export default function KayakRush(props: KayakRushProps) {
         const n = Math.min(4, Math.ceil((0.2 + Math.abs(speed) * 25 + extra * 3) * dt * 30));
         foam.emit(stern, n, { speed: 0.6 + extra * 2, up: 0.4, gravity: 1.5, drag: 2.5, life: 0.9 + extra * 0.4, size: 0.9 + extra * 0.6, dir: new THREE.Vector3((Math.random() - 0.5) * 1.5, 0, 1.2), spread: new THREE.Vector3(0.4, 0, 0.2) });
       };
-      emitWake(me, cur.pv, boost);
+      emitWake(me, cur.pv, Math.max(boost, rage * 0.8));
+      if (rage > 0.3 && Math.random() < rage * 0.7) sparks.emit(me.root.position.clone().add(new THREE.Vector3((Math.random() - 0.5) * 0.6, 0.35, 1.6)), 2, { color: Math.random() < 0.5 ? 0xf97316 : 0xfacc15, speed: 1.6, life: 0.45, up: 0.3, dir: new THREE.Vector3(0, 0.2, 1) });
       emitWake(bot, cur.bv, 0);
       if (boost > 0.95) sparks.emit(me.root.position.clone().add(new THREE.Vector3(0, 0.5, 1.4)), st.crit ? 6 : 3, { color: st.crit ? 0xfacc15 : 0x5eead4, speed: 2, life: 0.5, up: 0.5 });
       if (bump > 0.97) foam.emit(me.root.position.clone().add(new THREE.Vector3(0.5, 0.2, -1.4)), 14, { speed: 3, up: 2.5, gravity: 7, life: 0.7, size: 1.3 });
@@ -505,11 +521,11 @@ export default function KayakRush(props: KayakRushProps) {
 
       // Chase camera behind the player, lifted on portrait phones.
       const k = stage.size.w / stage.size.h < 1 ? 1.5 : 1;
-      camPos.set(-LANE * 0.45, 3.7 * k, pz + 6.6 * k);
+      camPos.set(-LANE * 0.45, 3.7 * k - rage * 0.3, pz + 6.6 * k + rage * 0.8);
       camera.position.lerp(camPos, 1 - Math.exp(-4 * dt));
       look.set(-LANE * 0.2, 0.2, pz - 7);
       camera.lookAt(look);
-      const fovT = 55 + boost * 9;
+      const fovT = 55 + Math.max(boost * 9, rage * 8);
       if (Math.abs(camera.fov - fovT) > 0.05) {
         camera.fov = damp(camera.fov, fovT, 6, dt);
         camera.updateProjectionMatrix();

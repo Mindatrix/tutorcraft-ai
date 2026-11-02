@@ -1,0 +1,10 @@
+{
+ "version": 1,
+ "note": "Thanh Nộ Kayak (WP10 U5, 02/11/2026). Đơn vị: giây. Nộ chỉ là hiệu ứng trong cảnh 3D, không đổi kết quả đua. Chỉ bấm được lúc chuyển câu (khung câu hỏi đóng). Mốc trên theo PDF: tích 30 s / dùng 30 s; số dưới đây đã chỉnh xuống sau mô phỏng (docs/operations.md).",
+ "chargeSec": 30,
+ "maxBoostSec": 15,
+ "longUseSec": 10,
+ "longRefillSec": 60,
+ "shortRefillMaxSec": 30,
+ "minRefillSec": 8
+}

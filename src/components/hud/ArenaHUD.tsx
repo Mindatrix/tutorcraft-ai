@@ -15,7 +15,7 @@ import type { RenderTier } from '../modes/gfxTier';
 // movement control when it has one (Kayak: steering). Right: the three session skills (same server
 // call as the buttons under the question). `docked`: a 2D world draws its own bars at the top, so
 // the toolbar sits above it instead of over it, and the skills stay under the question.
-// Minimap / coordinate bar (U3) and the Kayak rage boost (U5) come later.
+// Minimap / coordinate bar (U3); Kayak: the rage boost button (U5) before the three skills.
 
 const SKILL_ICONS: Record<SkillId, typeof Shield> = { shield: Shield, freeze: Snowflake, eye_of_truth: Eye };
 
@@ -41,6 +41,8 @@ export interface ArenaHUDProps {
   coordBar?: ReactNode;
   /** Multiverse: the rail of next spaces. */
   rail?: ReactNode;
+  /** Kayak: the rage boost button (U5), first in the skill corner. */
+  rage?: ReactNode;
   docked?: boolean;
   playerName: string;
   avatar: string;
@@ -209,18 +211,25 @@ export default function ArenaHUD(p: ArenaHUDProps) {
       minimap={p.minimap}
       coordBar={p.coordBar}
       rail={p.rail}
-      skills={p.docked ? undefined : SKILL_IDS.map((id, i) => (
-        <SkillButton
-          key={id}
-          icon={SKILL_ICONS[id]}
-          label={SKILLS[id].nameVi}
-          sub={`${SKILLS[id].cost} MP`}
-          hotkey={String(i + 1)}
-          fill={p.mp / SKILLS[id].cost}
-          disabled={!p.canCast || p.mp < SKILLS[id].cost}
-          onClick={() => p.onCast(id)}
-        />
-      ))}
+      skills={
+        p.docked ? undefined : (
+          <>
+            {p.rage}
+            {SKILL_IDS.map((id, i) => (
+              <SkillButton
+                key={id}
+                icon={SKILL_ICONS[id]}
+                label={SKILLS[id].nameVi}
+                sub={`${SKILLS[id].cost} MP`}
+                hotkey={String(i + 1)}
+                fill={p.mp / SKILLS[id].cost}
+                disabled={!p.canCast || p.mp < SKILLS[id].cost}
+                onClick={() => p.onCast(id)}
+              />
+            ))}
+          </>
+        )
+      }
     />
   );
 }

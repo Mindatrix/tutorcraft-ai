@@ -185,7 +185,7 @@ export function HudPanel({ title, onClose, children, wide, rainbow }: { title: R
 }
 
 /** A round skill button with a fill ring (charge, MP or cooldown) and its key on computers. */
-export function SkillButton({ icon: Icon, label, sub, fill = 1, disabled, onClick, hotkey, main }: { icon: LucideIcon; label: string; sub?: string; fill?: number; disabled?: boolean; onClick: () => void; hotkey?: string; main?: boolean }) {
+export function SkillButton({ icon: Icon, label, sub, fill = 1, disabled, onClick, hotkey, main, className }: { icon: LucideIcon; label: string; sub?: string; fill?: number; disabled?: boolean; onClick: () => void; hotkey?: string; main?: boolean; className?: string }) {
   useEffect(() => {
     if (!hotkey || disabled) return;
     const onKey = (e: KeyboardEvent) => {
@@ -196,7 +196,7 @@ export function SkillButton({ icon: Icon, label, sub, fill = 1, disabled, onClic
     return () => window.removeEventListener('keydown', onKey);
   }, [hotkey, disabled, onClick]);
   return (
-    <button type="button" className={`tc-hud-skill${main ? ' tc-hud-skill-main' : ''}`} style={{ '--fill': Math.max(0, Math.min(1, fill)) } as CSSProperties} disabled={disabled} onClick={onClick} aria-label={sub ? `${label}, ${sub}` : label} title={sub ? `${label} · ${sub}` : label}>
+    <button type="button" className={`tc-hud-skill${main ? ' tc-hud-skill-main' : ''}${className ? ` ${className}` : ''}`} style={{ '--fill': Math.max(0, Math.min(1, fill)) } as CSSProperties} disabled={disabled} onClick={onClick} aria-label={sub ? `${label}, ${sub}` : label} title={sub ? `${label} · ${sub}` : label}>
       <span>
         <Icon aria-hidden />
       </span>
