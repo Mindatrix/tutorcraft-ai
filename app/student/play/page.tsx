@@ -18,7 +18,7 @@ async function Play({ searchParams }: { searchParams: Promise<{ code?: string | 
             <span aria-hidden className="absolute -right-3 -top-2 text-4xl">🗝️</span>
           </div>
           <section aria-label="Vào trận" className="tc-ticket relative -mt-6 -rotate-1 px-7 py-6 text-left shadow-[6px_6px_0_rgb(0_0_0/.35)]">
-            <p className="text-xs font-extrabold tracking-[0.2em] text-rose-500">🎟 VÉ VÀO TRẬN</p>
+            <p className="text-sm font-extrabold tracking-[0.2em] text-rose-500">🎟 VÉ VÀO TRẬN</p>
             <h1 className="font-display text-2xl font-extrabold leading-tight">Nhập Mã Đấu trường</h1>
             {raw && <p className="mt-1 text-sm font-bold text-rose-600">Mã “{String(raw).slice(0, 12)}” không hợp lệ, mã gồm 6 ký tự.</p>}
             <div className="my-3 border-t-2 border-dashed border-[#1b1448]/30" />

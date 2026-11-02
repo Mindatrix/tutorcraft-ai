@@ -82,9 +82,9 @@ export default function TutorGate({ children }: { children: (ctx: { email: strin
         <div aria-hidden className="tc-grid" />
         <form onSubmit={submit} className="tc-glass tc-reveal w-full max-w-md rounded-3xl p-7 space-y-4">
           <div>
-            <p className="text-xs uppercase tracking-[0.18em] text-indigo-200">TutorCraft AI · Game Studio</p>
+            <p className="text-sm uppercase tracking-[0.18em] text-indigo-200">TutorCraft AI · Game Studio</p>
             <h1 className="text-3xl font-extrabold mt-1">{mode === 'login' ? 'Đăng nhập gia sư' : 'Tạo tài khoản gia sư'}</h1>
-            <p className="text-sm text-slate-300 mt-1">Học sinh không cần tài khoản, chỉ gia sư mới cần.</p>
+            <p className="text-base text-slate-300 mt-1">Học sinh không cần tài khoản, chỉ gia sư mới cần.</p>
           </div>
           {mode === 'signup' && (
             <label className="block text-sm">Tên hiển thị
@@ -97,12 +97,12 @@ export default function TutorGate({ children }: { children: (ctx: { email: strin
           <label className="block text-sm">Mật khẩu
             <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={8} autoComplete={mode === 'login' ? 'current-password' : 'new-password'} className={`${input} mt-1`} />
           </label>
-          {error && <p role="alert" className="text-sm text-rose-400">{error}</p>}
-          {info && <p role="status" className="text-sm text-emerald-300">{info}</p>}
+          {error && <p role="alert" className="text-base text-rose-400">{error}</p>}
+          {info && <p role="status" className="text-base text-emerald-300">{info}</p>}
           <button disabled={busy} className="tc-btn w-full rounded-xl py-3.5 font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-fuchsia-600 disabled:opacity-60">
             {busy ? 'Đang xử lý…' : mode === 'login' ? 'Đăng nhập' : 'Tạo tài khoản'}
           </button>
-          <button type="button" onClick={() => { setMode(mode === 'login' ? 'signup' : 'login'); setError(null); setInfo(null); }} className="w-full text-sm text-slate-300 hover:text-white">
+          <button type="button" onClick={() => { setMode(mode === 'login' ? 'signup' : 'login'); setError(null); setInfo(null); }} className="w-full min-h-11 text-sm text-slate-300 hover:text-white">
             {mode === 'login' ? 'Chưa có tài khoản? Đăng ký' : 'Đã có tài khoản? Đăng nhập'}
           </button>
         </form>

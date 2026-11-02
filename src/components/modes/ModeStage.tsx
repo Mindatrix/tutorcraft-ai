@@ -31,7 +31,8 @@ export function StageFrame({ children, tone = '#fcd34d', className = 'h-64 sm:h-
   return (
     <div className="relative" style={{ filter: 'drop-shadow(5px 5px 0 rgb(0 0 0 / .55))' }}>
       <div className="p-[3px]" style={{ ...BEVEL, background: tone }}>
-        <div className={`relative w-full overflow-hidden bg-slate-950 ${className}`} style={BEVEL}>
+        {/* U7: no double-tap zoom inside the scene (scrolling the page still works). */}
+        <div className={`relative w-full overflow-hidden bg-slate-950 ${className}`} style={{ ...BEVEL, touchAction: 'manipulation' }}>
           {children}
         </div>
       </div>

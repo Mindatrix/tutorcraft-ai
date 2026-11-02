@@ -29,20 +29,20 @@ export function Hero() {
       <div aria-hidden className="tc-aurora" />
       <div aria-hidden className="tc-grid" />
       <nav aria-label="Điều hướng chính" className="max-w-6xl mx-auto px-4 pt-6 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2 font-display text-2xl font-extrabold">
+        <Link href="/" className="flex min-h-11 items-center gap-2 font-display text-2xl font-extrabold">
           <DoodleSword className="h-9 w-6 text-amber-300" /> TutorCraft<span className="text-amber-300">AI</span>
         </Link>
         <div className="flex items-center gap-6 text-sm">
-          <a href="#games" className="hidden md:block hover:text-amber-300">Kiểu chơi</a>
-          <a href="#worlds" className="hidden md:block hover:text-amber-300">Thế giới 3D</a>
-          <a href="#how" className="hidden md:block hover:text-amber-300">Cách dùng</a>
-          <Link href="/tutor/create" className="tc-sticker !py-2 !px-4 !text-sm !shadow-[3px_3px_0_#1b1448]">Gia sư đăng nhập</Link>
+          <a href="#games" className="hidden md:inline-flex min-h-11 items-center hover:text-amber-300">Kiểu chơi</a>
+          <a href="#worlds" className="hidden md:inline-flex min-h-11 items-center hover:text-amber-300">Thế giới 3D</a>
+          <a href="#how" className="hidden md:inline-flex min-h-11 items-center hover:text-amber-300">Cách dùng</a>
+          <Link href="/tutor/create" className="tc-sticker !py-2 !px-4 !text-sm min-h-11 !shadow-[3px_3px_0_#1b1448]">Gia sư đăng nhập</Link>
         </div>
       </nav>
 
-      <div className="max-w-6xl mx-auto px-4 pt-12 pb-10 md:pt-16 grid md:grid-cols-[1.1fr_1fr] gap-10 items-center">
+      <div className="max-w-6xl mx-auto px-4 pt-12 pb-10 md:pt-16 grid grid-cols-[minmax(0,1fr)] md:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] gap-10 items-center">
         <div className="tc-reveal">
-          <p className="flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-indigo-200">
+          <p className="flex items-center gap-2 text-sm uppercase tracking-[0.2em] text-indigo-200">
             <span aria-hidden className="inline-block h-2 w-2 bg-emerald-400" /> Game học tiếng Anh cho gia sư
           </p>
           <h1 className="mt-5 text-5xl md:text-7xl font-extrabold leading-[1.02]">
@@ -66,7 +66,7 @@ export function Hero() {
             <DoodleStar className="absolute right-[40%] bottom-[8%] h-6 w-6 text-sky-300" />
           </div>
           <section aria-label="Vào trận" className="tc-ticket relative -mt-10 w-full max-w-sm -rotate-2 px-7 py-5 shadow-[6px_6px_0_rgb(0_0_0/.35)]">
-            <p className="text-xs font-extrabold tracking-[0.2em] text-rose-500">🎟 VÉ VÀO TRẬN</p>
+            <p className="text-sm font-extrabold tracking-[0.2em] text-rose-500">🎟 VÉ VÀO TRẬN</p>
             <h2 className="font-display text-2xl font-extrabold leading-tight">Nhập Mã Đấu trường</h2>
             <div className="my-3 border-t-2 border-dashed border-[#1b1448]/30" />
             <JoinForm light />
@@ -101,7 +101,7 @@ export function Games() {
       <DoodleStar className="absolute right-[8%] top-10 h-14 w-14 text-rose-400" />
       <DoodleBook className="absolute left-[3%] top-[34%] hidden lg:block h-14 w-16 text-indigo-300" />
       <div className="max-w-6xl mx-auto relative">
-        <p className="text-xs tracking-widest text-slate-500">01 / 05</p>
+        <p className="text-sm tracking-widest text-slate-500">01 / 05</p>
         <h2 className="text-4xl md:text-6xl font-extrabold mt-1 leading-[1.05]">Bốn kiểu chơi,<br /><span className="text-orange-500">một</span> <span className="text-rose-500">bài học.</span></h2>
         <p className="mt-3 max-w-xl text-slate-600">Rê chuột để thẻ nghiêng theo. Gia sư chọn kiểu chơi ngay khi tạo trận.</p>
         <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-14">
@@ -113,10 +113,10 @@ export function Games() {
                   <Scenery id={id} className="absolute inset-0 h-full w-full transition-transform duration-700 group-hover:scale-110" />
                   <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/10" />
                   <span className="absolute left-0 right-0 top-14 text-center text-5xl drop-shadow" aria-hidden>{l.icon}</span>
-                  <span className="absolute right-3 top-1/2 text-xs font-bold text-white/80">0{i + 1}</span>
+                  <span className="absolute right-3 top-1/2 text-sm font-bold text-white/80">0{i + 1}</span>
                   <div className="absolute inset-x-0 bottom-0 border-t-[3px] p-4 text-[#1b1448]" style={{ background: CARD_TONES[i], borderColor: INK }}>
                     <h3 className="font-extrabold text-xl leading-tight">{SCENARIOS[id].nameVi}</h3>
-                    <p className="mt-1 text-sm leading-snug">{l.blurb}</p>
+                    <p className="mt-1 text-base leading-snug">{l.blurb}</p>
                   </div>
                 </article>
               </Tilt>
@@ -136,7 +136,7 @@ function WorldPending({ icon, tone }: { icon: string; tone: string }) {
   return (
     <div className="absolute inset-0 grid place-items-center" style={{ background: `radial-gradient(circle at 50% 38%, ${tone}55, #0f172a 72%)` }}>
       <span className="text-6xl drop-shadow-[4px_4px_0_rgb(0_0_0/.6)]" aria-hidden>{icon}</span>
-      <span className="absolute bottom-3 right-5 bg-black/65 px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-widest">Đang dựng 3D</span>
+      <span className="absolute bottom-3 right-5 bg-black/65 px-2 py-0.5 text-sm font-extrabold uppercase tracking-widest">Đang dựng 3D</span>
     </div>
   );
 }
@@ -146,7 +146,7 @@ export function Worlds() {
     <section id="worlds" className="relative overflow-hidden bg-[#120b33] px-4 py-20 text-white">
       <DoodleSwirl className="absolute right-[6%] top-12 hidden h-16 w-24 text-fuchsia-300/60 md:block" />
       <div className="max-w-6xl mx-auto relative">
-        <p className="text-xs tracking-widest text-indigo-300">02 / 05</p>
+        <p className="text-sm tracking-widest text-indigo-300">02 / 05</p>
         <h2 className="text-4xl md:text-6xl font-extrabold mt-1 leading-[1.05]">Năm thế giới <span className="tc-gold">3D</span>,<br />chơi ngay trên trình duyệt.</h2>
         <p className="mt-3 max-w-xl text-slate-300">Gia sư chọn thế giới khi tạo trận. Điện thoại yếu tự chuyển sang bản 2D nhẹ; đáp án và điểm luôn chấm trên máy chủ.</p>
         <div className="mt-12 grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-6">
@@ -162,7 +162,7 @@ export function Worlds() {
                       ) : (
                         <WorldPending icon={m.icon} tone={WORLD_TONES[i]} />
                       )}
-                      <span className="absolute left-5 top-3 bg-black/65 px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-widest">{m.status === 'upgraded' ? 'Nâng cấp' : 'Mới'}</span>
+                      <span className="absolute left-5 top-3 bg-black/65 px-2 py-0.5 text-sm font-extrabold uppercase tracking-widest">{m.status === 'upgraded' ? 'Nâng cấp' : 'Mới'}</span>
                     </div>
                   </div>
                 </div>
@@ -170,8 +170,8 @@ export function Worlds() {
                   <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full border-[3px] text-xl" style={{ borderColor: WORLD_TONES[i] }} aria-hidden>{m.icon}</span>
                   <div>
                     <h3 className="text-xl font-extrabold leading-tight">{m.name}</h3>
-                    <p className="text-xs font-bold uppercase tracking-wider" style={{ color: WORLD_TONES[i] }}>{m.genre}</p>
-                    <p className="mt-1 text-sm text-slate-300">{m.blurb}</p>
+                    <p className="text-sm font-bold uppercase tracking-wider" style={{ color: WORLD_TONES[i] }}>{m.genre}</p>
+                    <p className="mt-1 text-base text-slate-300">{m.blurb}</p>
                   </div>
                 </div>
               </article>
@@ -187,7 +187,7 @@ export function How() {
   return (
     <section id="how" style={{ background: CREAM, color: INK }} className="relative overflow-hidden px-4 pb-28">
       <div className="max-w-6xl mx-auto relative">
-        <p className="text-xs tracking-widest text-slate-500">03 / 05</p>
+        <p className="text-sm tracking-widest text-slate-500">03 / 05</p>
         <h2 className="text-4xl md:text-6xl font-extrabold mt-1">Ba bước là <span className="text-sky-500">có trận.</span></h2>
 
         <div className="relative mt-14">
@@ -214,7 +214,7 @@ export function How() {
           <ul className="mt-8 flex items-end">
             {LEVEL_IDS.map((lv, i) => (
               <li key={lv} className="tc-stripes relative flex flex-1 flex-col justify-end border-[3px] p-3 -ml-[3px] first:ml-0" style={{ height: 96 + i * 44, background: STAIR_TONES[i], borderColor: INK }}>
-                <span className="text-xs font-bold opacity-70">Mức {lv} · {LEVELS[lv].cefr}</span>
+                <span className="text-sm font-bold opacity-70">Mức {lv} · {LEVELS[lv].cefr}</span>
                 <span className="text-lg font-extrabold leading-tight">{LEVELS[lv].nameVi}</span>
               </li>
             ))}
@@ -236,7 +236,7 @@ export function Numbers() {
     <section style={{ background: SKY, color: INK }} className="relative">
       <div style={{ background: CREAM }}><Wave fill={SKY} /></div>
       <div className="relative max-w-6xl mx-auto px-4 pb-6 pt-4 text-center">
-        <p className="text-xs tracking-widest text-slate-500">04 / 05</p>
+        <p className="text-sm tracking-widest text-slate-500">04 / 05</p>
         <h2 className="text-4xl md:text-5xl font-extrabold mt-1">Vài con số <span className="text-pink-500">đáng nhớ</span></h2>
         <ul className="mt-12 flex flex-wrap justify-center gap-10">
           {items.map((it) => (
@@ -265,17 +265,17 @@ export function Footer() {
       <div className="max-w-6xl mx-auto px-4 pb-10 pt-6">
         <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="text-xs tracking-widest text-indigo-300">05 / 05</p>
+            <p className="text-sm tracking-widest text-indigo-300">05 / 05</p>
             <h2 className="mt-1 text-4xl md:text-6xl font-extrabold leading-[1.05]">Sẵn sàng mở<br /><span className="tc-gold">trận đầu tiên?</span></h2>
           </div>
           <Link href="/tutor/create" className="tc-sticker self-start md:self-auto !shadow-[5px_5px_0_#fb7185]">Mở Game Studio →</Link>
         </div>
-        <div className="mt-14 grid gap-8 border-t border-white/15 pt-8 text-sm sm:grid-cols-3">
-          <div><h3 className="font-display text-lg font-extrabold text-amber-300">Gia sư</h3><ul className="mt-2 space-y-1 text-slate-300"><li><Link href="/tutor/create" className="hover:text-white">Đăng nhập / Đăng ký</Link></li><li><Link href="/tutor/create" className="hover:text-white">Mở Game Studio</Link></li></ul></div>
-          <div><h3 className="font-display text-lg font-extrabold text-amber-300">Học sinh</h3><ul className="mt-2 space-y-1 text-slate-300"><li><a href="#top" className="hover:text-white">Nhập mã đấu trường</a></li><li><Link href="/student" className="hover:text-white">Chơi thử trận demo</Link></li></ul></div>
+        <div className="mt-14 grid gap-8 border-t border-white/15 pt-8 text-base sm:grid-cols-3">
+          <div><h3 className="font-display text-lg font-extrabold text-amber-300">Gia sư</h3><ul className="mt-2 space-y-0 text-slate-300"><li><Link href="/tutor/create" className="inline-flex min-h-11 items-center hover:text-white">Đăng nhập / Đăng ký</Link></li><li><Link href="/tutor/create" className="inline-flex min-h-11 items-center hover:text-white">Mở Game Studio</Link></li></ul></div>
+          <div><h3 className="font-display text-lg font-extrabold text-amber-300">Học sinh</h3><ul className="mt-2 space-y-0 text-slate-300"><li><a href="#top" className="inline-flex min-h-11 items-center hover:text-white">Nhập mã đấu trường</a></li><li><Link href="/student" className="inline-flex min-h-11 items-center hover:text-white">Chơi thử trận demo</Link></li></ul></div>
           <div><h3 className="font-display text-lg font-extrabold text-amber-300">TutorCraft AI</h3><p className="mt-2 text-slate-300">Game học tiếng Anh cho gia sư, từ bé 5 tuổi.</p></div>
         </div>
-        <p className="mt-10 text-xs text-slate-400">© TutorCraft AI · <Link href="/credits" className="underline hover:text-white">Ghi công</Link></p>
+        <p className="mt-10 text-sm text-slate-400">© TutorCraft AI · <Link href="/credits" className="inline-flex min-h-11 items-center underline hover:text-white">Ghi công</Link></p>
       </div>
     </footer>
   );

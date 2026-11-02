@@ -494,6 +494,16 @@ export default function BattleArena({ battle, variant, prefs, autostart }: { bat
   const [stageTier, setStageTier] = useState<RenderTier>('2d');
   const bossHud3d = !isRace && gamified && phase === 'playing' && stageTier !== '2d';
   useEffect(() => (questionOpen ? holdDuck() : undefined), [questionOpen]);
+  // U7: while playing, pulling down at the top of the page must not reload it (Chrome / Android).
+  useEffect(() => {
+    if (phase !== 'playing') return;
+    const root = document.documentElement;
+    const before = root.style.overscrollBehaviorY;
+    root.style.overscrollBehaviorY = 'contain';
+    return () => {
+      root.style.overscrollBehaviorY = before;
+    };
+  }, [phase]);
 
   const openChest = () => {
     const item = rollGacha(Math.random());
@@ -544,12 +554,12 @@ export default function BattleArena({ battle, variant, prefs, autostart }: { bat
               </span>
             )}
             {gamified && (
-              <button onClick={toggleMusic} aria-pressed={musicOn} aria-label={musicOn ? 'Tắt nhạc' : 'Bật nhạc'} title={musicOn ? 'Tắt nhạc' : 'Bật nhạc'} className={`relative p-2 rounded-xl border border-slate-700 hover:bg-slate-800 ${musicOn ? '' : 'text-slate-500'}`}>
+              <button onClick={toggleMusic} aria-pressed={musicOn} aria-label={musicOn ? 'Tắt nhạc' : 'Bật nhạc'} title={musicOn ? 'Tắt nhạc' : 'Bật nhạc'} className={`relative grid place-items-center p-2 pointer-coarse:min-h-11 pointer-coarse:min-w-11 rounded-xl border border-slate-700 hover:bg-slate-800 ${musicOn ? '' : 'text-slate-500'}`}>
                 <Music className="w-4 h-4" />
                 {!musicOn && <span aria-hidden className="absolute left-1/2 top-1/2 h-0.5 w-5 -translate-x-1/2 -translate-y-1/2 -rotate-45 bg-current" />}
               </button>
             )}
-            <button onClick={toggleMute} aria-pressed={!muted} aria-label={muted ? 'Bật hiệu ứng âm thanh' : 'Tắt hiệu ứng âm thanh'} title={muted ? 'Bật hiệu ứng' : 'Tắt hiệu ứng'} className={`p-2 rounded-xl border ${gamified ? 'border-slate-700 hover:bg-slate-800' : 'border-slate-300 hover:bg-slate-100'}`}>
+            <button onClick={toggleMute} aria-pressed={!muted} aria-label={muted ? 'Bật hiệu ứng âm thanh' : 'Tắt hiệu ứng âm thanh'} title={muted ? 'Bật hiệu ứng' : 'Tắt hiệu ứng'} className={`grid place-items-center p-2 pointer-coarse:min-h-11 pointer-coarse:min-w-11 rounded-xl border ${gamified ? 'border-slate-700 hover:bg-slate-800' : 'border-slate-300 hover:bg-slate-100'}`}>
               {muted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
             </button>
           </div>

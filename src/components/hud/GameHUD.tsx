@@ -107,6 +107,8 @@ export default function GameHUD({ title, tools, move, skills, quiet, lite, docke
           )}
         </div>
       </div>
+      {/* U7: phones and tablets held upright get a hint to turn sideways; it fades, play goes on. */}
+      <p className="tc-hud-rotate" role="note">Xoay ngang máy để chơi rộng hơn</p>
       {coordBar && s.coordBar && !docked && coordBar}
       {minimap && s.minimap !== 'off' && !docked && <div className="tc-hud-map">{minimap}</div>}
       {rail && !docked && rail}
