@@ -175,7 +175,7 @@ test('C1.4 sizes: flat or long things by their longest side, upright ones by hei
   const s = scenarios.find((x) => x.id === 'camp-01')!;
   const l = layout(s);
   for (const p of l.placements) {
-    if (['rock', 'water', 'bush', 'prop', 'structure', 'backdrop'].includes(p.category)) assert.equal(p.fit, p.libraryId === 'river_sign' || /barrel|stump|well|watchtower|fort|waterfall/.test(p.libraryId) ? 'height' : 'max', p.libraryId);
+    if (['rock', 'water', 'bush', 'prop', 'structure', 'backdrop'].includes(p.category)) assert.equal(p.fit, E.stemOf(p.libraryId) === 'river_sign' || /barrel|stump|well|watchtower|fort|waterfall/.test(p.libraryId) ? 'height' : 'max', p.libraryId);
     if (['tree', 'character', 'creature', 'reed'].includes(p.category)) assert.equal(p.fit, 'height', p.libraryId);
     if (p.category === 'ground') assert.equal(p.fit, 'width');
     assert.ok(p.size > 0.1 && p.size < 40, `${p.libraryId}: ${p.size} m`);

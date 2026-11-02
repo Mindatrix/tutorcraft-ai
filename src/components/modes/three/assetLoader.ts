@@ -3,7 +3,7 @@
 import type { Group } from 'three';
 import { GLTFLoader, type GLTF } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
-import { createLoadQueue, splitByStage, variantFor, type AssetPlan, type AssetQualityLevel, type PlannedAsset } from '../../../engine/assetLoader';
+import { createLoadQueue, itemsFor, splitByStage, variantFor, type AssetPlan, type AssetQualityLevel, type PlannedAsset } from '../../../engine/assetLoader';
 import { assetBase } from '../../../config/assetLibrary';
 
 // Browser side of the per-game asset loader (A3.7). One GLTFLoader with the Meshopt decoder
@@ -42,9 +42,9 @@ export async function loadScenarioAssets(
   plan: AssetPlan,
   { quality, readyStage = 1, onProgress }: { quality: AssetQualityLevel; readyStage?: number; onProgress?: (p: SceneAssetsProgress) => void },
 ): Promise<{ models: Map<string, GLTF>; background: Promise<Map<string, GLTF>> }> {
-  const { ready, later } = splitByStage(plan, readyStage);
+  const { ready, later } = splitByStage(plan, readyStage, quality);
   const weight = (items: PlannedAsset[]) => items.reduce((n, p) => n + Math.max(0.05, p.mb[quality]), 0);
-  const totalAll = weight(plan.items) || 1;
+  const totalAll = weight(itemsFor(plan, quality)) || 1;
   const totalReady = weight(ready) || 1;
   let doneReady = 0;
   let doneAll = 0;

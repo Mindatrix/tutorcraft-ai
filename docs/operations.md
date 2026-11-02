@@ -139,6 +139,11 @@ Hiện thiếu **41/280** mã:
 - `food_sausage` ra nải chuối: không nhập, để ở `inbox/_cho_xem/` (chờ prompt Meshy mới). `camp_grill` (bản 11,4 MB) vẫn chờ quyết định thay hay làm biến thể.
 - Alias: `mv_world_castle` → `mv_castle_module`, `mv_world_cyberpunk` → `mv_cyber_room`, `river_log_fallen` → `kayak_log_spinning`.
 
+### Biến thể theo seed (WP3, 02/11)
+- Họ `<mã>`, `<mã>_2`, `<mã>__alt1`… (`stemOf`). `variantFamily()` / `pickVariant(id, seed, slotKey)` trong `src/engine/assetLoader.ts`: chọn theo `mulberry32(hashString(seed|slot))`, mọi máy cùng kết quả; chỉ đồ vật và công trình (`VARIANT_CATEGORIES`, `src/engine/assetCategory.ts`), cây cỏ rải nền vẫn chọn từ pool riêng. Kịch bản gọi đích danh một bản (`camp_bottle_4`) thì dùng đúng bản đó. Không bao giờ trả bản không có file web.
+- Bản thấp bỏ bản nặng hơn 2× bản nhẹ nhất (MB +0,3 hoặc mặt +2 nghìn), giữ ≥ 1 (ví dụ `river_sign`: 6 bản → 1 bản ở máy yếu).
+- `planScenarioAssets` tải cả họ (`inLow` cho bản thấp); số mặt mỗi chỗ đặt tính theo bản nặng nhất của họ (không phụ thuộc seed). Số đo 02/11: trận nặng nhất dino-01 37,9 MB cao / 13,5 MB thấp; camp-01 28,0 / 8,0 MB; cảnh xấu nhất bản thấp dưới 300 nghìn mặt (test C1.5).
+
 ### Dọn file gốc trước khi tối ưu
 
 `node scripts/clean-glb.mjs <file> --inspect` in các mặt phẳng lớn và các mảnh rời. Các cờ dọn:

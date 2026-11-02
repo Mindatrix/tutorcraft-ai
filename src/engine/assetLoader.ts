@@ -4,6 +4,11 @@
 //  - how big it is against the budget (40 MB high / 15 MB low per match, plan 2026-10-26),
 //  - a load queue with a shared cache: a model already loaded for another game is not fetched again.
 // The browser side (GLTFLoader + Meshopt) lives in src/components/modes/three/assetLoader.ts.
+//  - variant families (WP3, 02/11/2026): <id>, <id>_2, <id>_3… are one family. A placement picks one
+//    member from (layout seed, slot), the same on every device; the plan loads the whole family.
+
+import { VARIANT_CATEGORIES, sceneCategory } from './assetCategory';
+import { hashString, mulberry32 } from './variants';
 
 export type AssetQualityLevel = 'high' | 'low';
 
@@ -44,6 +49,10 @@ export interface PlannedAsset {
   /** First stage that shows it; 99 = only listed at scenario level (background). */
   stage: number;
   mb: Record<AssetQualityLevel, number>;
+  /** Family base id (stem): the members a placement chooses from. */
+  family: string;
+  /** Loaded in low quality too (false: a variant too heavy for weak phones, its family keeps a lighter one). */
+  inLow: boolean;
 }
 
 export interface AssetPlan {
@@ -56,7 +65,7 @@ export interface AssetPlan {
   sharedMb: Record<AssetQualityLevel, number>;
 }
 
-const stemOf = (id: string) => id.replace(/(__alt\d+|_\d+)$/, '');
+export const stemOf = (id: string) => id.replace(/(__alt\d+|_\d+)$/, '');
 
 /** Exact id → alias → stem → first member of the family ("tree" → "tree_1"). */
 export function resolveAsset(id: string, catalog: CatalogAsset[], aliases: AliasMap = {}, index?: Map<string, CatalogAsset>): CatalogAsset | null {
@@ -83,6 +92,48 @@ export function variantFor(item: Pick<PlannedAsset, 'mb'>, quality: AssetQuality
   return quality === 'low' && item.mb.low < item.mb.high ? 'low' : 'high';
 }
 
+/** Low quality keeps a family member only if it is at most this many times the lightest one (MB +0.3, triangles +2 k). */
+export const HEAVY_VARIANT_FACTOR = 2;
+/** Has an optimized web file (catalog rows like Mixamo clips have none). */
+const hasFile = (c: CatalogAsset) => Number(c.mb_web) > 0;
+
+/**
+ * The members a placement of `id` may draw, sorted by id. A scenario that names one variant
+ * ("camp_bottle_4") gets exactly that one. Never a member without a file; in low quality the
+ * members much heavier than the lightest are left out (at least one stays). [] = no model.
+ */
+export function variantFamily(id: string, catalog: CatalogAsset[], aliases: AliasMap = {}, quality: AssetQualityLevel = 'high', index?: Map<string, CatalogAsset>): CatalogAsset[] {
+  const byId = index ?? new Map(catalog.map((c) => [c.id, c]));
+  const base = resolveAsset(id, catalog, aliases, byId);
+  if (!base) return [];
+  if (!hasFile(base)) return [];
+  if (byId.has(id) && stemOf(id) !== id) return [base];
+  // Only props and structures pick a variant per placement; nature, characters and creatures use one model.
+  if (!VARIANT_CATEGORIES.includes(sceneCategory(base))) return [base];
+  const stem = stemOf(base.id);
+  let fam = catalog.filter((c) => stemOf(c.id) === stem && hasFile(c)).sort((a, b) => a.id.localeCompare(b.id));
+  if (quality === 'low' && fam.length > 1) {
+    // Weak phones: drop members far heavier than the lightest, in download size or in triangles.
+    const low = (c: CatalogAsset) => sizeOf(c).low;
+    const tris = (c: CatalogAsset) => Number(c.tris_low ?? c.tris_web) || 0;
+    const minMb = Math.min(...fam.map(low));
+    const minTris = Math.min(...fam.map(tris));
+    fam = fam.filter((c) => low(c) <= Math.max(minMb * HEAVY_VARIANT_FACTOR, minMb + 0.3) && tris(c) <= Math.max(minTris * HEAVY_VARIANT_FACTOR, minTris + 2000));
+  }
+  return fam;
+}
+
+/**
+ * One member of the family for a placement: stable for (seed, slotKey), so every device in the class
+ * draws the same model; two slots draw different members about as often as the family is large.
+ */
+export function pickVariant(id: string, seed: number, slotKey: string, catalog: CatalogAsset[], aliases: AliasMap = {}, quality: AssetQualityLevel = 'high', index?: Map<string, CatalogAsset>): CatalogAsset | null {
+  const fam = variantFamily(id, catalog, aliases, quality, index);
+  if (fam.length <= 1) return fam[0] ?? null;
+  const r = mulberry32(hashString(`${seed >>> 0}|${slotKey}`))();
+  return fam[Math.min(fam.length - 1, Math.floor(r * fam.length))];
+}
+
 export function planScenarioAssets(s: ScenarioAssets, catalog: CatalogAsset[], aliases: AliasMap = {}): AssetPlan {
   const index = new Map(catalog.map((c) => [c.id, c]));
   const firstStage = new Map<string, number>();
@@ -91,21 +142,28 @@ export function planScenarioAssets(s: ScenarioAssets, catalog: CatalogAsset[], a
   const byFile = new Map<string, PlannedAsset>();
   const missing: string[] = [];
   for (const id of wanted) {
-    const c = resolveAsset(id, catalog, aliases, index);
-    if (!c) {
+    // The whole family loads (a placement picks its member by seed); low quality skips heavy members.
+    const fam = variantFamily(id, catalog, aliases, 'high', index);
+    if (!fam.length) {
       missing.push(id);
       continue;
     }
+    const inLow = new Set(variantFamily(id, catalog, aliases, 'low', index).map((c) => c.id));
     const stage = firstStage.get(id) ?? 99;
-    const prev = byFile.get(c.file);
-    if (prev) {
-      prev.stage = Math.min(prev.stage, stage);
-      continue;
+    for (const c of fam) {
+      const prev = byFile.get(c.file);
+      if (prev) {
+        prev.stage = Math.min(prev.stage, stage);
+        prev.inLow ||= inLow.has(c.id);
+        continue;
+      }
+      byFile.set(c.file, { id, libraryId: c.id, file: c.file, shared: c.scope !== 'game', stage, mb: sizeOf(c), family: stemOf(c.id), inLow: inLow.has(c.id) });
     }
-    byFile.set(c.file, { id, libraryId: c.id, file: c.file, shared: c.scope !== 'game', stage, mb: sizeOf(c) });
   }
   const items = [...byFile.values()].sort((a, b) => a.stage - b.stage || Number(b.shared) - Number(a.shared) || a.file.localeCompare(b.file));
-  const sum = (q: AssetQualityLevel, f: (p: PlannedAsset) => boolean = () => true) => +items.filter(f).reduce((n, p) => n + p.mb[q], 0).toFixed(2);
+  // Budget = what is actually downloaded: every member in high quality, the kept ones in low.
+  const sum = (q: AssetQualityLevel, f: (p: PlannedAsset) => boolean = () => true) =>
+    +items.filter((p) => f(p) && (q === 'high' || p.inLow)).reduce((n, p) => n + p.mb[q], 0).toFixed(2);
   return {
     scenario: s.id,
     game: s.game,
@@ -116,9 +174,13 @@ export function planScenarioAssets(s: ScenarioAssets, catalog: CatalogAsset[], a
   };
 }
 
+/** Items to load in a quality (low skips the heavy members of a family). */
+export const itemsFor = (plan: AssetPlan, quality: AssetQualityLevel = 'high') => (quality === 'low' ? plan.items.filter((p) => p.inLow) : plan.items);
+
 /** Items needed before the match can start (stage ≤ readyStage), and the background rest. */
-export function splitByStage(plan: AssetPlan, readyStage = 1): { ready: PlannedAsset[]; later: PlannedAsset[] } {
-  return { ready: plan.items.filter((p) => p.stage <= readyStage), later: plan.items.filter((p) => p.stage > readyStage) };
+export function splitByStage(plan: AssetPlan, readyStage = 1, quality: AssetQualityLevel = 'high'): { ready: PlannedAsset[]; later: PlannedAsset[] } {
+  const items = itemsFor(plan, quality);
+  return { ready: items.filter((p) => p.stage <= readyStage), later: items.filter((p) => p.stage > readyStage) };
 }
 
 export function overBudget(plan: AssetPlan): Record<AssetQualityLevel, boolean> {

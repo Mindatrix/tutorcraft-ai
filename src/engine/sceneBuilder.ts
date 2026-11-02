@@ -8,30 +8,12 @@
 // reeds and lily pads from the scenario fill both banks; mini islands stand far away.
 // Dino Journey uses a meadow: a dirt path instead of water, wider grass on both sides.
 
-import { resolveAsset, type AliasMap, type CatalogAsset, type ScenarioAssets } from './assetLoader';
+import { pickVariant, resolveAsset, variantFamily, type AliasMap, type CatalogAsset, type ScenarioAssets } from './assetLoader';
 import { GameMode } from './types';
 import { mulberry32 } from './variants';
 
-export type SceneCategory = 'ground' | 'tree' | 'bush' | 'rock' | 'reed' | 'water' | 'structure' | 'backdrop' | 'prop' | 'creature' | 'character' | 'skip';
-
-/** What kind of thing a library model is, from its folder and id. */
-export function sceneCategory(c: { id: string; file: string }): SceneCategory {
-  const { id, file: f } = c;
-  if (f.startsWith('fx/') || f.startsWith('fishing/ca/')) return 'skip'; // effects; fish appear when caught
-  // Mixamo clips (anim/*.glb, no mesh, not optimised): played on characters, never placed in the scene.
-  if (f.startsWith('anim/') || /^anim_/.test(id)) return 'skip';
-  if (f.startsWith('characters/')) return 'character';
-  if (f.startsWith('dino/khung_long/') || f.startsWith('dino/thu_nho/')) return 'creature';
-  if (f.startsWith('river_world/ground/') || /^ground_/.test(id)) return 'ground';
-  if (f.startsWith('river_world/mini/') || f.startsWith('dino/the_gioi/')) return 'backdrop';
-  if (/^river_reed/.test(id)) return 'reed';
-  if (/^river_(lilypad|buoy)/.test(id)) return 'water';
-  if (/^river_(rock|pebbles|stone)/.test(id)) return 'rock';
-  if (/^(river_(bush|fern|grass|flower|moss)|mushrooms)/.test(id)) return 'bush';
-  if (f.startsWith('river_world/cay_phu/') || /^(river_tree|tree_|palm_)/.test(id)) return 'tree';
-  if (f.startsWith('river_world/lang/') || /^(river_(dock|bridge|cabin|shed|fence|well|sign|waterfall|cave|stump|log|driftwood|woodpile)|watchtower|tree_fort|village_)/.test(id)) return 'structure';
-  return 'prop';
-}
+export { sceneCategory, type SceneCategory } from './assetCategory';
+import { sceneCategory, type SceneCategory } from './assetCategory';
 
 export interface WorldTemplate {
   kind: 'river' | 'meadow';
@@ -268,7 +250,7 @@ export function buildSceneLayout(input: LayoutInput): SceneLayout {
     const rand = mulberry32((input.layoutSeed ^ Math.imul(n, 0x9e3779b1)) >>> 0);
     const taken: { x: number; z: number; r: number }[] = [];
     const free = (x: number, z: number, r: number) => taken.every((t) => (t.x - x) ** 2 + (t.z - z) ** 2 >= (t.r + r) ** 2 * 0.25);
-    const put = (c: CatalogAsset, id: string, cat: SceneCategory, x: number, z: number, focal: boolean, idx: number) => {
+    const put = (c: CatalogAsset, id: string, cat: SceneCategory, x: number, z: number, focal: boolean, idx: number, family: CatalogAsset[] = [c]) => {
       const [size, fit, jitter] = sizeFor(c.id, cat);
       const y = cat === 'water' ? 0.03 : 0;
       const variant: ModelVariant = !focal ? fillVariant(c, q) : q === 1 ? 'low' : 'high';
@@ -287,7 +269,8 @@ export function buildSceneLayout(input: LayoutInput): SceneLayout {
         fit,
         focal,
         variant,
-        tris: trisOf(c, variant),
+        // Budget on the heaviest member of the family: the same whatever the seed picked.
+        tris: Math.max(...family.map((m) => trisOf(m, variant))),
       });
       taken.push({ x, z, r: GAP[cat] ?? 2 });
     };
@@ -295,12 +278,15 @@ export function buildSceneLayout(input: LayoutInput): SceneLayout {
     // 1) The stage's own models: a cluster around the focal point, structures at the water edge.
     const own = (input.scenario.stages ?? []).filter((s) => s.n === n).flatMap((s) => s.assets ?? []);
     let k = 0;
+    const qName = q === 1 ? 'low' : 'high';
     for (const id of own) {
-      const c = resolve(id);
+      // WP3: one member of the id's family (<id>, <id>_2…) per slot, chosen by the layout seed.
+      const c = pickVariant(id, input.layoutSeed, `${n}:f:${k}`, input.catalog, input.aliases ?? {}, qName, index);
       if (!c) {
         missing.add(id);
         continue;
       }
+      const family = variantFamily(id, input.catalog, input.aliases ?? {}, qName, index);
       const cat = sceneCategory(c);
       if (cat === 'skip' || NATURE.includes(cat)) continue; // nature is spread below, not clustered
       let x = 0;
@@ -317,7 +303,7 @@ export function buildSceneLayout(input: LayoutInput): SceneLayout {
         }
         if (Math.abs(x) > world.waterHalf + 0.5 && free(x, z, 1.4)) break;
       }
-      put(c, id, cat, x, z, true, k++);
+      put(c, id, cat, x, z, true, k++, family);
     }
 
     // 2) Nature on both banks (and lily pads on the water), kept off the cluster and the water,
