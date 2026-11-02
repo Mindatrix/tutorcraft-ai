@@ -1,0 +1,81 @@
+{
+ "version": 1,
+ "note": "Nhóm đồ theo cấp độ (WP4, 02/11/2026; thiết kế docs/specs/wp4-scene-kits-design.md). x/z mét quanh tâm nhóm, rot độ, y mét (đặt lên mặt bàn), size mét theo cạnh dài nhất (fit 'height' = theo chiều cao). core = luôn có khi nhóm xuất hiện; món chặng gọi (stages[].assets) luôn có; món khác hiện từ minLevel. pick = chỉ dùng đúng các bản này (tránh bản ghép sai mã: camp_lantern = cây + đèn, camp_grill_2 = nồi, camp_water_filter_2 = túi Ration Pack, camp_firepit__alt1 = đống phế thải, camp_tent_stage__alt2/3 = lều bạc nhàu). Không dùng: camp_backpack (là bó cần câu), camp_cup (vệt cà phê), camp_string_lights (cuộn dây). trigger = món của chặng làm nhóm xuất hiện. ambient = nhóm nền có thể thêm từ cấp 3 (levels.ambient).",
+ "levels": {
+  "0": { "ambient": 0, "tint": "#ffffff" },
+  "1": { "ambient": 0, "tint": "#fffaf2" },
+  "2": { "ambient": 0, "tint": "#fff4e4" },
+  "3": { "ambient": 1, "tint": "#ffeed6" },
+  "4": { "ambient": 1, "tint": "#fbe8d2" },
+  "5": { "ambient": 2, "tint": "#f2e4dc" },
+  "6": { "ambient": 2, "tint": "#ece2ea" }
+ },
+ "games": {
+  "summer_camp": {
+   "groups": [
+    {
+     "id": "khu_trai", "title": "Khu trại",
+     "trigger": ["camp_tarp", "camp_sleeping_bag", "camp_chair", "camp_bench"],
+     "members": [
+      { "asset": "camp_tarp", "x": 0, "z": 0, "rot": 0, "size": 3.2, "core": true },
+      { "asset": "camp_sleeping_bag", "x": -0.7, "z": 1.9, "rot": 80, "size": 1.9, "core": true },
+      { "asset": "camp_sleeping_bag", "x": 0.7, "z": 1.9, "rot": 100, "size": 1.9, "minLevel": 1 },
+      { "asset": "camp_lantern", "pick": ["camp_lantern_3"], "x": 1.7, "z": 1.4, "rot": 0, "size": 0.35, "minLevel": 1 },
+      { "asset": "camp_chair", "x": 2.6, "z": 2.4, "rot": -140, "size": 0.95, "minLevel": 2 },
+      { "asset": "camp_bench", "x": -2.6, "z": 2.6, "rot": 160, "size": 1.6, "minLevel": 3 },
+      { "asset": "camp_bunting", "x": 0, "z": -2.0, "rot": 0, "size": 3.0, "minLevel": 4 },
+      { "asset": "camp_chair", "x": 3.4, "z": 1.2, "rot": -110, "size": 0.95, "minLevel": 5 }
+     ]
+    },
+    {
+     "id": "leu", "title": "Lều và dây",
+     "trigger": ["camp_tent_stage", "camp_tent_green", "camp_rope"],
+     "members": [
+      { "asset": "camp_tent_stage", "pick": ["camp_tent_stage", "camp_tent_stage__alt1", "camp_tent_stage__alt4"], "x": 0, "z": 0, "rot": 0, "size": 3.0, "core": true },
+      { "asset": "camp_tent_green", "x": 3.6, "z": 0.6, "rot": -20, "size": 2.6, "minLevel": 2 },
+      { "asset": "camp_rope", "x": -1.9, "z": 1.4, "rot": 0, "size": 0.5, "minLevel": 1 },
+      { "asset": "camp_sleeping_bag", "x": 1.2, "z": 2.2, "rot": 60, "size": 1.9, "minLevel": 4 }
+     ]
+    },
+    {
+     "id": "goc_lua", "title": "Góc lửa trại",
+     "trigger": ["camp_firepit", "camp_matchbox", "camp_marshmallow_stick", "camp_tripod", "camp_fire_starter"],
+     "members": [
+      { "asset": "camp_firepit", "pick": ["camp_firepit"], "x": 0, "z": 0, "rot": 0, "size": 1.3, "core": true },
+      { "asset": "camp_tripod", "x": 0, "z": 0, "rot": 0, "size": 1.4, "fit": "height", "minLevel": 3 },
+      { "asset": "camp_matchbox", "x": 1.1, "z": 0.5, "rot": 15, "size": 0.12, "minLevel": 1 },
+      { "asset": "camp_marshmallow_stick", "x": -1.0, "z": 0.6, "rot": -30, "size": 0.35, "minLevel": 2 },
+      { "asset": "camp_bench", "x": 0, "z": 2.2, "rot": 0, "size": 1.6, "minLevel": 2 },
+      { "asset": "camp_axe", "x": 1.9, "z": -0.8, "rot": 70, "size": 0.6, "minLevel": 4 },
+      { "asset": "camp_bench", "x": -2.0, "z": -1.0, "rot": 120, "size": 1.6, "minLevel": 5 }
+     ]
+    },
+    {
+     "id": "so_cuu", "title": "Góc sơ cứu và nước",
+     "trigger": ["camp_firstaid", "camp_water_filter", "camp_bottle", "camp_bucket"],
+     "members": [
+      { "asset": "camp_firstaid", "x": 0, "z": 0, "rot": 0, "size": 0.45, "core": true },
+      { "asset": "camp_water_filter", "pick": ["camp_water_filter"], "x": 1.0, "z": -0.2, "rot": 0, "size": 0.9, "fit": "height", "minLevel": 1 },
+      { "asset": "camp_bottle", "x": -0.6, "z": 0.4, "rot": 40, "size": 0.28, "minLevel": 2 },
+      { "asset": "camp_bucket", "x": 0.5, "z": 1.0, "rot": 0, "size": 0.4, "minLevel": 3 },
+      { "asset": "camp_bottle", "x": -0.4, "z": 0.8, "rot": 120, "size": 0.28, "minLevel": 5 }
+     ]
+    },
+    {
+     "id": "bep", "title": "Bếp dã ngoại",
+     "trigger": ["camp_table", "camp_grill", "camp_skewer_meat", "camp_skewer_veg", "camp_pan", "food_meat_raw", "food_bread", "food_corn", "food_apple"],
+     "members": [
+      { "asset": "camp_table", "x": 0, "z": 0, "rot": 0, "size": 1.6, "core": true },
+      { "asset": "camp_grill", "pick": ["camp_grill"], "x": 2.0, "z": 0, "rot": 0, "size": 0.8, "minLevel": 1 },
+      { "asset": "food_bread", "x": -0.4, "z": 0, "y": 0.78, "rot": 0, "size": 0.22, "minLevel": 2 },
+      { "asset": "food_corn", "x": 0.2, "z": 0.15, "y": 0.78, "rot": 60, "size": 0.25, "minLevel": 3 },
+      { "asset": "camp_pan", "x": 0.55, "z": -0.15, "y": 0.78, "rot": 0, "size": 0.45, "minLevel": 4 },
+      { "asset": "food_apple", "x": -0.1, "z": -0.2, "y": 0.78, "rot": 0, "size": 0.1, "minLevel": 5 },
+      { "asset": "food_meat_raw", "x": -0.6, "z": -0.2, "y": 0.78, "rot": 20, "size": 0.25, "minLevel": 5 }
+     ]
+    }
+   ],
+   "ambient": ["so_cuu", "goc_lua", "bep", "khu_trai"]
+  }
+ }
+}

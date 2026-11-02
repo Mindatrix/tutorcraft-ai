@@ -7,6 +7,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { ArrowLeft } from 'lucide-react';
 import consequences from '../../../content/consequences_v2.json';
+import sceneKits from '../../../content/scene_kits.json';
 import { ASSET_ALIASES, ASSET_LIBRARY } from '../../../src/config/assetLibrary';
 import { THREE_ASSET_MANIFEST } from '../../../src/config/threeAssets';
 import {
@@ -21,6 +22,7 @@ import {
   isGameMode,
   planRun,
   type CatalogAsset,
+  type SceneKits,
   type LodLevel,
   type ScenarioAssets,
   type StoryCharacter,
@@ -116,6 +118,7 @@ export default function SceneLab() {
   const [students, setStudents] = useState(50);
   const [cast, setCast] = useState(true);
   const [seed, setSeed] = useState(20261027);
+  const [level, setLevel] = useState(3);
   const [mount, setMount] = useState(0);
   const [view, setView] = useState<'river' | 'cast' | 'board' | 'picker' | 'multiverse' | 'question'>('river');
   const [hud, setHud] = useState<Hud | null>(null);
@@ -201,6 +204,13 @@ export default function SceneLab() {
               <input type="checkbox" checked={cast} onChange={(e) => setCast(e.target.checked)} /> 12 nhân vật truyện
             </label>
             <input className={`${field} w-28`} type="number" value={seed} onChange={(e) => setSeed(Number(e.target.value) || 1)} title="seed bố cục" />
+            <select className={field} value={level} onChange={(e) => setLevel(Number(e.target.value))} title="cấp độ (bộ cảnh WP4)">
+              {[0, 1, 2, 3, 4, 5, 6].map((l) => (
+                <option key={l} value={l}>
+                  Cấp {l}
+                </option>
+              ))}
+            </select>
           </>
         )}
         <select className={field} value={tier} onChange={(e) => setTier(e.target.value as GfxTier)}>
@@ -269,7 +279,7 @@ export default function SceneLab() {
       {leak && <p className="mb-2 text-sm text-amber-300">{leak}</p>}
       <div className="relative h-[70vh] w-full overflow-hidden bg-black">
         {view === 'river' && row && (
-          <RiverStage key={`${mount}-${scenarioId}-${stage}-${tier}-${weak}-${students}-${cast}-${seed}`} row={row} stage={stage} tier={tier} weak={weak} students={students} cast={cast} seed={seed} onHud={setHud} apiRef={api} />
+          <RiverStage key={`${mount}-${scenarioId}-${stage}-${tier}-${weak}-${students}-${cast}-${seed}-${level}`} row={row} stage={stage} tier={tier} weak={weak} students={students} cast={cast} seed={seed} level={level} onHud={setHud} apiRef={api} />
         )}
         {view === 'cast' && row && <CastStage key={`cast-${mount}-${scenarioId}-${tier}`} row={row} tier={tier} />}
         {view === 'multiverse' && <MultiverseStage key={`mv-${mount}-${tier}`} tier={tier} onHud={setHud} />}
@@ -320,9 +330,9 @@ function deviceLine(renderer: THREE.WebGLRenderer): string {
   return `${gpu} · DPR ${window.devicePixelRatio} · ${window.innerWidth}×${window.innerHeight} · ${navigator.hardwareConcurrency ?? '?'} lõi${mem ? ` · RAM ${mem} GB` : ''}`;
 }
 
-function RiverStage(props: { row: Row; stage: number; tier: GfxTier; weak: boolean; students: number; cast: boolean; seed: number; onHud: (h: Hud) => void; apiRef: { current: LabApi | null } }) {
+function RiverStage(props: { row: Row; stage: number; tier: GfxTier; weak: boolean; students: number; cast: boolean; seed: number; level: number; onHud: (h: Hud) => void; apiRef: { current: LabApi | null } }) {
   const host = useRef<HTMLDivElement>(null);
-  const { row, stage, tier, weak, students, cast, seed, onHud, apiRef } = props;
+  const { row, stage, tier, weak, students, cast, seed, level, onHud, apiRef } = props;
 
   useEffect(() => {
     const el = host.current;
@@ -351,7 +361,7 @@ function RiverStage(props: { row: Row; stage: number; tier: GfxTier; weak: boole
     const game = isGameMode(row.game) ? row.game : GameMode.SUMMER_CAMP_QUESTS;
     const plan = planRun({ game, scenarioId: row.id, tags, seedKey: `lab#${seed}` });
     const stages = [stage - 1, stage, stage + 1].filter((n) => n >= 1 && n <= 8);
-    const layout = buildSceneLayout({ scenario: row, catalog: ASSET_LIBRARY as CatalogAsset[], aliases: ASSET_ALIASES, layoutSeed: plan.layoutSeed, quality: useTier, stages, current: stage, fallbackNature: THREE_ASSET_MANIFEST.riverWorld.natureIds });
+    const layout = buildSceneLayout({ scenario: row, catalog: ASSET_LIBRARY as CatalogAsset[], aliases: ASSET_ALIASES, layoutSeed: plan.layoutSeed, quality: useTier, stages, current: stage, fallbackNature: THREE_ASSET_MANIFEST.riverWorld.natureIds, kits: sceneKits as SceneKits, level });
     const area = layout.stages.find((s) => s.n === stage)!;
     const world = buildRiverWorld({ layout, stages, tier: useTier, fogColor: sky.fog, onProgress: (d, t) => (hud.loading = `Đang nạp mô hình ${d}/${t}`) });
     rt.scene.add(world.group);
@@ -605,7 +615,7 @@ function RiverStage(props: { row: Row; stage: number; tier: GfxTier; weak: boole
       for (const c of castList) c.dispose();
       rt.dispose();
     };
-  }, [row, stage, tier, weak, students, cast, seed, onHud, apiRef]);
+  }, [row, stage, tier, weak, students, cast, seed, level, onHud, apiRef]);
 
   return <div ref={host} className="absolute inset-0" />;
 }

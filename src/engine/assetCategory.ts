@@ -1,6 +1,9 @@
 // What kind of thing a library model is (scene layout, variant families). Own module so both
 // sceneBuilder.ts and assetLoader.ts use it without importing each other.
 
+/** Family stem: "camp_bottle_2" / "river_sign__alt3" → "camp_bottle" / "river_sign". */
+export const stemOf = (id: string) => id.replace(/(__alt\d+|_\d+)$/, '');
+
 export type SceneCategory = 'ground' | 'tree' | 'bush' | 'rock' | 'reed' | 'water' | 'structure' | 'backdrop' | 'prop' | 'creature' | 'character' | 'skip';
 
 /** What kind of thing a library model is, from its folder and id. */

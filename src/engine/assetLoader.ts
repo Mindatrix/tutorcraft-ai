@@ -7,7 +7,8 @@
 //  - variant families (WP3, 02/11/2026): <id>, <id>_2, <id>_3… are one family. A placement picks one
 //    member from (layout seed, slot), the same on every device; the plan loads the whole family.
 
-import { VARIANT_CATEGORIES, sceneCategory } from './assetCategory';
+import { VARIANT_CATEGORIES, sceneCategory, stemOf } from './assetCategory';
+import { kitAssetIds, triggeredGroups, type SceneKits } from './sceneKits';
 import { hashString, mulberry32 } from './variants';
 
 export type AssetQualityLevel = 'high' | 'low';
@@ -65,7 +66,7 @@ export interface AssetPlan {
   sharedMb: Record<AssetQualityLevel, number>;
 }
 
-export const stemOf = (id: string) => id.replace(/(__alt\d+|_\d+)$/, '');
+export { stemOf };
 
 /** Exact id → alias → stem → first member of the family ("tree" → "tree_1"). */
 export function resolveAsset(id: string, catalog: CatalogAsset[], aliases: AliasMap = {}, index?: Map<string, CatalogAsset>): CatalogAsset | null {
@@ -134,22 +135,36 @@ export function pickVariant(id: string, seed: number, slotKey: string, catalog: 
   return fam[Math.min(fam.length - 1, Math.floor(r * fam.length))];
 }
 
-export function planScenarioAssets(s: ScenarioAssets, catalog: CatalogAsset[], aliases: AliasMap = {}): AssetPlan {
+/** `kits` (WP4): also load the members of the scene-kit groups the scenario can show. */
+export function planScenarioAssets(s: ScenarioAssets, catalog: CatalogAsset[], aliases: AliasMap = {}, kits?: SceneKits): AssetPlan {
   const index = new Map(catalog.map((c) => [c.id, c]));
   const firstStage = new Map<string, number>();
   for (const st of s.stages ?? []) for (const a of st.assets ?? []) if (!firstStage.has(a) || firstStage.get(a)! > st.n) firstStage.set(a, st.n);
   const wanted = Array.from(new Set([...(s.asset_ids ?? []), ...firstStage.keys()]));
   const byFile = new Map<string, PlannedAsset>();
   const missing: string[] = [];
-  for (const id of wanted) {
+  // Scene kits: members of the groups a stage calls for load with that stage; background groups later.
+  const kitWanted: { id: string; stage: number; exact: boolean }[] = [];
+  const kit = kits?.games[s.game];
+  if (kit) {
+    for (const st of s.stages ?? [])
+      for (const g of triggeredGroups(kit, st.assets ?? []))
+        for (const m of g.members) for (const id of m.pick ?? [m.asset]) kitWanted.push({ id, stage: st.n, exact: !!m.pick });
+    const all = kitAssetIds(kits, s.game);
+    for (const id of all.family) kitWanted.push({ id, stage: 99, exact: false });
+    for (const id of all.exact) kitWanted.push({ id, stage: 99, exact: true });
+  }
+  const entries = [...wanted.map((id) => ({ id, stage: firstStage.get(id) ?? 99, exact: false, own: true })), ...kitWanted.map((k) => ({ ...k, own: false }))];
+  for (const { id, stage, exact, own } of entries) {
     // The whole family loads (a placement picks its member by seed); low quality skips heavy members.
-    const fam = variantFamily(id, catalog, aliases, 'high', index);
+    // A kit's `pick` ids are exact: only that file.
+    const one = exact ? index.get(id) : undefined;
+    const fam = exact ? (one && Number(one.mb_web) > 0 ? [one] : []) : variantFamily(id, catalog, aliases, 'high', index);
     if (!fam.length) {
-      missing.push(id);
+      if (own) missing.push(id);
       continue;
     }
-    const inLow = new Set(variantFamily(id, catalog, aliases, 'low', index).map((c) => c.id));
-    const stage = firstStage.get(id) ?? 99;
+    const inLow = new Set(exact ? fam.map((c) => c.id) : variantFamily(id, catalog, aliases, 'low', index).map((c) => c.id));
     for (const c of fam) {
       const prev = byFile.get(c.file);
       if (prev) {

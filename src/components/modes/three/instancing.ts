@@ -82,6 +82,7 @@ export function buildInstances(placements: Placement[], modelFor: (p: Placement)
   const meshes: THREE.InstancedMesh[] = [];
   const world = new THREE.Matrix4();
   const full = new THREE.Matrix4();
+  const tint = new THREE.Color();
   for (const [model, list] of byModel) {
     const { parts, box } = prepare(model);
     for (const part of parts) {
@@ -89,7 +90,11 @@ export function buildInstances(placements: Placement[], modelFor: (p: Placement)
       list.forEach((p, i) => {
         placementMatrix(p, box, world);
         im.setMatrixAt(i, full.multiplyMatrices(world, part.local));
+        // Scene-kit level palette (WP4): multiplied into the material colour, no material copy.
+        if (p.tint) im.setColorAt(i, tint.set(p.tint));
+        else if (im.instanceColor) im.setColorAt(i, tint.set(0xffffff));
       });
+      if (im.instanceColor) im.instanceColor.needsUpdate = true;
       im.instanceMatrix.needsUpdate = true;
       im.computeBoundingSphere();
       im.castShadow = !!opts.castShadow;

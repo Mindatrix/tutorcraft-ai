@@ -9,8 +9,9 @@
 // Dino Journey uses a meadow: a dirt path instead of water, wider grass on both sides.
 
 import { pickVariant, resolveAsset, variantFamily, type AliasMap, type CatalogAsset, type ScenarioAssets } from './assetLoader';
+import { KIT_COMPANION_BUDGET, SCENE_TRIS_CAP, ambientGroups, groupRadius, kitLevel, memberMatches, memberShown, rotateOffset, triggeredGroups, type SceneKits } from './sceneKits';
 import { GameMode } from './types';
-import { mulberry32 } from './variants';
+import { hashString, mulberry32 } from './variants';
 
 export { sceneCategory, type SceneCategory } from './assetCategory';
 import { sceneCategory, type SceneCategory } from './assetCategory';
@@ -152,6 +153,10 @@ export interface Placement {
   variant: ModelVariant;
   /** Triangles of that variant (0 when unknown). */
   tris: number;
+  /** Scene kit group it belongs to (WP4). */
+  group?: string;
+  /** Colour multiplied into its materials (level palette of the kit), "#rrggbb". */
+  tint?: string;
 }
 
 /** web (high), low, and the fill variants of scattered scenery. */
@@ -191,6 +196,9 @@ export interface LayoutInput {
   neighbourReach?: number;
   /** Nature models used when the scenario lists none of a kind (the shared river pack). */
   fallbackNature?: string[];
+  /** Scene kits (content/scene_kits.json) and the match level 0..6 (WP4). Without kits: scattered as before. */
+  kits?: SceneKits;
+  level?: number;
 }
 
 const NATURE: SceneCategory[] = ['tree', 'bush', 'rock', 'reed', 'water', 'ground', 'backdrop'];
@@ -241,8 +249,11 @@ export function buildSceneLayout(input: LayoutInput): SceneLayout {
   if (world.kind === 'meadow') pool.delete('reed');
 
   const placements: Placement[] = [];
+  const companions: Placement[] = [];
   const missing = new Set<string>();
   const stages: StageArea[] = [];
+  const kit = input.kits?.games[input.scenario.game];
+  const lv = kitLevel(input.kits, input.level);
 
   for (const n of wanted) {
     const area = stageArea(world, n);
@@ -279,7 +290,70 @@ export function buildSceneLayout(input: LayoutInput): SceneLayout {
     const own = (input.scenario.stages ?? []).filter((s) => s.n === n).flatMap((s) => s.assets ?? []);
     let k = 0;
     const qName = q === 1 ? 'low' : 'high';
+    // 0) Scene kits (WP4): groups the stage calls for (+ background groups by level). The stage's own
+    //    things take their place in a group; companions wait for the budget check after the loop.
+    const consumed = new Set<string>();
+    if (kit) {
+      const krand = mulberry32((input.layoutSeed ^ Math.imul(n, 0x85ebca6b) ^ hashString('kit')) >>> 0);
+      const called = triggeredGroups(kit, own);
+      const groups = [...called.map((g) => ({ g, ambient: false })), ...ambientGroups(kit, new Set(called.map((g) => g.id)), lv.ambient, krand).map((g) => ({ g, ambient: true }))];
+      for (const { g, ambient } of groups) {
+        const r = groupRadius(g);
+        let at: { x: number; z: number } | null = null;
+        for (let tries = 0; tries < 40 && !at; tries++) {
+          const a = krand() * Math.PI * 2;
+          const d = 4 + krand() * 8;
+          const x = area.focal.x + Math.cos(a) * d;
+          const z = area.focal.z + Math.sin(a) * d;
+          if (Math.abs(x) - r > world.waterHalf + 0.5 && Math.abs(z - (area.z0 + area.z1) / 2) + r < world.stageLength / 2 && free(x, z, r * 2)) at = { x, z };
+        }
+        if (!at) continue; // no room: the stage's own things are scattered as usual
+        const turn = krand() * Math.PI * 2;
+        taken.push({ x: at.x, z: at.z, r: r * 2 });
+        g.members.forEach((m, i) => {
+          const mine = ambient ? undefined : own.find((id) => !consumed.has(id) && memberMatches(m, id));
+          if (!memberShown(m, lv.level, !!mine)) return;
+          const pickFrom = (m.pick ?? []).map((id) => index.get(id)).filter((c): c is CatalogAsset => !!c);
+          const slot = `${n}:k:${g.id}:${i}`;
+          const c = pickFrom.length ? pickFrom[Math.floor(krand() * pickFrom.length)] : pickVariant(mine ?? m.asset, input.layoutSeed, slot, input.catalog, input.aliases ?? {}, qName, index);
+          if (!c) {
+            if (mine) missing.add(mine);
+            return;
+          }
+          if (mine) consumed.add(mine);
+          const family = pickFrom.length ? pickFrom : variantFamily(mine ?? m.asset, input.catalog, input.aliases ?? {}, qName, index);
+          const cat = sceneCategory(c);
+          const [dx, dz] = rotateOffset(m.x, m.z, turn);
+          const [size, fit] = m.size ? [m.size, m.fit ?? 'max'] : sizeFor(c.id, cat);
+          const variant: ModelVariant = q === 1 ? 'low' : 'high';
+          const p: Placement = {
+            key: `${slot}:${c.id}`,
+            id: mine ?? m.asset,
+            libraryId: c.id,
+            file: c.file,
+            category: cat,
+            stage: n,
+            x: round(at!.x + dx),
+            y: m.y ?? 0,
+            z: round(at!.z + dz),
+            rotY: round(turn + ((m.rot ?? 0) * Math.PI) / 180),
+            size: round(size),
+            fit,
+            focal: true,
+            variant,
+            tris: Math.max(...family.map((f) => trisOf(f, variant))),
+            group: g.id,
+            tint: lv.tint,
+          };
+          // The stage's own things are always drawn; the rest (core first, kit order) is a companion:
+          // current stage only, within the budgets.
+          if (mine) placements.push(p);
+          else companions.push(p);
+        });
+      }
+    }
     for (const id of own) {
+      if (consumed.has(id)) continue;
       // WP3: one member of the id's family (<id>, <id>_2…) per slot, chosen by the layout seed.
       const c = pickVariant(id, input.layoutSeed, `${n}:f:${k}`, input.catalog, input.aliases ?? {}, qName, index);
       if (!c) {
@@ -343,12 +417,38 @@ export function buildSceneLayout(input: LayoutInput): SceneLayout {
   const reach = (input.neighbourReach ?? NEIGHBOUR_REACH) * world.stageLength;
   const kept =
     cur === undefined
-      ? placements
+      ? [...placements]
       : placements.filter((p) => {
           if (p.focal || p.stage === cur) return true;
           const boundary = p.stage < cur ? stageArea(world, p.stage).z1 : stageArea(world, p.stage).z0;
           return Math.abs(p.z - boundary) <= reach;
         });
+  let total = kept.reduce((a, p) => a + p.tris, 0);
+  // Scene cap (02/11): where neighbour fill lands depends on the seed, so a scene could pass the cap by
+  // chance. Over it, drop neighbour fill farthest from the shared boundary first (never the current stage).
+  if (cur !== undefined && total > SCENE_TRIS_CAP[q === 1 ? 'low' : 'high']) {
+    const away = (p: Placement) => Math.abs(p.z - (p.stage < cur ? stageArea(world, p.stage).z1 : stageArea(world, p.stage).z0));
+    const spare = kept.filter((p) => !p.focal && p.stage !== cur).sort((a, b) => away(b) - away(a) || a.key.localeCompare(b.key));
+    const drop = new Set<Placement>();
+    for (const p of spare) {
+      if (total <= SCENE_TRIS_CAP[q === 1 ? 'low' : 'high']) break;
+      drop.add(p);
+      total -= p.tris;
+    }
+    for (let i = kept.length - 1; i >= 0; i--) if (drop.has(kept[i])) kept.splice(i, 1);
+  }
+  // Kit companions (WP4): the current stage only (all stages when no current one), within the stage's
+  // companion budget and, for a scene, under the scene cap. Lower minLevel first (kit order).
+  const spent = new Map<number, number>();
+  for (const p of companions) {
+    if (cur !== undefined && p.stage !== cur) continue;
+    const used = spent.get(p.stage) ?? 0;
+    if (used + p.tris > KIT_COMPANION_BUDGET[q === 1 ? 'low' : 'high']) continue;
+    if (cur !== undefined && total + p.tris > SCENE_TRIS_CAP[q === 1 ? 'low' : 'high']) continue;
+    kept.push(p);
+    total += p.tris;
+    spent.set(p.stage, used + p.tris);
+  }
   return { world, stages, placements: kept, missing: [...missing].sort() };
 }
 

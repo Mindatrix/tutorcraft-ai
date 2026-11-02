@@ -144,6 +144,12 @@ Hiện thiếu **41/280** mã:
 - Bản thấp bỏ bản nặng hơn 2× bản nhẹ nhất (MB +0,3 hoặc mặt +2 nghìn), giữ ≥ 1 (ví dụ `river_sign`: 6 bản → 1 bản ở máy yếu).
 - `planScenarioAssets` tải cả họ (`inLow` cho bản thấp); số mặt mỗi chỗ đặt tính theo bản nặng nhất của họ (không phụ thuộc seed). Số đo 02/11: trận nặng nhất dino-01 37,9 MB cao / 13,5 MB thấp; camp-01 28,0 / 8,0 MB; cảnh xấu nhất bản thấp dưới 300 nghìn mặt (test C1.5).
 
+### Bộ cảnh theo cấp độ (WP4, 02/11; thiết kế `docs/specs/wp4-scene-kits-design.md`)
+- Dữ liệu `content/scene_kits.json` (hiện có summer_camp: khu trại, lều, góc lửa, sơ cứu, bếp). Luật `src/engine/sceneKits.ts`; đặt trong `buildSceneLayout({ kits, level })`; tải trong `planScenarioAssets(…, kits)`; tint qua màu từng bản sao (`instancing.ts`, không thêm vật liệu). Scene-lab: ô "Cấp 0–6".
+- Món chặng gọi luôn có (xếp vào nhóm); món lõi + món đi kèm chỉ ở chặng hiện tại, ≤ 60k / 20k mặt mỗi chặng và dưới trần cảnh 1,3 triệu / 300 nghìn. `pick` chặn bản ghép sai mã.
+- Trần cảnh nay được bảo đảm: vượt thì bỏ cây rải xa ranh giới nhất của chặng kề (trước đây chỉ đạt nhờ seed của test).
+- Số đo scene-lab camp-01: chặng 5 cấp 0 → 6: 110 → 119 vật; chặng 7: 114 → 120; chặng 2 (cảnh nặng nhất, đã chạm trần) không thêm.
+
 ### Dọn file gốc trước khi tối ưu
 
 `node scripts/clean-glb.mjs <file> --inspect` in các mặt phẳng lớn và các mảnh rời. Các cờ dọn:
