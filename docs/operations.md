@@ -268,6 +268,11 @@ Số đo ngày 27/10 trên Mac (Apple M4), sau khi có 3 cấp chi tiết. Thờ
 - Luật (`src/engine/audioPlan.ts`, test `tests/audio.test.ts`): 3 bus nhạc / hiệu ứng / nền; nút tắt riêng nhạc và hiệu ứng (nền đi theo hiệu ứng); gia sư tắt tiếng lớp thắng tất cả (`matchChannel.ts`); câu hỏi mở → nhạc −8 dB, nền −4 dB; lớp nhạc đổi sau 4 s (kayak: dẫn đầu hoặc 3 câu đúng liền → `happy_adventure`; survival: kẻ săn < 8 m hoặc đồng đội bị bắt < 10 s → `dodging_lights`), chuyển mờ 1,25 s; nhạc phát theo đoạn có khoảng lặng 6–8 s; đoạn nền ngắn lặp bằng bản chồng nhau + mờ 0,4 s; máy yếu → nền tổng hợp; bước chân theo nhịp chạm chân của clip chạy (0 và ½ chu kỳ), file theo mặt đất từng nơi, cát/đá trái–phải xen kẽ; mái chèo kayak và hiệu ứng `splash` phát tiếng nước; tiếng cười đám đông chỉ khi ≥ 8 người.
 - Kiểm: `/tutor/scene-lab` → khối "Âm thanh (WP2)" (chọn nơi, các công tắc, nghe từng tiếng, dòng trạng thái).
 
+### Giao diện trong game (WP10, 02/11)
+- HUD chung `src/components/hud/` (GameHUD, ArenaHUD, SettingsPanel, MapHud): thanh công cụ kính mờ, kỹ năng phải, điều khiển trái (Kayak: lái), Cài đặt 4 tab (`tc:hud` trong localStorage), Cách chơi (`src/config/gameGuides.ts`). Kayak + Multiverse: HUD phủ cảnh 3D; 4 game còn 2D: thanh công cụ gắn trên khung.
+- U3: minimap + thanh tọa độ cho Kayak (đường sông dọc, đoạn 20 m tô cam = nhiều chướng ngại, xanh = trống; `src/engine/kayakCourse.ts` dùng chung với cảnh 3D) và thế giới sông/đồng cỏ (bản đồ tròn từ `SceneLayout`, chỉ có trong scene-lab đến khi WP8 đưa cảnh 3D vào trận). Nút "Bản đồ nhỏ" đổi trái ↔ phải; Cài đặt: Trái/Phải/Tắt, thanh tọa độ Hiện/Ẩn. Multiverse không có.
+- Kiểm: `/tutor/scene-lab` → "HUD Kayak (WP10)", "HUD 5 game còn lại (WP10)", "Thế giới sông / đồng cỏ". Ảnh: `3D_tutorcraft/_report/ui/2026-11-02/`.
+
 ### Đo trên điện thoại thật
 
 1. Máy tính và điện thoại dùng chung một mạng Wi-Fi. Xem địa chỉ mạng nội bộ của máy bằng `ipconfig getifaddr en0` (ngày 27/10 là `192.168.1.253`; địa chỉ đổi khi đổi mạng). Build production (`npx next build`), rồi chạy `TC_SERVE_LOCAL_ASSETS=1 npx next start -H 192.168.1.253 -p 3005` (cấu hình `prod-lan` trong `.claude/launch.json`).

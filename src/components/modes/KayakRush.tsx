@@ -7,6 +7,7 @@ import { Sparks, canvasTexture, clamp, createStage, damp, glow, hashStr, lowpoly
 import type { SceneEvent } from './types';
 import { playCue } from '../../client/audio';
 import { cycleHits } from '../../engine/audioPlan';
+import { KAYAK_COURSE_LENGTH, KAYAK_LANE, kayakObstacles } from '../../engine/kayakCourse';
 
 // GAME 1 — Kayak Rush 3D (upgrade of Boat Race; the server-authoritative race logic is unchanged).
 // Turquoise low-poly river, kayaks with modular hats on `hat_attachment_slot`, spinning logs,
@@ -20,8 +21,8 @@ const RIVER = c(P.river, '#36c3cf');
 const DEEP = c(P.riverDeep, '#1b8fa6');
 const FOAM = c(P.foam, '#f4fbff');
 const BANK = c(P.bank, '#7cc36a');
-const L = 110; // course length (world units)
-const LANE = 1.7;
+const L = KAYAK_COURSE_LENGTH; // course length (world units)
+const LANE = KAYAK_LANE;
 
 export interface KayakRushProps {
   playerPos: number;
@@ -352,34 +353,32 @@ export default function KayakRush(props: KayakRushProps) {
     const logs: THREE.Mesh[] = [];
     const ice: THREE.Mesh[] = [];
     const monsters: THREE.Group[] = [];
-    for (let i = 0; i < 9; i++) {
-      const z = -8 - i * 11 - r() * 3;
-      const side = i % 2 ? 1 : -1;
-      const kind = i % 3;
-      if (kind === 0) {
-        const log = mesh(new THREE.CylinderGeometry(0.35, 0.35, 3.2, 9), toon(0x9a5b2d), [side * 5.7, 0.15, z]);
+    // Course obstacles from the shared engine (the minimap draws the same ones, WP10 U3).
+    for (const o of kayakObstacles()) {
+      const side = Math.sign(o.x) || 1;
+      if (o.kind === 'log') {
+        const log = mesh(new THREE.CylinderGeometry(0.35, 0.35, 3.2, 9), toon(0x9a5b2d), [o.x, 0.15, o.z]);
         log.rotation.z = Math.PI / 2;
         log.add(mesh(new THREE.CylinderGeometry(0.36, 0.36, 0.06, 9), toon(0xe6b77e), [0, 1.6, 0]));
         log.add(mesh(new THREE.CylinderGeometry(0.36, 0.36, 0.06, 9), toon(0xe6b77e), [0, -1.6, 0]));
         logs.push(log);
         scene.add(log);
-      } else if (kind === 1) {
-        const block = mesh(roughen(new THREE.DodecahedronGeometry(0.9, 0), 0.15, i), lowpoly(0xeef6fb, { rough: 0.4 }), [side * 5.4, 0.2, z]);
+      } else if (o.kind === 'ice') {
+        const block = mesh(roughen(new THREE.DodecahedronGeometry(0.9, 0), 0.15, Math.round(-o.z)), lowpoly(0xeef6fb, { rough: 0.4 }), [o.x, 0.2, o.z]);
         block.scale.set(1, 1.3, 1);
         ice.push(block);
         scene.add(block);
-      } else {
+      } else if (o.kind === 'monster') {
         const pm = plantMonster();
-        pm.position.set(side * 7.6, 0.2, z);
+        pm.position.set(o.x, 0.2, o.z);
         pm.rotation.y = side > 0 ? Math.PI : 0;
         monsters.push(pm);
         scene.add(pm);
         swapInGlb(pm, assetUrl(A.obstacleModelUrls.plantMonster), 3.5, () => alive);
-      }
-      if (i % 4 === 1) {
+      } else {
         const b = barrier();
-        b.position.set(-side * 5.6, 0, z - 4);
-        b.rotation.y = side * 0.25;
+        b.position.set(o.x, 0, o.z);
+        b.rotation.y = -side * 0.25;
         scene.add(b);
       }
     }

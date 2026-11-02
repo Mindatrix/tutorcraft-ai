@@ -18,9 +18,13 @@ export interface HudSettings {
   fontScale: 0.9 | 1 | 1.15;
   /** Show the name under each toolbar button. */
   toolbarLabels: boolean;
+  /** Minimap corner (top), or hidden (U3). */
+  minimap: 'left' | 'right' | 'off';
+  /** Compass / coordinate bar under the toolbar (U3). */
+  coordBar: boolean;
 }
 
-export const HUD_DEFAULTS: HudSettings = { brightness: 3, moveHand: 'left', buttonSize: 'm', controlOpacity: 0.75, fontScale: 1, toolbarLabels: false };
+export const HUD_DEFAULTS: HudSettings = { brightness: 3, moveHand: 'left', buttonSize: 'm', controlOpacity: 0.75, fontScale: 1, toolbarLabels: false, minimap: 'left', coordBar: true };
 export const BRIGHTNESS_FILTER: Record<HudSettings['brightness'], number> = { 1: 0.7, 2: 0.85, 3: 1, 4: 1.12, 5: 1.25 };
 export const BUTTON_PX: Record<HudSettings['buttonSize'], number> = { s: 48, m: 58, l: 70 };
 

@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
 import ArenaHUD, { raceStanding } from './ArenaHUD';
 import { SteerPad } from './GameHUD';
+import { CoordBar, Minimap } from './MapHud';
+import { drawKayakMap, kayakCoord, type KayakLive } from './kayakMap';
 import { BRIGHTNESS_FILTER, useHudSettings } from '../../client/hudSettings';
 import { initAudio, setSoundPlace, stopSound } from '../../client/audio';
 import { initSfx } from '../../client/sfx';
@@ -22,6 +24,10 @@ export default function KayakHudLab() {
   const [quiet, setQuiet] = useState(false);
   const [log, setLog] = useState<string[]>([]);
   const steer = useRef(0);
+  const live = useRef<KayakLive>({ player: 0.05, bot: 0.04, steer: 0, botName: 'Bot Dễ' });
+  useEffect(() => {
+    live.current = { ...live.current, player: race.player, bot: race.bot };
+  }, [race.player, race.bot]);
   const hud = useHudSettings();
   useEffect(() => {
     const id = setInterval(
@@ -69,7 +75,16 @@ export default function KayakHudLab() {
           game="kayak_rush"
           status={race.player >= race.bot ? 'Đang dẫn' : 'Đang đuổi'}
           standing={raceStanding('Minh An', race.player, 'Bot Dễ', race.bot)}
-          move={<SteerPad onSteer={(x) => (steer.current = x)} />}
+          move={
+            <SteerPad
+              onSteer={(x) => {
+                steer.current = x;
+                live.current.steer = x;
+              }}
+            />
+          }
+          minimap={<Minimap draw={drawKayakMap} source={live} label="Bản đồ đường sông" size={96} tall={1.6} />}
+          coordBar={<CoordBar source={live} state={kayakCoord} />}
           playerName="Minh An"
           avatar="🦊"
           levelText="Dễ · A1"

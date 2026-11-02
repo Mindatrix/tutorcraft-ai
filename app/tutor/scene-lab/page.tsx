@@ -13,6 +13,7 @@ import { THREE_ASSET_MANIFEST } from '../../../src/config/threeAssets';
 import {
   AVATAR_COLORS,
   GameMode,
+  GAME_MODES,
   STUDENT_LOD,
   WEAK_STUDENT_LOD,
   avatarTemplates,
@@ -30,6 +31,12 @@ import {
 import { browserSupabase } from '../../../src/client/supabaseBrowser';
 import { playFootstep } from '../../../src/client/audio';
 import SoundLab from '../../../src/components/SoundLab';
+import GameHUD from '../../../src/components/hud/GameHUD';
+import SettingsPanel from '../../../src/components/hud/SettingsPanel';
+import { CoordBar, Minimap } from '../../../src/components/hud/MapHud';
+import { drawRiverMap, emptyRiverLive, riverCoord, type RiverLive } from '../../../src/components/hud/riverMap';
+import { setHudSettings, useHudSettings } from '../../../src/client/hudSettings';
+import { Map as MapIcon, Settings as SettingsIcon } from 'lucide-react';
 import type { SoundPlace } from '../../../src/engine/audioPlan';
 import { createRuntime, runtimeCounters, type GfxTier, type RuntimeStats } from '../../../src/components/modes/three/SceneRuntime';
 import { buildRiverWorld } from '../../../src/components/modes/three/riverWorld';
@@ -293,7 +300,7 @@ export default function SceneLab() {
         {view === 'hud' && <KayakHudLab key={`hud-${mount}`} />}
         {view === 'hud2' && <BossHudLab key={`hud2-${mount}`} />}
         {hud && (
-          <pre className="pointer-events-none absolute left-2 top-2 max-w-[calc(100%-1rem)] whitespace-pre-wrap bg-black/70 p-2 text-[11px] leading-4 text-emerald-200">
+          <pre className="pointer-events-none absolute bottom-2 left-2 z-30 max-w-[calc(100%-1rem)] whitespace-pre-wrap bg-black/70 p-2 text-[11px] leading-4 text-emerald-200">
             {[
               `FPS ${hud.stats?.fps ?? '…'} · khung ${hud.stats?.frameMs ?? '…'} ms · tầng ${hud.stats?.tier ?? tier}${weak && view === 'river' ? ' (máy yếu)' : ''}`,
               `draw call ${hud.stats?.calls ?? '…'} · tam giác ${hud.stats ? Math.round(hud.stats.triangles / 1000) : '…'} nghìn`,
@@ -339,6 +346,9 @@ function deviceLine(renderer: THREE.WebGLRenderer): string {
 function RiverStage(props: { row: Row; stage: number; tier: GfxTier; weak: boolean; students: number; cast: boolean; seed: number; level: number; onHud: (h: Hud) => void; apiRef: { current: LabApi | null } }) {
   const host = useRef<HTMLDivElement>(null);
   const { row, stage, tier, weak, students, cast, seed, level, onHud, apiRef } = props;
+  // WP10 U3: minimap + coordinate bar of the river / meadow worlds, fed from this scene every ~0.1 s.
+  const riverLive = useRef<RiverLive>(emptyRiverLive());
+  const hs = useHudSettings();
 
   useEffect(() => {
     const el = host.current;
@@ -369,6 +379,9 @@ function RiverStage(props: { row: Row; stage: number; tier: GfxTier; weak: boole
     const stages = [stage - 1, stage, stage + 1].filter((n) => n >= 1 && n <= 8);
     const layout = buildSceneLayout({ scenario: row, catalog: ASSET_LIBRARY as CatalogAsset[], aliases: ASSET_ALIASES, layoutSeed: plan.layoutSeed, quality: useTier, stages, current: stage, fallbackNature: THREE_ASSET_MANIFEST.riverWorld.natureIds, kits: sceneKits as SceneKits, level });
     const area = layout.stages.find((s) => s.n === stage)!;
+    riverLive.current = { ...emptyRiverLive(), layout };
+    let lastMap = 0;
+    const camDir = new THREE.Vector3();
     const world = buildRiverWorld({ layout, stages, tier: useTier, fogColor: sky.fog, onProgress: (d, t) => (hud.loading = `Đang nạp mô hình ${d}/${t}`) });
     rt.scene.add(world.group);
     const hud: Hud = { stats: null, loading: 'Đang nạp mô hình…', world: null, avatars: 0, lod: { near: 0, mid: 0, far: 0, models: 0 }, materials: 0, fxMs: 0, footprints: 0, runtimes: runtimeCounters(), heapMb: heapMb(), device: deviceLine(rt.renderer), measure: null };
@@ -542,6 +555,18 @@ function RiverStage(props: { row: Row; stage: number; tier: GfxTier; weak: boole
       world.update(dt, t);
       controls.update();
       rt.camera.getWorldPosition(camPos);
+      if (t - lastMap > 0.1) {
+        lastMap = t;
+        rt.camera.getWorldDirection(camDir);
+        const me = kids[0]?.lod.root.position ?? controls.target;
+        const face = (ry: number) => ((Math.atan2(Math.sin(ry), -Math.cos(ry)) * 180) / Math.PI + 360) % 360;
+        riverLive.current = {
+          layout,
+          me: { x: me.x, z: me.z },
+          heading: ((Math.atan2(camDir.x, -camDir.z) * 180) / Math.PI + 360) % 360,
+          mates: kids.slice(1).map((k, i) => ({ id: String(i + 1), name: `Em ${i + 2}`, x: k.lod.root.position.x, z: k.lod.root.position.z, facing: face(k.lod.root.rotation.y), color: `#${k.color.getHexString()}` })),
+        };
+      }
       if (t - lastLod > 0.3) {
         lastLod = t;
         const levels = lodLevels(
@@ -623,7 +648,21 @@ function RiverStage(props: { row: Row; stage: number; tier: GfxTier; weak: boole
     };
   }, [row, stage, tier, weak, students, cast, seed, level, onHud, apiRef]);
 
-  return <div ref={host} className="absolute inset-0" />;
+  const gameName = GAME_MODES[(isGameMode(row.game) ? row.game : GameMode.SUMMER_CAMP_QUESTS) as GameMode]?.nameVi ?? row.game;
+  return (
+    <>
+      <div ref={host} className="absolute inset-0" />
+      <GameHUD
+        title={gameName}
+        tools={[
+          { id: 'map', label: hs.minimap === 'right' ? 'Bản đồ nhỏ: chuyển sang trái' : 'Bản đồ nhỏ: chuyển sang phải', icon: MapIcon, pressed: hs.minimap !== 'off', onClick: () => setHudSettings({ minimap: hs.minimap === 'left' ? 'right' : 'left' }) },
+          { id: 'settings', label: 'Cài đặt', icon: SettingsIcon, panel: () => <SettingsPanel tier={tier} onTier={() => undefined} hasMap /> },
+        ]}
+        minimap={<Minimap draw={drawRiverMap} source={riverLive} label="Bản đồ nhỏ quanh em" size={132} round />}
+        coordBar={<CoordBar source={riverLive} state={riverCoord} />}
+      />
+    </>
+  );
 }
 
 /** Real frame times over the measuring window (requestAnimationFrame gaps, not the clamped dt). */

@@ -89,7 +89,7 @@ export function SoundRows() {
   );
 }
 
-export default function SettingsPanel({ tier, onTier, canFullscreen }: { tier: RenderTier; onTier: (t: RenderTier) => void; canFullscreen?: boolean }) {
+export default function SettingsPanel({ tier, onTier, canFullscreen, hasMap }: { tier: RenderTier; onTier: (t: RenderTier) => void; canFullscreen?: boolean; hasMap?: boolean }) {
   const [tab, setTab] = useState<Tab>('chung');
   const s = useHudSettings();
   const set = (patch: Partial<HudSettings>) => setHudSettings(patch);
@@ -141,6 +141,16 @@ export default function SettingsPanel({ tier, onTier, canFullscreen }: { tier: R
               <Row title="Cỡ chữ">
                 <Seg label="Cỡ chữ" value={s.fontScale} options={[[0.9, 'Nhỏ'], [1, 'Vừa'], [1.15, 'Lớn']]} onChange={(v) => set({ fontScale: v })} />
               </Row>
+              {hasMap && (
+                <>
+                  <Row title="Bản đồ nhỏ" note="Góc trên của màn chơi">
+                    <Seg label="Bản đồ nhỏ" value={s.minimap} options={[['left', 'Trái'], ['right', 'Phải'], ['off', 'Tắt']]} onChange={(v) => set({ minimap: v })} />
+                  </Row>
+                  <Row title="Thanh tọa độ" note="Hướng nhìn, vị trí của em và đồng đội">
+                    <Seg label="Thanh tọa độ" value={s.coordBar} options={[[true, 'Hiện'], [false, 'Ẩn']]} onChange={(v) => set({ coordBar: v })} />
+                  </Row>
+                </>
+              )}
               <Row title="Tên dưới nút" note="Hiện chữ dưới các nút thanh công cụ">
                 <Seg label="Tên dưới nút" value={s.toolbarLabels} options={[[false, 'Ẩn'], [true, 'Hiện']]} onChange={(v) => set({ toolbarLabels: v })} />
               </Row>

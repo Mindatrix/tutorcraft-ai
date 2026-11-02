@@ -1,10 +1,11 @@
 'use client';
 
 import { useMemo, useState, type ReactNode } from 'react';
-import { CircleHelp, Eye, LogOut, Maximize, Minimize, Settings, Shield, Snowflake, Sparkles, Trophy, UserRound, Volume2, VolumeX } from 'lucide-react';
+import { CircleHelp, Eye, LogOut, Map as MapIcon, Maximize, Minimize, Settings, Shield, Snowflake, Sparkles, Trophy, UserRound, Volume2, VolumeX } from 'lucide-react';
 import { GAME_MODES, MAX_MP, SKILLS, SKILL_IDS, type GameMode, type SkillId } from '../../engine';
 import { GAME_GUIDES } from '../../config/gameGuides';
 import { useSoundSwitches } from '../../client/audio';
+import { setHudSettings, useHudSettings } from '../../client/hudSettings';
 import GameHUD, { SkillButton, type HudTool } from './GameHUD';
 import SettingsPanel, { SoundRows } from './SettingsPanel';
 import type { RenderTier } from '../modes/gfxTier';
@@ -35,6 +36,9 @@ export interface ArenaHUDProps {
   standingLabel?: string;
   /** Movement control for the left corner (none: the world has no movement yet). */
   move?: ReactNode;
+  /** Minimap and coordinate bar (U3: the five worlds with terrain; not Multiverse). */
+  minimap?: ReactNode;
+  coordBar?: ReactNode;
   docked?: boolean;
   playerName: string;
   avatar: string;
@@ -54,6 +58,7 @@ export interface ArenaHUDProps {
 
 export default function ArenaHUD(p: ArenaHUDProps) {
   const sound = useSoundSwitches();
+  const hs = useHudSettings();
   const [full, setFull] = useState(false);
   const canFullscreen = typeof document !== 'undefined' && !!document.fullscreenEnabled;
   const guide = GAME_GUIDES[p.game] ?? GAME_GUIDES.kayak_rush;
@@ -134,7 +139,16 @@ export default function ArenaHUD(p: ArenaHUDProps) {
           </div>
         ),
       },
-      { id: 'settings', label: 'Cài đặt', icon: Settings, panel: () => <SettingsPanel tier={p.tier} onTier={p.onTier} canFullscreen={canFullscreen} /> },
+      {
+        id: 'map',
+        label: hs.minimap === 'right' ? 'Bản đồ nhỏ: chuyển sang trái' : 'Bản đồ nhỏ: chuyển sang phải',
+        icon: MapIcon,
+        hidden: !p.minimap,
+        pressed: hs.minimap !== 'off',
+        // One press moves it to the other top corner (and shows it again if it was turned off).
+        onClick: () => setHudSettings({ minimap: hs.minimap === 'left' ? 'right' : 'left' }),
+      },
+      { id: 'settings', label: 'Cài đặt', icon: Settings, panel: () => <SettingsPanel tier={p.tier} onTier={p.onTier} canFullscreen={canFullscreen} hasMap={!!p.minimap} /> },
       {
         id: 'full',
         label: full ? 'Thoát toàn màn hình' : 'Toàn màn hình',
@@ -161,7 +175,7 @@ export default function ArenaHUD(p: ArenaHUDProps) {
         ),
       },
     ],
-    [p, sound.music, sound.sfx, full, canFullscreen, guide],
+    [p, sound.music, sound.sfx, full, canFullscreen, guide, hs.minimap],
   );
   // Vietnamese name, last word in the accent colour ("Sinh Tồn Sông <b>Nước</b>").
   const words = (def?.nameVi ?? 'TutorCraft').split(' ');
@@ -181,6 +195,8 @@ export default function ArenaHUD(p: ArenaHUDProps) {
       lite={p.tier !== 'high'}
       docked={p.docked}
       move={p.move}
+      minimap={p.minimap}
+      coordBar={p.coordBar}
       skills={p.docked ? undefined : SKILL_IDS.map((id, i) => (
         <SkillButton
           key={id}

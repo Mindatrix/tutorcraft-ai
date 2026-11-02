@@ -36,12 +36,16 @@ export interface GameHUDProps {
   lite?: boolean;
   /** Toolbar above the stage instead of over it (2D worlds draw their own bars at the top). */
   docked?: boolean;
+  /** Minimap (U3), placed top-left / top-right by the settings. */
+  minimap?: ReactNode;
+  /** Coordinate bar (U3), right under the toolbar. */
+  coordBar?: ReactNode;
   /** Open a panel from outside (e.g. the guide on the first visit). */
   openPanel?: string | null;
   onPanelChange?: (id: string | null) => void;
 }
 
-export default function GameHUD({ title, tools, move, skills, quiet, lite, docked, openPanel, onPanelChange }: GameHUDProps) {
+export default function GameHUD({ title, tools, move, skills, quiet, lite, docked, minimap, coordBar, openPanel, onPanelChange }: GameHUDProps) {
   const s = useHudSettings();
   const [open, setOpen] = useState<string | null>(null);
   const shown = openPanel !== undefined ? openPanel : open;
@@ -69,7 +73,7 @@ export default function GameHUD({ title, tools, move, skills, quiet, lite, docke
   const runTool = (t: HudTool) => (t.panel ? setShown(t.id) : (setShown(null), t.onClick?.()));
   const tool = tools.find((t) => t.id === shown && t.panel);
   const style = { '--hud-scale': s.fontScale, '--hud-size': `${BUTTON_PX[s.buttonSize]}px`, '--hud-size-base': `${BUTTON_PX[s.buttonSize]}px`, '--hud-opacity': s.controlOpacity } as CSSProperties;
-  const cls = ['tc-hud', s.moveHand === 'right' ? 'tc-hud-swap' : '', quiet ? 'tc-hud-quiet' : '', lite ? 'tc-hud-lite' : '', docked ? 'tc-hud-docked' : '', s.toolbarLabels ? 'tc-hud-labels' : ''].filter(Boolean).join(' ');
+  const cls = ['tc-hud', s.moveHand === 'right' ? 'tc-hud-swap' : '', quiet ? 'tc-hud-quiet' : '', lite ? 'tc-hud-lite' : '', docked ? 'tc-hud-docked' : '', s.minimap === 'right' ? 'tc-hud-map-right' : '', s.toolbarLabels ? 'tc-hud-labels' : ''].filter(Boolean).join(' ');
 
   return (
     <div ref={root} className={cls} style={style}>
@@ -98,6 +102,8 @@ export default function GameHUD({ title, tools, move, skills, quiet, lite, docke
           )}
         </div>
       </div>
+      {coordBar && s.coordBar && !docked && coordBar}
+      {minimap && s.minimap !== 'off' && !docked && <div className="tc-hud-map">{minimap}</div>}
       {move && <div className="tc-hud-move">{move}</div>}
       {skills && <div className="tc-hud-skills">{skills}</div>}
       {shown === '__more' && (

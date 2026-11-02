@@ -49,6 +49,8 @@ import { readTier, saveTier, type RenderTier } from './modes/gfxTier';
 import SubtitleBar from './modes/SubtitleBar';
 import ArenaHUD, { raceStanding } from './hud/ArenaHUD';
 import { SteerPad } from './hud/GameHUD';
+import { CoordBar, Minimap } from './hud/MapHud';
+import { drawKayakMap, kayakCoord, type KayakLive } from './hud/kayakMap';
 import { BRIGHTNESS_FILTER, useHudSettings } from '../client/hudSettings';
 
 // Three.js is heavy: load it only when a Boat Race actually starts.
@@ -455,8 +457,15 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
   // In-game HUD (WP10, Kayak first): steering through a ref (dragging must not re-render the arena).
   const steer = useRef(0);
   const router = useRouter();
+  // Minimap / coordinate bar read the race through a ref (10 fps map, per-frame compass).
+  const kayakLive = useRef<KayakLive>({ player: 0, bot: 0, steer: 0, botName: '' });
   const hud = useHudSettings();
   const kayakHud = isRace && renderer === 'three' && phase === 'playing';
+  const raceNow = race ? { player: race.playerPos, bot: race.botPos } : null;
+  const botLabel = `Bot ${levelLabel(config.level)}`;
+  useEffect(() => {
+    if (raceNow) kayakLive.current = { ...kayakLive.current, player: raceNow.player, bot: raceNow.bot, botName: botLabel };
+  }, [raceNow?.player, raceNow?.bot, botLabel]); // eslint-disable-line react-hooks/exhaustive-deps
   // Boss worlds (WP10): the stage reports its renderer; on 3D the HUD carries the skills.
   const [stageTier, setStageTier] = useState<RenderTier>('2d');
   const bossHud3d = !isRace && gamified && phase === 'playing' && stageTier !== '2d';
@@ -587,7 +596,16 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
                 game="kayak_rush"
                 status={race.playerPos >= race.botPos ? 'Đang dẫn' : 'Đang đuổi'}
                 standing={raceStanding(playerName, race.playerPos, `Bot ${levelLabel(config.level)}`, race.botPos)}
-                move={<SteerPad onSteer={(x) => (steer.current = x)} />}
+                move={
+                  <SteerPad
+                    onSteer={(x) => {
+                      steer.current = x;
+                      kayakLive.current.steer = x;
+                    }}
+                  />
+                }
+                minimap={<Minimap draw={drawKayakMap} source={kayakLive} label="Bản đồ đường sông" size={96} tall={1.6} />}
+                coordBar={<CoordBar source={kayakLive} state={kayakCoord} />}
                 playerName={playerName}
                 avatar={avatar}
                 levelText={levelLabel(config.level)}

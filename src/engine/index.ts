@@ -43,3 +43,4 @@ export * from './hints';
 export * from './rescue';
 export * from './audioPlan';
 export * from './sceneKits';
+export * from './kayakCourse';

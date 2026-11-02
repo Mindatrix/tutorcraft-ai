@@ -301,6 +301,142 @@
   font: 700 0.95em var(--font-body), system-ui, sans-serif;
 }
 
+/* ---------- coordinate bar (U3): see-through strip right under the toolbar ---------- */
+.tc-hud-coord {
+  position: absolute;
+  top: calc(var(--hud-bar-h, 47px) + 2px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(56%, 460px);
+  pointer-events: none;
+  text-shadow: 0 1px 2px rgb(0 0 0 / 0.7);
+}
+.tc-hud-coord-track {
+  position: relative;
+  height: 26px;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
+}
+.tc-hud-coord-strip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  will-change: transform;
+}
+.tc-hud-tick {
+  position: absolute;
+  top: 0;
+  width: 1px;
+  height: 6px;
+  background: rgb(255 255 255 / 0.6);
+}
+.tc-hud-tick-long {
+  height: 11px;
+  background: rgb(255 255 255 / 0.95);
+}
+.tc-hud-tick b {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.72em;
+  font-weight: 600;
+  color: rgb(255 255 255 / 0.85);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.tc-hud-tick b.tc-hud-dir {
+  font-weight: 800;
+  color: #fff;
+}
+.tc-hud-coord-needle {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 0;
+  height: 0;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top: 7px solid var(--hud-accent);
+}
+.tc-hud-coord-marks {
+  position: absolute;
+  inset: 0;
+}
+.tc-hud-mark {
+  position: absolute;
+  top: 1px;
+  width: 9px;
+  height: 9px;
+  margin-left: -4.5px;
+  border-radius: 50%;
+  background: var(--c);
+  box-shadow: 0 0 0 1.5px rgb(8 12 26 / 0.85);
+}
+.tc-hud-mark i {
+  position: absolute;
+  left: 50%;
+  top: -7px;
+  width: 2px;
+  height: 7px;
+  margin-left: -1px;
+  background: var(--c);
+  transform-origin: 50% 100%;
+}
+.tc-hud-mark-edge {
+  opacity: 0.6;
+}
+.tc-hud-coord-read {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 1px;
+  font-size: 0.7em;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: rgb(255 255 255 / 0.9);
+}
+
+/* ---------- minimap (U3): top corner under the coordinate bar, left by default ---------- */
+.tc-hud-map {
+  position: absolute;
+  top: calc(var(--hud-bar-h, 47px) + 8px);
+  left: max(10px, env(safe-area-inset-left));
+  pointer-events: auto;
+}
+.tc-hud-map-right .tc-hud-map {
+  left: auto;
+  right: max(10px, env(safe-area-inset-right));
+}
+.tc-hud-minimap {
+  display: block;
+  border-radius: 12px;
+  border: 1px solid var(--hud-line);
+  background: rgb(8 12 26 / 0.38);
+  box-shadow: 0 6px 18px rgb(0 0 0 / 0.25);
+}
+/* Touch screens: 44 px toolbar buttons make the bar taller. */
+@media (pointer: coarse) {
+  .tc-hud {
+    --hud-bar-h: 57px;
+  }
+}
+@container tc-hud (max-width: 520px) {
+  .tc-hud-coord {
+    width: 70%;
+  }
+  .tc-hud-map {
+    top: calc(var(--hud-bar-h, 47px) + 48px);
+    transform: scale(0.78);
+    transform-origin: top left;
+  }
+  .tc-hud-map-right .tc-hud-map {
+    transform-origin: top right;
+  }
+}
+
 /* ---------- panels (sound, character, skills, guide, ranking, settings) ---------- */
 .tc-hud-scrim {
   position: fixed;
