@@ -1,6 +1,7 @@
 import { describe, it } from 'node:test';
 import * as assert from 'node:assert';
 import {
+  BUILTIN_LEXICON,
   DEFAULT_SPEECH_RULES,
   combineSpeechScore,
   normalizeSpeech,
@@ -11,8 +12,11 @@ import {
   scoreSpeech,
   speechAttemptOutcome,
   speechStars,
+  speechTargetsFor,
+  wordPhonemes,
   type SpeechHistory,
 } from '../src/engine/pronunciation';
+import type { Question } from '../src/engine/types';
 
 // TDD suite by Jules (PR #2), rewritten at integration (2026-11-03) to test the engine the server
 // really uses (src/engine/pronunciation.ts) instead of a second, parallel implementation. Every case of
@@ -191,6 +195,33 @@ describe('Pronunciation Engine', () => {
         assert.strictEqual(res.participation, true);
         assert.strictEqual(res.passed, false);
       });
+    });
+  });
+
+  describe('Built-in IPA lexicon (src/engine/lexicon.json)', () => {
+    it('loads every word with exact ARPAbet sounds (stress dropped) and IPA for display', () => {
+      assert.strictEqual(Object.keys(BUILTIN_LEXICON.sounds).length, 50);
+      assert.deepStrictEqual(wordPhonemes('island', DEFAULT_SPEECH_RULES.lexicon), ['AY', 'L', 'AH', 'N', 'D']);
+      assert.strictEqual(DEFAULT_SPEECH_RULES.ipa.tent, '/tɛnt/');
+    });
+
+    it('scores listed words on their real sounds, unlisted words fall back to spelling rules', () => {
+      // Spelling rules hear "is land" as identical to "island"; the lexicon knows it is not.
+      assert.strictEqual(scoreSpeech('island', [{ transcript: 'is land' }], 1).phonemeScore, 40);
+      // "reel" and "real" sound the same (R IY L).
+      assert.strictEqual(scoreSpeech('reel', [{ transcript: 'real' }], 1).phonemeScore, 100);
+      // Not in the lexicon: the spelling approximation still scores it.
+      assert.strictEqual(scoreSpeech('three', [{ transcript: 'three' }], 1).phonemeScore, 100);
+    });
+
+    it('shows IPA on targets of listed words only, and speech_rules.json can add words on top', () => {
+      const q = [{ id: 1, question: 'We sleep in a ____.', options: ['tent', 'x'], correct_idx: 0, difficulty: 'easy', topic: 'v', skill_tag: 'vocabulary' }] as Question[];
+      const t = speechTargetsFor(q, [1], 1);
+      assert.strictEqual(t.find((x) => x.targetId === 'q1w')?.ipa, '/tɛnt/');
+      assert.strictEqual(t.find((x) => x.targetId === 'q1s')?.ipa, undefined);
+      const r = resolveSpeechRules({ lexicon: { three: 'TH R IY1' } });
+      assert.strictEqual(r.lexicon.three, 'TH R IY1');
+      assert.strictEqual(r.lexicon.tent, 'T EH1 N T');
     });
   });
 

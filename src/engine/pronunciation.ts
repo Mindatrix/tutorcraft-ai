@@ -1,3 +1,4 @@
+import lexiconFile from './lexicon.json';
 import { normalizeForCompare } from './normalize';
 import { questionType } from './questionTypes';
 import type { Question } from './types';
@@ -54,6 +55,31 @@ export interface SpeechRules {
   ipa: Record<string, string>;
 }
 
+/**
+ * Built-in pronunciation lexicon (src/engine/lexicon.json, from the content agents, 03/11/2026): the
+ * lesson's core words with their exact sounds. `cmu` (ARPAbet, the same symbols as the spelling
+ * approximation) is what PER compares, so a listed word is scored on its real sounds on BOTH sides
+ * (target and heard). `ipa` is for display only: comparing IPA against ARPAbet would mismatch every
+ * symbol. Words not listed fall back to the spelling approximation. The file may wrap its object in
+ * an array.
+ */
+function builtInLexicon(): { sounds: Record<string, string>; ipa: Record<string, string> } {
+  const root: unknown = Array.isArray(lexiconFile) ? lexiconFile[0] : lexiconFile;
+  const sounds: Record<string, string> = {};
+  const ipa: Record<string, string> = {};
+  if (root && typeof root === 'object') {
+    for (const [word, v] of Object.entries(root as Record<string, unknown>)) {
+      if (!v || typeof v !== 'object') continue;
+      const e = v as { ipa?: unknown; cmu?: unknown };
+      const key = word.trim().toLowerCase();
+      if (Array.isArray(e.cmu) && e.cmu.length && e.cmu.every((x) => typeof x === 'string')) sounds[key] = e.cmu.join(' ');
+      if (typeof e.ipa === 'string' && e.ipa.trim()) ipa[key] = e.ipa.trim();
+    }
+  }
+  return { sounds, ipa };
+}
+export const BUILTIN_LEXICON = builtInLexicon();
+
 export const DEFAULT_SPEECH_RULES: SpeechRules = {
   weights: { sentence: { word: 0.55, phoneme: 0.3, conf: 0.15 }, word: { word: 0.45, phoneme: 0.4, conf: 0.15 } },
   passByLevel: [50, 60, 65, 70, 75, 80],
@@ -73,8 +99,8 @@ export const DEFAULT_SPEECH_RULES: SpeechRules = {
   coinsByStars: [0, 0, 0, 0],
   maxTargets: 30,
   maxTargetWords: 12,
-  lexicon: {},
-  ipa: {},
+  lexicon: BUILTIN_LEXICON.sounds,
+  ipa: BUILTIN_LEXICON.ipa,
 };
 
 const isObj = (v: unknown): v is Record<string, unknown> => !!v && typeof v === 'object' && !Array.isArray(v);
@@ -163,8 +189,9 @@ export function resolveSpeechRules(input: unknown): SpeechRules {
     coinsByStars: tuple(raw.coinsByStars, d.coinsByStars, 0, 100),
     maxTargets: Math.round(num(raw.maxTargets, d.maxTargets, 1, 100)),
     maxTargetWords: Math.round(num(raw.maxTargetWords, d.maxTargetWords, 1, 30)),
-    lexicon: stringMap(raw.lexicon),
-    ipa: stringMap(raw.ipa),
+    // speech_rules.json can add or override words; the built-in lexicon stays underneath.
+    lexicon: { ...d.lexicon, ...stringMap(raw.lexicon) },
+    ipa: { ...d.ipa, ...stringMap(raw.ipa) },
   };
 }
 
