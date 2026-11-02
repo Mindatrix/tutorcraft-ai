@@ -136,7 +136,7 @@ The student taps "I said it". The reply has `score 0`, `passed false` and **1 �
 ### 2.7 Coins and abuse limits
 
 - **Coins:** `coinsByStars[stars]`. Only the step up to a better star level is paid, once per level, with `ref = sessionId:targetId:s<stars>`. Coins are never negative.
-  - **The default is `[0, 0, 0, 0]`, so voice pays no coins until the owner sets the amounts** (coin-table rule).
+  - The owner set **`[0, 3, 5, 8]`** in `content/speech_rules.json` (2026-11-03): 1 ★ = 3, 2 ★ = 5, 3 ★ = 8 coins. Improving from 1 ★ to 3 ★ pays 3 + 5 = 8 in total. The engine default without the file is `[0, 0, 0, 0]`.
   - Payment uses the `speech` coin reason, with the per-minute limit of 8 and the match cap of 3000.
 - **Rate limits on `POST`:**
   - **6 per student per minute**, shared across instances through `rate_limits`;
@@ -144,9 +144,13 @@ The student taps "I said it". The reply has `score 0`, `passed false` and **1 �
   - 600 per minute per IP.
 - **Same transcript:** if the same spoken words already *passed* on a different target in this session, the attempt is still scored but marked `detail.flags: ['same_transcript']`, and **no coins** are paid.
 
-### 2.8 `content/speech_rules.json` (for Deep Research)
+### 2.8 `content/speech_rules.json`
 
-The file is optional. Every key is optional, and a missing, wrong-type or out-of-range value keeps its default. Weights must add up to 1. It is read once when the server starts.
+**v1.0.0 is in the repo** (written by Deep Research, 2026-11-03). It is an array holding one object, with sections `scoringWeights`, `passThresholdsByLevel`, `starThresholds`, `attemptsAndHints`, `timingConstraints`, `speechRecognitionConfig`, `ttsConfig`, `fallbacks` and `abuseAndRateLimits`, plus a top-level `coinsByStars`.
+
+`resolveSpeechRules()` maps those sections onto the flat names below; `fromContentLayout` in `src/engine/pronunciation.ts` holds the exact key mapping. Display and UI-only sections are ignored by the server: `levelRules` labels, `featureFlags`, `interactionAndGameHooks`. Its values equal the engine defaults except `coinsByStars`.
+
+The flat form below is also accepted. Every key is optional, and a missing, wrong-type or out-of-range value keeps its default. Weights must add up to 1. The file is read once when the server starts, so restart after editing it.
 
 ```json
 {
@@ -286,7 +290,6 @@ Recogniser settings: `lang` from `voice.lang`, `interimResults = true`, `maxAlte
 | Item | Owner / blocker |
 |---|---|
 | Apply `20261103_speech_attempts.sql` to Supabase | Owner |
-| Coin amounts `coinsByStars` (default 0 = no coins) | Owner (coin-table rule) |
 | Teacher toggle for voice in real classes (schema + Studio UI) | Owner approval, then backend + Antigravity |
 | Exact sounds / IPA: a `lexicon` + `ipa` list (e.g. from CMUdict) | `content/speech_rules.json` (Deep Research) |
 | Voice stars counted into match stars / ranking | Game integration (per-game rules in blueprint §3.5) |

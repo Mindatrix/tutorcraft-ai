@@ -28,6 +28,10 @@ export interface SpeechRules {
   /** score ≥ two → 2 ★, score ≥ three → 3 ★ (a pass alone is 1 ★). */
   stars: { two: number; three: number };
   maxAttempts: number;
+  /** Misses on one target before the free mouth-shape hint. */
+  hintAfterMisses: number;
+  /** Recogniser language sent to the browser. */
+  lang: 'en-US' | 'en-GB';
   /** Words of a sentence whose phoneme match is below this are reported as weak. */
   weakPhonemeBelow: number;
   listenMs: { default: number; beginner: number };
@@ -55,6 +59,8 @@ export const DEFAULT_SPEECH_RULES: SpeechRules = {
   passByLevel: [50, 60, 65, 70, 75, 80],
   stars: { two: 85, three: 95 },
   maxAttempts: 3,
+  hintAfterMisses: 2,
+  lang: 'en-US',
   weakPhonemeBelow: 50,
   listenMs: { default: 8000, beginner: 12000 },
   silenceStopMs: 1800,
@@ -92,13 +98,49 @@ function stringMap(v: unknown): Record<string, string> {
   return out;
 }
 
+const pick = (o: unknown, ...path: string[]): unknown => path.reduce<unknown>((v, k) => (isObj(v) ? v[k] : undefined), o);
+const defined = (o: Record<string, unknown>) => Object.fromEntries(Object.entries(o).filter(([, v]) => v !== undefined && !(isObj(v) && !Object.values(v).some((x) => x !== undefined))));
+
+/**
+ * The content team's file layout (content/speech_rules.json v1.0.0: an array holding one object with
+ * scoringWeights, passThresholdsByLevel, starThresholds, timingConstraints, ttsConfig, fallbacks, …)
+ * mapped onto the engine's flat rule names. Keys already in the flat form win.
+ */
+function fromContentLayout(raw: Record<string, unknown>): Record<string, unknown> {
+  const w = (k: string) => {
+    const o = pick(raw, 'scoringWeights', k);
+    return isObj(o) ? { word: o.wordScoreWeight, phoneme: o.phonemeScoreWeight, conf: o.confidenceScoreWeight } : undefined;
+  };
+  const byLevel = pick(raw, 'passThresholdsByLevel');
+  const levels = isObj(byLevel) ? [0, 1, 2, 3, 4, 5].map((i) => byLevel[String(i)] ?? pick(raw, 'levelRules', String(i), 'passThreshold')) : undefined;
+  const mapped = defined({
+    weights: defined({ sentence: w('multiWord'), word: w('singleWord') }),
+    passByLevel: levels,
+    stars: defined({ two: pick(raw, 'starThresholds', 'twoStarsMinScore'), three: pick(raw, 'starThresholds', 'threeStarsMinScore') }),
+    maxAttempts: pick(raw, 'attemptsAndHints', 'maxAttemptsPerTarget'),
+    hintAfterMisses: pick(raw, 'attemptsAndHints', 'freePetCoachHintAfterMisses'),
+    lang: pick(raw, 'speechRecognitionConfig', 'defaultLang'),
+    weakPhonemeBelow: pick(raw, 'scoringWeights', 'wordPhonemeFlagThreshold'),
+    listenMs: defined({ default: pick(raw, 'timingConstraints', 'defaultListeningWindowMs'), beginner: pick(raw, 'timingConstraints', 'beginnerListeningWindowMs') }),
+    silenceStopMs: pick(raw, 'timingConstraints', 'silenceStopAfterSpeechMs'),
+    minSpeechMs: pick(raw, 'timingConstraints', 'minSpeechDurationMs'),
+    ttsRate: defined({ default: pick(raw, 'ttsConfig', 'defaultRate'), beginner: pick(raw, 'ttsConfig', 'beginnerRate') }),
+    submissionsPerMinute: pick(raw, 'abuseAndRateLimits', 'maxVoiceSubmissionsPerStudentPerMinute'),
+    repeatStars: pick(raw, 'fallbacks', 'listenAndRepeat', 'maxParticipationStars'),
+    dictationAlmostMinLetters: pick(raw, 'fallbacks', 'typedDictation', 'nearMatchMinWordLength'),
+  });
+  return { ...mapped, ...defined(raw) };
+}
+
 /**
  * Rules from content/speech_rules.json merged over the defaults. Unknown keys are ignored and any value
  * of the wrong type or range keeps its default, so a partial or older file can never break scoring.
  */
-export function resolveSpeechRules(raw: unknown): SpeechRules {
+export function resolveSpeechRules(input: unknown): SpeechRules {
   const d = DEFAULT_SPEECH_RULES;
-  if (!isObj(raw)) return { ...d, lexicon: { ...d.lexicon }, ipa: { ...d.ipa } };
+  const first = Array.isArray(input) ? input[0] : input; // the file may wrap its object in an array
+  const raw = isObj(first) ? fromContentLayout(first) : null;
+  if (!raw) return { ...d, lexicon: { ...d.lexicon }, ipa: { ...d.ipa } };
   const w = isObj(raw.weights) ? raw.weights : {};
   const st = isObj(raw.stars) ? raw.stars : {};
   const listen = isObj(raw.listenMs) ? raw.listenMs : {};
@@ -108,6 +150,8 @@ export function resolveSpeechRules(raw: unknown): SpeechRules {
     passByLevel: tuple(raw.passByLevel, d.passByLevel, 0, 100),
     stars: { two: num(st.two, d.stars.two, 0, 100), three: num(st.three, d.stars.three, 0, 100) },
     maxAttempts: Math.round(num(raw.maxAttempts, d.maxAttempts, 1, 3)),
+    hintAfterMisses: Math.round(num(raw.hintAfterMisses, d.hintAfterMisses, 1, 3)),
+    lang: raw.lang === 'en-GB' || raw.lang === 'en-US' ? raw.lang : d.lang,
     weakPhonemeBelow: num(raw.weakPhonemeBelow, d.weakPhonemeBelow, 0, 100),
     listenMs: { default: num(listen.default, d.listenMs.default, 1000, 60_000), beginner: num(listen.beginner, d.listenMs.beginner, 1000, 60_000) },
     silenceStopMs: num(raw.silenceStopMs, d.silenceStopMs, 200, 10_000),
@@ -377,7 +421,7 @@ export function speechAttemptOutcome(prev: SpeechHistory, current: { score: numb
     attemptsLeft: rules.maxAttempts - attemptNo,
     bestScore: Math.max(prev.bestScore, current.score),
     bestStars,
-    ...(!current.passed && misses >= 2 ? { hint: 'mouth_shape' as const } : {}),
+    ...(!current.passed && misses >= rules.hintAfterMisses ? { hint: 'mouth_shape' as const } : {}),
     coins: Math.max(0, rules.coinsByStars[bestStars] - rules.coinsByStars[prev.bestStars]),
   };
 }

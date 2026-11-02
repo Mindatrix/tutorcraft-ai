@@ -1,0 +1,214 @@
+[{
+  "_comment_1": "TutorCraft AI — Pronunciation & Web Speech API Configuration (content/speech_rules.json). Derived from TECHNICAL_BLUEPRINT.md Section 3 (3.2-3.5). Tunable without code changes; evaluated by src/engine/pronunciation.ts on both client (provisional) and server (authoritative).",
+  "version": "1.0.0",
+  "coinsByStars": [0, 3, 5, 8],
+  "featureFlags": {
+    "_comment_2": "Privacy & inclusion rules (Section 3.2): Voice mode is strictly optional and off by default for child safety (5+ years old, cloud audio streaming in Chrome/Edge). Every voice task has a typed/tapped equivalent earning identical game progress.",
+    "voiceEnabledByDefault": false,
+    "voiceOptionalNeverBlocking": true,
+    "serverAuthoritativeRewards": true,
+    "requireTeacherEnablePerClass": true,
+    "requireMicNoticeBeforeFirstPrompt": true,
+    "storeRawAudio": false,
+    "storeFreeSpeechBeyondTargetWindow": false
+  },
+  "normalisation": {
+    "_comment_3": "Text preprocessing applied to both target strings and SpeechRecognition transcript alternatives before computing token/phoneme Levenshtein distances (Section 3.4).",
+    "lowercase": true,
+    "stripPunctuation": true,
+    "expandContractions": true,
+    "collapseSpaces": true,
+    "selectBestAlternative": true
+  },
+  "scoringWeights": {
+    "_comment_4": "WER/PER and confidence weightings (Section 3.4). Multi-word/sentence targets use 0.55 wordScore + 0.30 phonemeScore + 0.15 confScore. Single-word targets shift weight to phonemeScore (0.40) and wordScore (0.45) because a one-word token match is otherwise binary. When SpeechRecognition returns confidence <= 0 (unavailable), the 0.15 confidence weight is reallocated to wordScore.",
+    "multiWord": {
+      "wordScoreWeight": 0.55,
+      "phonemeScoreWeight": 0.30,
+      "confidenceScoreWeight": 0.15,
+      "noConfidenceFallback": {
+        "wordScoreWeight": 0.70,
+        "phonemeScoreWeight": 0.30,
+        "confidenceScoreWeight": 0.0
+      }
+    },
+    "singleWord": {
+      "wordScoreWeight": 0.45,
+      "phonemeScoreWeight": 0.40,
+      "confidenceScoreWeight": 0.15,
+      "noConfidenceFallback": {
+        "wordScoreWeight": 0.60,
+        "phonemeScoreWeight": 0.40,
+        "confidenceScoreWeight": 0.0
+      }
+    },
+    "phonemeDictionary": "CMUdict_ARPAbet_to_IPA",
+    "wordPhonemeFlagThreshold": 50
+  },
+  "levelRules": {
+    "_comment_5": "Pass thresholds (0-100 scale), listening windows, and TTS playback rates across the 6 teaching levels (0 = Beginner with full Vietnamese support for ages 5+ through 5 = CEFR C1). Beginner receives an extended 12s listening window (vs 8s for levels 1-5) and a slower 0.7x TTS modeling rate (vs 0.85x) to accommodate young Vietnamese learners.",
+    "0": {
+      "level": 0,
+      "code": "Beginner",
+      "label": "Beginner (Vietnamese support)",
+      "passThreshold": 50,
+      "listeningWindowSec": 12.0,
+      "listeningWindowMs": 12000,
+      "ttsRate": 0.70
+    },
+    "1": {
+      "level": 1,
+      "code": "A1",
+      "label": "CEFR A1",
+      "passThreshold": 60,
+      "listeningWindowSec": 8.0,
+      "listeningWindowMs": 8000,
+      "ttsRate": 0.85
+    },
+    "2": {
+      "level": 2,
+      "code": "A2",
+      "label": "CEFR A2",
+      "passThreshold": 65,
+      "listeningWindowSec": 8.0,
+      "listeningWindowMs": 8000,
+      "ttsRate": 0.85
+    },
+    "3": {
+      "level": 3,
+      "code": "B1",
+      "label": "CEFR B1",
+      "passThreshold": 70,
+      "listeningWindowSec": 8.0,
+      "listeningWindowMs": 8000,
+      "ttsRate": 0.85
+    },
+    "4": {
+      "level": 4,
+      "code": "B2",
+      "label": "CEFR B2",
+      "passThreshold": 75,
+      "listeningWindowSec": 8.0,
+      "listeningWindowMs": 8000,
+      "ttsRate": 0.85
+    },
+    "5": {
+      "level": 5,
+      "code": "C1",
+      "label": "CEFR C1",
+      "passThreshold": 80,
+      "listeningWindowSec": 8.0,
+      "listeningWindowMs": 8000,
+      "ttsRate": 0.85
+    }
+  },
+  "passThresholdsByLevel": {
+    "_comment_6": "Flat lookup map of minimum passing pronunciation score (%) keyed by teaching level (0-5); applies equally to single words and full sentences.",
+    "0": 50,
+    "1": 60,
+    "2": 65,
+    "3": 70,
+    "4": 75,
+    "5": 80
+  },
+  "starThresholds": {
+    "_comment_7": "Star reward tiers (Section 3.4): passing at or above the level's passThreshold earns 1 star; >= 85 earns 2 stars; >= 95 earns 3 stars.",
+    "oneStar": "passThreshold",
+    "twoStarsMinScore": 85,
+    "threeStarsMinScore": 95
+  },
+  "attemptsAndHints": {
+    "_comment_8": "Non-punitive retry policy (Section 3.4): up to 3 attempts per target, best score counts, zero coin or star penalty on failure. After the 2nd miss, the companion Pet enters 'coach' state to show a free tier-1 mouth-shape/phoneme hint, and the 3rd attempt unlocks after a TTS replay.",
+    "maxAttemptsPerTarget": 3,
+    "scoreAggregation": "best",
+    "wrongAttemptCoinPenalty": 0,
+    "wrongAttemptStarPenalty": 0,
+    "freePetCoachHintAfterMisses": 2,
+    "thirdAttemptRequiresTtsReplay": true
+  },
+  "timingConstraints": {
+    "_comment_9": "Speech duration and silence detection windows (Section 3.4): standard listening window is 8.0s (8000ms) for levels 1-5 and 12.0s (12000ms) for Beginner (level 0). Recognition stops automatically after 1.8s (1800ms) of trailing silence after speech begins. Utterances shorter than 0.4s (400ms) total speech are rejected as 'too_short' to filter out accidental mic clicks or noise.",
+    "defaultListeningWindowSec": 8.0,
+    "defaultListeningWindowMs": 8000,
+    "beginnerListeningWindowSec": 12.0,
+    "beginnerListeningWindowMs": 12000,
+    "silenceStopAfterSpeechSec": 1.8,
+    "silenceStopAfterSpeechMs": 1800,
+    "minSpeechDurationSec": 0.4,
+    "minSpeechDurationMs": 400,
+    "shortUtteranceRejectReason": "too_short"
+  },
+  "speechRecognitionConfig": {
+    "_comment_10": "Browser Web Speech API parameters and iOS Safari gesture constraints (Section 3.3).",
+    "defaultLang": "en-US",
+    "supportedLangs": [
+      "en-US",
+      "en-GB"
+    ],
+    "interimResults": true,
+    "maxAlternatives": 5,
+    "continuous": false,
+    "iosSafariStartInSyncPointerUp": true,
+    "autoRestartOnEnd": false
+  },
+  "ttsConfig": {
+    "_comment_11": "speechSynthesis modeling parameters (Section 3.3): cancel queued utterances before speaking and re-check getVoices() on voiceschanged.",
+    "voiceLangPrefix": "en-",
+    "defaultRate": 0.85,
+    "beginnerRate": 0.70,
+    "cancelBeforeSpeak": true,
+    "recheckOnVoicesChanged": true
+  },
+  "fallbacks": {
+    "_comment_12": "Graceful degradation when SpeechRecognition is unsupported (e.g., Firefox), mic permission is denied, network/audio-capture fails, or voice is disabled by the teacher (Sections 3.3 & 3.4).",
+    "triggerErrors": [
+      "no-speech",
+      "not-allowed",
+      "network",
+      "audio-capture",
+      "timeout",
+      "api-unavailable",
+      "voice-disabled"
+    ],
+    "listenAndRepeat": {
+      "enabled": true,
+      "scored": false,
+      "passFailApplied": false,
+      "maxParticipationStars": 1,
+      "requiresTtsModelPlay": true,
+      "confirmAction": "i_said_it"
+    },
+    "typedDictation": {
+      "enabled": true,
+      "scored": true,
+      "audioRequired": false,
+      "exactMatchPass": true,
+      "exactMatchMaxStars": 3,
+      "nearMatchAllowedEditDistance": 1,
+      "nearMatchMinWordLength": 5,
+      "nearMatchMaxStars": 1,
+      "nearMatchFeedbackTag": "almost"
+    }
+  },
+  "abuseAndRateLimits": {
+    "_comment_13": "Server-side anti-cheat and rate-limiting rules enforced via rate_limits and speech_attempts tables (Section 3.4).",
+    "maxVoiceSubmissionsPerStudentPerMinute": 6,
+    "maxRewardedTimesPerTargetPerMatch": 3,
+    "flagIdenticalTranscriptAcrossTargets": true
+  },
+  "interactionAndGameHooks": {
+    "_comment_14": "3D Phonetic Stones & Pet interaction budgets and per-game reward hooks (Section 3.5).",
+    "maxStonesPerScene": 12,
+    "tapMaxMovePx": 8,
+    "tapMaxDurationMs": 300,
+    "hoverRaycastThrottleHz": 30,
+    "riverFishingWeightMultipliers": {
+      "pass_1_star": 1.0,
+      "pass_2_stars": 1.1,
+      "pass_3_stars": 1.2
+    },
+    "riverSurvivalBypassTimedDodgeOrSnatch": false,
+    "riverSurvivalDodgeWindowSec": 6.0,
+    "riverSurvivalSnatchWindowSec": 8.0
+  }
+}]

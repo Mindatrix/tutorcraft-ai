@@ -231,7 +231,7 @@ export function createSpeechService(deps: {
       const rows = await safe(ctx, (s) => s.forSession(ctx.sessionId));
       const enabled = voiceEnabled(ctx);
       return {
-        voice: { enabled, lang: 'en-US' },
+        voice: { enabled, lang: r.lang },
         targets: targets(ctx).map((t) => ({
           ...t,
           modes: enabled ? t.modes : t.modes.filter((m) => m !== 'shadow'),
