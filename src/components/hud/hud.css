@@ -1,0 +1,567 @@
+/* In-game HUD (WP10 U1/U2, 02/11/2026). Global CSS (Turbopack), so every class is prefixed tc-hud-.
+   Tokens in one place: glass, line, button, ink, accent, radius, ease. Layout learnt from the PDF
+   references (layout only): movement bottom-left, skills bottom-right, a frosted toolbar across the top. */
+
+.tc-hud {
+  --hud-glass: rgb(8 12 26 / 0.3);
+  --hud-line: rgb(255 255 255 / 0.16);
+  --hud-btn: rgb(9 13 28 / 0.86);
+  --hud-btn-hover: rgb(26 34 60 / 0.95);
+  --hud-ink: #f3f5fa;
+  --hud-dim: rgb(243 245 250 / 0.62);
+  --hud-accent: #5eead4;
+  --hud-warn: #fbbf24;
+  --hud-radius: 9px;
+  --hud-ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --hud-size: 58px;
+  --hud-opacity: 0.75;
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  pointer-events: none;
+  color: var(--hud-ink);
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-size: calc(13px * var(--hud-scale, 1));
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  container-type: inline-size;
+  container-name: tc-hud;
+}
+
+/* Narrow stage (phone held upright, small frame): smaller controls, no title. */
+@container tc-hud (max-width: 520px) {
+  .tc-hud-title {
+    display: none;
+  }
+  .tc-hud-move,
+  .tc-hud-skills {
+    --hud-size: 46px;
+  }
+  .tc-hud-skill-main {
+    --hud-size: 54px;
+  }
+  .tc-hud-steer {
+    width: calc(var(--hud-size) * 1.9);
+  }
+  .tc-hud-bar {
+    justify-content: flex-end;
+  }
+}
+
+/* ---------- toolbar: frosted, see-through, dark high-contrast buttons ---------- */
+.tc-hud-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 8px;
+  padding-top: max(6px, env(safe-area-inset-top));
+  background: linear-gradient(to bottom, rgb(8 12 26 / 0.42), rgb(8 12 26 / 0.16));
+  backdrop-filter: blur(8px) saturate(1.1);
+  -webkit-backdrop-filter: blur(8px) saturate(1.1);
+  border-bottom: 1px solid var(--hud-line);
+  pointer-events: auto;
+}
+.tc-hud-lite .tc-hud-bar {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  background: rgb(8 12 26 / 0.5);
+}
+.tc-hud-title {
+  margin-right: auto;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-weight: 800;
+  font-size: 0.78em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.tc-hud-title b {
+  color: var(--hud-accent);
+  font-weight: 800;
+}
+.tc-hud-tools {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.tc-hud-tools::-webkit-scrollbar {
+  display: none;
+}
+.tc-hud-btn {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  min-width: 34px;
+  height: 34px;
+  padding: 0 7px;
+  border-radius: var(--hud-radius);
+  border: 1px solid var(--hud-line);
+  background: var(--hud-btn);
+  color: var(--hud-ink);
+  font: inherit;
+  cursor: pointer;
+  transition:
+    background 0.15s var(--hud-ease),
+    transform 0.15s var(--hud-ease);
+}
+.tc-hud-btn:hover {
+  background: var(--hud-btn-hover);
+}
+.tc-hud-btn:active {
+  transform: translateY(1px);
+}
+.tc-hud-btn:focus-visible,
+.tc-hud-skill:focus-visible,
+.tc-hud-seg button:focus-visible,
+.tc-hud-tab:focus-visible {
+  outline: 2px solid var(--hud-accent);
+  outline-offset: 2px;
+}
+.tc-hud-btn[aria-pressed='true'] {
+  box-shadow: inset 0 -2px 0 var(--hud-accent);
+}
+.tc-hud-btn svg {
+  width: 17px;
+  height: 17px;
+}
+.tc-hud-btn small {
+  font-size: 0.62em;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.02em;
+}
+.tc-hud-labels .tc-hud-btn {
+  height: 42px;
+}
+@media (pointer: coarse) {
+  .tc-hud-btn {
+    min-width: 44px;
+    height: 44px;
+  }
+}
+
+/* ---------- corners: movement (left) and skills (right), swappable ---------- */
+.tc-hud-move,
+.tc-hud-skills {
+  position: absolute;
+  bottom: max(10px, env(safe-area-inset-bottom));
+  pointer-events: auto;
+  opacity: var(--hud-opacity);
+  transition: opacity 0.2s var(--hud-ease);
+}
+.tc-hud-move {
+  left: max(10px, env(safe-area-inset-left));
+}
+.tc-hud-skills {
+  right: max(10px, env(safe-area-inset-right));
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+.tc-hud-swap .tc-hud-move {
+  left: auto;
+  right: max(10px, env(safe-area-inset-right));
+}
+.tc-hud-swap .tc-hud-skills {
+  right: auto;
+  left: max(10px, env(safe-area-inset-left));
+  flex-direction: row-reverse;
+}
+/* A question is open: controls step back so nothing covers the answers. */
+.tc-hud-quiet .tc-hud-move,
+.tc-hud-quiet .tc-hud-skills {
+  opacity: calc(var(--hud-opacity) * 0.55);
+}
+
+.tc-hud-skill {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: var(--hud-size);
+  height: var(--hud-size);
+  border-radius: 50%;
+  border: 1px solid var(--hud-line);
+  background:
+    conic-gradient(var(--hud-accent) calc(var(--fill, 1) * 360deg), rgb(255 255 255 / 0.08) 0) border-box;
+  color: var(--hud-ink);
+  font: inherit;
+  cursor: pointer;
+  padding: 3px;
+}
+.tc-hud-skill > span {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: var(--hud-btn);
+}
+.tc-hud-skill svg {
+  width: 42%;
+  height: 42%;
+}
+.tc-hud-skill[disabled] {
+  cursor: not-allowed;
+  filter: grayscale(0.7) brightness(0.75);
+}
+.tc-hud-skill i {
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 1px 5px;
+  border-radius: 999px;
+  background: rgb(8 12 26 / 0.9);
+  border: 1px solid var(--hud-line);
+  font-style: normal;
+  font-size: 0.66em;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.tc-hud-skill kbd {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 16px;
+  padding: 0 3px;
+  border-radius: 4px;
+  background: var(--hud-ink);
+  color: #0b1020;
+  font: 800 0.62em/16px var(--font-body), system-ui, sans-serif;
+  text-align: center;
+}
+@media (pointer: coarse) {
+  .tc-hud-skill kbd {
+    display: none;
+  }
+}
+.tc-hud-skill-main {
+  --hud-size: calc(var(--hud-size-base, 58px) * 1.25);
+}
+
+/* Steering pad: a horizontal track; touch drags the thumb, keys move it. */
+.tc-hud-steer {
+  position: relative;
+  width: calc(var(--hud-size) * 2.6);
+  height: calc(var(--hud-size) * 0.9);
+  border-radius: 999px;
+  border: 1px solid var(--hud-line);
+  background: rgb(8 12 26 / 0.55);
+  touch-action: none;
+}
+.tc-hud-steer-thumb {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: calc(var(--hud-size) * 0.72);
+  height: calc(var(--hud-size) * 0.72);
+  border-radius: 50%;
+  background: var(--hud-btn);
+  border: 2px solid var(--hud-accent);
+  transform: translate(calc(-50% + var(--x, 0) * var(--hud-size) * 0.9), -50%);
+  transition: transform 0.08s linear;
+}
+.tc-hud-steer-hint {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 0;
+  white-space: nowrap;
+  font-size: 0.72em;
+  color: var(--hud-dim);
+  transition: opacity 0.6s var(--hud-ease);
+}
+.tc-hud-steer-hint kbd {
+  padding: 0 4px;
+  border-radius: 3px;
+  border: 1px solid var(--hud-line);
+  background: rgb(8 12 26 / 0.7);
+  color: var(--hud-ink);
+  font: 700 0.95em var(--font-body), system-ui, sans-serif;
+}
+
+/* ---------- panels (sound, character, skills, guide, ranking, settings) ---------- */
+.tc-hud-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  padding: max(12px, env(safe-area-inset-top)) 12px max(12px, env(safe-area-inset-bottom));
+  background: rgb(5 8 22 / 0.42);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  color: #f3f5fa;
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-size: 14px;
+}
+.tc-hud-panel {
+  width: min(680px, 100%);
+  max-height: min(86vh, 640px);
+  display: flex;
+  flex-direction: column;
+  border-radius: 14px;
+  border: 1px solid rgb(255 255 255 / 0.16);
+  background: rgb(12 17 34 / 0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 24px 60px rgb(0 0 0 / 0.45);
+  overflow: hidden;
+}
+.tc-hud-panel-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-bottom: 1px solid rgb(255 255 255 / 0.12);
+}
+.tc-hud-panel-head h2 {
+  margin: 0 auto 0 0;
+  font-family: var(--font-display), var(--font-body), sans-serif;
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+.tc-hud-panel-body {
+  padding: 14px;
+  overflow: auto;
+  line-height: 1.5;
+}
+.tc-hud-panel-body h3 {
+  margin: 14px 0 6px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgb(243 245 250 / 0.62);
+}
+.tc-hud-panel-body h3:first-child {
+  margin-top: 0;
+}
+.tc-hud-panel-body ul {
+  margin: 0;
+  padding-left: 18px;
+  list-style: disc;
+}
+.tc-hud-panel-body li + li {
+  margin-top: 3px;
+}
+.tc-hud-close {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  border: 1px solid rgb(255 255 255 / 0.16);
+  background: rgb(9 13 28 / 0.86);
+  color: inherit;
+  cursor: pointer;
+}
+
+/* rows: label left, control right (settings, sound) */
+.tc-hud-row {
+  display: grid;
+  grid-template-columns: minmax(120px, 0.8fr) 1.6fr;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgb(255 255 255 / 0.08);
+}
+.tc-hud-row:last-child {
+  border-bottom: 0;
+}
+.tc-hud-row > span small {
+  display: block;
+  color: rgb(243 245 250 / 0.55);
+  font-size: 12px;
+}
+@media (max-width: 520px) {
+  .tc-hud-row {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+}
+
+/* segmented control with labelled steps (the quality "notches" of the reference settings) */
+.tc-hud-seg {
+  display: flex;
+  border: 1px solid rgb(255 255 255 / 0.16);
+  border-radius: 9px;
+  overflow: hidden;
+}
+.tc-hud-seg button {
+  flex: 1;
+  min-height: 36px;
+  padding: 4px 6px;
+  border: 0;
+  border-right: 1px solid rgb(255 255 255 / 0.1);
+  background: rgb(9 13 28 / 0.6);
+  color: rgb(243 245 250 / 0.75);
+  font: 700 12.5px var(--font-body), system-ui, sans-serif;
+  cursor: pointer;
+}
+.tc-hud-seg button:last-child {
+  border-right: 0;
+}
+.tc-hud-seg button[aria-pressed='true'] {
+  background: #f3f5fa;
+  color: #0b1020;
+}
+@media (pointer: coarse) {
+  .tc-hud-seg button {
+    min-height: 44px;
+  }
+}
+
+.tc-hud-range {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.tc-hud-range input[type='range'] {
+  flex: 1;
+  accent-color: #5eead4;
+  min-height: 32px;
+}
+.tc-hud-range output {
+  width: 3ch;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: rgb(243 245 250 / 0.75);
+}
+
+/* settings: tabs on the left (stack on top on a phone) */
+.tc-hud-settings {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  min-height: 0;
+  flex: 1;
+}
+.tc-hud-tablist {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 0;
+  border-right: 1px solid rgb(255 255 255 / 0.1);
+  background: rgb(5 8 22 / 0.35);
+}
+.tc-hud-tab {
+  position: relative;
+  padding: 11px 14px;
+  border: 0;
+  background: none;
+  color: rgb(243 245 250 / 0.66);
+  font: 700 14px var(--font-body), system-ui, sans-serif;
+  text-align: left;
+  cursor: pointer;
+}
+.tc-hud-tab[aria-selected='true'] {
+  color: #f3f5fa;
+  background: linear-gradient(90deg, rgb(94 234 212 / 0.16), transparent);
+}
+.tc-hud-tab[aria-selected='true']::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 8px;
+  bottom: 8px;
+  width: 3px;
+  background: #5eead4;
+}
+.tc-hud-foot {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 14px;
+  border-top: 1px solid rgb(255 255 255 / 0.12);
+}
+.tc-hud-ghost {
+  padding: 8px 12px;
+  border-radius: 9px;
+  border: 1px solid rgb(255 255 255 / 0.18);
+  background: rgb(9 13 28 / 0.7);
+  color: inherit;
+  font: 700 13px var(--font-body), system-ui, sans-serif;
+  cursor: pointer;
+}
+.tc-hud-ghost.tc-hud-danger {
+  border-color: rgb(251 113 133 / 0.5);
+  color: #fecdd3;
+}
+@media (max-width: 560px) {
+  .tc-hud-settings {
+    grid-template-columns: 1fr;
+  }
+  .tc-hud-tablist {
+    flex-direction: row;
+    overflow-x: auto;
+    padding: 0;
+    border-right: 0;
+    border-bottom: 1px solid rgb(255 255 255 / 0.1);
+  }
+  .tc-hud-tab {
+    white-space: nowrap;
+  }
+  .tc-hud-tab[aria-selected='true']::before {
+    left: 10px;
+    right: 10px;
+    top: auto;
+    bottom: 0;
+    width: auto;
+    height: 3px;
+  }
+}
+
+.tc-hud-more {
+  display: grid;
+  gap: 6px;
+}
+.tc-hud-more button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 12px;
+  border-radius: 9px;
+  border: 1px solid rgb(255 255 255 / 0.14);
+  background: rgb(9 13 28 / 0.7);
+  color: inherit;
+  font: 700 15px var(--font-body), system-ui, sans-serif;
+  text-align: left;
+  cursor: pointer;
+}
+
+.tc-hud-stat {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 8px;
+}
+.tc-hud-stat div {
+  padding: 10px;
+  border-radius: 9px;
+  border: 1px solid rgb(255 255 255 / 0.1);
+  background: rgb(5 8 22 / 0.35);
+}
+.tc-hud-stat b {
+  display: block;
+  font-size: 20px;
+  font-variant-numeric: tabular-nums;
+}
+.tc-hud-stat span {
+  font-size: 12px;
+  color: rgb(243 245 250 / 0.6);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tc-hud *,
+  .tc-hud-scrim * {
+    transition: none !important;
+  }
+}

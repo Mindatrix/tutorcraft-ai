@@ -41,11 +41,14 @@ import { ApiError, sessionApi, type ActResponse, type FinalizeResponse, type Ses
 import AnswerPanel, { type AnswerPayload } from './AnswerPanel';
 import BattleCanvas from './BattleCanvas';
 import dynamic from 'next/dynamic';
+import { useRouter } from 'next/navigation';
 import RaceTrack from './RaceTrack';
 import Scenery from './scenery/Scenery';
 import ModeStage, { StageFrame } from './modes/ModeStage';
 import { readTier, saveTier, type RenderTier } from './modes/gfxTier';
 import SubtitleBar from './modes/SubtitleBar';
+import KayakHUD from './hud/KayakHUD';
+import { BRIGHTNESS_FILTER, useHudSettings } from '../client/hudSettings';
 
 // Three.js is heavy: load it only when a Boat Race actually starts.
 const KayakRush = dynamic(() => import('./modes/KayakRush'), { ssr: false });
@@ -448,6 +451,11 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
     return () => clearInterval(id);
   }, [phase]);
   const questionOpen = phase === 'playing' && !!question && !feedback;
+  // In-game HUD (WP10, Kayak first): steering through a ref (dragging must not re-render the arena).
+  const steer = useRef(0);
+  const router = useRouter();
+  const hud = useHudSettings();
+  const kayakHud = isRace && renderer === 'three' && phase === 'playing';
   useEffect(() => (questionOpen ? holdDuck() : undefined), [questionOpen]);
 
   const openChest = () => {
@@ -566,8 +574,34 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
 
         {/* Battle scene — stays mounted into the result screen so the boss break + chest drop can play */}
         {isRace && race && renderer === 'three' && phase !== 'lobby' && display && (
-          <StageFrame tone="#5eead4">
-            <KayakRush playerPos={race.playerPos} botPos={race.botPos} heroName={playerName} botName={`Bot ${levelLabel(config.level)}`} event={display.event} finished={phase === 'result'} result={final?.race?.result ?? null} tier={renderTier === 'low' ? 'low' : 'high'} onLowQuality={lower3d} onUnavailable={no3d} />
+          <StageFrame tone="#5eead4" className={kayakHud ? 'h-80 sm:h-[min(26rem,calc(100dvh-1rem))]' : undefined}>
+            <div className="absolute inset-0" style={hud.brightness === 3 ? undefined : { filter: `brightness(${BRIGHTNESS_FILTER[hud.brightness]})` }}>
+              <KayakRush playerPos={race.playerPos} botPos={race.botPos} heroName={playerName} botName={`Bot ${levelLabel(config.level)}`} event={display.event} finished={phase === 'result'} result={final?.race?.result ?? null} tier={renderTier === 'low' ? 'low' : 'high'} onLowQuality={lower3d} onUnavailable={no3d} steer={steer} hideRank={kayakHud} />
+            </div>
+            {kayakHud && (
+              <KayakHUD
+                playerName={playerName}
+                avatar={avatar}
+                levelText={levelLabel(config.level)}
+                mp={display.mp}
+                combo={display.combo}
+                correct={race.playerCorrect}
+                total={race.total}
+                playerPos={race.playerPos}
+                botPos={race.botPos}
+                botName={`Bot ${levelLabel(config.level)}`}
+                canCast={!feedback && !pending && !halted}
+                onCast={(id) => void cast(id)}
+                onSteer={(x) => (steer.current = x)}
+                quiet={questionOpen}
+                tier={renderTier}
+                onTier={(t) => {
+                  saveTier(t);
+                  setRenderTier(t);
+                }}
+                onLeave={() => router.push('/student')}
+              />
+            )}
           </StageFrame>
         )}
         {isRace && race && phase !== 'lobby' && display && (
@@ -710,7 +744,7 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
               </div>
             )}
 
-            {gamified && (
+            {gamified && !kayakHud && (
               <div className={`border rounded-2xl p-3 space-y-3 ${card}`}>
                 <div className="flex items-center gap-2 text-xs font-bold text-sky-400">
                   <Zap className="w-3.5 h-3.5" /> MP {display.mp} / {MAX_MP}

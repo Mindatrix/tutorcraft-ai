@@ -36,6 +36,10 @@ export interface KayakRushProps {
   /** The runtime stepped down to 'low' by itself. */
   onLowQuality?: () => void;
   onUnavailable?: () => void;
+  /** Steering -1..1 from the HUD (a ref: dragging must not re-render the arena). */
+  steer?: { current: number };
+  /** Hide the rank chip (the HUD shows the standing). */
+  hideRank?: boolean;
 }
 
 type HatId = 'propeller' | 'wizard' | 'jester' | 'hardhat';
@@ -424,6 +428,7 @@ export default function KayakRush(props: KayakRushProps) {
     const st = { boost: -1e9, crit: false, bump: -1e9, cheer: -1e9 };
     // Paddle splash (WP2): the blade enters the water twice a stroke, where sin(stroke) crosses 0.
     let lastStroke = 0;
+    let steerX = 0;
     const handle = (ev: NonNullable<SceneEvent>, t: number) => {
       const k = ev.kind;
       if (k === 'correct' || k === 'critical' || k === 'ultimate' || k === 'victory') {
@@ -451,7 +456,10 @@ export default function KayakRush(props: KayakRushProps) {
       const bump = clamp(1 - (t - st.bump) / 0.9);
       const pz = -cur.p * L;
       const bz = -cur.b * L;
-      me.root.position.set(-LANE + Math.sin(t * 1.3) * 0.15, Math.sin(t * 2.2) * 0.05, pz);
+      // HUD steering (WP10): lean the kayak across its lane, eased; a visual move, scoring unchanged.
+      steerX = damp(steerX, (live.current.steer?.current ?? 0) * 1.1, 6, dt);
+      me.root.position.set(-LANE + steerX + Math.sin(t * 1.3) * 0.15, Math.sin(t * 2.2) * 0.05, pz);
+      me.root.rotation.y = -steerX * 0.12;
       bot.root.position.set(LANE + Math.sin(t * 1.1 + 1) * 0.15, Math.sin(t * 2.2 + 1.3) * 0.05, bz);
       me.body.rotation.z = Math.sin(t * 2.2) * 0.04 + Math.sin(t * 25) * bump * 0.25;
       bot.body.rotation.z = Math.sin(t * 2.2 + 1) * 0.04;
@@ -524,7 +532,7 @@ export default function KayakRush(props: KayakRushProps) {
   return (
     <>
       <div ref={host} className="absolute inset-0" aria-hidden />
-      <span ref={rank} className="pointer-events-none absolute left-6 top-3 z-10 bg-black/55 px-2 py-0.5 text-[11px] font-extrabold text-amber-200" />
+      <span ref={rank} hidden={props.hideRank} className="pointer-events-none absolute left-6 top-3 z-10 bg-black/55 px-2 py-0.5 text-[11px] font-extrabold text-amber-200" />
     </>
   );
 }

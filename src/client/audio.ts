@@ -1,5 +1,6 @@
 'use client';
 
+import { useSyncExternalStore } from 'react';
 import audioCatalog from '../../content/audio_catalog.json';
 import {
   MUSIC_XFADE_S,
@@ -47,6 +48,8 @@ const base = () => (process.env.NEXT_PUBLIC_ASSET_BASE_URL || '/dev-assets').rep
 export const audioUrl = (file: string) => `${base()}/audio/${file}`;
 
 let musicOn = true;
+/** Volume of each bus 0..1 (HUD settings sliders, U2), multiplied into the switch / duck gains. */
+const volumes: Record<AudioBus, number> = { music: 1, sfx: 1, ambient: 1 };
 let sfxOn = true;
 let classMuted = false;
 let duckHolds = 0;
@@ -68,13 +71,14 @@ function apply() {
   setSfxMuted(!effectsOn());
   const ctx = audioContext();
   const g = busGains({ music: musicOn, sfx: sfxOn, classMuted, ducked: duckHolds > 0 });
-  if (ctx) for (const k of ['music', 'sfx', 'ambient'] as AudioBus[]) bus(k)?.gain.setTargetAtTime(g[k], ctx.currentTime, 0.15);
+  if (ctx) for (const k of ['music', 'sfx', 'ambient'] as AudioBus[]) bus(k)?.gain.setTargetAtTime(g[k] * volumes[k], ctx.currentTime, 0.15);
   for (const l of listeners) l(soundSwitches());
 }
 
 /** Call from a user gesture (browsers start audio only after a tap). Reads the saved switches. */
 export function initAudio() {
   musicOn = load<boolean>('tc:music', true);
+  for (const b of ['music', 'sfx', 'ambient'] as AudioBus[]) volumes[b] = Math.max(0, Math.min(1, Number(load<number>(`tc:vol:${b}`, 1)) || 0));
   sfxOn = !load<boolean>('tc:muted', false);
   initSfx(!effectsOn());
   apply();
@@ -83,6 +87,14 @@ export function initAudio() {
 export function setMusicEnabled(v: boolean) {
   musicOn = v;
   save('tc:music', v);
+  apply();
+}
+
+export const busVolume = (b: AudioBus) => volumes[b];
+
+export function setBusVolume(b: AudioBus, v: number) {
+  volumes[b] = Math.max(0, Math.min(1, v));
+  save(`tc:vol:${b}`, volumes[b]);
   apply();
 }
 
@@ -105,6 +117,22 @@ export function setClassMuted(v: boolean) {
   classMuted = v;
   apply();
 }
+
+/** React: the current switches, updated on change. */
+export function useSoundSwitches(): SoundSwitches {
+  return useSyncExternalStore(
+    (fn) => onSoundChange(fn),
+    soundSnapshot,
+    () => SERVER_SWITCHES,
+  );
+}
+const SERVER_SWITCHES: SoundSwitches = { music: true, sfx: true, classMuted: false };
+let snap: SoundSwitches = SERVER_SWITCHES;
+const soundSnapshot = () => {
+  const n = soundSwitches();
+  if (n.music !== snap.music || n.sfx !== snap.sfx || n.classMuted !== snap.classMuted) snap = n;
+  return snap;
+};
 
 export function onSoundChange(fn: (s: SoundSwitches) => void): () => void {
   listeners.add(fn);
