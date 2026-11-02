@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import * as THREE from 'three';
@@ -10,6 +10,21 @@ import consequences from '../../../content/consequences_v2.json';
 import sceneKits from '../../../content/scene_kits.json';
 import { ASSET_ALIASES, ASSET_LIBRARY } from '../../../src/config/assetLibrary';
 import { THREE_ASSET_MANIFEST } from '../../../src/config/threeAssets';
+import {
+  applyCampStoneResult,
+  applyFishingDockStoneResult,
+  castFishingRodWithMultiplier,
+  createInitialCampQuestBoard,
+  createInitialFishingDockState,
+  MOCK_VOICE_CONFIG,
+  PhoneticStoneStateMachine,
+  RIVER_FISHING_TARGETS,
+  SUMMER_CAMP_TARGETS,
+  type CampQuestBoardState,
+  type FishingDockState,
+} from '../../../src/client/phoneticStones';
+import PhoneticStonesHud from '../../../src/components/hud/PhoneticStonesHud';
+import { createPhoneticStonesRig, type PhoneticStonesRig } from '../../../src/components/modes/three/phoneticStones';
 import {
   AVATAR_COLORS,
   GameMode,
@@ -352,6 +367,62 @@ function RiverStage(props: { row: Row; stage: number; tier: GfxTier; weak: boole
   // WP10 U3: minimap + coordinate bar of the river / meadow worlds, fed from this scene every ~0.1 s.
   const riverLive = useRef<RiverLive>(emptyRiverLive());
   const hs = useHudSettings();
+  const game = isGameMode(row.game) ? row.game : GameMode.SUMMER_CAMP_QUESTS;
+  const phoneticWorldMode: 'summer_camp' | 'river_fishing' | null =
+    game === GameMode.RIVER_FISHING
+      ? 'river_fishing'
+      : game === GameMode.SUMMER_CAMP_QUESTS
+        ? 'summer_camp'
+        : null;
+
+  const [campBoard, setCampBoard] = useState<CampQuestBoardState>(() =>
+    createInitialCampQuestBoard(),
+  );
+  const [fishingDock, setFishingDock] = useState<FishingDockState>(() =>
+    createInitialFishingDockState(),
+  );
+  const phoneticRigRef = useRef<PhoneticStonesRig | null>(null);
+
+  const phoneticMachine = useMemo(
+    () =>
+      new PhoneticStoneStateMachine({
+        targets:
+          phoneticWorldMode === 'river_fishing' ? RIVER_FISHING_TARGETS : SUMMER_CAMP_TARGETS,
+        voiceConfig: MOCK_VOICE_CONFIG,
+        level,
+      }),
+    [phoneticWorldMode, level],
+  );
+
+  useEffect(() => {
+    const unsub = phoneticMachine.bus.on('stone:result', ({ response }) => {
+      if (phoneticWorldMode === 'summer_camp') {
+        setCampBoard((prev) => {
+          const next = applyCampStoneResult(prev, response, phoneticMachine.getSnapshot().activeMode);
+          phoneticRigRef.current?.setCampQuestProgress(
+            next.completedCount / Math.max(1, next.totalCount),
+            next.flagUnlocked,
+          );
+          return next;
+        });
+      } else if (phoneticWorldMode === 'river_fishing') {
+        setFishingDock((prev) => applyFishingDockStoneResult(prev, response));
+      }
+    });
+    return () => {
+      unsub();
+    };
+  }, [phoneticMachine, phoneticWorldMode]);
+
+  const handleCastFishingRod = useCallback((targetId: string) => {
+    setFishingDock((prev) => {
+      const unlock = prev.unlockedByTarget[targetId];
+      if (unlock?.ready) {
+        phoneticRigRef.current?.triggerFishingCast(unlock.multiplier);
+      }
+      return castFishingRodWithMultiplier(prev, targetId).nextDock;
+    });
+  }, []);
 
   useEffect(() => {
     const el = host.current;
@@ -415,6 +486,23 @@ function RiverStage(props: { row: Row; stage: number; tier: GfxTier; weak: boole
     spot.position.copy(focal).add(new THREE.Vector3(side * 2, 0, 0));
     rt.scene.add(spot);
     for (const a of ZOOM_ANCHORS) rt.director.setAnchor(a, spot);
+
+    // WP8: Embed Phonetic Stones cluster & Pet Companion into summer_camp and river_fishing 3D worlds
+    let phoneticRig: PhoneticStonesRig | null = null;
+    let detachPhonetic: (() => void) | null = null;
+    if (phoneticWorldMode) {
+      phoneticRig = createPhoneticStonesRig({
+        targets: phoneticMachine.getSnapshot().targets,
+        machine: phoneticMachine,
+        director: rt.director,
+        worldMode: phoneticWorldMode,
+        radius: 4.1,
+        center: [focal.x, 0, focal.z],
+      });
+      phoneticRigRef.current = phoneticRig;
+      rt.scene.add(phoneticRig.rootGroup);
+      detachPhonetic = phoneticRig.attachCanvas(rt.renderer.domElement);
+    }
 
     // Story cast: a half circle behind the focal point.
     const castList: Avatar[] = [];
@@ -620,6 +708,7 @@ function RiverStage(props: { row: Row; stage: number; tier: GfxTier; weak: boole
       if (rings.instanceColor) rings.instanceColor.needsUpdate = true;
       if (dots.instanceColor) dots.instanceColor.needsUpdate = true;
       for (const c of castList) c.update(dt);
+      phoneticRig?.update(dt, t);
       trail.update(t);
       fxMax = Math.max(fxMax, effects.update(dt));
       if (t - lastHud > 0.5) {
@@ -640,6 +729,10 @@ function RiverStage(props: { row: Row; stage: number; tier: GfxTier; weak: boole
     return () => {
       alive = false;
       apiRef.current = null;
+      phoneticRigRef.current = null;
+      detachPhonetic?.();
+      phoneticRig?.dispose();
+      phoneticMachine.dispose();
       controls.dispose();
       world.dispose();
       effects.dispose();
@@ -649,12 +742,21 @@ function RiverStage(props: { row: Row; stage: number; tier: GfxTier; weak: boole
       for (const c of castList) c.dispose();
       rt.dispose();
     };
-  }, [row, stage, tier, weak, students, cast, seed, level, onHud, apiRef]);
+  }, [row, stage, tier, weak, students, cast, seed, level, onHud, apiRef, phoneticMachine, phoneticWorldMode]);
 
   const gameName = GAME_MODES[(isGameMode(row.game) ? row.game : GameMode.SUMMER_CAMP_QUESTS) as GameMode]?.nameVi ?? row.game;
   return (
     <>
       <div ref={host} className="absolute inset-0" />
+      {phoneticWorldMode && (
+        <PhoneticStonesHud
+          machine={phoneticMachine}
+          worldMode={phoneticWorldMode}
+          campBoard={campBoard}
+          fishingDock={fishingDock}
+          onCastFishingRod={handleCastFishingRod}
+        />
+      )}
       <GameHUD
         title={gameName}
         tools={[

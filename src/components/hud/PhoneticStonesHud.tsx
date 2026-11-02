@@ -3,6 +3,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   CheckCircle2,
+  Compass,
+  Fish,
+  Flag,
   Keyboard,
   Mic,
   MicOff,
@@ -10,14 +13,18 @@ import {
   ShieldAlert,
   Sparkles,
   Star,
+  Tent,
   Volume2,
   Wand2,
   X,
 } from 'lucide-react';
 import { passThreshold, type SpeechMode } from '@/src/engine/pronunciation';
 import {
+  FISHING_DOCK_SPECS,
   MOCK_SPEECH_RESPONSES,
   MOCK_SPEECH_RULES,
+  type CampQuestBoardState,
+  type FishingDockState,
   type PetState,
   type PhoneticStoneMachineSnapshot,
   type PhoneticStoneState,
@@ -85,11 +92,26 @@ export interface PhoneticStonesHudProps {
   machine: PhoneticStoneStateMachine;
   /** Show AI Studio Mock JSON preset buttons for testing all states. */
   showMockPresets?: boolean;
+  /** Active 3D game world (`summer_camp` or `river_fishing`) */
+  worldMode?: 'summer_camp' | 'river_fishing';
+  /** Optional world switcher callback for `/tutor/scene-lab` */
+  onWorldModeChange?: (mode: 'summer_camp' | 'river_fishing') => void;
+  /** Summer Camp Quest Board progress & tent stars (`summer_camp` world) */
+  campBoard?: CampQuestBoardState;
+  /** River Fishing Dock state & catch weight multiplier (`river_fishing` world) */
+  fishingDock?: FishingDockState;
+  /** Callback when angler casts the fishing rod after unlocking a dock stone */
+  onCastFishingRod?: (targetId: string) => void;
 }
 
 export default function PhoneticStonesHud({
   machine,
   showMockPresets = true,
+  worldMode,
+  onWorldModeChange,
+  campBoard,
+  fishingDock,
+  onCastFishingRod,
 }: PhoneticStonesHudProps) {
   const [snap, setSnap] = useState<PhoneticStoneMachineSnapshot>(() => machine.getSnapshot());
   const [typedText, setTypedText] = useState('');
@@ -248,36 +270,176 @@ export default function PhoneticStonesHud({
           </div>
         </div>
 
-        {/* Quick stone status strip (also clickable for touch / mouse convenience) */}
-        <div className="pointer-events-auto flex flex-wrap items-center gap-1.5 rounded-[var(--radius-xl)] border-2 border-white/15 bg-[var(--color-night)]/85 p-1.5">
-          {snap.targets.map((t) => {
-            const p = snap.progressByTarget[t.targetId];
-            const isSel = snap.selectedTargetId === t.targetId;
-            const stars = p?.bestStars ?? 0;
-            return (
+        <div className="flex max-w-full flex-col items-end gap-2">
+          {/* Optional 3D World Mode Switcher (Summer Camp Quests vs River Fishing Challenge) */}
+          {onWorldModeChange && worldMode && (
+            <div
+              data-testid="phonetic-world-switcher"
+              className="pointer-events-auto flex flex-wrap items-center gap-1 rounded-[var(--radius-xl)] border-2 border-white/20 bg-[var(--color-night)]/90 p-1"
+            >
               <button
-                key={t.targetId}
                 type="button"
-                onClick={() => machine.selectStone(t.targetId)}
-                onPointerEnter={() => machine.hoverStone(t.targetId)}
-                onPointerLeave={() => machine.hoverStone(null)}
-                className={`inline-flex min-h-11 items-center gap-1.5 rounded-[var(--radius-lg)] border-2 px-2.5 py-1 text-xs font-extrabold transition-all cursor-pointer ${
-                  isSel
-                    ? 'border-[var(--color-sun)] bg-[var(--color-ink)] text-[var(--color-sun)] shadow-[2px_2px_0_var(--color-sun)]'
-                    : p?.passed
-                      ? 'border-emerald-400/70 bg-emerald-950/80 text-emerald-200'
-                      : 'border-white/20 bg-slate-900/80 text-slate-200 hover:border-sky-300'
+                onClick={() => onWorldModeChange('summer_camp')}
+                className={`inline-flex min-h-9 items-center gap-1.5 rounded-[var(--radius-lg)] px-2.5 py-1 text-xs font-extrabold transition-all cursor-pointer ${
+                  worldMode === 'summer_camp'
+                    ? 'bg-[var(--color-sun)] text-[var(--color-ink)] shadow-[2px_2px_0_var(--color-ink)]'
+                    : 'text-slate-200 hover:bg-white/10'
                 }`}
               >
-                <span>🪨 {t.kind === 'sentence' ? 'Câu' : t.text}</span>
-                {stars > 0 && (
-                  <span className="text-[var(--color-sun)]" aria-label={`${stars} sao`}>
-                    {'★'.repeat(stars)}
-                  </span>
-                )}
+                <Tent className="h-3.5 w-3.5" />
+                <span>Trại Hè (Summer Camp)</span>
               </button>
-            );
-          })}
+              <button
+                type="button"
+                onClick={() => onWorldModeChange('river_fishing')}
+                className={`inline-flex min-h-9 items-center gap-1.5 rounded-[var(--radius-lg)] px-2.5 py-1 text-xs font-extrabold transition-all cursor-pointer ${
+                  worldMode === 'river_fishing'
+                    ? 'bg-[var(--color-sun)] text-[var(--color-ink)] shadow-[2px_2px_0_var(--color-ink)]'
+                    : 'text-slate-200 hover:bg-white/10'
+                }`}
+              >
+                <Fish className="h-3.5 w-3.5" />
+                <span>Câu Cá (River Fishing)</span>
+              </button>
+            </div>
+          )}
+
+          {/* Quick stone status strip (also clickable for touch / mouse convenience) */}
+          <div className="pointer-events-auto flex flex-wrap items-center gap-1.5 rounded-[var(--radius-xl)] border-2 border-white/15 bg-[var(--color-night)]/85 p-1.5">
+            {snap.targets.map((t) => {
+              const p = snap.progressByTarget[t.targetId];
+              const isSel = snap.selectedTargetId === t.targetId;
+              const stars = p?.bestStars ?? 0;
+              return (
+                <button
+                  key={t.targetId}
+                  type="button"
+                  onClick={() => machine.selectStone(t.targetId)}
+                  onPointerEnter={() => machine.hoverStone(t.targetId)}
+                  onPointerLeave={() => machine.hoverStone(null)}
+                  className={`inline-flex min-h-11 items-center gap-1.5 rounded-[var(--radius-lg)] border-2 px-2.5 py-1 text-xs font-extrabold transition-all cursor-pointer ${
+                    isSel
+                      ? 'border-[var(--color-sun)] bg-[var(--color-ink)] text-[var(--color-sun)] shadow-[2px_2px_0_var(--color-sun)]'
+                      : p?.passed
+                        ? 'border-emerald-400/70 bg-emerald-950/80 text-emerald-200'
+                        : 'border-white/20 bg-slate-900/80 text-slate-200 hover:border-sky-300'
+                  }`}
+                >
+                  <span>🪨 {t.kind === 'sentence' ? 'Câu' : t.text}</span>
+                  {stars > 0 && (
+                    <span className="text-[var(--color-sun)]" aria-label={`${stars} sao`}>
+                      {'★'.repeat(stars)}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* WP8: Summer Camp Quest Board & Tent Stars HUD Panel */}
+          {worldMode === 'summer_camp' && campBoard && (
+            <div
+              data-testid="summer-camp-quest-board"
+              className="pointer-events-auto w-full max-w-md rounded-[var(--radius-xl)] border-2 border-amber-400/50 bg-[var(--color-night)]/90 p-2.5 text-white shadow-[4px_4px_0_var(--color-ink)]"
+            >
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div className="flex items-center gap-1.5">
+                  <Compass className="h-4 w-4 text-[var(--color-sun)]" />
+                  <span className="text-xs font-extrabold uppercase tracking-wider text-amber-200">
+                    Bảng Nhiệm Vụ Trại Hè
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 text-xs font-extrabold">
+                  <span
+                    data-testid="camp-tent-stars"
+                    className="rounded-[var(--radius-lg)] bg-amber-500/20 px-2 py-0.5 text-[var(--color-sun)]"
+                  >
+                    ⛺ {campBoard.tentStars}/{campBoard.maxStars} ★
+                  </span>
+                  <span
+                    data-testid="camp-flag-badge"
+                    className={`inline-flex items-center gap-1 rounded-[var(--radius-lg)] px-2 py-0.5 ${
+                      campBoard.flagUnlocked
+                        ? 'bg-emerald-500/25 text-emerald-200'
+                        : 'bg-slate-800 text-slate-300'
+                    }`}
+                  >
+                    <Flag className="h-3 w-3" />
+                    {campBoard.flagUnlocked
+                      ? 'Cờ đỉnh lều đã kéo!'
+                      : `${campBoard.completedCount}/${campBoard.totalCount} trạm`}
+                  </span>
+                </div>
+              </div>
+              <div className="mt-2 grid grid-cols-2 gap-1.5 sm:grid-cols-4">
+                {campBoard.tasks.map((st) => (
+                  <button
+                    key={st.stationId}
+                    type="button"
+                    onClick={() => machine.selectStone(st.targetId)}
+                    className={`flex flex-col items-start rounded-[var(--radius-lg)] border px-2 py-1 text-left text-[11px] transition-all cursor-pointer ${
+                      st.completed
+                        ? 'border-emerald-400/60 bg-emerald-950/70 text-emerald-100'
+                        : 'border-white/15 bg-slate-900/70 text-slate-300 hover:border-amber-300/60'
+                    }`}
+                  >
+                    <span className="font-extrabold">
+                      ⛺ {st.stationNameVi}
+                    </span>
+                    <span className="text-[10px] text-amber-200">
+                      {st.stars > 0 ? '★'.repeat(st.stars) : st.roleVi}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* WP8: River Fishing Dock & Catch Weight Multiplier HUD Panel */}
+          {worldMode === 'river_fishing' && fishingDock && (
+            <div
+              data-testid="river-fishing-dock-panel"
+              className="pointer-events-auto w-full max-w-md rounded-[var(--radius-xl)] border-2 border-sky-400/50 bg-[var(--color-night)]/90 p-2.5 text-white shadow-[4px_4px_0_var(--color-ink)]"
+            >
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div className="flex items-center gap-1.5">
+                  <Fish className="h-4 w-4 text-sky-300" />
+                  <span className="text-xs font-extrabold uppercase tracking-wider text-sky-200">
+                    Bến Câu Cá · Hệ số Cân nặng
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 text-xs font-extrabold">
+                  <span className="rounded-[var(--radius-lg)] bg-sky-500/20 px-2 py-0.5 text-sky-200">
+                    🎣 Đã câu: {fishingDock.catches.length}
+                  </span>
+                  <span
+                    data-testid="fishing-total-score"
+                    className="rounded-[var(--radius-lg)] bg-amber-500/20 px-2 py-0.5 text-[var(--color-sun)]"
+                  >
+                    🏆 {fishingDock.totalPoints}đ
+                  </span>
+                </div>
+              </div>
+              <p className="mt-1 text-[11px] text-slate-300">
+                Đọc/gõ tên cá trên đá để mở khóa quăng cần:{' '}
+                <b>Pass ×1.0 · 2★ ×1.1 · 3★ ×1.2</b>
+              </p>
+              {fishingDock.catches[0] && (
+                <div
+                  data-testid="fishing-last-catch"
+                  className="mt-1.5 flex items-center justify-between rounded-[var(--radius-lg)] border border-emerald-400/50 bg-emerald-950/70 px-2.5 py-1 text-xs font-bold text-emerald-100"
+                >
+                  <span>
+                    🐟 Vừa câu: <b>{fishingDock.catches[0].fishNameVi}</b> ({fishingDock.catches[0].fishNameEn})
+                  </span>
+                  <span className="text-[var(--color-sun)]">
+                    {fishingDock.catches[0].finalWeightKg} kg (×{fishingDock.catches[0].multiplier.toFixed(1)}) · +
+                    {fishingDock.catches[0].points}đ
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
 
@@ -616,6 +778,57 @@ export default function PhoneticStonesHud({
                   </div>
                 )}
               </div>
+            )}
+
+            {/* WP8: River Fishing Dock Cast Rod Bar (requires pronouncing/typing/repeating the fish stone before casting) */}
+            {worldMode === 'river_fishing' && fishingDock && (
+              (() => {
+                const spec = FISHING_DOCK_SPECS.find((s) => s.targetId === selected.targetId);
+                if (!spec) return null;
+                const unlock = fishingDock.unlockedByTarget[selected.targetId];
+                const canCast = Boolean(unlock?.ready);
+                const caughtBefore = fishingDock.catches.some((c) => c.targetId === selected.targetId);
+                return (
+                  <div
+                    data-testid="fishing-dock-cast-bar"
+                    className={`flex flex-wrap items-center justify-between gap-2 rounded-[var(--radius-lg)] border-2 px-3 py-2 text-xs ${
+                      canCast
+                        ? 'border-sky-400/70 bg-sky-950/80 text-sky-100'
+                        : 'border-white/15 bg-slate-900/75 text-slate-300'
+                    }`}
+                  >
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="font-extrabold">
+                        🎣 Điểm quăng cần ({spec.fishNameVi} · chuẩn {spec.baseWeightKg} kg):
+                      </span>
+                      {canCast && unlock ? (
+                        <span
+                          data-testid="fishing-multiplier-badge"
+                          className="rounded-[var(--radius-lg)] bg-[var(--color-sun)] px-2 py-0.5 font-extrabold text-[var(--color-ink)]"
+                        >
+                          Hệ số cân nặng ×{unlock.multiplier.toFixed(1)} ({unlock.stars}★)
+                        </span>
+                      ) : (
+                        <span className="text-amber-200">
+                          Hãy đọc từ, gõ chữ hoặc đọc theo để mở khóa quăng cần!
+                        </span>
+                      )}
+                    </div>
+                    <Button
+                      size="sm"
+                      variant={canCast ? 'sun' : 'outline'}
+                      disabled={!canCast}
+                      data-testid="cast-fishing-rod-btn"
+                      onClick={() => onCastFishingRod?.(selected.targetId)}
+                    >
+                      <Fish className="h-4 w-4" />
+                      {caughtBefore && unlock
+                        ? `Quăng cần lại (×${unlock.multiplier.toFixed(1)})`
+                        : 'Quăng cần câu cá'}
+                    </Button>
+                  </div>
+                );
+              })()
             )}
 
             {/* AI Studio Mock JSON preset buttons for instant state-machine & UI verification */}

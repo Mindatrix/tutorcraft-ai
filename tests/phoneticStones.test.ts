@@ -10,10 +10,19 @@ import {
   type PhoneticStoneUserData,
 } from '../src/components/modes/three/phoneticStoneRaycaster';
 import {
+  applyCampStoneResult,
+  applyFishingDockStoneResult,
+  CAMP_STATION_LAYOUT,
+  castFishingRodWithMultiplier,
+  createInitialCampQuestBoard,
+  createInitialFishingDockState,
+  fishingWeightMultiplier,
   MOCK_SPEECH_RESPONSES,
   MOCK_SPEECH_TARGETS,
   PhoneticStoneEventBus,
   PhoneticStoneStateMachine,
+  RIVER_FISHING_TARGETS,
+  SUMMER_CAMP_TARGETS,
   type PhoneticStoneState,
 } from '../src/client/phoneticStones';
 
@@ -242,3 +251,124 @@ test('Phonetic Stones State Machine: too_short attempt is rejected without consu
   assert.equal(machine.getSnapshot().state, 'passed');
   assert.equal(machine.getSnapshot().petState, 'celebrate');
 });
+
+test('WP8 summer_camp: Phonetic Stones at camp stations update Quest Board progress, tent stars (1-3★), and flagpole unlock including non-blocking fallbacks', () => {
+  assert.equal(SUMMER_CAMP_TARGETS.length, 5);
+  assert.equal(CAMP_STATION_LAYOUT.length, 4);
+
+  let board = createInitialCampQuestBoard();
+  assert.equal(board.tentStars, 0);
+  assert.equal(board.completedCount, 0);
+  assert.equal(board.flagUnlocked, false);
+
+  // 1. Tent station ('camp_tent_w1') passed with 3★ via voice shadow
+  board = applyCampStoneResult(
+    board,
+    { ...MOCK_SPEECH_RESPONSES.passThreeStars, targetId: 'camp_tent_w1' },
+    'shadow',
+  );
+  assert.equal(board.tentStars, 3);
+  assert.equal(board.completedCount, 1);
+  assert.equal(board.flagUnlocked, false);
+
+  // 2. Kitchen/Grill station ('camp_kitchen_w1') passed with 2★ via typed dictation fallback
+  board = applyCampStoneResult(
+    board,
+    { ...MOCK_SPEECH_RESPONSES.passTwoStars, targetId: 'camp_kitchen_w1' },
+    'dictate',
+  );
+  assert.equal(board.tentStars, 5);
+  assert.equal(board.completedCount, 2);
+
+  // 3. Water station ('camp_water_w1') completed with 1★ via 'dictate' almost match
+  board = applyCampStoneResult(
+    board,
+    { ...MOCK_SPEECH_RESPONSES.dictateAlmost, targetId: 'camp_water_w1' },
+    'dictate',
+  );
+  assert.equal(board.tentStars, 6);
+  assert.equal(board.completedCount, 3);
+  assert.equal(board.flagUnlocked, false);
+
+  // 4. Firewood / Quest Board station ('camp_firewood_w1') completed with 1★ via 'repeat' fallback -> unlocks Tent Flagpole!
+  board = applyCampStoneResult(
+    board,
+    {
+      accepted: true,
+      targetId: 'camp_firewood_w1',
+      score: 65,
+      bestScore: 65,
+      passed: false,
+      stars: 1,
+      attemptNo: 1,
+      attemptsLeft: 2,
+      weakWords: [],
+      detail: { wordScore: 65, phonemeScore: 65, confScore: null },
+    },
+    'repeat',
+  );
+  assert.equal(board.completedCount, 4);
+  assert.equal(board.tentStars, 7);
+  assert.equal(board.flagUnlocked, true);
+});
+
+test('WP8 river_fishing: Dock Phonetic Stones unlock rod casting and apply exact fish catch weight multipliers (Pass x1.0, 2★ x1.1, 3★ x1.2)', () => {
+  assert.equal(RIVER_FISHING_TARGETS.length, 4);
+  assert.equal(fishingWeightMultiplier(0), 1.0);
+  assert.equal(fishingWeightMultiplier(1), 1.0);
+  assert.equal(fishingWeightMultiplier(2), 1.1);
+  assert.equal(fishingWeightMultiplier(3), 1.2);
+
+  let dock = createInitialFishingDockState();
+
+  // Cannot cast before pronouncing/completing the dock stone
+  const blockedCast = castFishingRodWithMultiplier(dock, 'fish_salmon_w1');
+  assert.equal(blockedCast.catchRecord, null);
+  assert.equal(blockedCast.nextDock.catches.length, 0);
+
+  // 1. Complete 'fish_salmon_w1' (salmon, base 3.2kg) with 1★ repeat fallback -> multiplier x1.0 -> 3.2kg
+  dock = applyFishingDockStoneResult(dock, {
+    accepted: true,
+    targetId: 'fish_salmon_w1',
+    score: 65,
+    bestScore: 65,
+    passed: false,
+    stars: 1,
+    attemptNo: 1,
+    attemptsLeft: 2,
+    weakWords: [],
+    detail: { wordScore: 65, phonemeScore: 65, confScore: null },
+  });
+  assert.equal(dock.unlockedByTarget['fish_salmon_w1'].ready, true);
+  assert.equal(dock.unlockedByTarget['fish_salmon_w1'].multiplier, 1.0);
+  const cast1 = castFishingRodWithMultiplier(dock, 'fish_salmon_w1');
+  dock = cast1.nextDock;
+  assert.equal(cast1.catchRecord?.finalWeightKg, 3.2);
+  assert.equal(cast1.catchRecord?.multiplier, 1.0);
+
+  // 2. Complete 'fish_catfish_w1' (catfish, base 2.4kg) with 2★ -> multiplier x1.1 -> 2.64kg
+  dock = applyFishingDockStoneResult(dock, {
+    ...MOCK_SPEECH_RESPONSES.passTwoStars,
+    targetId: 'fish_catfish_w1',
+  });
+  assert.equal(dock.unlockedByTarget['fish_catfish_w1'].ready, true);
+  assert.equal(dock.unlockedByTarget['fish_catfish_w1'].multiplier, 1.1);
+  const cast2 = castFishingRodWithMultiplier(dock, 'fish_catfish_w1');
+  dock = cast2.nextDock;
+  assert.equal(cast2.catchRecord?.finalWeightKg, 2.64);
+  assert.equal(cast2.catchRecord?.multiplier, 1.1);
+
+  // 3. Complete 'fish_carp_w1' (golden carp, base 4.5kg) with 3★ -> multiplier x1.2 -> 5.4kg
+  dock = applyFishingDockStoneResult(dock, {
+    ...MOCK_SPEECH_RESPONSES.passThreeStars,
+    targetId: 'fish_carp_w1',
+  });
+  assert.equal(dock.unlockedByTarget['fish_carp_w1'].ready, true);
+  assert.equal(dock.unlockedByTarget['fish_carp_w1'].multiplier, 1.2);
+  const cast3 = castFishingRodWithMultiplier(dock, 'fish_carp_w1');
+  dock = cast3.nextDock;
+  assert.equal(cast3.catchRecord?.finalWeightKg, 5.4);
+  assert.equal(cast3.catchRecord?.multiplier, 1.2);
+  assert.equal(dock.catches.length, 3);
+});
+
