@@ -19,9 +19,11 @@ import {
   fishingWeightMultiplier,
   MOCK_SPEECH_RESPONSES,
   MOCK_SPEECH_TARGETS,
+  PET_DIALOGUES,
   PhoneticStoneEventBus,
   PhoneticStoneStateMachine,
   RIVER_FISHING_TARGETS,
+  selectPetDialogue,
   SUMMER_CAMP_TARGETS,
   type PhoneticStoneState,
 } from '../src/client/phoneticStones';
@@ -371,4 +373,35 @@ test('WP8 river_fishing: Dock Phonetic Stones unlock rod casting and apply exact
   assert.equal(cast3.catchRecord?.multiplier, 1.2);
   assert.equal(dock.catches.length, 3);
 });
+
+test('Pet Companion Dialogues: selects Vietnamese dialogue from pet_dialogues.json when entering coach or celebrate state', () => {
+  assert.equal(PET_DIALOGUES.length, 15);
+
+  // Idle and listening return null
+  assert.equal(selectPetDialogue({ petState: 'idle', mode: 'survival' }), null);
+  assert.equal(selectPetDialogue({ petState: 'listening', mode: 'kayak' }), null);
+
+  // Coach state in survival mode with explicit trigger 'voice_fail_1'
+  const d1 = selectPetDialogue({
+    petState: 'coach',
+    mode: 'survival',
+    trigger: 'voice_fail_1',
+    random: () => 0,
+  });
+  assert.ok(d1);
+  assert.equal(d1.mode, 'survival');
+  assert.equal(d1.trigger, 'voice_fail_1');
+  assert.ok(d1.text_vi.includes('Gần đúng rồi nè'));
+
+  // Celebrate state in kayak mode
+  const d2 = selectPetDialogue({
+    petState: 'celebrate',
+    mode: 'kayak',
+    random: () => 0,
+  });
+  assert.ok(d2);
+  assert.equal(d2.mode, 'kayak');
+  assert.ok(d2.text_vi.length > 10);
+});
+
 

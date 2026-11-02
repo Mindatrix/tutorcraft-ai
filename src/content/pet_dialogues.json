@@ -1,0 +1,92 @@
+[
+  {
+    "mode": "survival",
+    "trigger": "voice_fail_1",
+    "text_en": "Almost had it! Take a deep breath and let's try that sound again together.",
+    "text_vi": "Gần đúng rồi nè! Hít một hơi thật sâu rồi tụi mình cùng thử lại âm đó nhé."
+  },
+  {
+    "mode": "survival",
+    "trigger": "voice_fail_2",
+    "text_en": "No worries, captain! Focus on the ending sound—listen to how I say it!",
+    "text_vi": "Đừng lo đội trưởng ơi! Chú ý âm đuôi nha—nghe tớ phát âm mẫu nè!"
+  },
+  {
+    "mode": "survival",
+    "trigger": "dodge_warning",
+    "text_en": "Look out! Big fishing net on the left—swipe right quickly!",
+    "text_vi": "Coi chừng! Lưới cá to đùng bên trái kìa—quẹt sang phải mau!"
+  },
+  {
+    "mode": "survival",
+    "trigger": "voice_low_volume",
+    "text_en": "I can barely hear you over the rushing river! Speak up loud and proud!",
+    "text_vi": "Tiếng nước chảy át mất rồi! Nói to và dõng dạc lên nào bạn ơi!"
+  },
+  {
+    "mode": "survival",
+    "trigger": "net_incoming",
+    "text_en": "Floating net ahead! Say the magic word clearly to cut right through it!",
+    "text_vi": "Lưới nổi phía trước! Phát âm rõ từ khóa để cắt lưới vượt qua nào!"
+  },
+  {
+    "mode": "survival",
+    "trigger": "dodge_success",
+    "text_en": "Whoosh! That was close! Awesome reflexes, buddy!",
+    "text_vi": "Vèo một cái! Suýt nữa thì dính rồi! Phản xạ đỉnh quá bạn ơi!"
+  },
+  {
+    "mode": "survival",
+    "trigger": "voice_stuck_vowel",
+    "text_en": "Round your lips like a circle for this vowel. You’ve got this!",
+    "text_vi": "Tròn môi lại một chút khi phát âm nguyên âm này nhé. Bạn làm được mà!"
+  },
+  {
+    "mode": "survival",
+    "trigger": "recovery_boost",
+    "text_en": "Shake it off! Even the best river explorers make splashes. Let’s paddle on!",
+    "text_vi": "Không sao hết nè! Nhà thám hiểm cừ khôi nào cũng từng té nước mà. Chèo tiếp thôi!"
+  },
+  {
+    "mode": "kayak",
+    "trigger": "dodge_warning",
+    "text_en": "Sharp turn! Paddle hard left to slide past that tangled net!",
+    "text_vi": "Khúc cua gấp! Chèo mạnh sang trái để né cái lưới vướng víu kia mau!"
+  },
+  {
+    "mode": "kayak",
+    "trigger": "voice_fail_1",
+    "text_en": "Super close! Stretch out that middle sound just a tiny bit longer.",
+    "text_vi": "Suýt soát luôn đó! Kéo dài âm ở giữa thêm một xíu xiu nữa nhé."
+  },
+  {
+    "mode": "kayak",
+    "trigger": "voice_fail_2",
+    "text_en": "You're doing great! Tap the speaker icon to catch the rhythm one more time.",
+    "text_vi": "Bạn làm tốt lắm! Bấm vào hình cái loa để nghe lại nhịp điệu một lần nữa nha."
+  },
+  {
+    "mode": "kayak",
+    "trigger": "rapid_rush_ahead",
+    "text_en": "Rapids coming fast! Power up your kayak with a clear answer!",
+    "text_vi": "Thác ghềnh cuồn cuộn tới rồi! Nạp năng lượng cho thuyền bằng câu trả lời thật rõ ràng nào!"
+  },
+  {
+    "mode": "kayak",
+    "trigger": "net_snag_near_miss",
+    "text_en": "Phew! Just grazed the net ropes! Keep your eyes on the river ahead!",
+    "text_vi": "Phù! Vừa lướt qua sợi dây lưới trong gang tấc! Mắt nhìn thẳng về phía trước nhé!"
+  },
+  {
+    "mode": "kayak",
+    "trigger": "voice_speed_hint",
+    "text_en": "No need to rush like a speedboat! Slow down each syllable nice and smooth.",
+    "text_vi": "Không cần vội như ca-nô phóng đâu nè! Đọc từng âm tiết thật chậm rãi và êm ái nhé."
+  },
+  {
+    "mode": "kayak",
+    "trigger": "combo_boost",
+    "text_en": "We're in the flow now! Keep that paddling energy going!",
+    "text_vi": "Thuyền đang lướt băng băng rồi! Cứ giữ vững phong độ chèo tuyệt vời này nhé!"
+  }
+]
