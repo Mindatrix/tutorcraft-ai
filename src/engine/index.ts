@@ -28,3 +28,4 @@ export * from './questionTypes';
 export * from './questionCount';
 export * from './gameModes';
 export * from './grading';
+export * from './pronunciation';
