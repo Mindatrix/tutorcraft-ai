@@ -172,7 +172,7 @@ export function resolveSpeechRules(input: unknown): SpeechRules {
 // Normalisation
 
 const SMALL_NUMBERS = 'zero one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty'.split(' ');
-const TENS: Record<number, string> = { 30: 'thirty', 40: 'forty', 50: 'fifty', 60: 'sixty', 70: 'seventy', 80: 'eighty', 90: 'ninety', 100: 'one hundred' };
+const TENS: Record<number, string> = { 20: 'twenty', 30: 'thirty', 40: 'forty', 50: 'fifty', 60: 'sixty', 70: 'seventy', 80: 'eighty', 90: 'ninety', 100: 'one hundred' };
 
 /** Recognisers often write numbers as digits ("3"); targets are words ("three"). */
 function numberWords(token: string): string {
@@ -184,9 +184,17 @@ function numberWords(token: string): string {
   return token;
 }
 
+// "'s" after these words is always "is"/"us" (never a possessive), so it is safe to expand.
+const S_CONTRACTIONS: [RegExp, string][] = [
+  [/\b(it|that|what|there|here|he|she|who|where|how)'s\b/g, '$1 is'],
+  [/\blet's\b/g, 'let us'],
+];
+
 /** Lower-case, contractions expanded, punctuation and apostrophes dropped, numbers as words, single spaces. */
 export function normalizeSpeech(input: unknown): string {
-  return normalizeForCompare(input)
+  let s = normalizeForCompare(input);
+  for (const [re, rep] of S_CONTRACTIONS) s = s.replace(re, rep);
+  return s
     .replace(/['’]/g, '')
     .replace(/-/g, ' ')
     .split(/\s+/)
@@ -330,15 +338,23 @@ export interface SpeechScore {
   weakWords: string[];
 }
 
+/**
+ * The weighted score (blueprint §3.4) from the three parts, each 0..100. `confScore` null = the browser
+ * gave no confidence: its weight moves to the word score.
+ */
+export function combineSpeechScore(parts: { wordScore: number; phonemeScore: number; confScore: number | null; kind: SpeechKind }, rules: SpeechRules = DEFAULT_SPEECH_RULES): number {
+  const w = rules.weights[parts.kind];
+  const { wordScore, phonemeScore, confScore } = parts;
+  return clampScore(confScore === null ? (w.word + w.conf) * wordScore + w.phoneme * phonemeScore : w.word * wordScore + w.phoneme * phonemeScore + w.conf * confScore);
+}
+
 function scoreOne(target: string, alt: SpeechAlternative, kind: SpeechKind, rules: SpeechRules) {
   const heard = normalizeSpeech(alt.transcript);
   const wordScore = clampScore(100 * (1 - wordErrorRate(target, heard)));
   const phonemeScore = clampScore(100 * (1 - phonemeErrorRate(target, heard, rules.lexicon)));
   const c = typeof alt.confidence === 'number' && Number.isFinite(alt.confidence) && alt.confidence > 0 ? Math.min(1, alt.confidence) : null;
-  const w = rules.weights[kind];
   const confScore = c === null ? null : clampScore(100 * c);
-  const score = clampScore(confScore === null ? (w.word + w.conf) * wordScore + w.phoneme * phonemeScore : w.word * wordScore + w.phoneme * phonemeScore + w.conf * confScore);
-  return { heard, wordScore, phonemeScore, confScore, score };
+  return { heard, wordScore, phonemeScore, confScore, score: combineSpeechScore({ wordScore, phonemeScore, confScore, kind }, rules) };
 }
 
 function weakWords(target: string, heard: string, rules: SpeechRules): string[] {
@@ -387,6 +403,11 @@ export function scoreDictation(target: string, typed: string, level: unknown, ru
   const almost = !!off && off.filter((d) => d > 0).length === 1 && off.every((d, i) => d === 0 || (d === 1 && t[i].length >= rules.dictationAlmostMinLetters));
   if (almost) return { score: Math.max(score, passThreshold(level, rules)), passed: true, stars: 1, almost: true, typed: text };
   return { score, passed: false, stars: 0, almost: false, typed: text };
+}
+
+/** Listen-and-repeat (no mic / no API / voice off): participation stars only, never pass or fail. */
+export function scoreRepeat(rules: SpeechRules = DEFAULT_SPEECH_RULES): { score: 0; passed: false; stars: 0 | 1; participation: true } {
+  return { score: 0, passed: false, stars: rules.repeatStars ? 1 : 0, participation: true };
 }
 
 // ---------------------------------------------------------------------------------------------

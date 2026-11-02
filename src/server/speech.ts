@@ -7,6 +7,7 @@ import {
   normalizeSpeech,
   resolveSpeechRules,
   scoreDictation,
+  scoreRepeat,
   scoreSpeech,
   speechAttemptOutcome,
   speechTargetsFor,
@@ -269,7 +270,7 @@ export function createSpeechService(deps: {
         scored = { ...d, heard: d.typed };
       } else {
         // Listen-and-repeat: participation only, never pass / fail.
-        scored = { score: 0, passed: false, stars: r.repeatStars ? 1 : 0, heard: '' };
+        scored = { ...scoreRepeat(r), heard: '' };
       }
 
       // Listen-and-repeat is participation, not a miss: it never counts toward the mouth-shape hint.
