@@ -7,6 +7,7 @@ import { LOOK } from '../scenarioLook';
 import Tilt from '../Tilt';
 import JoinForm from '../JoinForm';
 import Scenery from '../scenery/Scenery';
+import { SLOGAN_LEAD } from '../../config/brand';
 import { CurvedSlogan, DoodleBook, DoodleStar, DoodleSwirl, DoodleSword, Wave } from './Shapes';
 
 const INK = '#1b1448';
@@ -248,6 +249,10 @@ export function Numbers() {
           ))}
         </ul>
         <CurvedSlogan className="mx-auto mt-10 w-full max-w-3xl" />
+        {/* U0 (02/11): the owner's line, words exactly as written in "Thay game mới.pdf". */}
+        <p className="font-display mx-auto mt-2 max-w-2xl text-balance text-center text-lg font-semibold leading-snug sm:text-xl md:text-2xl" style={{ color: INK }}>
+          {SLOGAN_LEAD} <span className="font-extrabold text-[#ec4899]">dopamine</span>.
+        </p>
       </div>
     </section>
   );

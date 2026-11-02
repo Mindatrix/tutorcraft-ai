@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { SLOGAN } from "../src/config/brand";
 import { Geist, Geist_Mono, Be_Vietnam_Pro, Baloo_2 } from "next/font/google";
 import ServiceWorker from "../src/components/ServiceWorker";
 import ResultOutbox from "../src/components/ResultOutbox";
@@ -28,7 +29,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "TutorCraft AI",
-  description: "Gamified English battles for tutors and students",
+  description: `${SLOGAN} Gamified English battles for tutors and students.`,
+  openGraph: { title: "TutorCraft AI", description: SLOGAN, locale: "vi_VN", type: "website" },
   appleWebApp: { capable: true, title: "TutorCraft", statusBarStyle: "black-translucent" },
   icons: { icon: "/icon.svg", apple: "/icon.svg" },
 };
