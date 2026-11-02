@@ -32,6 +32,7 @@ import {
   type TeamRace,
   levelLabel,
   stageForProgress,
+  portalRail,
   type SubtitleLine,
 } from '../engine';
 import { dropResult, load, queueResult, remove, save, studentKey } from '../client/storage';
@@ -51,6 +52,8 @@ import ArenaHUD, { raceStanding } from './hud/ArenaHUD';
 import { SteerPad } from './hud/GameHUD';
 import { CoordBar, Minimap } from './hud/MapHud';
 import { drawKayakMap, kayakCoord, type KayakLive } from './hud/kayakMap';
+import PortalCardRail from './hud/PortalCardRail';
+import multiverseRooms from '../../content/multiverse_rooms.json';
 import { BRIGHTNESS_FILTER, useHudSettings } from '../client/hudSettings';
 
 // Three.js is heavy: load it only when a Boat Race actually starts.
@@ -695,6 +698,7 @@ export default function BattleArena({ battle, variant, prefs }: { battle: ArenaB
               hud={
                 phase === 'playing'
                   ? {
+                      rail: world === 'multiverse_portal' ? <PortalCardRail cards={portalRail(multiverseRooms, config.scenarioKey, stage)} /> : undefined,
                       standingLabel: 'Tiến độ',
                       standing: [
                         { name: 'Câu đã trả lời', value: `${display.answers.length}/${view?.totalQuestions ?? battle.totalQuestions}`, me: true },

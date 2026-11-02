@@ -40,12 +40,14 @@ export interface GameHUDProps {
   minimap?: ReactNode;
   /** Coordinate bar (U3), right under the toolbar. */
   coordBar?: ReactNode;
+  /** Multiverse rail of next spaces (U3), top-left. */
+  rail?: ReactNode;
   /** Open a panel from outside (e.g. the guide on the first visit). */
   openPanel?: string | null;
   onPanelChange?: (id: string | null) => void;
 }
 
-export default function GameHUD({ title, tools, move, skills, quiet, lite, docked, minimap, coordBar, openPanel, onPanelChange }: GameHUDProps) {
+export default function GameHUD({ title, tools, move, skills, quiet, lite, docked, minimap, coordBar, rail, openPanel, onPanelChange }: GameHUDProps) {
   const s = useHudSettings();
   const [open, setOpen] = useState<string | null>(null);
   const shown = openPanel !== undefined ? openPanel : open;
@@ -104,6 +106,7 @@ export default function GameHUD({ title, tools, move, skills, quiet, lite, docke
       </div>
       {coordBar && s.coordBar && !docked && coordBar}
       {minimap && s.minimap !== 'off' && !docked && <div className="tc-hud-map">{minimap}</div>}
+      {rail && !docked && rail}
       {move && <div className="tc-hud-move">{move}</div>}
       {skills && <div className="tc-hud-skills">{skills}</div>}
       {shown === '__more' && (

@@ -39,6 +39,8 @@ export interface ArenaHUDProps {
   /** Minimap and coordinate bar (U3: the five worlds with terrain; not Multiverse). */
   minimap?: ReactNode;
   coordBar?: ReactNode;
+  /** Multiverse: the rail of next spaces. */
+  rail?: ReactNode;
   docked?: boolean;
   playerName: string;
   avatar: string;
@@ -197,6 +199,7 @@ export default function ArenaHUD(p: ArenaHUDProps) {
       move={p.move}
       minimap={p.minimap}
       coordBar={p.coordBar}
+      rail={p.rail}
       skills={p.docked ? undefined : SKILL_IDS.map((id, i) => (
         <SkillButton
           key={id}

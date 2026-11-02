@@ -2,7 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import ModeStage from '../modes/ModeStage';
-import { DEMO_BOSS, type GameMode, type SkillId } from '../../engine';
+import { DEMO_BOSS, portalRail, type GameMode, type SkillId } from '../../engine';
+import PortalCardRail from './PortalCardRail';
+import multiverseRooms from '../../../content/multiverse_rooms.json';
 
 // Scene lab: the HUD on the five boss worlds through the real ModeStage (3D for Multiverse, the
 // docked toolbar over the 2D stand-in for the others). Simulated battle, no server.
@@ -14,6 +16,7 @@ export default function BossHudLab() {
   const [mode, setMode] = useState<BossMode>('multiverse_portal');
   const [b, setB] = useState({ bossHp: 900, hp: 100, mp: 30, combo: 1, answered: 2, correct: 2 });
   const [quiet, setQuiet] = useState(false);
+  const [stage, setStage] = useState(1);
   const [log, setLog] = useState('');
   useEffect(() => {
     const id = setInterval(() => setB((x) => ({ ...x, mp: Math.min(100, x.mp + 4), bossHp: x.bossHp <= 100 ? 900 : x.bossHp - 25 })), 1000);
@@ -34,6 +37,9 @@ export default function BossHudLab() {
         <label className="flex items-center gap-1">
           <input type="checkbox" checked={quiet} onChange={(e) => setQuiet(e.target.checked)} /> Câu hỏi đang mở
         </label>
+        <button type="button" className="border border-slate-600 px-2 py-0.5" onClick={() => setStage((s) => (s % 6) + 1)}>
+          Sang chặng sau ({stage}/6)
+        </button>
         <span className="text-slate-400">{log}</span>
       </div>
       <ModeStage
@@ -62,6 +68,7 @@ export default function BossHudLab() {
           removed: [],
         }}
         hud={{
+          rail: mode === 'multiverse_portal' ? <PortalCardRail cards={portalRail(multiverseRooms, 'mv-05', stage)} /> : undefined,
           standingLabel: 'Tiến độ',
           standing: [
             { name: 'Câu đã trả lời', value: `${b.answered}/20`, me: true },
