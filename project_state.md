@@ -1,6 +1,6 @@
 # TutorCraft AI: trạng thái dự án
 
-Cập nhật: 03/11/2026. Nhánh `feat/3d-lego-engine`, đã push lên `origin` (đồng bộ). Đã gộp PR #1 của Antigravity (Đá Phát Âm 3D, `agy/phonetic-stones-ui`). Backend phát âm đã xong, nhưng **migration `speech_attempts` CHƯA có trên database** (mục 7.1).
+Cập nhật: 03/11/2026. Nhánh `feat/3d-lego-engine`, đã push lên `origin` (đồng bộ). Đã gộp PR #1 của Antigravity (Đá Phát Âm 3D, `agy/phonetic-stones-ui`). Backend phát âm đã xong; migration `speech_attempts` đã áp lên database (03/11) và đã kiểm (mục 7.1).
 
 Tài liệu này tổng hợp bối cảnh, tiến độ, cấu trúc thư mục và các việc đang dở. Chi tiết vận hành (số đo, lệnh, quy trình) nằm trong `docs/operations.md`. Các đặc tả nằm trong `docs/specs/`. Bản trước của file này (01/11) là commit `104ee00`.
 
@@ -42,7 +42,7 @@ Tài liệu này tổng hợp bối cảnh, tiến độ, cấu trúc thư mục
 | Giao diện | React 19.3, Tailwind 4. Turbopack biến mọi file `.css` thành CSS toàn cục (CSS module không chạy), nên dùng tiền tố `tc-hud-`, `tc-rb-`, `tc-qf-`. Luật lint React 19: không đọc/ghi ref trong lúc render, không `setState` trong effect (dùng điều chỉnh lúc render hoặc `useSyncExternalStore`) |
 | 3D | three.js 0.170; lõi chung `SceneRuntime`; instancing; 3 cấp chi tiết avatar; bầu trời HDRI |
 | Âm thanh | 3 bus (nhạc / hiệu ứng / nền) trong `src/client/audio.ts`, file MP3 từ `content/audio_catalog.json`; âm tổng hợp Web Audio làm đường lùi |
-| Cơ sở dữ liệu | Supabase project `zzkwcjakdoprxurtapen`. 23 bảng đều bật RLS; 25 migration đã áp (mới nhất `20261027161930 coins_seasons`). Repo có 15 file trong `supabase/migrations/`, file mới nhất `20261103_speech_attempts.sql` **chưa áp** (kiểm lúc 03/11 05:08). Số phiên bản trên DB khác tên file trong repo, nên **không dùng `supabase db push`**; áp từng file qua SQL Editor hoặc MCP `apply_migration` (agent bị bộ lọc an toàn chặn, người dùng tự áp) |
+| Cơ sở dữ liệu | Supabase project `zzkwcjakdoprxurtapen`. 24 bảng đều bật RLS. Migration mới nhất là `20261103_speech_attempts.sql`, người dùng áp qua SQL Editor ngày 03/11 (đã kiểm lúc 05:30). Repo có 15 file trong `supabase/migrations/`. Số phiên bản trên DB khác tên file trong repo, nên **không dùng `supabase db push`**; áp từng file qua SQL Editor hoặc MCP `apply_migration` (agent bị bộ lọc an toàn chặn, người dùng tự áp) |
 | CI | `.github/workflows/ci.yml`: chạy khi có PR vào `feat/3d-lego-engine` hoặc `main`; Node 20; typecheck, lint, test, build + start, test:security |
 | Realtime | Kênh `match:<id>`; tin phát qua REST có chữ ký ECDSA P-256; chống phát lại theo `seq`; đồng bộ đồng hồ kiểu NTP |
 | AI | Gemini `gemini-flash-lite-latest`, chờ 20 s. Lỗi thì thử lại 1 lần bằng `gemini-3.1-flash-lite` (20 s), rồi lấy từ kho câu soạn sẵn. Route `generate-battle` đặt `maxDuration = 60` |
@@ -57,7 +57,8 @@ Tài liệu này tổng hợp bối cảnh, tiến độ, cấu trúc thư mục
 - Phiên học: `battles`, `battle_sessions`, `battle_results`, `multiplayer_rooms`.
 - Học sinh và tài khoản: `student_accounts`, `profiles`, `weak_knowledge_matrix`.
 - Hệ thống: `rate_limits`, `activity_logs`.
-- Xu (C4): `coin_wallets`, `coin_ledger`, `character_inventory`, `seasons`, `season_scores`, `rewards_catalog`.
+- Xu (C4): `coin_wallets`, `coin_ledger` (lý do có thêm `'speech'`), `character_inventory`, `seasons`, `season_scores`, `rewards_catalog`.
+- Phát âm: `speech_attempts` (chỉ server ghi; gia sư đọc lượt nói của học sinh trong trận mình mở).
 
 ## 3. Quy ước làm việc (người dùng đã chốt)
 
@@ -98,7 +99,7 @@ WP2 → WP1 → **U0 → U1+U2** → WP3–WP5 → **U3, U4** → WP6 → WP7 �
 | U5 | Thanh Nộ Kayak (10 s mỗi lần) | **Xong** `71abf5b` |
 | U6 | Viết lại demo chơi thử | **Xong** `cae867d` |
 | U7 | Responsive 5 cỡ màn hình | **Xong** `6130d4d` |
-| Phát âm (backend) | Bộ chấm điểm, `speech_attempts`, `/api/session/speech`, `content/speech_rules.json` (xu 0/3/5/8) | **Xong** `bb86db0`, `84b71e6`. Migration **chưa áp** |
+| Phát âm (backend) | Bộ chấm điểm, `speech_attempts`, `/api/session/speech`, `content/speech_rules.json` (xu 0/3/5/8) | **Xong** `bb86db0`, `84b71e6`. Migration đã áp và kiểm 03/11 |
 | Phát âm (UI) | Đá Phát Âm 3D + Pet + HUD, chạy bằng dữ liệu giả trong scene-lab | **Đã gộp** PR #1 Antigravity; chưa nối route thật |
 | U8 | Màn chờ + chọn nhân vật theo game | Chưa. Chờ chốt phạm vi |
 | WP5 | Nhân vật một mô hình nhiều vai (`character_casting.json`) | Chưa |
@@ -225,8 +226,12 @@ Thay game mới.pdf            yêu cầu giao diện WP10 (14 trang)
 
 ### 7.1. Lớp phát âm: việc còn lại
 
-- **Áp migration (người dùng làm):** mở Supabase Dashboard → project `zzkwcjakdoprxurtapen` → SQL Editor, dán toàn bộ `supabase/migrations/20261103_speech_attempts.sql`, bấm Run. Kiểm lúc 03/11 05:08: bảng `speech_attempts` chưa có, `coin_ledger_reason_check` chưa có `'speech'`, `coin_apply` bản cũ. Chưa áp thì route vẫn chấm điểm nhưng chỉ lưu lượt nói trong bộ nhớ server và không trả xu.
-- **Sau khi áp:** Claude Code kiểm lại (chỉ đọc) cột, RLS, chính sách đọc của gia sư, index `speech_attempts_lookup`, ràng buộc `'speech'`.
+- **Migration đã áp (03/11, kiểm lúc 05:30, chỉ đọc):**
+  - đủ 15 cột, RLS bật;
+  - `anon`/`authenticated` không có quyền thêm, sửa, xoá; chính sách `speech_attempts_tutor_read` cho gia sư đọc theo trận;
+  - có index `speech_attempts_lookup`, ràng buộc 3 lượt mỗi mục, khoá ngoại tới `battle_sessions`;
+  - `coin_ledger_reason_check` và `coin_apply` đã nhận `'speech'`; chỉ `service_role` gọi được `coin_apply`.
+  - Thử bằng khóa anon: đọc ra rỗng, ghi bị từ chối (401), gọi `coin_apply` bị từ chối (401).
 - **Jules:** chưa có nhánh `jules/*` hay PR nào (03/11); `tests/pronunciation.test.ts` chưa có.
 - **Antigravity:** UI đá phát âm mới chạy bằng dữ liệu giả trong `/tutor/scene-lab` (mục "Đá Phát Âm 3D + Pet"); `sessionApi.speechTargets/speechAttempt` đã có nhưng chưa được gọi. Bộ chấm giả lập dùng `DEFAULT_SPEECH_RULES` (xu 0), khác xu thật 0/3/5/8.
 - **Công tắc giọng nói cho giáo viên:** chưa có (đổi schema, cần duyệt). Hiện chỉ demo bật micro; lớp thật chỉ có gõ chính tả và nghe-nhắc lại.
