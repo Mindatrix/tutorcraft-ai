@@ -20,7 +20,7 @@
       { "asset": "camp_tarp", "x": 0, "z": 0, "rot": 0, "size": 3.2, "core": true },
       { "asset": "camp_sleeping_bag", "x": -0.7, "z": 1.9, "rot": 80, "size": 1.9, "core": true },
       { "asset": "camp_sleeping_bag", "x": 0.7, "z": 1.9, "rot": 100, "size": 1.9, "minLevel": 1 },
-      { "asset": "camp_lantern", "pick": ["camp_lantern_3"], "x": 1.7, "z": 1.4, "rot": 0, "size": 0.35, "minLevel": 1 },
+      { "asset": "camp_lantern", "pick": ["camp_lantern"], "x": 1.7, "z": 1.4, "rot": 0, "size": 0.35, "minLevel": 1 },
       { "asset": "camp_chair", "x": 2.6, "z": 2.4, "rot": -140, "size": 0.95, "minLevel": 2 },
       { "asset": "camp_bench", "x": -2.6, "z": 2.6, "rot": 160, "size": 1.6, "minLevel": 3 },
       { "asset": "camp_bunting", "x": 0, "z": -2.0, "rot": 0, "size": 3.0, "minLevel": 4 },

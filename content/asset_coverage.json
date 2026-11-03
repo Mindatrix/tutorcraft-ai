@@ -1,10 +1,14 @@
 {
- "total_used": 280,
- "have_file": 273,
- "missing_count": 7,
+ "total_used": 310,
+ "have_file": 301,
+ "missing_count": 9,
  "missing_by_group": {
   "anim": [
    "anim_cook"
+  ],
+  "camp": [
+   "camp_pan",
+   "camp_tent_ruined_grey"
   ],
   "food": [
    "food_fish_raw",
@@ -19,24 +23,5 @@
    "water_normal"
   ]
  },
- "unused_models": [
-  "anim_beckon",
-  "anim_fishing_idle",
-  "anim_sit_female",
-  "anim_sit_male",
-  "dino_footprint",
-  "dino_sand",
-  "dino_sand_2",
-  "mv_salon_furniture",
-  "mv_salon_furniture_2",
-  "mv_salon_furniture_3",
-  "mv_scene",
-  "mv_scene_2",
-  "mv_scene_3",
-  "mv_torch",
-  "mv_torch_2",
-  "mv_torch_3",
-  "mv_torch_4",
-  "mv_torch_5"
- ]
+ "unused_models": []
 }

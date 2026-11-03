@@ -1,1588 +1,1598 @@
 {
- "hdri_dawn": {
-  "file": "/assets/hdri/river_dawn_2k.hdr",
-  "title": "Kiara 1 Dawn",
-  "source": "https://polyhaven.com/a/kiara_1_dawn",
-  "authors": [
-   "Greg Zaal"
-  ],
-  "license": "CC0",
-  "downloaded": "2026-10-26"
- },
- "hdri_day": {
-  "file": "/assets/hdri/river_day_2k.hdr",
-  "title": "Kloofendal 48d Partly Cloudy (Pure Sky)",
-  "source": "https://polyhaven.com/a/kloofendal_48d_partly_cloudy_puresky",
-  "authors": [
-   "Greg Zaal",
-   "Jarod Guest"
-  ],
-  "license": "CC0",
-  "downloaded": "2026-10-26"
- },
- "hdri_sunset": {
-  "file": "/assets/hdri/river_sunset_2k.hdr",
-  "title": "Industrial Sunset (Pure Sky)",
-  "source": "https://polyhaven.com/a/industrial_sunset_puresky",
-  "authors": [
-   "Jarod Guest",
-   "Sergej Majboroda"
-  ],
-  "license": "CC0",
-  "downloaded": "2026-10-26"
- },
- "hdri_night": {
-  "file": "/assets/hdri/river_night_2k.hdr",
-  "title": "Rogland Clear Night",
-  "source": "https://polyhaven.com/a/rogland_clear_night",
-  "authors": [
-   "Greg Zaal"
-  ],
-  "license": "CC0",
-  "downloaded": "2026-10-26"
- },
- "hdri_cloudy": {
-  "file": "/assets/hdri/river_cloudy_2k.hdr",
-  "title": "Kloofendal Overcast (Pure Sky)",
-  "source": "https://polyhaven.com/a/kloofendal_overcast_puresky",
-  "authors": [
-   "Greg Zaal"
-  ],
-  "license": "CC0",
-  "downloaded": "2026-10-26"
- },
- "anim_beckon": {
-  "file": "anim/anim_beckon.glb",
-  "title": "Beckoning.fbx",
-  "source": "mixamo.com",
-  "authors": [
-   "Adobe Mixamo"
-  ],
-  "license": "Mixamo (Adobe, free)",
-  "downloaded": "2026-11-01"
- },
- "anim_cast": {
-  "file": "anim/anim_cast.glb",
-  "title": "Fishing Cast.fbx",
-  "source": "mixamo.com",
-  "authors": [
-   "Adobe Mixamo"
-  ],
-  "license": "Mixamo (Adobe, free)",
-  "downloaded": "2026-11-01"
- },
- "anim_cheer": {
-  "file": "anim/anim_cheer.glb",
-  "title": "Victory.fbx",
-  "source": "mixamo.com",
-  "authors": [
-   "Adobe Mixamo"
-  ],
-  "license": "Mixamo (Adobe, free)",
-  "downloaded": "2026-11-01"
- },
- "anim_cheer_2": {
-  "file": "anim/anim_cheer_2.glb",
-  "title": "Victory_ban2.fbx",
-  "source": "mixamo.com",
-  "authors": [
-   "Adobe Mixamo"
-  ],
-  "license": "Mixamo (Adobe, free)",
-  "downloaded": "2026-11-01"
- },
- "anim_fishing_idle": {
-  "file": "anim/anim_fishing_idle.glb",
-  "title": "Fishing Idle.fbx",
-  "source": "mixamo.com",
-  "authors": [
-   "Adobe Mixamo"
-  ],
-  "license": "Mixamo (Adobe, free)",
-  "downloaded": "2026-11-01"
- },
- "anim_kneel_work": {
-  "file": "anim/anim_kneel_work.glb",
-  "title": "Kneeling.fbx",
-  "source": "mixamo.com",
-  "authors": [
-   "Adobe Mixamo"
-  ],
-  "license": "Mixamo (Adobe, free)",
-  "downloaded": "2026-11-01"
- },
- "anim_kneel_work_2": {
-  "file": "anim/anim_kneel_work_2.glb",
-  "title": "Kneel.fbx",
-  "source": "mixamo.com",
-  "authors": [
-   "Adobe Mixamo"
-  ],
-  "license": "Mixamo (Adobe, free)",
-  "downloaded": "2026-11-01"
- },
- "anim_pull_fish": {
-  "file": "anim/anim_pull_fish.glb",
-  "title": "Pulling A Rope.fbx",
-  "source": "mixamo.com",
-  "authors": [
-   "Adobe Mixamo"
-  ],
-  "license": "Mixamo (Adobe, free)",
-  "downloaded": "2026-11-01"
- },
- "anim_rope_rub": {
-  "file": "anim/anim_rope_rub.glb",
-  "title": "Shoulder Rubbing.fbx",
-  "source": "mixamo.com",
-  "authors": [
-   "Adobe Mixamo"
-  ],
-  "license": "Mixamo (Adobe, free)",
-  "downloaded": "2026-11-01"
- },
- "anim_rope_rub_2": {
-  "file": "anim/anim_rope_rub_2.glb",
-  "title": "Rifle Rubbing Eyes.fbx",
-  "source": "mixamo.com",
-  "authors": [
-   "Adobe Mixamo"
-  ],
-  "license": "Mixamo (Adobe, free)",
-  "downloaded": "2026-11-01"
- },
- "anim_sad": {
-  "file": "anim/anim_sad.glb",
-  "title": "Sad Idle.fbx",
-  "source": "mixamo.com",
-  "authors": [
-   "Adobe Mixamo"
-  ],
-  "license": "Mixamo (Adobe, free)",
-  "downloaded": "2026-11-01"
- },
- "anim_sad_2": {
-  "file": "anim/anim_sad_2.glb",
-  "title": "Defeated.fbx",
-  "source": "mixamo.com",
-  "authors": [
-   "Adobe Mixamo"
-  ],
-  "license": "Mixamo (Adobe, free)",
-  "downloaded": "2026-11-01"
- },
- "anim_sit_female": {
-  "file": "anim/anim_sit_female.glb",
-  "title": "Female Sitting Pose.fbx",
-  "source": "mixamo.com",
-  "authors": [
-   "Adobe Mixamo"
-  ],
-  "license": "Mixamo (Adobe, free)",
-  "downloaded": "2026-11-01"
- },
- "anim_sit_male": {
-  "file": "anim/anim_sit_male.glb",
-  "title": "Male Sitting Pose.fbx",
-  "source": "mixamo.com",
-  "authors": [
-   "Adobe Mixamo"
-  ],
-  "license": "Mixamo (Adobe, free)",
-  "downloaded": "2026-11-01"
- },
- "anim_wave": {
-  "file": "anim/anim_wave.glb",
-  "title": "Waving.fbx",
-  "source": "mixamo.com",
-  "authors": [
-   "Adobe Mixamo"
-  ],
-  "license": "Mixamo (Adobe, free)",
-  "downloaded": "2026-11-01"
- },
- "anim_wave_2": {
-  "file": "anim/anim_wave_2.glb",
-  "title": "Waving_ban2.fbx",
-  "source": "mixamo.com",
-  "authors": [
-   "Adobe Mixamo"
-  ],
-  "license": "Mixamo (Adobe, free)",
-  "downloaded": "2026-11-01"
- },
- "camp_axe": {
-  "file": "camp/camp_axe.glb",
-  "title": "Meshy_AI_Red_Hatchet_1027180437_texture.glb",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "camp_bench": {
-  "file": "camp/camp_bench.glb",
-  "title": "Meshy_AI_Carved_old_oak_log_be_1027180554_texture.glb",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "camp_bench_2": {
-  "file": "camp/camp_bench_2.glb",
-  "title": "Meshy_AI_Rustic_Bench_1027180652_texture.glb",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "camp_bottle": {
-  "file": "camp/camp_bottle.glb",
-  "title": "Meshy_AI_Black_Water_Bottle_1027180118_texture.glb",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "camp_bottle_2": {
-  "file": "camp/camp_bottle_2.glb",
-  "title": "Meshy_AI_IMSDAL_Water_Bottle_1027174629_texture.glb",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "camp_bottle_3": {
-  "file": "camp/camp_bottle_3.glb",
-  "title": "Meshy_AI_Crushed_Water_Bottle__1027174709_texture.glb",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "camp_bottle_4": {
-  "file": "camp/camp_bottle_4.glb",
-  "title": "Meshy_AI_Water_Bottle_on_Table_1027174600_texture.glb",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "camp_bucket": {
-  "file": "camp/camp_bucket.glb",
-  "title": "Meshy_AI_Wooden_Bucket_1027174801_texture.glb",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "camp_bucket_2": {
-  "file": "camp/camp_bucket_2.glb",
-  "title": "Meshy_AI_wooden_bucket_1027174829_texture.glb",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "camp_bunting": {
-  "file": "camp/camp_bunting.glb",
-  "title": "Meshy_AI_Colorful_pennant_bunt_1027175344_texture.glb",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "camp_firstaid": {
-  "file": "camp/camp_firstaid.glb",
-  "title": "Meshy_AI_First_Aid_Kit_1027181237_texture.glb",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "camp_firstaid_2": {
-  "file": "camp/camp_firstaid_2.glb",
-  "title": "Meshy_AI_First_Aid_Kit_1027181353_texture.glb",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "camp_firstaid_3": {
-  "file": "camp/camp_firstaid_3.glb",
-  "title": "Meshy_AI_First_Aid_Kit_Essenti_1027181340_texture.glb",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "camp_grill_2": {
-  "file": "camp/camp_grill_2.glb",
-  "title": "Meshy_AI_Weathered_Steel_Campi_1027175133_texture.glb",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "camp_lantern": {
-  "file": "camp/camp_lantern.glb",
-  "title": "Meshy_AI_Hanging_lantern_tied__1027174451_texture.glb",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "camp_lantern_2": {
-  "file": "camp/camp_lantern_2.glb",
-  "title": "Meshy_AI_LAnterne_1027164852_texture.glb",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "camp_lantern_3": {
-  "file": "camp/camp_lantern_3.glb",
-  "title": "Meshy_AI_a_realistic_glowing__1027174459_texture.glb",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "camp_marshmallow_stick": {
-  "file": "camp/camp_marshmallow_stick.glb",
-  "title": "Meshy_AI_marshmallow_on_a_stic_1027180831_texture.glb",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "camp_matchbox": {
-  "file": "camp/camp_matchbox.glb",
-  "title": "Meshy_AI_match_box_1027180909_texture.glb",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "camp_sleeping_bag": {
-  "file": "camp/camp_sleeping_bag.glb",
-  "title": "Meshy_AI_Camouflage_Mummy_Slee_1027180943_texture.glb",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "camp_sleeping_bag_2": {
-  "file": "camp/camp_sleeping_bag_2.glb",
-  "title": "Meshy_AI_Sleeping_Bag_Cocoon_1027181015_texture.glb",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "camp_string_lights": {
-  "file": "camp/camp_string_lights.glb",
-  "title": "Meshy_AI_Christmas_fairy_light_1027175756_texture.glb",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "camp_string_lights_2": {
-  "file": "camp/camp_string_lights_2.glb",
-  "title": "Meshy_AI_Create_a_pack_of_25_l_1027183902_texture.glb",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "camp_table": {
-  "file": "camp/camp_table.glb",
-  "title": "Meshy_AI_Folding_Camping_Table_1027175028_generate.glb",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "camp_tarp": {
-  "file": "camp/camp_tarp.glb",
-  "title": "Meshy_AI_Camp_Shelter_1027175837_texture.glb",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "camp_tarp_2": {
-  "file": "camp/camp_tarp_2.glb",
-  "title": "Meshy_AI_Canvas_Shelter_1027175851_texture.glb",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "camp_tarp_3": {
-  "file": "camp/camp_tarp_3.glb",
-  "title": "Meshy_AI_Rustic_Shelter_1027175937_texture.glb",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "camp_water_filter": {
-  "file": "camp/camp_water_filter.glb",
-  "title": "Meshy_AI_Create_a_way_to_filte_1027180204_texture.glb",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "camp_water_filter_2": {
-  "file": "camp/camp_water_filter_2.glb",
-  "title": "Meshy_AI_Soft_flexible_vacuum_1027183635_texture.glb",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "dino_footprint": {
-  "file": "dino/dino_footprint.glb",
-  "title": "Meshy_AI_Footprints_in_Sand__1027185100_texture.glb",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "dino_sand": {
-  "file": "dino/dino_sand.glb",
-  "title": "Meshy_AI_Pile_of_Sand_1027184607_texture.glb",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "dino_sand_2": {
-  "file": "dino/dino_sand_2.glb",
-  "title": "Meshy_AI_Sand_Ripples_1027184555_texture.glb",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "fish_bait": {
-  "file": "fishing/fish_bait.glb",
-  "title": "Meshy_AI_worm_on_hook_1027181559_texture.glb",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "fish_bait_2": {
-  "file": "fishing/fish_bait_2.glb",
-  "title": "Meshy_AI_Colorful_Fishing_Lure_1027181506_generate.glb",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "fish_bait_3": {
-  "file": "fishing/fish_bait_3.glb",
-  "title": "Meshy_AI_articulated_fish_Lure_1027181642_texture.glb",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "fish_bobber": {
-  "file": "fishing/fish_bobber.glb",
-  "title": "Meshy_AI_Fishing_Bobber_Icon_1027182242_texture.glb",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "fish_hook": {
-  "file": "fishing/fish_hook.glb",
-  "title": "Meshy_AI_Fishing_Hook_1027182804_texture.glb",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "fish_reel": {
-  "file": "fishing/fish_reel.glb",
-  "title": "Meshy_AI_Vintage_hand_crank_fi_1027182715_generate.glb",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "kayak_log_spinning": {
-  "file": "kayak/kayak_log_spinning.glb",
-  "title": "Meshy_AI_Low_poly_wood_log_wit_1027183412_texture.glb",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "mv_castle_module": {
-  "file": "multiverse/mv_castle_module.glb",
-  "title": "Meshy_AI_Imperial_Lantern_Brid_1027165036_texture.glb",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "mv_castle_module_2": {
-  "file": "multiverse/mv_castle_module_2.glb",
-  "title": "Meshy_AI_Object_A_modular_fo_1027181114_texture.glb",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "mv_castle_module_3": {
-  "file": "multiverse/mv_castle_module_3.glb",
-  "title": "Meshy_AI_Object_A_modular_fo_1027181201_texture.glb",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "mv_castle_module_4": {
-  "file": "multiverse/mv_castle_module_4.glb",
-  "title": "Meshy_AI_realistic_medieval_br_1027182936_texture.glb",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "mv_cyber_room": {
-  "file": "multiverse/mv_cyber_room.glb",
-  "title": "Meshy_AI_Esports_Room_1027164957_texture.glb",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "mv_salon_furniture": {
-  "file": "multiverse/mv_salon_furniture.glb",
-  "title": "Meshy_AI_Chesterfield_Roll_Arm_1027173817_texture.glb",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "mv_salon_furniture_2": {
-  "file": "multiverse/mv_salon_furniture_2.glb",
-  "title": "Meshy_AI_Chesterfield_Sofa_in__1027173918_texture.glb",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "mv_salon_furniture_3": {
-  "file": "multiverse/mv_salon_furniture_3.glb",
-  "title": "Meshy_AI_Old_Used_Armchair_H_1026182637_texture.glb",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "mv_scene": {
-  "file": "multiverse/mv_scene.glb",
-  "title": "Meshy_AI_Pavilions_in_the_Moun_1027164932_texture.glb",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "mv_scene_2": {
-  "file": "multiverse/mv_scene_2.glb",
-  "title": "Meshy_AI_Snowbound_Caldera_1027033233_texture.glb",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "mv_scene_3": {
-  "file": "multiverse/mv_scene_3.glb",
-  "title": "Meshy_AI_Floating_Stones_1027183031_texture.glb",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "mv_torch": {
-  "file": "multiverse/mv_torch.glb",
-  "title": "Meshy_AI_Blazing_Torch_1027164407_texture.glb",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "mv_torch_2": {
-  "file": "multiverse/mv_torch_2.glb",
-  "title": "Meshy_AI_Iron_Torch_Sconce_1027164504_texture.glb",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "mv_torch_3": {
-  "file": "multiverse/mv_torch_3.glb",
-  "title": "Meshy_AI_Stone_Torch_Stand_1027164428_texture.glb",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "mv_torch_4": {
-  "file": "multiverse/mv_torch_4.glb",
-  "title": "Meshy_AI_Wall_Torch_1027164519_texture.glb",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "mv_torch_5": {
-  "file": "multiverse/mv_torch_5.glb",
-  "title": "Meshy_AI_medieval_torch_1027164447_texture.glb",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "surv_broom": {
-  "file": "survival/surv_broom.glb",
-  "title": "Meshy_AI_witch_broom_1026205301_texture.glb",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "audio_beach_waves": {
-  "file": "audio/ambient/beach_waves.mp3",
-  "title": "beach_waves",
-  "source": "https://opengameart.org/content/water-waves",
-  "authors": [
-   "transitking",
-   "jasinski"
-  ],
-  "license": "CC0"
- },
- "audio_birds_wind": {
-  "file": "audio/ambient/birds_wind.mp3",
-  "title": "birds_wind",
-  "source": "https://opengameart.org/content/birds-and-wind-ambient-birds-wind-and-synth",
-  "authors": [
-   "Spring Spring"
-  ],
-  "license": "CC0"
- },
- "audio_campfire": {
-  "file": "audio/ambient/campfire.mp3",
-  "title": "campfire",
-  "source": "https://sfxmint.com/sounds/roaring-fireplace-sound-effect-01",
-  "authors": [
-   "SFXMint"
-  ],
-  "license": "CC0 (âm thanh do AI/tổng hợp tạo)",
-  "note": "Âm thanh do AI/tổng hợp tạo, nhà cung cấp công bố CC0"
- },
- "audio_water_bubbles": {
-  "file": "audio/ambient/water_bubbles.mp3",
-  "title": "water_bubbles",
-  "source": "https://opengameart.org/content/random-sfx",
-  "authors": [
-   "Écrivain"
-  ],
-  "license": "CC0"
- },
- "audio_waterfall": {
-  "file": "audio/ambient/waterfall.mp3",
-  "title": "waterfall",
-  "source": "https://opengameart.org/content/random-sfx",
-  "authors": [
-   "Écrivain"
-  ],
-  "license": "CC0"
- },
- "audio_waterfall_crystal": {
-  "file": "audio/ambient/waterfall_crystal.mp3",
-  "title": "waterfall_crystal",
-  "source": "https://opengameart.org/content/random-sfx",
-  "authors": [
-   "Écrivain"
-  ],
-  "license": "CC0"
- },
- "audio_waves_soft": {
-  "file": "audio/ambient/waves_soft.mp3",
-  "title": "waves_soft",
-  "source": "https://opengameart.org/content/water-waves",
-  "authors": [
-   "transitking",
-   "jasinski"
-  ],
-  "license": "CC0"
- },
- "audio_wind_hollow": {
-  "file": "audio/ambient/wind_hollow.mp3",
-  "title": "wind_hollow",
-  "source": "https://opengameart.org/content/random-sfx",
-  "authors": [
-   "Écrivain"
-  ],
-  "license": "CC0"
- },
- "audio_wind_window": {
-  "file": "audio/ambient/wind_window.mp3",
-  "title": "wind_window",
-  "source": "https://sfxmint.com/sounds/wind-through-a-window",
-  "authors": [
-   "SFXMint"
-  ],
-  "license": "CC0 (âm thanh do AI/tổng hợp tạo)",
-  "note": "Âm thanh do AI/tổng hợp tạo, nhà cung cấp công bố CC0"
- },
- "audio_bamboo_blitz": {
-  "file": "audio/music/dino_journey/bamboo_blitz.mp3",
-  "title": "bamboo_blitz",
-  "source": "",
-  "authors": [
-   "Tsorthan Grove"
-  ],
-  "license": "CC0"
- },
- "audio_cinematic-calm": {
-  "file": "audio/music/multiverse_salon/cinematic-calm.mp3",
-  "title": "cinematic-calm",
-  "source": "https://opengameart.org/content/at-home-orchestral",
-  "authors": [
-   "Wolfgang_"
-  ],
-  "license": "CC0"
- },
- "audio_desert_loops_2": {
-  "file": "audio/music/sa_mac_dung_chung/desert_loops_2.mp3",
-  "title": "desert_loops_2",
-  "source": "https://opengameart.org/content/desert-loop-lo-fi-remaster",
-  "authors": [
-   "iamoneabe"
-  ],
-  "license": "CC0"
- },
- "audio_dodging_lights": {
-  "file": "audio/music/river_survival_cang_thang/dodging_lights.mp3",
-  "title": "dodging_lights",
-  "source": "https://opengameart.org/content/sneaky-music-pack",
-  "authors": [
-   "Umplix"
-  ],
-  "license": "CC0"
- },
- "audio_down_the_river": {
-  "file": "audio/music/kayak_rush/down_the_river.mp3",
-  "title": "down_the_river",
-  "source": "https://opengameart.org/content/down-the-river",
-  "authors": [
-   "Komiku (Loyalty Freak Music)"
-  ],
-  "license": "CC0 (theo ghi chú trước; chưa kiểm lại trang gốc)"
- },
- "audio_Emotional_Piano_Loop": {
-  "file": "audio/music/multiverse_phong_ngu/Emotional_Piano_Loop.mp3",
-  "title": "Emotional_Piano_Loop",
-  "source": "https://opengameart.org/content/emotional-piano-loop",
-  "authors": [
-   "extenz"
-  ],
-  "license": "CC0"
- },
- "audio_forest_2": {
-  "file": "audio/music/river_survival_yen_tinh/forest_2.mp3",
-  "title": "forest_2",
-  "source": "https://opengameart.org/content/cathedral-in-the-forest-ambient-loop",
-  "authors": [
-   "congusbongus"
-  ],
-  "license": "CC0"
- },
- "audio_happy_adventure": {
-  "file": "audio/music/kayak_rush/happy_adventure.mp3",
-  "title": "happy_adventure",
-  "source": "https://opengameart.org/content/happy-adventure-loop",
-  "authors": [
-   "TinyWorlds"
-  ],
-  "license": "CC0 (theo ghi chú trước; chưa kiểm lại trang gốc)"
- },
- "audio_IntoTheStars": {
-  "file": "audio/music/multiverse_cyber/IntoTheStars.mp3",
-  "title": "IntoTheStars",
-  "source": "",
-  "authors": [
-   "KiluaBoy"
-  ],
-  "license": "CC0 (theo ghi chú trước; chưa kiểm lại trang gốc)"
- },
- "audio_lofiagain": {
-  "file": "audio/music/summer_camp/lofiagain.mp3",
-  "title": "lofiagain",
-  "source": "",
-  "authors": [
-   "chưa ghi"
-  ],
-  "license": "CC0 (theo ghi chú trước; chưa kiểm lại trang gốc)"
- },
- "audio_LofiLoop": {
-  "file": "audio/music/river_fishing/LofiLoop.mp3",
-  "title": "LofiLoop",
-  "source": "",
-  "authors": [
-   "chưa ghi"
-  ],
-  "license": "CC0 (theo ghi chú trước; chưa kiểm lại trang gốc)"
- },
- "audio_Production_Intro_Theme": {
-  "file": "audio/music/menu_intro/Production_Intro_Theme.mp3",
-  "title": "Production_Intro_Theme",
-  "source": "https://opengameart.org/content/production-theme-intro-epic-orchestra",
-  "authors": [
-   "nene"
-  ],
-  "license": "CC0"
- },
- "audio_alarm_short": {
-  "file": "audio/sfx/alarm_short.mp3",
-  "title": "alarm_short",
-  "source": "https://opengameart.org/content/short-alarm",
-  "authors": [
-   "yd"
-  ],
-  "license": "CC0"
- },
- "audio_camera_shutter": {
-  "file": "audio/sfx/camera_shutter.mp3",
-  "title": "camera_shutter",
-  "source": "https://opengameart.org/content/camerashudder",
-  "authors": [
-   "FacadeGaikan"
-  ],
-  "license": "CC0"
- },
- "audio_cook_cut": {
-  "file": "audio/sfx/cook_cut.mp3",
-  "title": "cook_cut",
-  "source": "https://opengameart.org/content/adding-salt",
-  "authors": [
-   "TinyWorlds"
-  ],
-  "license": "CC0"
- },
- "audio_cook_cutlery": {
-  "file": "audio/sfx/cook_cutlery.mp3",
-  "title": "cook_cutlery",
-  "source": "https://opengameart.org/content/adding-salt",
-  "authors": [
-   "TinyWorlds"
-  ],
-  "license": "CC0"
- },
- "audio_cook_salt": {
-  "file": "audio/sfx/cook_salt.mp3",
-  "title": "cook_salt",
-  "source": "https://opengameart.org/content/adding-salt",
-  "authors": [
-   "TinyWorlds"
-  ],
-  "license": "CC0"
- },
- "audio_cook_stove_on": {
-  "file": "audio/sfx/cook_stove_on.mp3",
-  "title": "cook_stove_on",
-  "source": "https://opengameart.org/content/adding-salt",
-  "authors": [
-   "TinyWorlds"
-  ],
-  "license": "CC0"
- },
- "audio_crowd_cheer_kids": {
-  "file": "audio/sfx/crowd_cheer_kids.mp3",
-  "title": "crowd_cheer_kids",
-  "source": "https://sfxmint.com/category/crowd",
-  "authors": [
-   "SFXMint"
-  ],
-  "license": "CC0 (âm thanh do AI/tổng hợp tạo)",
-  "note": "Âm thanh do AI/tổng hợp tạo, nhà cung cấp công bố CC0"
- },
- "audio_crowd_giggle": {
-  "file": "audio/sfx/crowd_giggle.mp3",
-  "title": "crowd_giggle",
-  "source": "https://opengameart.org/content/group-giggling",
-  "authors": [
-   "Nocturnal_Vanguard"
-  ],
-  "license": "CC0"
- },
- "audio_jump_land": {
-  "file": "audio/sfx/jump_land.mp3",
-  "title": "jump_land",
-  "source": "https://opengameart.org/content/jump-landing-sound",
-  "authors": [
-   "MentalSanityOff"
-  ],
-  "license": "CC0"
- },
- "audio_pop_1": {
-  "file": "audio/sfx/pop_1.mp3",
-  "title": "pop_1",
-  "source": "https://opengameart.org/content/random-sfx",
-  "authors": [
-   "Écrivain (Random SFX)"
-  ],
-  "license": "CC0"
- },
- "audio_pop_2": {
-  "file": "audio/sfx/pop_2.mp3",
-  "title": "pop_2",
-  "source": "https://opengameart.org/content/random-sfx",
-  "authors": [
-   "Écrivain (Random SFX)"
-  ],
-  "license": "CC0"
- },
- "audio_pop_3": {
-  "file": "audio/sfx/pop_3.mp3",
-  "title": "pop_3",
-  "source": "https://opengameart.org/content/random-sfx",
-  "authors": [
-   "Écrivain (Random SFX)"
-  ],
-  "license": "CC0"
- },
- "audio_rope_winch": {
-  "file": "audio/sfx/rope_winch.mp3",
-  "title": "rope_winch",
-  "source": "https://opengameart.org/content/chain-winch-sounds",
-  "authors": [
-   "bart"
-  ],
-  "license": "CC0"
- },
- "audio_splash_1": {
-  "file": "audio/sfx/splash_1.mp3",
-  "title": "splash_1",
-  "source": "https://opengameart.org/content/6-short-water-splashes",
-  "authors": [
-   "ezwa"
-  ],
-  "license": "CC0"
- },
- "audio_splash_2": {
-  "file": "audio/sfx/splash_2.mp3",
-  "title": "splash_2",
-  "source": "https://opengameart.org/content/6-short-water-splashes",
-  "authors": [
-   "ezwa"
-  ],
-  "license": "CC0"
- },
- "audio_splash_3": {
-  "file": "audio/sfx/splash_3.mp3",
-  "title": "splash_3",
-  "source": "https://opengameart.org/content/6-short-water-splashes",
-  "authors": [
-   "ezwa"
-  ],
-  "license": "CC0"
- },
- "audio_splash_4": {
-  "file": "audio/sfx/splash_4.mp3",
-  "title": "splash_4",
-  "source": "https://opengameart.org/content/6-short-water-splashes",
-  "authors": [
-   "ezwa"
-  ],
-  "license": "CC0"
- },
- "audio_splash_5": {
-  "file": "audio/sfx/splash_5.mp3",
-  "title": "splash_5",
-  "source": "https://opengameart.org/content/6-short-water-splashes",
-  "authors": [
-   "ezwa"
-  ],
-  "license": "CC0"
- },
- "audio_splash_6": {
-  "file": "audio/sfx/splash_6.mp3",
-  "title": "splash_6",
-  "source": "https://opengameart.org/content/6-short-water-splashes",
-  "authors": [
-   "ezwa"
-  ],
-  "license": "CC0"
- },
- "audio_step_gravel": {
-  "file": "audio/sfx/step_gravel.mp3",
-  "title": "step_gravel",
-  "source": "https://opengameart.org/content/different-steps-on-wood-stone-leaves-gravel-and-mud",
-  "authors": [
-   "TinyWorlds ([kdd] Different steps)"
-  ],
-  "license": "CC0"
- },
- "audio_step_leaves_1": {
-  "file": "audio/sfx/step_leaves_1.mp3",
-  "title": "step_leaves_1",
-  "source": "https://opengameart.org/content/different-steps-on-wood-stone-leaves-gravel-and-mud",
-  "authors": [
-   "TinyWorlds ([kdd] Different steps)"
-  ],
-  "license": "CC0"
- },
- "audio_step_leaves_2": {
-  "file": "audio/sfx/step_leaves_2.mp3",
-  "title": "step_leaves_2",
-  "source": "https://opengameart.org/content/different-steps-on-wood-stone-leaves-gravel-and-mud",
-  "authors": [
-   "TinyWorlds ([kdd] Different steps)"
-  ],
-  "license": "CC0"
- },
- "audio_step_mud": {
-  "file": "audio/sfx/step_mud.mp3",
-  "title": "step_mud",
-  "source": "https://opengameart.org/content/different-steps-on-wood-stone-leaves-gravel-and-mud",
-  "authors": [
-   "TinyWorlds ([kdd] Different steps)"
-  ],
-  "license": "CC0"
- },
- "audio_step_sand_l1": {
-  "file": "audio/sfx/step_sand_l1.mp3",
-  "title": "step_sand_l1",
-  "source": "https://opengameart.org/content/fantozzis-footsteps-grasssand-stone",
-  "authors": [
-   "Fantozzi (qubodup đăng)"
-  ],
-  "license": "CC0"
- },
- "audio_step_sand_l2": {
-  "file": "audio/sfx/step_sand_l2.mp3",
-  "title": "step_sand_l2",
-  "source": "https://opengameart.org/content/fantozzis-footsteps-grasssand-stone",
-  "authors": [
-   "Fantozzi (qubodup đăng)"
-  ],
-  "license": "CC0"
- },
- "audio_step_sand_l3": {
-  "file": "audio/sfx/step_sand_l3.mp3",
-  "title": "step_sand_l3",
-  "source": "https://opengameart.org/content/fantozzis-footsteps-grasssand-stone",
-  "authors": [
-   "Fantozzi (qubodup đăng)"
-  ],
-  "license": "CC0"
- },
- "audio_step_sand_r1": {
-  "file": "audio/sfx/step_sand_r1.mp3",
-  "title": "step_sand_r1",
-  "source": "https://opengameart.org/content/fantozzis-footsteps-grasssand-stone",
-  "authors": [
-   "Fantozzi (qubodup đăng)"
-  ],
-  "license": "CC0"
- },
- "audio_step_sand_r2": {
-  "file": "audio/sfx/step_sand_r2.mp3",
-  "title": "step_sand_r2",
-  "source": "https://opengameart.org/content/fantozzis-footsteps-grasssand-stone",
-  "authors": [
-   "Fantozzi (qubodup đăng)"
-  ],
-  "license": "CC0"
- },
- "audio_step_sand_r3": {
-  "file": "audio/sfx/step_sand_r3.mp3",
-  "title": "step_sand_r3",
-  "source": "https://opengameart.org/content/fantozzis-footsteps-grasssand-stone",
-  "authors": [
-   "Fantozzi (qubodup đăng)"
-  ],
-  "license": "CC0"
- },
- "audio_step_snow_01": {
-  "file": "audio/sfx/step_snow_01.mp3",
-  "title": "step_snow_01",
-  "source": "https://opengameart.org/content/9-wet-snow-steps",
-  "authors": [
-   "qubodup"
-  ],
-  "license": "CC0"
- },
- "audio_step_snow_02": {
-  "file": "audio/sfx/step_snow_02.mp3",
-  "title": "step_snow_02",
-  "source": "https://opengameart.org/content/9-wet-snow-steps",
-  "authors": [
-   "qubodup"
-  ],
-  "license": "CC0"
- },
- "audio_step_snow_03": {
-  "file": "audio/sfx/step_snow_03.mp3",
-  "title": "step_snow_03",
-  "source": "https://opengameart.org/content/9-wet-snow-steps",
-  "authors": [
-   "qubodup"
-  ],
-  "license": "CC0"
- },
- "audio_step_snow_04": {
-  "file": "audio/sfx/step_snow_04.mp3",
-  "title": "step_snow_04",
-  "source": "https://opengameart.org/content/9-wet-snow-steps",
-  "authors": [
-   "qubodup"
-  ],
-  "license": "CC0"
- },
- "audio_step_snow_05": {
-  "file": "audio/sfx/step_snow_05.mp3",
-  "title": "step_snow_05",
-  "source": "https://opengameart.org/content/9-wet-snow-steps",
-  "authors": [
-   "qubodup"
-  ],
-  "license": "CC0"
- },
- "audio_step_snow_06": {
-  "file": "audio/sfx/step_snow_06.mp3",
-  "title": "step_snow_06",
-  "source": "https://opengameart.org/content/9-wet-snow-steps",
-  "authors": [
-   "qubodup"
-  ],
-  "license": "CC0"
- },
- "audio_step_snow_07": {
-  "file": "audio/sfx/step_snow_07.mp3",
-  "title": "step_snow_07",
-  "source": "https://opengameart.org/content/9-wet-snow-steps",
-  "authors": [
-   "qubodup"
-  ],
-  "license": "CC0"
- },
- "audio_step_snow_08": {
-  "file": "audio/sfx/step_snow_08.mp3",
-  "title": "step_snow_08",
-  "source": "https://opengameart.org/content/9-wet-snow-steps",
-  "authors": [
-   "qubodup"
-  ],
-  "license": "CC0"
- },
- "audio_step_snow_09": {
-  "file": "audio/sfx/step_snow_09.mp3",
-  "title": "step_snow_09",
-  "source": "https://opengameart.org/content/9-wet-snow-steps",
-  "authors": [
-   "qubodup"
-  ],
-  "license": "CC0"
- },
- "audio_step_stone": {
-  "file": "audio/sfx/step_stone.mp3",
-  "title": "step_stone",
-  "source": "https://opengameart.org/content/different-steps-on-wood-stone-leaves-gravel-and-mud",
-  "authors": [
-   "TinyWorlds ([kdd] Different steps)"
-  ],
-  "license": "CC0"
- },
- "audio_step_stone_l1": {
-  "file": "audio/sfx/step_stone_l1.mp3",
-  "title": "step_stone_l1",
-  "source": "https://opengameart.org/content/fantozzis-footsteps-grasssand-stone",
-  "authors": [
-   "Fantozzi (qubodup đăng)"
-  ],
-  "license": "CC0"
- },
- "audio_step_stone_l2": {
-  "file": "audio/sfx/step_stone_l2.mp3",
-  "title": "step_stone_l2",
-  "source": "https://opengameart.org/content/fantozzis-footsteps-grasssand-stone",
-  "authors": [
-   "Fantozzi (qubodup đăng)"
-  ],
-  "license": "CC0"
- },
- "audio_step_stone_l3": {
-  "file": "audio/sfx/step_stone_l3.mp3",
-  "title": "step_stone_l3",
-  "source": "https://opengameart.org/content/fantozzis-footsteps-grasssand-stone",
-  "authors": [
-   "Fantozzi (qubodup đăng)"
-  ],
-  "license": "CC0"
- },
- "audio_step_stone_r1": {
-  "file": "audio/sfx/step_stone_r1.mp3",
-  "title": "step_stone_r1",
-  "source": "https://opengameart.org/content/fantozzis-footsteps-grasssand-stone",
-  "authors": [
-   "Fantozzi (qubodup đăng)"
-  ],
-  "license": "CC0"
- },
- "audio_step_stone_r2": {
-  "file": "audio/sfx/step_stone_r2.mp3",
-  "title": "step_stone_r2",
-  "source": "https://opengameart.org/content/fantozzis-footsteps-grasssand-stone",
-  "authors": [
-   "Fantozzi (qubodup đăng)"
-  ],
-  "license": "CC0"
- },
- "audio_step_stone_r3": {
-  "file": "audio/sfx/step_stone_r3.mp3",
-  "title": "step_stone_r3",
-  "source": "https://opengameart.org/content/fantozzis-footsteps-grasssand-stone",
-  "authors": [
-   "Fantozzi (qubodup đăng)"
-  ],
-  "license": "CC0"
- },
- "audio_step_wood_1": {
-  "file": "audio/sfx/step_wood_1.mp3",
-  "title": "step_wood_1",
-  "source": "https://opengameart.org/content/different-steps-on-wood-stone-leaves-gravel-and-mud",
-  "authors": [
-   "TinyWorlds ([kdd] Different steps)"
-  ],
-  "license": "CC0"
- },
- "audio_step_wood_2": {
-  "file": "audio/sfx/step_wood_2.mp3",
-  "title": "step_wood_2",
-  "source": "https://opengameart.org/content/different-steps-on-wood-stone-leaves-gravel-and-mud",
-  "authors": [
-   "TinyWorlds ([kdd] Different steps)"
-  ],
-  "license": "CC0"
- },
- "audio_step_wood_3": {
-  "file": "audio/sfx/step_wood_3.mp3",
-  "title": "step_wood_3",
-  "source": "https://opengameart.org/content/different-steps-on-wood-stone-leaves-gravel-and-mud",
-  "authors": [
-   "TinyWorlds ([kdd] Different steps)"
-  ],
-  "license": "CC0"
- },
- "audio_ui_interface_1": {
-  "file": "audio/sfx/ui_interface_1.mp3",
-  "title": "ui_interface_1",
-  "source": "https://opengameart.org/content/rpg-sound-pack",
-  "authors": [
-   "artisticdude (RPG Sound Pack)"
-  ],
-  "license": "CC0"
- },
- "audio_ui_interface_2": {
-  "file": "audio/sfx/ui_interface_2.mp3",
-  "title": "ui_interface_2",
-  "source": "https://opengameart.org/content/rpg-sound-pack",
-  "authors": [
-   "artisticdude (RPG Sound Pack)"
-  ],
-  "license": "CC0"
- },
- "audio_ui_interface_3": {
-  "file": "audio/sfx/ui_interface_3.mp3",
-  "title": "ui_interface_3",
-  "source": "https://opengameart.org/content/rpg-sound-pack",
-  "authors": [
-   "artisticdude (RPG Sound Pack)"
-  ],
-  "license": "CC0"
- },
- "audio_ui_interface_4": {
-  "file": "audio/sfx/ui_interface_4.mp3",
-  "title": "ui_interface_4",
-  "source": "https://opengameart.org/content/rpg-sound-pack",
-  "authors": [
-   "artisticdude (RPG Sound Pack)"
-  ],
-  "license": "CC0"
- },
- "audio_ui_interface_5": {
-  "file": "audio/sfx/ui_interface_5.mp3",
-  "title": "ui_interface_5",
-  "source": "https://opengameart.org/content/rpg-sound-pack",
-  "authors": [
-   "artisticdude (RPG Sound Pack)"
-  ],
-  "license": "CC0"
- },
- "audio_ui_interface_6": {
-  "file": "audio/sfx/ui_interface_6.mp3",
-  "title": "ui_interface_6",
-  "source": "https://opengameart.org/content/rpg-sound-pack",
-  "authors": [
-   "artisticdude (RPG Sound Pack)"
-  ],
-  "license": "CC0"
- },
- "audio_ui_menu_choice": {
-  "file": "audio/sfx/ui_menu_choice.mp3",
-  "title": "ui_menu_choice",
-  "source": "https://opengameart.org/content/menu-choice",
-  "authors": [
-   "Sudocolon"
-  ],
-  "license": "CC0"
- },
- "audio_whoosh_1": {
-  "file": "audio/sfx/whoosh_1.mp3",
-  "title": "whoosh_1",
-  "source": "https://opengameart.org/content/swish-bamboo-stick-weapon-swhosh-sounds",
-  "authors": [
-   "qubodup (swoshes)"
-  ],
-  "license": "CC0"
- },
- "audio_whoosh_2": {
-  "file": "audio/sfx/whoosh_2.mp3",
-  "title": "whoosh_2",
-  "source": "https://opengameart.org/content/swish-bamboo-stick-weapon-swhosh-sounds",
-  "authors": [
-   "qubodup (swoshes)"
-  ],
-  "license": "CC0"
- },
- "audio_whoosh_3": {
-  "file": "audio/sfx/whoosh_3.mp3",
-  "title": "whoosh_3",
-  "source": "https://opengameart.org/content/swish-bamboo-stick-weapon-swhosh-sounds",
-  "authors": [
-   "qubodup (swoshes)"
-  ],
-  "license": "CC0"
- },
- "audio_whoosh_4": {
-  "file": "audio/sfx/whoosh_4.mp3",
-  "title": "whoosh_4",
-  "source": "https://opengameart.org/content/swish-bamboo-stick-weapon-swhosh-sounds",
-  "authors": [
-   "qubodup (swoshes)"
-  ],
-  "license": "CC0"
- },
- "audio_win": {
-  "file": "audio/sfx/win.mp3",
-  "title": "win",
-  "source": "https://opengameart.org/content/win-sound-effect",
-  "authors": [
-   "không ghi"
-  ],
-  "license": "Public domain (theo trang)"
- },
- "camp_chair": {
-  "file": "camp/camp_chair.glb",
-  "title": "Meshy_AI_Object_A_modular_fo_1027181114_texture.glb",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "camp_chair_2": {
-  "file": "camp/camp_chair_2.glb",
-  "title": "Meshy_AI_Object_A_modular_fo_1027181201_texture.glb",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "fish_net": {
-  "file": "fishing/fish_net.glb",
-  "title": "fish_net (Meshy text-to-3D 01/11/2026)",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "food_apple": {
-  "file": "food/food_apple.glb",
-  "title": "food_apple (Meshy text-to-3D 01/11/2026)",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "food_bread": {
-  "file": "food/food_bread.glb",
-  "title": "food_bread (Meshy text-to-3D 01/11/2026)",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "food_corn": {
-  "file": "food/food_corn.glb",
-  "title": "food_corn (Meshy text-to-3D 01/11/2026)",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "food_meat_raw": {
-  "file": "food/food_meat_raw.glb",
-  "title": "food_meat_raw (Meshy text-to-3D 01/11/2026)",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- },
- "river_shed": {
-  "file": "river_world/river_shed.glb",
-  "title": "river_shed (Meshy text-to-3D 01/11/2026)",
-  "source": "meshy.ai",
-  "authors": [
-   "Meshy AI"
-  ],
-  "license": "Meshy Pro plan (commercial)",
-  "downloaded": "2026-11-01"
- }
+  "hdri_dawn": {
+    "file": "/assets/hdri/river_dawn_2k.hdr",
+    "title": "Kiara 1 Dawn",
+    "source": "https://polyhaven.com/a/kiara_1_dawn",
+    "authors": [
+      "Greg Zaal"
+    ],
+    "license": "CC0",
+    "downloaded": "2026-10-26"
+  },
+  "hdri_day": {
+    "file": "/assets/hdri/river_day_2k.hdr",
+    "title": "Kloofendal 48d Partly Cloudy (Pure Sky)",
+    "source": "https://polyhaven.com/a/kloofendal_48d_partly_cloudy_puresky",
+    "authors": [
+      "Greg Zaal",
+      "Jarod Guest"
+    ],
+    "license": "CC0",
+    "downloaded": "2026-10-26"
+  },
+  "hdri_sunset": {
+    "file": "/assets/hdri/river_sunset_2k.hdr",
+    "title": "Industrial Sunset (Pure Sky)",
+    "source": "https://polyhaven.com/a/industrial_sunset_puresky",
+    "authors": [
+      "Jarod Guest",
+      "Sergej Majboroda"
+    ],
+    "license": "CC0",
+    "downloaded": "2026-10-26"
+  },
+  "hdri_night": {
+    "file": "/assets/hdri/river_night_2k.hdr",
+    "title": "Rogland Clear Night",
+    "source": "https://polyhaven.com/a/rogland_clear_night",
+    "authors": [
+      "Greg Zaal"
+    ],
+    "license": "CC0",
+    "downloaded": "2026-10-26"
+  },
+  "hdri_cloudy": {
+    "file": "/assets/hdri/river_cloudy_2k.hdr",
+    "title": "Kloofendal Overcast (Pure Sky)",
+    "source": "https://polyhaven.com/a/kloofendal_overcast_puresky",
+    "authors": [
+      "Greg Zaal"
+    ],
+    "license": "CC0",
+    "downloaded": "2026-10-26"
+  },
+  "anim_beckon": {
+    "file": "anim/anim_beckon.glb",
+    "title": "Beckoning.fbx",
+    "source": "mixamo.com",
+    "authors": [
+      "Adobe Mixamo"
+    ],
+    "license": "Mixamo (Adobe, free)",
+    "downloaded": "2026-11-01"
+  },
+  "anim_cast": {
+    "file": "anim/anim_cast.glb",
+    "title": "Fishing Cast.fbx",
+    "source": "mixamo.com",
+    "authors": [
+      "Adobe Mixamo"
+    ],
+    "license": "Mixamo (Adobe, free)",
+    "downloaded": "2026-11-01"
+  },
+  "anim_cheer": {
+    "file": "anim/anim_cheer.glb",
+    "title": "Victory.fbx",
+    "source": "mixamo.com",
+    "authors": [
+      "Adobe Mixamo"
+    ],
+    "license": "Mixamo (Adobe, free)",
+    "downloaded": "2026-11-01"
+  },
+  "anim_cheer_2": {
+    "file": "anim/anim_cheer_2.glb",
+    "title": "Victory_ban2.fbx",
+    "source": "mixamo.com",
+    "authors": [
+      "Adobe Mixamo"
+    ],
+    "license": "Mixamo (Adobe, free)",
+    "downloaded": "2026-11-01"
+  },
+  "anim_fishing_idle": {
+    "file": "anim/anim_fishing_idle.glb",
+    "title": "Fishing Idle.fbx",
+    "source": "mixamo.com",
+    "authors": [
+      "Adobe Mixamo"
+    ],
+    "license": "Mixamo (Adobe, free)",
+    "downloaded": "2026-11-01"
+  },
+  "anim_kneel_work": {
+    "file": "anim/anim_kneel_work.glb",
+    "title": "Kneeling.fbx",
+    "source": "mixamo.com",
+    "authors": [
+      "Adobe Mixamo"
+    ],
+    "license": "Mixamo (Adobe, free)",
+    "downloaded": "2026-11-01"
+  },
+  "anim_kneel_work_2": {
+    "file": "anim/anim_kneel_work_2.glb",
+    "title": "Kneel.fbx",
+    "source": "mixamo.com",
+    "authors": [
+      "Adobe Mixamo"
+    ],
+    "license": "Mixamo (Adobe, free)",
+    "downloaded": "2026-11-01"
+  },
+  "anim_pull_fish": {
+    "file": "anim/anim_pull_fish.glb",
+    "title": "Pulling A Rope.fbx",
+    "source": "mixamo.com",
+    "authors": [
+      "Adobe Mixamo"
+    ],
+    "license": "Mixamo (Adobe, free)",
+    "downloaded": "2026-11-01"
+  },
+  "anim_rope_rub": {
+    "file": "anim/anim_rope_rub.glb",
+    "title": "Shoulder Rubbing.fbx",
+    "source": "mixamo.com",
+    "authors": [
+      "Adobe Mixamo"
+    ],
+    "license": "Mixamo (Adobe, free)",
+    "downloaded": "2026-11-01"
+  },
+  "anim_rope_rub_2": {
+    "file": "anim/anim_rope_rub_2.glb",
+    "title": "Rifle Rubbing Eyes.fbx",
+    "source": "mixamo.com",
+    "authors": [
+      "Adobe Mixamo"
+    ],
+    "license": "Mixamo (Adobe, free)",
+    "downloaded": "2026-11-01"
+  },
+  "anim_sad": {
+    "file": "anim/anim_sad.glb",
+    "title": "Sad Idle.fbx",
+    "source": "mixamo.com",
+    "authors": [
+      "Adobe Mixamo"
+    ],
+    "license": "Mixamo (Adobe, free)",
+    "downloaded": "2026-11-01"
+  },
+  "anim_sad_2": {
+    "file": "anim/anim_sad_2.glb",
+    "title": "Defeated.fbx",
+    "source": "mixamo.com",
+    "authors": [
+      "Adobe Mixamo"
+    ],
+    "license": "Mixamo (Adobe, free)",
+    "downloaded": "2026-11-01"
+  },
+  "anim_sit_female": {
+    "file": "anim/anim_sit_female.glb",
+    "title": "Female Sitting Pose.fbx",
+    "source": "mixamo.com",
+    "authors": [
+      "Adobe Mixamo"
+    ],
+    "license": "Mixamo (Adobe, free)",
+    "downloaded": "2026-11-01"
+  },
+  "anim_sit_male": {
+    "file": "anim/anim_sit_male.glb",
+    "title": "Male Sitting Pose.fbx",
+    "source": "mixamo.com",
+    "authors": [
+      "Adobe Mixamo"
+    ],
+    "license": "Mixamo (Adobe, free)",
+    "downloaded": "2026-11-01"
+  },
+  "anim_wave": {
+    "file": "anim/anim_wave.glb",
+    "title": "Waving.fbx",
+    "source": "mixamo.com",
+    "authors": [
+      "Adobe Mixamo"
+    ],
+    "license": "Mixamo (Adobe, free)",
+    "downloaded": "2026-11-01"
+  },
+  "anim_wave_2": {
+    "file": "anim/anim_wave_2.glb",
+    "title": "Waving_ban2.fbx",
+    "source": "mixamo.com",
+    "authors": [
+      "Adobe Mixamo"
+    ],
+    "license": "Mixamo (Adobe, free)",
+    "downloaded": "2026-11-01"
+  },
+  "camp_axe": {
+    "file": "camp/camp_axe.glb",
+    "title": "Meshy_AI_Red_Hatchet_1027180437_texture.glb",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  },
+  "camp_bench": {
+    "file": "camp/camp_bench.glb",
+    "title": "Meshy_AI_Carved_old_oak_log_be_1027180554_texture.glb",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  },
+  "camp_bench_2": {
+    "file": "camp/camp_bench_2.glb",
+    "title": "Meshy_AI_Rustic_Bench_1027180652_texture.glb",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  },
+  "camp_bottle": {
+    "file": "camp/camp_bottle.glb",
+    "title": "Meshy_AI_Black_Water_Bottle_1027180118_texture.glb",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  },
+  "camp_bottle_2": {
+    "file": "camp/camp_bottle_2.glb",
+    "title": "Meshy_AI_IMSDAL_Water_Bottle_1027174629_texture.glb",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  },
+  "camp_bottle_3": {
+    "file": "camp/camp_bottle_3.glb",
+    "title": "Meshy_AI_Crushed_Water_Bottle__1027174709_texture.glb",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  },
+  "camp_bottle_4": {
+    "file": "camp/camp_bottle_4.glb",
+    "title": "Meshy_AI_Water_Bottle_on_Table_1027174600_texture.glb",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  },
+  "camp_bucket": {
+    "file": "camp/camp_bucket.glb",
+    "title": "Meshy_AI_Wooden_Bucket_1027174801_texture.glb",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  },
+  "camp_bucket_2": {
+    "file": "camp/camp_bucket_2.glb",
+    "title": "Meshy_AI_wooden_bucket_1027174829_texture.glb",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  },
+  "camp_bunting": {
+    "file": "camp/camp_bunting.glb",
+    "title": "Meshy_AI_Colorful_pennant_bunt_1027175344_texture.glb",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  },
+  "camp_firstaid": {
+    "file": "camp/camp_firstaid.glb",
+    "title": "Meshy_AI_First_Aid_Kit_1027181237_texture.glb",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  },
+  "camp_firstaid_2": {
+    "file": "camp/camp_firstaid_2.glb",
+    "title": "Meshy_AI_First_Aid_Kit_1027181353_texture.glb",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  },
+  "camp_firstaid_3": {
+    "file": "camp/camp_firstaid_3.glb",
+    "title": "Meshy_AI_First_Aid_Kit_Essenti_1027181340_texture.glb",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  },
+  "camp_pot": {
+    "file": "camp/camp_pot.glb",
+    "title": "Meshy_AI_Weathered_Steel_Campi_1027175133_texture.glb",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01",
+    "renamed_from": "camp_grill_2"
+  },
+  "camp_lantern_tree": {
+    "file": "camp/camp_lantern_tree.glb",
+    "title": "Meshy_AI_Hanging_lantern_tied__1027174451_texture.glb",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01",
+    "renamed_from": "camp_lantern"
+  },
+  "camp_lantern_2": {
+    "file": "camp/camp_lantern_2.glb",
+    "title": "Meshy_AI_LAnterne_1027164852_texture.glb",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  },
+  "camp_lantern": {
+    "file": "camp/camp_lantern.glb",
+    "title": "Meshy_AI_a_realistic_glowing__1027174459_texture.glb",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01",
+    "renamed_from": "camp_lantern_3"
+  },
+  "camp_marshmallow_stick": {
+    "file": "camp/camp_marshmallow_stick.glb",
+    "title": "Meshy_AI_marshmallow_on_a_stic_1027180831_texture.glb",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  },
+  "camp_matchbox": {
+    "file": "camp/camp_matchbox.glb",
+    "title": "Meshy_AI_match_box_1027180909_texture.glb",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  },
+  "camp_sleeping_bag": {
+    "file": "camp/camp_sleeping_bag.glb",
+    "title": "Meshy_AI_Camouflage_Mummy_Slee_1027180943_texture.glb",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  },
+  "camp_sleeping_bag_2": {
+    "file": "camp/camp_sleeping_bag_2.glb",
+    "title": "Meshy_AI_Sleeping_Bag_Cocoon_1027181015_texture.glb",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  },
+  "camp_string_lights": {
+    "file": "camp/camp_string_lights.glb",
+    "title": "Meshy_AI_Christmas_fairy_light_1027175756_texture.glb",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  },
+  "camp_gear_pile": {
+    "file": "camp/camp_gear_pile.glb",
+    "title": "Meshy_AI_Create_a_pack_of_25_l_1027183902_texture.glb",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01",
+    "renamed_from": "camp_string_lights_2"
+  },
+  "camp_table": {
+    "file": "camp/camp_table.glb",
+    "title": "Meshy_AI_Folding_Camping_Table_1027175028_generate.glb",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  },
+  "camp_tarp": {
+    "file": "camp/camp_tarp.glb",
+    "title": "Meshy_AI_Camp_Shelter_1027175837_texture.glb",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  },
+  "camp_tarp_2": {
+    "file": "camp/camp_tarp_2.glb",
+    "title": "Meshy_AI_Canvas_Shelter_1027175851_texture.glb",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  },
+  "camp_tarp_3": {
+    "file": "camp/camp_tarp_3.glb",
+    "title": "Meshy_AI_Rustic_Shelter_1027175937_texture.glb",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  },
+  "camp_water_filter": {
+    "file": "camp/camp_water_filter.glb",
+    "title": "Meshy_AI_Create_a_way_to_filte_1027180204_texture.glb",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  },
+  "camp_ration_pack": {
+    "file": "camp/camp_ration_pack.glb",
+    "title": "Meshy_AI_Soft_flexible_vacuum_1027183635_texture.glb",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01",
+    "renamed_from": "camp_water_filter_2"
+  },
+  "dino_footprint": {
+    "file": "dino/dino_footprint.glb",
+    "title": "Meshy_AI_Footprints_in_Sand__1027185100_texture.glb",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  },
+  "dino_sand": {
+    "file": "dino/dino_sand.glb",
+    "title": "Meshy_AI_Pile_of_Sand_1027184607_texture.glb",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  },
+  "dino_sand_2": {
+    "file": "dino/dino_sand_2.glb",
+    "title": "Meshy_AI_Sand_Ripples_1027184555_texture.glb",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  },
+  "fish_bait": {
+    "file": "fishing/fish_bait.glb",
+    "title": "Meshy_AI_worm_on_hook_1027181559_texture.glb",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  },
+  "fish_bait_2": {
+    "file": "fishing/fish_bait_2.glb",
+    "title": "Meshy_AI_Colorful_Fishing_Lure_1027181506_generate.glb",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  },
+  "fish_bait_3": {
+    "file": "fishing/fish_bait_3.glb",
+    "title": "Meshy_AI_articulated_fish_Lure_1027181642_texture.glb",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  },
+  "fish_bobber": {
+    "file": "fishing/fish_bobber.glb",
+    "title": "Meshy_AI_Fishing_Bobber_Icon_1027182242_texture.glb",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  },
+  "fish_hook": {
+    "file": "fishing/fish_hook.glb",
+    "title": "Meshy_AI_Fishing_Hook_1027182804_texture.glb",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  },
+  "fish_reel": {
+    "file": "fishing/fish_reel.glb",
+    "title": "Meshy_AI_Vintage_hand_crank_fi_1027182715_generate.glb",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  },
+  "kayak_log_spinning": {
+    "file": "kayak/kayak_log_spinning.glb",
+    "title": "Meshy_AI_Low_poly_wood_log_wit_1027183412_texture.glb",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  },
+  "mv_castle_module": {
+    "file": "multiverse/mv_castle_module.glb",
+    "title": "Meshy_AI_Imperial_Lantern_Brid_1027165036_texture.glb",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  },
+  "mv_castle_module_2": {
+    "file": "multiverse/mv_castle_module_2.glb",
+    "title": "Meshy_AI_Object_A_modular_fo_1027181114_texture.glb",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  },
+  "mv_castle_module_3": {
+    "file": "multiverse/mv_castle_module_3.glb",
+    "title": "Meshy_AI_Object_A_modular_fo_1027181201_texture.glb",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  },
+  "mv_castle_module_4": {
+    "file": "multiverse/mv_castle_module_4.glb",
+    "title": "Meshy_AI_realistic_medieval_br_1027182936_texture.glb",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  },
+  "mv_cyber_room": {
+    "file": "multiverse/mv_cyber_room.glb",
+    "title": "Meshy_AI_Esports_Room_1027164957_texture.glb",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  },
+  "mv_salon_furniture": {
+    "file": "multiverse/mv_salon_furniture.glb",
+    "title": "Meshy_AI_Chesterfield_Roll_Arm_1027173817_texture.glb",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  },
+  "mv_salon_furniture_2": {
+    "file": "multiverse/mv_salon_furniture_2.glb",
+    "title": "Meshy_AI_Chesterfield_Sofa_in__1027173918_texture.glb",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  },
+  "mv_salon_furniture_3": {
+    "file": "multiverse/mv_salon_furniture_3.glb",
+    "title": "Meshy_AI_Old_Used_Armchair_H_1026182637_texture.glb",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  },
+  "mv_scene": {
+    "file": "multiverse/mv_scene.glb",
+    "title": "Meshy_AI_Pavilions_in_the_Moun_1027164932_texture.glb",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  },
+  "mv_scene_2": {
+    "file": "multiverse/mv_scene_2.glb",
+    "title": "Meshy_AI_Snowbound_Caldera_1027033233_texture.glb",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  },
+  "mv_scene_3": {
+    "file": "multiverse/mv_scene_3.glb",
+    "title": "Meshy_AI_Floating_Stones_1027183031_texture.glb",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  },
+  "mv_torch": {
+    "file": "multiverse/mv_torch.glb",
+    "title": "Meshy_AI_Blazing_Torch_1027164407_texture.glb",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  },
+  "mv_torch_2": {
+    "file": "multiverse/mv_torch_2.glb",
+    "title": "Meshy_AI_Iron_Torch_Sconce_1027164504_texture.glb",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  },
+  "mv_torch_3": {
+    "file": "multiverse/mv_torch_3.glb",
+    "title": "Meshy_AI_Stone_Torch_Stand_1027164428_texture.glb",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  },
+  "mv_torch_4": {
+    "file": "multiverse/mv_torch_4.glb",
+    "title": "Meshy_AI_Wall_Torch_1027164519_texture.glb",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  },
+  "mv_torch_5": {
+    "file": "multiverse/mv_torch_5.glb",
+    "title": "Meshy_AI_medieval_torch_1027164447_texture.glb",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  },
+  "surv_broom": {
+    "file": "survival/surv_broom.glb",
+    "title": "Meshy_AI_witch_broom_1026205301_texture.glb",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  },
+  "audio_beach_waves": {
+    "file": "audio/ambient/beach_waves.mp3",
+    "title": "beach_waves",
+    "source": "https://opengameart.org/content/water-waves",
+    "authors": [
+      "transitking",
+      "jasinski"
+    ],
+    "license": "CC0"
+  },
+  "audio_birds_wind": {
+    "file": "audio/ambient/birds_wind.mp3",
+    "title": "birds_wind",
+    "source": "https://opengameart.org/content/birds-and-wind-ambient-birds-wind-and-synth",
+    "authors": [
+      "Spring Spring"
+    ],
+    "license": "CC0"
+  },
+  "audio_campfire": {
+    "file": "audio/ambient/campfire.mp3",
+    "title": "campfire",
+    "source": "https://sfxmint.com/sounds/roaring-fireplace-sound-effect-01",
+    "authors": [
+      "SFXMint"
+    ],
+    "license": "CC0 (âm thanh do AI/tổng hợp tạo)",
+    "note": "Âm thanh do AI/tổng hợp tạo, nhà cung cấp công bố CC0"
+  },
+  "audio_water_bubbles": {
+    "file": "audio/ambient/water_bubbles.mp3",
+    "title": "water_bubbles",
+    "source": "https://opengameart.org/content/random-sfx",
+    "authors": [
+      "Écrivain"
+    ],
+    "license": "CC0"
+  },
+  "audio_waterfall": {
+    "file": "audio/ambient/waterfall.mp3",
+    "title": "waterfall",
+    "source": "https://opengameart.org/content/random-sfx",
+    "authors": [
+      "Écrivain"
+    ],
+    "license": "CC0"
+  },
+  "audio_waterfall_crystal": {
+    "file": "audio/ambient/waterfall_crystal.mp3",
+    "title": "waterfall_crystal",
+    "source": "https://opengameart.org/content/random-sfx",
+    "authors": [
+      "Écrivain"
+    ],
+    "license": "CC0"
+  },
+  "audio_waves_soft": {
+    "file": "audio/ambient/waves_soft.mp3",
+    "title": "waves_soft",
+    "source": "https://opengameart.org/content/water-waves",
+    "authors": [
+      "transitking",
+      "jasinski"
+    ],
+    "license": "CC0"
+  },
+  "audio_wind_hollow": {
+    "file": "audio/ambient/wind_hollow.mp3",
+    "title": "wind_hollow",
+    "source": "https://opengameart.org/content/random-sfx",
+    "authors": [
+      "Écrivain"
+    ],
+    "license": "CC0"
+  },
+  "audio_wind_window": {
+    "file": "audio/ambient/wind_window.mp3",
+    "title": "wind_window",
+    "source": "https://sfxmint.com/sounds/wind-through-a-window",
+    "authors": [
+      "SFXMint"
+    ],
+    "license": "CC0 (âm thanh do AI/tổng hợp tạo)",
+    "note": "Âm thanh do AI/tổng hợp tạo, nhà cung cấp công bố CC0"
+  },
+  "audio_bamboo_blitz": {
+    "file": "audio/music/dino_journey/bamboo_blitz.mp3",
+    "title": "bamboo_blitz",
+    "source": "https://opengameart.org/content/bamboo-blitz",
+    "authors": [
+      "Tsorthan Grove"
+    ],
+    "license": "CC0",
+    "note": "03/11/2026: đã bổ sung đường dẫn trang gốc (tìm được qua tìm kiếm); trang chặn đọc tự động nên chưa tự kiểm lại giấy phép, giữ CC0 theo bản duyệt trước."
+  },
+  "audio_cinematic-calm": {
+    "file": "audio/music/multiverse_salon/cinematic-calm.mp3",
+    "title": "cinematic-calm",
+    "source": "https://opengameart.org/content/at-home-orchestral",
+    "authors": [
+      "Wolfgang_"
+    ],
+    "license": "CC0"
+  },
+  "audio_desert_loops_2": {
+    "file": "audio/music/sa_mac_dung_chung/desert_loops_2.mp3",
+    "title": "desert_loops_2",
+    "source": "https://opengameart.org/content/desert-loop-lo-fi-remaster",
+    "authors": [
+      "iamoneabe"
+    ],
+    "license": "CC0"
+  },
+  "audio_dodging_lights": {
+    "file": "audio/music/river_survival_cang_thang/dodging_lights.mp3",
+    "title": "dodging_lights",
+    "source": "https://opengameart.org/content/sneaky-music-pack",
+    "authors": [
+      "Umplix"
+    ],
+    "license": "CC0"
+  },
+  "audio_down_the_river": {
+    "file": "audio/music/kayak_rush/down_the_river.mp3",
+    "title": "down_the_river",
+    "source": "https://opengameart.org/content/down-the-river",
+    "authors": [
+      "Komiku (Loyalty Freak Music)"
+    ],
+    "license": "CC0 (theo ghi chú trước; chưa kiểm lại trang gốc)"
+  },
+  "audio_Emotional_Piano_Loop": {
+    "file": "audio/music/multiverse_phong_ngu/Emotional_Piano_Loop.mp3",
+    "title": "Emotional_Piano_Loop",
+    "source": "https://opengameart.org/content/emotional-piano-loop",
+    "authors": [
+      "extenz"
+    ],
+    "license": "CC0"
+  },
+  "audio_forest_2": {
+    "file": "audio/music/river_survival_yen_tinh/forest_2.mp3",
+    "title": "forest_2",
+    "source": "https://opengameart.org/content/cathedral-in-the-forest-ambient-loop",
+    "authors": [
+      "congusbongus"
+    ],
+    "license": "CC0"
+  },
+  "audio_happy_adventure": {
+    "file": "audio/music/kayak_rush/happy_adventure.mp3",
+    "title": "happy_adventure",
+    "source": "https://opengameart.org/content/happy-adventure-loop",
+    "authors": [
+      "TinyWorlds"
+    ],
+    "license": "CC0 (theo ghi chú trước; chưa kiểm lại trang gốc)"
+  },
+  "audio_IntoTheStars": {
+    "file": "audio/music/multiverse_cyber/IntoTheStars.mp3",
+    "title": "IntoTheStars",
+    "source": "",
+    "authors": [
+      "KiluaBoy"
+    ],
+    "license": "CC0 (theo ghi chú trước; chưa kiểm lại trang gốc)",
+    "note": "03/11/2026: không đọc được trang gốc (trang chặn truy cập tự động; tìm kiếm chưa ra đúng trang). Vẫn thiếu đường dẫn; chủ dự án cần dán link trang OpenGameArt của KiluaBoy."
+  },
+  "audio_lofiagain": {
+    "file": "audio/music/summer_camp/lofiagain.mp3",
+    "title": "lofiagain",
+    "source": "https://opengameart.org/content/lofi-again",
+    "authors": [
+      "Omfgdude"
+    ],
+    "license": "CHƯA XÁC NHẬN: ô giấy phép trên trang để trống",
+    "note": "03/11/2026: tác giả lấy từ mục \"Copyright/Attribution Notice\" của trang; giấy phép không ghi. Cần xác nhận hoặc thay bài trước khi bán."
+  },
+  "audio_LofiLoop": {
+    "file": "audio/music/river_fishing/LofiLoop.mp3",
+    "title": "LofiLoop",
+    "source": "https://opengameart.org/content/lofi-hip-hop-loop",
+    "authors": [
+      "omfgdude (OMF-Games)"
+    ],
+    "license": "CC0 theo một bình luận trên trang; ô giấy phép chính thức để trống (chưa xác nhận)",
+    "note": "03/11/2026: cùng tác giả với \"Lofi again\"; cần hỏi lại tác giả hoặc thay bài trước khi bán."
+  },
+  "audio_Production_Intro_Theme": {
+    "file": "audio/music/menu_intro/Production_Intro_Theme.mp3",
+    "title": "Production_Intro_Theme",
+    "source": "https://opengameart.org/content/production-theme-intro-epic-orchestra",
+    "authors": [
+      "nene"
+    ],
+    "license": "CC0"
+  },
+  "audio_alarm_short": {
+    "file": "audio/sfx/alarm_short.mp3",
+    "title": "alarm_short",
+    "source": "https://opengameart.org/content/short-alarm",
+    "authors": [
+      "yd"
+    ],
+    "license": "CC0"
+  },
+  "audio_camera_shutter": {
+    "file": "audio/sfx/camera_shutter.mp3",
+    "title": "camera_shutter",
+    "source": "https://opengameart.org/content/camerashudder",
+    "authors": [
+      "FacadeGaikan"
+    ],
+    "license": "CC0"
+  },
+  "audio_cook_cut": {
+    "file": "audio/sfx/cook_cut.mp3",
+    "title": "cook_cut",
+    "source": "https://opengameart.org/content/adding-salt",
+    "authors": [
+      "TinyWorlds"
+    ],
+    "license": "CC0"
+  },
+  "audio_cook_cutlery": {
+    "file": "audio/sfx/cook_cutlery.mp3",
+    "title": "cook_cutlery",
+    "source": "https://opengameart.org/content/adding-salt",
+    "authors": [
+      "TinyWorlds"
+    ],
+    "license": "CC0"
+  },
+  "audio_cook_salt": {
+    "file": "audio/sfx/cook_salt.mp3",
+    "title": "cook_salt",
+    "source": "https://opengameart.org/content/adding-salt",
+    "authors": [
+      "TinyWorlds"
+    ],
+    "license": "CC0"
+  },
+  "audio_cook_stove_on": {
+    "file": "audio/sfx/cook_stove_on.mp3",
+    "title": "cook_stove_on",
+    "source": "https://opengameart.org/content/adding-salt",
+    "authors": [
+      "TinyWorlds"
+    ],
+    "license": "CC0"
+  },
+  "audio_crowd_cheer_kids": {
+    "file": "audio/sfx/crowd_cheer_kids.mp3",
+    "title": "crowd_cheer_kids",
+    "source": "https://sfxmint.com/category/crowd",
+    "authors": [
+      "SFXMint"
+    ],
+    "license": "CC0 (âm thanh do AI/tổng hợp tạo)",
+    "note": "Âm thanh do AI/tổng hợp tạo, nhà cung cấp công bố CC0"
+  },
+  "audio_crowd_giggle": {
+    "file": "audio/sfx/crowd_giggle.mp3",
+    "title": "crowd_giggle",
+    "source": "https://opengameart.org/content/group-giggling",
+    "authors": [
+      "Nocturnal_Vanguard"
+    ],
+    "license": "CC0"
+  },
+  "audio_jump_land": {
+    "file": "audio/sfx/jump_land.mp3",
+    "title": "jump_land",
+    "source": "https://opengameart.org/content/jump-landing-sound",
+    "authors": [
+      "MentalSanityOff"
+    ],
+    "license": "CC0"
+  },
+  "audio_pop_1": {
+    "file": "audio/sfx/pop_1.mp3",
+    "title": "pop_1",
+    "source": "https://opengameart.org/content/random-sfx",
+    "authors": [
+      "Écrivain (Random SFX)"
+    ],
+    "license": "CC0"
+  },
+  "audio_pop_2": {
+    "file": "audio/sfx/pop_2.mp3",
+    "title": "pop_2",
+    "source": "https://opengameart.org/content/random-sfx",
+    "authors": [
+      "Écrivain (Random SFX)"
+    ],
+    "license": "CC0"
+  },
+  "audio_pop_3": {
+    "file": "audio/sfx/pop_3.mp3",
+    "title": "pop_3",
+    "source": "https://opengameart.org/content/random-sfx",
+    "authors": [
+      "Écrivain (Random SFX)"
+    ],
+    "license": "CC0"
+  },
+  "audio_rope_winch": {
+    "file": "audio/sfx/rope_winch.mp3",
+    "title": "rope_winch",
+    "source": "https://opengameart.org/content/chain-winch-sounds",
+    "authors": [
+      "bart"
+    ],
+    "license": "CC0"
+  },
+  "audio_splash_1": {
+    "file": "audio/sfx/splash_1.mp3",
+    "title": "splash_1",
+    "source": "https://opengameart.org/content/6-short-water-splashes",
+    "authors": [
+      "ezwa"
+    ],
+    "license": "CC0"
+  },
+  "audio_splash_2": {
+    "file": "audio/sfx/splash_2.mp3",
+    "title": "splash_2",
+    "source": "https://opengameart.org/content/6-short-water-splashes",
+    "authors": [
+      "ezwa"
+    ],
+    "license": "CC0"
+  },
+  "audio_splash_3": {
+    "file": "audio/sfx/splash_3.mp3",
+    "title": "splash_3",
+    "source": "https://opengameart.org/content/6-short-water-splashes",
+    "authors": [
+      "ezwa"
+    ],
+    "license": "CC0"
+  },
+  "audio_splash_4": {
+    "file": "audio/sfx/splash_4.mp3",
+    "title": "splash_4",
+    "source": "https://opengameart.org/content/6-short-water-splashes",
+    "authors": [
+      "ezwa"
+    ],
+    "license": "CC0"
+  },
+  "audio_splash_5": {
+    "file": "audio/sfx/splash_5.mp3",
+    "title": "splash_5",
+    "source": "https://opengameart.org/content/6-short-water-splashes",
+    "authors": [
+      "ezwa"
+    ],
+    "license": "CC0"
+  },
+  "audio_splash_6": {
+    "file": "audio/sfx/splash_6.mp3",
+    "title": "splash_6",
+    "source": "https://opengameart.org/content/6-short-water-splashes",
+    "authors": [
+      "ezwa"
+    ],
+    "license": "CC0"
+  },
+  "audio_step_gravel": {
+    "file": "audio/sfx/step_gravel.mp3",
+    "title": "step_gravel",
+    "source": "https://opengameart.org/content/different-steps-on-wood-stone-leaves-gravel-and-mud",
+    "authors": [
+      "TinyWorlds ([kdd] Different steps)"
+    ],
+    "license": "CC0"
+  },
+  "audio_step_leaves_1": {
+    "file": "audio/sfx/step_leaves_1.mp3",
+    "title": "step_leaves_1",
+    "source": "https://opengameart.org/content/different-steps-on-wood-stone-leaves-gravel-and-mud",
+    "authors": [
+      "TinyWorlds ([kdd] Different steps)"
+    ],
+    "license": "CC0"
+  },
+  "audio_step_leaves_2": {
+    "file": "audio/sfx/step_leaves_2.mp3",
+    "title": "step_leaves_2",
+    "source": "https://opengameart.org/content/different-steps-on-wood-stone-leaves-gravel-and-mud",
+    "authors": [
+      "TinyWorlds ([kdd] Different steps)"
+    ],
+    "license": "CC0"
+  },
+  "audio_step_mud": {
+    "file": "audio/sfx/step_mud.mp3",
+    "title": "step_mud",
+    "source": "https://opengameart.org/content/different-steps-on-wood-stone-leaves-gravel-and-mud",
+    "authors": [
+      "TinyWorlds ([kdd] Different steps)"
+    ],
+    "license": "CC0"
+  },
+  "audio_step_sand_l1": {
+    "file": "audio/sfx/step_sand_l1.mp3",
+    "title": "step_sand_l1",
+    "source": "https://opengameart.org/content/fantozzis-footsteps-grasssand-stone",
+    "authors": [
+      "Fantozzi (qubodup đăng)"
+    ],
+    "license": "CC0"
+  },
+  "audio_step_sand_l2": {
+    "file": "audio/sfx/step_sand_l2.mp3",
+    "title": "step_sand_l2",
+    "source": "https://opengameart.org/content/fantozzis-footsteps-grasssand-stone",
+    "authors": [
+      "Fantozzi (qubodup đăng)"
+    ],
+    "license": "CC0"
+  },
+  "audio_step_sand_l3": {
+    "file": "audio/sfx/step_sand_l3.mp3",
+    "title": "step_sand_l3",
+    "source": "https://opengameart.org/content/fantozzis-footsteps-grasssand-stone",
+    "authors": [
+      "Fantozzi (qubodup đăng)"
+    ],
+    "license": "CC0"
+  },
+  "audio_step_sand_r1": {
+    "file": "audio/sfx/step_sand_r1.mp3",
+    "title": "step_sand_r1",
+    "source": "https://opengameart.org/content/fantozzis-footsteps-grasssand-stone",
+    "authors": [
+      "Fantozzi (qubodup đăng)"
+    ],
+    "license": "CC0"
+  },
+  "audio_step_sand_r2": {
+    "file": "audio/sfx/step_sand_r2.mp3",
+    "title": "step_sand_r2",
+    "source": "https://opengameart.org/content/fantozzis-footsteps-grasssand-stone",
+    "authors": [
+      "Fantozzi (qubodup đăng)"
+    ],
+    "license": "CC0"
+  },
+  "audio_step_sand_r3": {
+    "file": "audio/sfx/step_sand_r3.mp3",
+    "title": "step_sand_r3",
+    "source": "https://opengameart.org/content/fantozzis-footsteps-grasssand-stone",
+    "authors": [
+      "Fantozzi (qubodup đăng)"
+    ],
+    "license": "CC0"
+  },
+  "audio_step_snow_01": {
+    "file": "audio/sfx/step_snow_01.mp3",
+    "title": "step_snow_01",
+    "source": "https://opengameart.org/content/9-wet-snow-steps",
+    "authors": [
+      "qubodup"
+    ],
+    "license": "CC0"
+  },
+  "audio_step_snow_02": {
+    "file": "audio/sfx/step_snow_02.mp3",
+    "title": "step_snow_02",
+    "source": "https://opengameart.org/content/9-wet-snow-steps",
+    "authors": [
+      "qubodup"
+    ],
+    "license": "CC0"
+  },
+  "audio_step_snow_03": {
+    "file": "audio/sfx/step_snow_03.mp3",
+    "title": "step_snow_03",
+    "source": "https://opengameart.org/content/9-wet-snow-steps",
+    "authors": [
+      "qubodup"
+    ],
+    "license": "CC0"
+  },
+  "audio_step_snow_04": {
+    "file": "audio/sfx/step_snow_04.mp3",
+    "title": "step_snow_04",
+    "source": "https://opengameart.org/content/9-wet-snow-steps",
+    "authors": [
+      "qubodup"
+    ],
+    "license": "CC0"
+  },
+  "audio_step_snow_05": {
+    "file": "audio/sfx/step_snow_05.mp3",
+    "title": "step_snow_05",
+    "source": "https://opengameart.org/content/9-wet-snow-steps",
+    "authors": [
+      "qubodup"
+    ],
+    "license": "CC0"
+  },
+  "audio_step_snow_06": {
+    "file": "audio/sfx/step_snow_06.mp3",
+    "title": "step_snow_06",
+    "source": "https://opengameart.org/content/9-wet-snow-steps",
+    "authors": [
+      "qubodup"
+    ],
+    "license": "CC0"
+  },
+  "audio_step_snow_07": {
+    "file": "audio/sfx/step_snow_07.mp3",
+    "title": "step_snow_07",
+    "source": "https://opengameart.org/content/9-wet-snow-steps",
+    "authors": [
+      "qubodup"
+    ],
+    "license": "CC0"
+  },
+  "audio_step_snow_08": {
+    "file": "audio/sfx/step_snow_08.mp3",
+    "title": "step_snow_08",
+    "source": "https://opengameart.org/content/9-wet-snow-steps",
+    "authors": [
+      "qubodup"
+    ],
+    "license": "CC0"
+  },
+  "audio_step_snow_09": {
+    "file": "audio/sfx/step_snow_09.mp3",
+    "title": "step_snow_09",
+    "source": "https://opengameart.org/content/9-wet-snow-steps",
+    "authors": [
+      "qubodup"
+    ],
+    "license": "CC0"
+  },
+  "audio_step_stone": {
+    "file": "audio/sfx/step_stone.mp3",
+    "title": "step_stone",
+    "source": "https://opengameart.org/content/different-steps-on-wood-stone-leaves-gravel-and-mud",
+    "authors": [
+      "TinyWorlds ([kdd] Different steps)"
+    ],
+    "license": "CC0"
+  },
+  "audio_step_stone_l1": {
+    "file": "audio/sfx/step_stone_l1.mp3",
+    "title": "step_stone_l1",
+    "source": "https://opengameart.org/content/fantozzis-footsteps-grasssand-stone",
+    "authors": [
+      "Fantozzi (qubodup đăng)"
+    ],
+    "license": "CC0"
+  },
+  "audio_step_stone_l2": {
+    "file": "audio/sfx/step_stone_l2.mp3",
+    "title": "step_stone_l2",
+    "source": "https://opengameart.org/content/fantozzis-footsteps-grasssand-stone",
+    "authors": [
+      "Fantozzi (qubodup đăng)"
+    ],
+    "license": "CC0"
+  },
+  "audio_step_stone_l3": {
+    "file": "audio/sfx/step_stone_l3.mp3",
+    "title": "step_stone_l3",
+    "source": "https://opengameart.org/content/fantozzis-footsteps-grasssand-stone",
+    "authors": [
+      "Fantozzi (qubodup đăng)"
+    ],
+    "license": "CC0"
+  },
+  "audio_step_stone_r1": {
+    "file": "audio/sfx/step_stone_r1.mp3",
+    "title": "step_stone_r1",
+    "source": "https://opengameart.org/content/fantozzis-footsteps-grasssand-stone",
+    "authors": [
+      "Fantozzi (qubodup đăng)"
+    ],
+    "license": "CC0"
+  },
+  "audio_step_stone_r2": {
+    "file": "audio/sfx/step_stone_r2.mp3",
+    "title": "step_stone_r2",
+    "source": "https://opengameart.org/content/fantozzis-footsteps-grasssand-stone",
+    "authors": [
+      "Fantozzi (qubodup đăng)"
+    ],
+    "license": "CC0"
+  },
+  "audio_step_stone_r3": {
+    "file": "audio/sfx/step_stone_r3.mp3",
+    "title": "step_stone_r3",
+    "source": "https://opengameart.org/content/fantozzis-footsteps-grasssand-stone",
+    "authors": [
+      "Fantozzi (qubodup đăng)"
+    ],
+    "license": "CC0"
+  },
+  "audio_step_wood_1": {
+    "file": "audio/sfx/step_wood_1.mp3",
+    "title": "step_wood_1",
+    "source": "https://opengameart.org/content/different-steps-on-wood-stone-leaves-gravel-and-mud",
+    "authors": [
+      "TinyWorlds ([kdd] Different steps)"
+    ],
+    "license": "CC0"
+  },
+  "audio_step_wood_2": {
+    "file": "audio/sfx/step_wood_2.mp3",
+    "title": "step_wood_2",
+    "source": "https://opengameart.org/content/different-steps-on-wood-stone-leaves-gravel-and-mud",
+    "authors": [
+      "TinyWorlds ([kdd] Different steps)"
+    ],
+    "license": "CC0"
+  },
+  "audio_step_wood_3": {
+    "file": "audio/sfx/step_wood_3.mp3",
+    "title": "step_wood_3",
+    "source": "https://opengameart.org/content/different-steps-on-wood-stone-leaves-gravel-and-mud",
+    "authors": [
+      "TinyWorlds ([kdd] Different steps)"
+    ],
+    "license": "CC0"
+  },
+  "audio_ui_interface_1": {
+    "file": "audio/sfx/ui_interface_1.mp3",
+    "title": "ui_interface_1",
+    "source": "https://opengameart.org/content/rpg-sound-pack",
+    "authors": [
+      "artisticdude (RPG Sound Pack)"
+    ],
+    "license": "CC0"
+  },
+  "audio_ui_interface_2": {
+    "file": "audio/sfx/ui_interface_2.mp3",
+    "title": "ui_interface_2",
+    "source": "https://opengameart.org/content/rpg-sound-pack",
+    "authors": [
+      "artisticdude (RPG Sound Pack)"
+    ],
+    "license": "CC0"
+  },
+  "audio_ui_interface_3": {
+    "file": "audio/sfx/ui_interface_3.mp3",
+    "title": "ui_interface_3",
+    "source": "https://opengameart.org/content/rpg-sound-pack",
+    "authors": [
+      "artisticdude (RPG Sound Pack)"
+    ],
+    "license": "CC0"
+  },
+  "audio_ui_interface_4": {
+    "file": "audio/sfx/ui_interface_4.mp3",
+    "title": "ui_interface_4",
+    "source": "https://opengameart.org/content/rpg-sound-pack",
+    "authors": [
+      "artisticdude (RPG Sound Pack)"
+    ],
+    "license": "CC0"
+  },
+  "audio_ui_interface_5": {
+    "file": "audio/sfx/ui_interface_5.mp3",
+    "title": "ui_interface_5",
+    "source": "https://opengameart.org/content/rpg-sound-pack",
+    "authors": [
+      "artisticdude (RPG Sound Pack)"
+    ],
+    "license": "CC0"
+  },
+  "audio_ui_interface_6": {
+    "file": "audio/sfx/ui_interface_6.mp3",
+    "title": "ui_interface_6",
+    "source": "https://opengameart.org/content/rpg-sound-pack",
+    "authors": [
+      "artisticdude (RPG Sound Pack)"
+    ],
+    "license": "CC0"
+  },
+  "audio_ui_menu_choice": {
+    "file": "audio/sfx/ui_menu_choice.mp3",
+    "title": "ui_menu_choice",
+    "source": "https://opengameart.org/content/menu-choice",
+    "authors": [
+      "Sudocolon"
+    ],
+    "license": "CC0"
+  },
+  "audio_whoosh_1": {
+    "file": "audio/sfx/whoosh_1.mp3",
+    "title": "whoosh_1",
+    "source": "https://opengameart.org/content/swish-bamboo-stick-weapon-swhosh-sounds",
+    "authors": [
+      "qubodup (swoshes)"
+    ],
+    "license": "CC0"
+  },
+  "audio_whoosh_2": {
+    "file": "audio/sfx/whoosh_2.mp3",
+    "title": "whoosh_2",
+    "source": "https://opengameart.org/content/swish-bamboo-stick-weapon-swhosh-sounds",
+    "authors": [
+      "qubodup (swoshes)"
+    ],
+    "license": "CC0"
+  },
+  "audio_whoosh_3": {
+    "file": "audio/sfx/whoosh_3.mp3",
+    "title": "whoosh_3",
+    "source": "https://opengameart.org/content/swish-bamboo-stick-weapon-swhosh-sounds",
+    "authors": [
+      "qubodup (swoshes)"
+    ],
+    "license": "CC0"
+  },
+  "audio_whoosh_4": {
+    "file": "audio/sfx/whoosh_4.mp3",
+    "title": "whoosh_4",
+    "source": "https://opengameart.org/content/swish-bamboo-stick-weapon-swhosh-sounds",
+    "authors": [
+      "qubodup (swoshes)"
+    ],
+    "license": "CC0"
+  },
+  "audio_win": {
+    "file": "audio/sfx/win.mp3",
+    "title": "win",
+    "source": "https://opengameart.org/content/win-sound-effect",
+    "authors": [
+      "không ghi"
+    ],
+    "license": "Public domain (theo trang)",
+    "note": "03/11/2026: không đọc được trang để lấy tên tác giả; trang ghi Public domain. Chủ dự án có thể dán lại tên tác giả nếu thấy trên trang."
+  },
+  "camp_chair": {
+    "file": "camp/camp_chair.glb",
+    "title": "Meshy_AI_Object_A_modular_fo_1027181114_texture.glb",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  },
+  "camp_chair_2": {
+    "file": "camp/camp_chair_2.glb",
+    "title": "Meshy_AI_Object_A_modular_fo_1027181201_texture.glb",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  },
+  "fish_net": {
+    "file": "fishing/fish_net.glb",
+    "title": "fish_net (Meshy text-to-3D 01/11/2026)",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  },
+  "food_apple": {
+    "file": "food/food_apple.glb",
+    "title": "food_apple (Meshy text-to-3D 01/11/2026)",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  },
+  "food_bread": {
+    "file": "food/food_bread.glb",
+    "title": "food_bread (Meshy text-to-3D 01/11/2026)",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  },
+  "food_corn": {
+    "file": "food/food_corn.glb",
+    "title": "food_corn (Meshy text-to-3D 01/11/2026)",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  },
+  "food_meat_raw": {
+    "file": "food/food_meat_raw.glb",
+    "title": "food_meat_raw (Meshy text-to-3D 01/11/2026)",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  },
+  "river_shed": {
+    "file": "river_world/river_shed.glb",
+    "title": "river_shed (Meshy text-to-3D 01/11/2026)",
+    "source": "meshy.ai",
+    "authors": [
+      "Meshy AI"
+    ],
+    "license": "Meshy Pro plan (commercial)",
+    "downloaded": "2026-11-01"
+  }
 }

@@ -226,6 +226,29 @@ _MORE3 = {
 }
 _merge(_MORE3)
 
+# Đợt 4 (03/11): gán 23 model còn mồ côi trong thư viện vào đúng chặng để hai test độ phủ chạy lại được.
+# Mixamo (anim_*) chỉ là hoạt ảnh cho nhân vật; model Meshy (mv_*, dino_*) đặt vào chặng hợp bối cảnh.
+_MORE4 = {
+    'fish-01': {'stages': {2: (['anim_fishing_idle'], ['bobber', 'wait'], 'Bác Năm đứng yên chờ cá cắn trong tư thế câu chờ: nhìn tư thế rồi đọc đúng tên từng động tác.')}},
+    'fish-04': {'stages': {3: (['anim_fishing_idle'], ['bobber', 'wait'], 'Thợ câu ngồi chờ dưới trăng, tay giữ cần thật yên: đọc đúng tên động tác trước khi nâng cần.')}},
+    'camp-02': {'stages': {6: (['anim_sit_male', 'anim_sit_female'], ['sit down', 'dinner table'], 'Các đội ngồi quanh bàn tiệc của Chef Marco: ai đọc đúng món của mình thì được ngồi vào ghế.')}},
+    'camp-04': {'stages': {3: (['anim_sit_male', 'anim_sit_female'], ['sit down', 'bench'], 'Cả lớp ngồi xuống ghế dài quanh lửa: mỗi câu đúng xếp thêm một chỗ ngồi.')}},
+    'surv-02': {'stages': {4: (['anim_beckon'], ['come here', 'this way'], 'Trinh sát vẫy tay gọi đồng đội đi theo hướng đúng: đọc đúng câu chỉ đường trên bia thì cả nhóm theo kịp.')}},
+    'dino-03': {'stages': {1: (['dino_sand', 'dino_sand_2'], ['sand', 'dust'], 'Đụn cát nóng nằm rải rác trên cao nguyên khô: gọi đúng tên thì cát lún nông cho cả bầy đi qua.'),
+                         2: (['dino_footprint'], ['footprint', 'follow'], 'Dấu chân của cha in sâu trên cát: đọc đúng từ thì đàn con đặt chân vào đúng dấu mà đi theo.')}},
+    'dino-05': {'stages': {1: (['dino_footprint', 'anim_beckon'], ['footprint', 'come here'], 'Cha chậm bước, dấu chân in nông; Mốc vẫy cha lại gần và đi chậm cho vừa nhịp.')}},
+    'mv-01': {'stages': {1: (['mv_torch', 'mv_torch_2', 'mv_torch_3', 'mv_castle_module', 'mv_castle_module_2'], ['torch', 'castle wall'], 'Đuốc cháy dọc tường lâu đài: câu đúng làm ngọn lửa sáng, sương lui ra khỏi cổng.'),
+                         2: (['mv_salon_furniture', 'mv_salon_furniture_2'], ['sofa', 'armchair'], 'Phòng khách cổ điển hiện ra sau tấm kính màu: ghế bành và ghế sofa là nơi giấu các trang sách rơi.')}},
+    'mv-02': {'stages': {2: (['mv_cyber_room'], ['room', 'neon sign'], 'Một căn phòng neon trên mái nhà: bật đúng bảng hiệu thì drone rời đi.')}},
+    'mv-03': {'stages': {3: (['mv_scene'], ['pavilion', 'mountain'], 'Xa xa sau sa mạc là những mái đình giữa núi: đọc đúng thứ tự thì bậc thang dẫn tới đó.')}},
+    'mv-04': {'stages': {1: (['mv_torch_4', 'mv_castle_module_3'], ['torch', 'tower'], 'Một mảnh lâu đài trôi lơ lửng, đuốc vẫn cháy trên tường: câu đúng giữ ngọn lửa không tắt.'),
+                         7: (['mv_scene_3'], ['floating', 'stone'], 'Những tảng đá lơ lửng là mảnh vỡ lạc: đưa từng tảng về đúng cổng.')}},
+    'mv-05': {'stages': {1: (['mv_torch_5', 'mv_castle_module_4'], ['torch', 'tower'], 'Các tổ đội tập hợp quanh đuốc trong sân pháo đài: mỗi đội đọc đúng lời triệu tập thì đuốc của đội sáng lên.'),
+                         4: (['mv_scene_2'], ['snow', 'crater'], 'Miệng núi lửa phủ tuyết ở phía xa lặng đi khi cát lắng: câu sắp xếp đúng làm gió ngừng.'),
+                         5: (['mv_salon_furniture_3'], ['chair', 'salon'], 'Boss Hợp Thể lẩn vào phòng khách cổ: chiếc ghế bành là chỗ cả tổ đội hợp sức đỡ đòn.')}},
+}
+_merge(_MORE4)
+
 # Model 3D có xương cho nhân vật Multiverse: ghi ở đầu clothing_text dạng [asset_id] (cùng quy ước với game khủng long).
 MV_MODELS = {
     'Scarlet': 'mv_hero_scarlet',
@@ -262,3 +285,16 @@ def apply(scn):
         for b in beats:
             if b not in st['beats']:
                 st['beats'].append(b)
+
+# 03/11/2026: tên mới sau khi đổi tên file đặt sai (xem doi_ten_2026-11-03.json)
+_MORE5 = {
+    'fish-02': {'stages': {1: (['fish_rod_bundle'], ['rod', 'fishing rod'], 'Giá cần câu của ban tổ chức dựng ở bến: mỗi đội chọn đúng cần trước khi khai mạc.')}},
+    'camp-01': {'stages': {1: (['camp_gear_pile'], ['gear', 'box'], 'Đống đồ trại bên cạnh rương: gọi đúng tên từng món thì Bảng Nhiệm vụ sáng lên.')}},
+    'camp-02': {'stages': {5: (['camp_pot'], ['pot', 'boil'], 'Nồi trại bắc lên bếp để nấu súp: đọc đúng công thức thì nước sôi đều.'),
+                           6: (['camp_coffee_splash'], ['pour', 'drink'], 'Chef Marco rót nước cho cả bàn tiệc: câu đúng làm nước chảy đầy ly.')}},
+    'camp-03': {'stages': {2: (['camp_tent_ruined_grey'], ['torn', 'broken'], 'Một chiếc lều cũ đã rách tả tơi sau cơn gió: các đội đọc đúng từ để vá lại cho chắc.')}},
+    'camp-04': {'stages': {1: (['camp_lantern_tree'], ['lantern', 'tree'], 'Cây cổ thụ có đèn lồng treo trên cành: thắp sáng đèn là mở đầu đêm lửa trại.')}},
+    'camp-05': {'stages': {1: (['camp_ration_pack'], ['food', 'pack'], 'Gói lương khô cho chuyến đi: chỉ bỏ vào ba lô đúng số gói theo câu trả lời.'),
+                           5: (['camp_tent_family_grey'], ['tent', 'shelter'], 'Lều lớn cho cả nhóm ở bãi mới: dựng đúng từng bước thì lều đứng vững.')}},
+}
+_merge(_MORE5)

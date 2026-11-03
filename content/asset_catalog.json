@@ -7,7 +7,10 @@
   "mb_low": null,
   "scope": "shared",
   "game": null,
-  "games": [],
+  "games": [
+   "dino_journey",
+   "river_survival"
+  ],
   "source": "download",
   "tris_raw": 0,
   "tris_web": null,
@@ -91,7 +94,9 @@
   "mb_low": null,
   "scope": "shared",
   "game": null,
-  "games": [],
+  "games": [
+   "river_fishing"
+  ],
   "source": "download",
   "tris_raw": 0,
   "tris_web": null,
@@ -243,7 +248,9 @@
   "mb_low": null,
   "scope": "shared",
   "game": null,
-  "games": [],
+  "games": [
+   "summer_camp"
+  ],
   "source": "download",
   "tris_raw": 0,
   "tris_web": null,
@@ -260,7 +267,9 @@
   "mb_low": null,
   "scope": "shared",
   "game": null,
-  "games": [],
+  "games": [
+   "summer_camp"
+  ],
   "source": "download",
   "tris_raw": 0,
   "tris_web": null,
@@ -325,25 +334,6 @@
   "tris_web": 8000,
   "tris_low": 4000,
   "textures": 2,
-  "animations": 0,
-  "skinned": false
- },
- {
-  "id": "camp_backpack",
-  "file": "camp/camp_backpack.glb",
-  "mb_raw": 2.19,
-  "mb_web": 0.35,
-  "mb_low": 0.16,
-  "scope": "game",
-  "game": "summer_camp",
-  "games": [
-   "summer_camp"
-  ],
-  "source": "meshy",
-  "tris_raw": 10000,
-  "tris_web": 10000,
-  "tris_low": 4470,
-  "textures": 1,
   "animations": 0,
   "skinned": false
  },
@@ -565,8 +555,8 @@
   "skinned": false
  },
  {
-  "id": "camp_cup",
-  "file": "camp/camp_cup.glb",
+  "id": "camp_coffee_splash",
+  "file": "camp/camp_coffee_splash.glb",
   "mb_raw": 21.68,
   "mb_web": 0.41,
   "mb_low": 0.14,
@@ -575,7 +565,7 @@
   "games": [
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 491804,
   "tris_web": 7999,
   "tris_low": 4000,
@@ -614,31 +604,11 @@
    "river_survival",
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 17364,
   "tris_web": 8000,
   "tris_low": 4000,
   "textures": 3,
-  "animations": 0,
-  "skinned": false
- },
- {
-  "id": "camp_firepit__alt1",
-  "file": "camp/camp_firepit__alt1.glb",
-  "mb_raw": 74.98,
-  "mb_web": 0.42,
-  "mb_low": 0.13,
-  "scope": "game",
-  "game": "summer_camp",
-  "games": [
-   "river_survival",
-   "summer_camp"
-  ],
-  "source": "meshy",
-  "tris_raw": 1309799,
-  "tris_web": 7937,
-  "tris_low": 3932,
-  "textures": 4,
   "animations": 0,
   "skinned": false
  },
@@ -700,6 +670,25 @@
   "skinned": false
  },
  {
+  "id": "camp_gear_pile",
+  "file": "camp/camp_gear_pile.glb",
+  "mb_raw": 17.36,
+  "mb_web": 0.35,
+  "mb_low": 0.13,
+  "scope": "game",
+  "game": "summer_camp",
+  "games": [
+   "summer_camp"
+  ],
+  "source": "download",
+  "tris_raw": 444573,
+  "tris_web": 10150,
+  "tris_low": 3995,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
   "id": "camp_grill",
   "file": "camp/camp_grill.glb",
   "mb_raw": 3.14,
@@ -719,30 +708,11 @@
   "skinned": false
  },
  {
-  "id": "camp_grill_2",
-  "file": "camp/camp_grill_2.glb",
-  "mb_raw": 21.92,
-  "mb_web": 0.54,
-  "mb_low": 0.16,
-  "scope": "game",
-  "game": "summer_camp",
-  "games": [
-   "summer_camp"
-  ],
-  "source": "download",
-  "tris_raw": 348807,
-  "tris_web": 7999,
-  "tris_low": 3999,
-  "textures": 4,
-  "animations": 0,
-  "skinned": false
- },
- {
   "id": "camp_lantern",
   "file": "camp/camp_lantern.glb",
-  "mb_raw": 13.2,
-  "mb_web": 0.41,
-  "mb_low": 0.14,
+  "mb_raw": 1.16,
+  "mb_web": 0.14,
+  "mb_low": 0.07,
   "scope": "game",
   "game": "summer_camp",
   "games": [
@@ -752,10 +722,10 @@
    "summer_camp"
   ],
   "source": "download",
-  "tris_raw": 93085,
-  "tris_web": 7998,
-  "tris_low": 4438,
-  "textures": 3,
+  "tris_raw": 4031,
+  "tris_web": 4031,
+  "tris_low": 4031,
+  "textures": 1,
   "animations": 0,
   "skinned": false
  },
@@ -782,24 +752,21 @@
   "skinned": false
  },
  {
-  "id": "camp_lantern_3",
-  "file": "camp/camp_lantern_3.glb",
-  "mb_raw": 1.16,
-  "mb_web": 0.14,
-  "mb_low": 0.07,
+  "id": "camp_lantern_tree",
+  "file": "camp/camp_lantern_tree.glb",
+  "mb_raw": 13.2,
+  "mb_web": 0.41,
+  "mb_low": 0.14,
   "scope": "game",
   "game": "summer_camp",
   "games": [
-   "kayak_rush",
-   "river_fishing",
-   "river_survival",
    "summer_camp"
   ],
   "source": "download",
-  "tris_raw": 4031,
-  "tris_web": 4031,
-  "tris_low": 4031,
-  "textures": 1,
+  "tris_raw": 93085,
+  "tris_web": 7998,
+  "tris_low": 4438,
+  "textures": 3,
   "animations": 0,
   "skinned": false
  },
@@ -842,21 +809,40 @@
   "skinned": false
  },
  {
-  "id": "camp_pan",
-  "file": "camp/camp_pan.glb",
-  "mb_raw": 2.32,
-  "mb_web": 0.07,
-  "mb_low": 0.05,
+  "id": "camp_pot",
+  "file": "camp/camp_pot.glb",
+  "mb_raw": 21.92,
+  "mb_web": 0.54,
+  "mb_low": 0.16,
   "scope": "game",
   "game": "summer_camp",
   "games": [
    "summer_camp"
   ],
-  "source": "self",
-  "tris_raw": 2074,
-  "tris_web": 2074,
-  "tris_low": 2074,
-  "textures": 1,
+  "source": "download",
+  "tris_raw": 348807,
+  "tris_web": 7999,
+  "tris_low": 3999,
+  "textures": 4,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "camp_ration_pack",
+  "file": "camp/camp_ration_pack.glb",
+  "mb_raw": 13.09,
+  "mb_web": 0.35,
+  "mb_low": 0.13,
+  "scope": "game",
+  "game": "summer_camp",
+  "games": [
+   "summer_camp"
+  ],
+  "source": "download",
+  "tris_raw": 219116,
+  "tris_web": 8000,
+  "tris_low": 4000,
+  "textures": 3,
   "animations": 0,
   "skinned": false
  },
@@ -874,7 +860,7 @@
    "river_survival",
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 18875,
   "tris_web": 8000,
   "tris_low": 3998,
@@ -999,27 +985,6 @@
   "skinned": false
  },
  {
-  "id": "camp_string_lights_2",
-  "file": "camp/camp_string_lights_2.glb",
-  "mb_raw": 17.36,
-  "mb_web": 0.35,
-  "mb_low": 0.13,
-  "scope": "game",
-  "game": "summer_camp",
-  "games": [
-   "kayak_rush",
-   "river_survival",
-   "summer_camp"
-  ],
-  "source": "download",
-  "tris_raw": 444573,
-  "tris_web": 10150,
-  "tris_low": 3995,
-  "textures": 1,
-  "animations": 0,
-  "skinned": false
- },
- {
   "id": "camp_table",
   "file": "camp/camp_table.glb",
   "mb_raw": 6.58,
@@ -1109,11 +1074,30 @@
   "games": [
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 178676,
   "tris_web": 7972,
   "tris_low": 5134,
   "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "camp_tent_family_grey",
+  "file": "camp/camp_tent_family_grey.glb",
+  "mb_raw": 36.31,
+  "mb_web": 0.8,
+  "mb_low": 0.26,
+  "scope": "game",
+  "game": "summer_camp",
+  "games": [
+   "summer_camp"
+  ],
+  "source": "self",
+  "tris_raw": 819926,
+  "tris_web": 7862,
+  "tris_low": 3932,
+  "textures": 3,
   "animations": 0,
   "skinned": false
  },
@@ -1128,7 +1112,7 @@
   "games": [
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 52594,
   "tris_web": 8000,
   "tris_low": 4804,
@@ -1147,7 +1131,7 @@
   "games": [
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 9127,
   "tris_web": 9127,
   "tris_low": 4458,
@@ -1166,49 +1150,11 @@
   "games": [
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 51143,
   "tris_web": 7909,
   "tris_low": 3863,
   "textures": 1,
-  "animations": 0,
-  "skinned": false
- },
- {
-  "id": "camp_tent_stage__alt2",
-  "file": "camp/camp_tent_stage__alt2.glb",
-  "mb_raw": 36.31,
-  "mb_web": 0.8,
-  "mb_low": 0.26,
-  "scope": "game",
-  "game": "summer_camp",
-  "games": [
-   "summer_camp"
-  ],
-  "source": "meshy",
-  "tris_raw": 819926,
-  "tris_web": 7862,
-  "tris_low": 3932,
-  "textures": 3,
-  "animations": 0,
-  "skinned": false
- },
- {
-  "id": "camp_tent_stage__alt3",
-  "file": "camp/camp_tent_stage__alt3.glb",
-  "mb_raw": 33.26,
-  "mb_web": 0.64,
-  "mb_low": 0.23,
-  "scope": "game",
-  "game": "summer_camp",
-  "games": [
-   "summer_camp"
-  ],
-  "source": "meshy",
-  "tris_raw": 797411,
-  "tris_web": 7964,
-  "tris_low": 3910,
-  "textures": 3,
   "animations": 0,
   "skinned": false
  },
@@ -1223,7 +1169,7 @@
   "games": [
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 1023052,
   "tris_web": 7809,
   "tris_low": 3842,
@@ -1242,7 +1188,7 @@
   "games": [
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 100000,
   "tris_web": 8000,
   "tris_low": 4182,
@@ -1270,25 +1216,6 @@
   "skinned": false
  },
  {
-  "id": "camp_water_filter_2",
-  "file": "camp/camp_water_filter_2.glb",
-  "mb_raw": 13.09,
-  "mb_web": 0.35,
-  "mb_low": 0.13,
-  "scope": "game",
-  "game": "summer_camp",
-  "games": [
-   "summer_camp"
-  ],
-  "source": "download",
-  "tris_raw": 219116,
-  "tris_web": 8000,
-  "tris_low": 4000,
-  "textures": 3,
-  "animations": 0,
-  "skinned": false
- },
- {
   "id": "camp_well",
   "file": "camp/camp_well.glb",
   "mb_raw": 57.91,
@@ -1299,7 +1226,7 @@
   "games": [
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 1744694,
   "tris_web": 7990,
   "tris_low": 3998,
@@ -1318,7 +1245,7 @@
   "games": [
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 1110041,
   "tris_web": 8439,
   "tris_low": 3974,
@@ -1337,7 +1264,7 @@
   "games": [
    "river_survival"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 9996,
   "tris_web": 9996,
   "tris_low": 9996,
@@ -1356,7 +1283,7 @@
   "games": [
    "river_survival"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 1111221,
   "tris_web": 24775,
   "tris_low": 9925,
@@ -1375,7 +1302,7 @@
   "games": [
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 20596,
   "tris_web": 20596,
   "tris_low": 10000,
@@ -1394,7 +1321,7 @@
   "games": [
    "multiverse_portal"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 50397,
   "tris_web": 20000,
   "tris_low": 9999,
@@ -1413,7 +1340,7 @@
   "games": [
    "multiverse_portal"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 9007,
   "tris_web": 9007,
   "tris_low": 9007,
@@ -1432,7 +1359,7 @@
   "games": [
    "multiverse_portal"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 17950,
   "tris_web": 17950,
   "tris_low": 9999,
@@ -1451,7 +1378,7 @@
   "games": [
    "kayak_rush"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 18527,
   "tris_web": 18527,
   "tris_low": 10000,
@@ -1470,7 +1397,7 @@
   "games": [
    "multiverse_portal"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 245055,
   "tris_web": 20000,
   "tris_low": 10000,
@@ -1489,7 +1416,7 @@
   "games": [
    "kayak_rush"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 198818,
   "tris_web": 19999,
   "tris_low": 9997,
@@ -1508,7 +1435,7 @@
   "games": [
    "multiverse_portal"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 548436,
   "tris_web": 19996,
   "tris_low": 9988,
@@ -1527,7 +1454,7 @@
   "games": [
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 254696,
   "tris_web": 19994,
   "tris_low": 9996,
@@ -1546,7 +1473,7 @@
   "games": [
    "river_fishing"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 240906,
   "tris_web": 20000,
   "tris_low": 10000,
@@ -1565,7 +1492,7 @@
   "games": [
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 189490,
   "tris_web": 19997,
   "tris_low": 10085,
@@ -1584,7 +1511,7 @@
   "games": [
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 21057,
   "tris_web": 21057,
   "tris_low": 9999,
@@ -1603,7 +1530,7 @@
   "games": [
    "kayak_rush"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 3028040,
   "tris_web": 20000,
   "tris_low": 9998,
@@ -1623,7 +1550,7 @@
    "multiverse_portal",
    "river_fishing"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 380202,
   "tris_web": 19999,
   "tris_low": 9970,
@@ -1639,7 +1566,9 @@
   "mb_low": 0.28,
   "scope": "game",
   "game": "dino_journey",
-  "games": [],
+  "games": [
+   "dino_journey"
+  ],
   "source": "download",
   "tris_raw": 618895,
   "tris_web": 59993,
@@ -1656,7 +1585,9 @@
   "mb_low": 0.22,
   "scope": "game",
   "game": "dino_journey",
-  "games": [],
+  "games": [
+   "dino_journey"
+  ],
   "source": "download",
   "tris_raw": 750430,
   "tris_web": 59996,
@@ -1673,7 +1604,9 @@
   "mb_low": 0.21,
   "scope": "game",
   "game": "dino_journey",
-  "games": [],
+  "games": [
+   "dino_journey"
+  ],
   "source": "download",
   "tris_raw": 297480,
   "tris_web": 60000,
@@ -1693,7 +1626,7 @@
   "games": [
    "dino_journey"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 87870,
   "tris_web": 20000,
   "tris_low": 10000,
@@ -1712,7 +1645,7 @@
   "games": [
    "dino_journey"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 29498,
   "tris_web": 20000,
   "tris_low": 10000,
@@ -1731,7 +1664,7 @@
   "games": [
    "dino_journey"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 754832,
   "tris_web": 20000,
   "tris_low": 10000,
@@ -1750,7 +1683,7 @@
   "games": [
    "dino_journey"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 582346,
   "tris_web": 19999,
   "tris_low": 9997,
@@ -1769,7 +1702,7 @@
   "games": [
    "dino_journey"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 201996,
   "tris_web": 20000,
   "tris_low": 10000,
@@ -1788,7 +1721,7 @@
   "games": [
    "dino_journey"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 177174,
   "tris_web": 20000,
   "tris_low": 10000,
@@ -1807,7 +1740,7 @@
   "games": [
    "dino_journey"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 854185,
   "tris_web": 20000,
   "tris_low": 10000,
@@ -1826,7 +1759,7 @@
   "games": [
    "dino_journey"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 236866,
   "tris_web": 19999,
   "tris_low": 9999,
@@ -1845,7 +1778,7 @@
   "games": [
    "dino_journey"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 1358302,
   "tris_web": 149999,
   "tris_low": 29986,
@@ -1868,7 +1801,7 @@
   "games": [
    "dino_journey"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 700128,
   "tris_web": 149998,
   "tris_low": 30000,
@@ -1891,7 +1824,7 @@
   "games": [
    "dino_journey"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 9865247,
   "tris_web": 145961,
   "tris_low": 28945,
@@ -1914,7 +1847,7 @@
   "games": [
    "dino_journey"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 285886,
   "tris_web": 20000,
   "tris_low": 10000,
@@ -1933,7 +1866,7 @@
   "games": [
    "dino_journey"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 445486,
   "tris_web": 20000,
   "tris_low": 10204,
@@ -1952,7 +1885,7 @@
   "games": [
    "dino_journey"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 226269,
   "tris_web": 19999,
   "tris_low": 10025,
@@ -1971,7 +1904,7 @@
   "games": [
    "dino_journey"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 757625,
   "tris_web": 19997,
   "tris_low": 12148,
@@ -1990,7 +1923,7 @@
   "games": [
    "dino_journey"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 1631899,
   "tris_web": 19767,
   "tris_low": 9963,
@@ -2009,7 +1942,7 @@
   "games": [
    "river_fishing"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 140175,
   "tris_web": 8000,
   "tris_low": 3999,
@@ -2028,7 +1961,7 @@
   "games": [
    "river_fishing"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 358850,
   "tris_web": 8000,
   "tris_low": 4516,
@@ -2047,7 +1980,7 @@
   "games": [
    "river_fishing"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 402274,
   "tris_web": 7996,
   "tris_low": 4000,
@@ -2066,7 +1999,7 @@
   "games": [
    "river_fishing"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 306784,
   "tris_web": 7993,
   "tris_low": 3999,
@@ -2085,7 +2018,7 @@
   "games": [
    "river_fishing"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 5262,
   "tris_web": 5262,
   "tris_low": 4000,
@@ -2104,7 +2037,7 @@
   "games": [
    "river_fishing"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 71452,
   "tris_web": 8000,
   "tris_low": 4000,
@@ -2123,7 +2056,7 @@
   "games": [
    "river_fishing"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 183579,
   "tris_web": 8000,
   "tris_low": 4000,
@@ -2142,7 +2075,7 @@
   "games": [
    "river_fishing"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 19558,
   "tris_web": 8000,
   "tris_low": 4000,
@@ -2161,7 +2094,7 @@
   "games": [
    "river_fishing"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 5086,
   "tris_web": 5086,
   "tris_low": 5086,
@@ -2180,7 +2113,7 @@
   "games": [
    "river_fishing"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 892118,
   "tris_web": 7995,
   "tris_low": 3892,
@@ -2199,7 +2132,7 @@
   "games": [
    "river_fishing"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 779958,
   "tris_web": 7996,
   "tris_low": 4000,
@@ -2218,7 +2151,7 @@
   "games": [
    "river_fishing"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 299464,
   "tris_web": 8000,
   "tris_low": 4000,
@@ -2237,7 +2170,7 @@
   "games": [
    "river_fishing"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 243592,
   "tris_web": 8000,
   "tris_low": 4000,
@@ -2256,7 +2189,7 @@
   "games": [
    "river_fishing"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 172408,
   "tris_web": 8000,
   "tris_low": 4000,
@@ -2275,7 +2208,7 @@
   "games": [
    "river_fishing"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 22312,
   "tris_web": 7999,
   "tris_low": 3999,
@@ -2294,7 +2227,7 @@
   "games": [
    "river_fishing"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 396288,
   "tris_web": 8000,
   "tris_low": 4000,
@@ -2313,7 +2246,7 @@
   "games": [
    "river_fishing"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 506930,
   "tris_web": 8000,
   "tris_low": 4000,
@@ -2332,7 +2265,7 @@
   "games": [
    "river_fishing"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 17708,
   "tris_web": 8000,
   "tris_low": 4000,
@@ -2351,7 +2284,7 @@
   "games": [
    "river_fishing"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 18413,
   "tris_web": 7999,
   "tris_low": 4000,
@@ -2370,7 +2303,7 @@
   "games": [
    "river_fishing"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 19951,
   "tris_web": 8000,
   "tris_low": 4000,
@@ -2389,7 +2322,7 @@
   "games": [
    "river_fishing"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 101231,
   "tris_web": 7999,
   "tris_low": 4248,
@@ -2408,7 +2341,7 @@
   "games": [
    "river_fishing"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 174758,
   "tris_web": 8000,
   "tris_low": 4000,
@@ -2427,7 +2360,7 @@
   "games": [
    "river_fishing"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 19818,
   "tris_web": 7999,
   "tris_low": 3999,
@@ -2446,7 +2379,7 @@
   "games": [
    "river_fishing"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 10000,
   "tris_web": 10000,
   "tris_low": 4000,
@@ -2465,7 +2398,7 @@
   "games": [
    "river_fishing"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 204420,
   "tris_web": 7999,
   "tris_low": 4000,
@@ -2543,7 +2476,7 @@
    "river_fishing",
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 207250,
   "tris_web": 8000,
   "tris_low": 4000,
@@ -2601,7 +2534,7 @@
   "games": [
    "river_fishing"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 1101760,
   "tris_web": 7999,
   "tris_low": 3990,
@@ -2781,6 +2714,25 @@
   "skinned": false
  },
  {
+  "id": "fish_rod_bundle",
+  "file": "fishing/fish_rod_bundle.glb",
+  "mb_raw": 2.19,
+  "mb_web": 0.35,
+  "mb_low": 0.16,
+  "scope": "game",
+  "game": "river_fishing",
+  "games": [
+   "river_fishing"
+  ],
+  "source": "self",
+  "tris_raw": 10000,
+  "tris_web": 10000,
+  "tris_low": 4470,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
   "id": "fish_rod_carbon",
   "file": "fishing/fish_rod_carbon.glb",
   "mb_raw": 3.98,
@@ -2868,7 +2820,7 @@
    "river_fishing",
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 112306,
   "tris_web": 7998,
   "tris_low": 5052,
@@ -3002,7 +2954,7 @@
   "games": [
    "river_fishing"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 20077,
   "tris_web": 7999,
   "tris_low": 3999,
@@ -3021,7 +2973,7 @@
   "games": [
    "kayak_rush"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 1074,
   "tris_web": 1074,
   "tris_low": 1074,
@@ -3040,7 +2992,7 @@
   "games": [
    "kayak_rush"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 2020072,
   "tris_web": 7877,
   "tris_low": 3962,
@@ -3060,7 +3012,7 @@
    "kayak_rush",
    "river_fishing"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 485832,
   "tris_web": 10062,
   "tris_low": 3990,
@@ -3080,7 +3032,7 @@
    "kayak_rush",
    "river_fishing"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 558823,
   "tris_web": 7978,
   "tris_low": 3984,
@@ -3121,7 +3073,7 @@
    "kayak_rush",
    "river_fishing"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 17448,
   "tris_web": 8000,
   "tris_low": 4000,
@@ -3140,7 +3092,7 @@
   "games": [
    "multiverse_portal"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 9987,
   "tris_web": 9987,
   "tris_low": 9987,
@@ -3159,7 +3111,7 @@
   "games": [
    "multiverse_portal"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 2204614,
   "tris_web": 19932,
   "tris_low": 9960,
@@ -3273,7 +3225,7 @@
   "games": [
    "multiverse_portal"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 302883,
   "tris_web": 19998,
   "tris_low": 11092,
@@ -3292,7 +3244,7 @@
   "games": [
    "multiverse_portal"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 9991,
   "tris_web": 9991,
   "tris_low": 9991,
@@ -3311,7 +3263,7 @@
   "games": [
    "multiverse_portal"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 106120,
   "tris_web": 19992,
   "tris_low": 9992,
@@ -3330,7 +3282,7 @@
   "games": [
    "multiverse_portal"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 193220,
   "tris_web": 7992,
   "tris_low": 3997,
@@ -3346,7 +3298,9 @@
   "mb_low": 0.18,
   "scope": "game",
   "game": "multiverse_portal",
-  "games": [],
+  "games": [
+   "multiverse_portal"
+  ],
   "source": "download",
   "tris_raw": 402248,
   "tris_web": 19998,
@@ -3363,7 +3317,9 @@
   "mb_low": 0.17,
   "scope": "game",
   "game": "multiverse_portal",
-  "games": [],
+  "games": [
+   "multiverse_portal"
+  ],
   "source": "download",
   "tris_raw": 293333,
   "tris_web": 19998,
@@ -3380,7 +3336,9 @@
   "mb_low": 0.15,
   "scope": "game",
   "game": "multiverse_portal",
-  "games": [],
+  "games": [
+   "multiverse_portal"
+  ],
   "source": "download",
   "tris_raw": 517690,
   "tris_web": 7999,
@@ -3397,7 +3355,9 @@
   "mb_low": 0.46,
   "scope": "game",
   "game": "multiverse_portal",
-  "games": [],
+  "games": [
+   "multiverse_portal"
+  ],
   "source": "download",
   "tris_raw": 1835287,
   "tris_web": 149745,
@@ -3414,7 +3374,9 @@
   "mb_low": 0.35,
   "scope": "game",
   "game": "multiverse_portal",
-  "games": [],
+  "games": [
+   "multiverse_portal"
+  ],
   "source": "download",
   "tris_raw": 305427,
   "tris_web": 149999,
@@ -3431,7 +3393,9 @@
   "mb_low": 0.24,
   "scope": "game",
   "game": "multiverse_portal",
-  "games": [],
+  "games": [
+   "multiverse_portal"
+  ],
   "source": "download",
   "tris_raw": 62724,
   "tris_web": 62724,
@@ -3448,7 +3412,9 @@
   "mb_low": 0.14,
   "scope": "game",
   "game": "multiverse_portal",
-  "games": [],
+  "games": [
+   "multiverse_portal"
+  ],
   "source": "download",
   "tris_raw": 113436,
   "tris_web": 8000,
@@ -3465,7 +3431,9 @@
   "mb_low": 0.14,
   "scope": "game",
   "game": "multiverse_portal",
-  "games": [],
+  "games": [
+   "multiverse_portal"
+  ],
   "source": "download",
   "tris_raw": 138421,
   "tris_web": 8000,
@@ -3482,7 +3450,9 @@
   "mb_low": 0.15,
   "scope": "game",
   "game": "multiverse_portal",
-  "games": [],
+  "games": [
+   "multiverse_portal"
+  ],
   "source": "download",
   "tris_raw": 9464,
   "tris_web": 9464,
@@ -3499,7 +3469,9 @@
   "mb_low": 0.08,
   "scope": "game",
   "game": "multiverse_portal",
-  "games": [],
+  "games": [
+   "multiverse_portal"
+  ],
   "source": "download",
   "tris_raw": 236312,
   "tris_web": 8000,
@@ -3516,7 +3488,9 @@
   "mb_low": 0.09,
   "scope": "game",
   "game": "multiverse_portal",
-  "games": [],
+  "games": [
+   "multiverse_portal"
+  ],
   "source": "download",
   "tris_raw": 198646,
   "tris_web": 7998,
@@ -3536,7 +3510,7 @@
   "games": [
    "multiverse_portal"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 1892822,
   "tris_web": 8000,
   "tris_low": 4000,
@@ -3555,7 +3529,7 @@
   "games": [
    "multiverse_portal"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 386201,
   "tris_web": 8987,
   "tris_low": 3987,
@@ -3574,7 +3548,7 @@
   "games": [
    "multiverse_portal"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 355927,
   "tris_web": 149999,
   "tris_low": 29999,
@@ -3593,7 +3567,7 @@
   "games": [
    "multiverse_portal"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 98134,
   "tris_web": 98134,
   "tris_low": 29833,
@@ -3612,7 +3586,7 @@
   "games": [
    "multiverse_portal"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 94520,
   "tris_web": 94520,
   "tris_low": 29668,
@@ -3631,7 +3605,7 @@
   "games": [
    "multiverse_portal"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 807516,
   "tris_web": 249932,
   "tris_low": 79974,
@@ -3650,7 +3624,7 @@
   "games": [
    "multiverse_portal"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 807516,
   "tris_web": 249838,
   "tris_low": 79828,
@@ -3669,7 +3643,7 @@
   "games": [
    "multiverse_portal"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 6475758,
   "tris_web": 249830,
   "tris_low": 79946,
@@ -3688,7 +3662,7 @@
   "games": [
    "multiverse_portal"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 464574,
   "tris_web": 249990,
   "tris_low": 79996,
@@ -3707,7 +3681,7 @@
   "games": [
    "multiverse_portal"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 589884,
   "tris_web": 249993,
   "tris_low": 79992,
@@ -3726,7 +3700,7 @@
   "games": [
    "multiverse_portal"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 24176,
   "tris_web": 24176,
   "tris_low": 24176,
@@ -3745,7 +3719,7 @@
   "games": [
    "multiverse_portal"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 9962,
   "tris_web": 9962,
   "tris_low": 9962,
@@ -3764,7 +3738,7 @@
   "games": [
    "multiverse_portal"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 1492879,
   "tris_web": 249944,
   "tris_low": 79980,
@@ -3783,7 +3757,7 @@
   "games": [
    "dino_journey"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 21167,
   "tris_web": 21167,
   "tris_low": 21167,
@@ -3806,7 +3780,7 @@
   "games": [
    "dino_journey"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 160341,
   "tris_web": 160341,
   "tris_low": 29613,
@@ -3829,7 +3803,7 @@
   "games": [
    "dino_journey"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 178494,
   "tris_web": 178494,
   "tris_low": 29998,
@@ -3852,7 +3826,7 @@
   "games": [
    "dino_journey"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 18832,
   "tris_web": 18832,
   "tris_low": 18832,
@@ -3875,7 +3849,7 @@
   "games": [
    "dino_journey"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 18832,
   "tris_web": 18832,
   "tris_low": 18832,
@@ -3898,7 +3872,7 @@
   "games": [
    "dino_journey"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 9995757,
   "tris_web": 149196,
   "tris_low": 29955,
@@ -3921,7 +3895,7 @@
   "games": [
    "dino_journey"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 1001201,
   "tris_web": 295689,
   "tris_low": 57308,
@@ -3944,7 +3918,7 @@
   "games": [
    "dino_journey"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 6307,
   "tris_web": 6307,
   "tris_low": 6307,
@@ -3967,7 +3941,7 @@
   "games": [
    "dino_journey"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 21411,
   "tris_web": 21411,
   "tris_low": 21411,
@@ -3990,7 +3964,7 @@
   "games": [
    "dino_journey"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 9948,
   "tris_web": 9948,
   "tris_low": 9948,
@@ -4013,7 +3987,7 @@
   "games": [
    "dino_journey"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 3147,
   "tris_web": 3147,
   "tris_low": 3147,
@@ -4036,7 +4010,7 @@
   "games": [
    "dino_journey"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 2104910,
   "tris_web": 146556,
   "tris_low": 29598,
@@ -4059,7 +4033,7 @@
   "games": [
    "dino_journey"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 1489974,
   "tris_web": 19995,
   "tris_low": 9999,
@@ -4082,7 +4056,7 @@
   "games": [
    "dino_journey"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 911699,
   "tris_web": 149995,
   "tris_low": 29238,
@@ -4105,7 +4079,7 @@
   "games": [
    "dino_journey"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 87300,
   "tris_web": 87300,
   "tris_low": 29833,
@@ -4128,7 +4102,7 @@
   "games": [
    "dino_journey"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 93711,
   "tris_web": 93711,
   "tris_low": 29999,
@@ -4151,7 +4125,7 @@
   "games": [
    "dino_journey"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 560755,
   "tris_web": 149781,
   "tris_low": 29970,
@@ -4174,7 +4148,7 @@
   "games": [
    "dino_journey"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 104134,
   "tris_web": 59679,
   "tris_low": 19558,
@@ -4197,7 +4171,7 @@
   "games": [
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 98723,
   "tris_web": 60000,
   "tris_low": 19999,
@@ -4220,7 +4194,7 @@
   "games": [
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 3000,
   "tris_web": 3000,
   "tris_low": 3000,
@@ -4243,7 +4217,7 @@
   "games": [
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 43337,
   "tris_web": 43337,
   "tris_low": 20000,
@@ -4266,7 +4240,7 @@
   "games": [
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 389384,
   "tris_web": 59984,
   "tris_low": 19999,
@@ -4289,7 +4263,7 @@
   "games": [
    "dino_journey"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 2755876,
   "tris_web": 196532,
   "tris_low": 96878,
@@ -4312,7 +4286,7 @@
   "games": [
    "dino_journey"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 472982,
   "tris_web": 59996,
   "tris_low": 21774,
@@ -4335,7 +4309,7 @@
   "games": [
    "dino_journey"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 1414062,
   "tris_web": 197850,
   "tris_low": 58010,
@@ -4358,7 +4332,7 @@
   "games": [
    "dino_journey"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 1591770,
   "tris_web": 59688,
   "tris_low": 19764,
@@ -4381,7 +4355,7 @@
   "games": [
    "dino_journey"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 116000,
   "tris_web": 59946,
   "tris_low": 18847,
@@ -4404,7 +4378,7 @@
   "games": [
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 10754,
   "tris_web": 10754,
   "tris_low": 10754,
@@ -4427,7 +4401,7 @@
   "games": [
    "dino_journey"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 9879,
   "tris_web": 9879,
   "tris_low": 9879,
@@ -4450,7 +4424,7 @@
   "games": [
    "multiverse_portal"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 230393,
   "tris_web": 59999,
   "tris_low": 19997,
@@ -4475,7 +4449,7 @@
    "river_survival",
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 661334,
   "tris_web": 59999,
   "tris_low": 20000,
@@ -4498,7 +4472,7 @@
   "games": [
    "dino_journey"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 18095,
   "tris_web": 18095,
   "tris_low": 18095,
@@ -4521,7 +4495,7 @@
   "games": [
    "dino_journey"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 460569,
   "tris_web": 60000,
   "tris_low": 19997,
@@ -4544,7 +4518,7 @@
   "games": [
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 624776,
   "tris_web": 14994,
   "tris_low": 7499,
@@ -4563,7 +4537,7 @@
   "games": [
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 370799,
   "tris_web": 15996,
   "tris_low": 8911,
@@ -4582,7 +4556,7 @@
   "games": [
    "kayak_rush"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 892131,
   "tris_web": 14616,
   "tris_low": 7408,
@@ -4601,7 +4575,7 @@
   "games": [
    "kayak_rush"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 955182,
   "tris_web": 14967,
   "tris_low": 7279,
@@ -4620,7 +4594,7 @@
   "games": [
    "kayak_rush"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 1130469,
   "tris_web": 149995,
   "tris_low": 29998,
@@ -4643,7 +4617,7 @@
   "games": [
    "dino_journey"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 10043,
   "tris_web": 10043,
   "tris_low": 10043,
@@ -4666,7 +4640,7 @@
   "games": [
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 1261795,
   "tris_web": 180911,
   "tris_low": 29615,
@@ -4690,7 +4664,7 @@
    "river_fishing",
    "river_survival"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 411339,
   "tris_web": 149995,
   "tris_low": 29382,
@@ -4713,7 +4687,7 @@
   "games": [
    "multiverse_portal"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 9998,
   "tris_web": 9998,
   "tris_low": 9998,
@@ -4736,7 +4710,7 @@
   "games": [
    "dino_journey"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 2281798,
   "tris_web": 149994,
   "tris_low": 29996,
@@ -4759,7 +4733,7 @@
   "games": [
    "dino_journey"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 1944268,
   "tris_web": 149989,
   "tris_low": 30000,
@@ -4783,7 +4757,7 @@
    "river_fishing",
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 1398718,
   "tris_web": 149994,
   "tris_low": 29995,
@@ -4806,7 +4780,7 @@
   "games": [
    "river_fishing"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 662889,
   "tris_web": 149989,
   "tris_low": 34628,
@@ -4829,7 +4803,7 @@
   "games": [
    "dino_journey"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 116402,
   "tris_web": 116402,
   "tris_low": 28298,
@@ -4853,7 +4827,7 @@
    "multiverse_portal",
    "river_survival"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 502654,
   "tris_web": 149999,
   "tris_low": 36495,
@@ -4876,7 +4850,7 @@
   "games": [
    "dino_journey"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 1570160,
   "tris_web": 149952,
   "tris_low": 29982,
@@ -4899,7 +4873,7 @@
   "games": [
    "dino_journey"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 1988320,
   "tris_web": 149984,
   "tris_low": 29882,
@@ -4922,7 +4896,7 @@
   "games": [
    "dino_journey"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 1852030,
   "tris_web": 14980,
   "tris_low": 7456,
@@ -4945,7 +4919,7 @@
   "games": [
    "dino_journey"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 14507,
   "tris_web": 14507,
   "tris_low": 8197,
@@ -4968,7 +4942,7 @@
   "games": [
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 35902,
   "tris_web": 35902,
   "tris_low": 35902,
@@ -4991,7 +4965,7 @@
   "games": [
    "river_survival"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 27420,
   "tris_web": 15000,
   "tris_low": 7500,
@@ -5010,7 +4984,7 @@
   "games": [
    "dino_journey"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 10000,
   "tris_web": 10000,
   "tris_low": 7500,
@@ -5029,7 +5003,7 @@
   "games": [
    "dino_journey"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 9992,
   "tris_web": 9992,
   "tris_low": 7500,
@@ -5050,7 +5024,7 @@
    "kayak_rush",
    "river_survival"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 7414,
   "tris_web": 7414,
   "tris_low": 7414,
@@ -5072,7 +5046,7 @@
    "river_survival",
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 23842,
   "tris_web": 14999,
   "tris_low": 7500,
@@ -5094,7 +5068,7 @@
    "river_survival",
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 22603,
   "tris_web": 15000,
   "tris_low": 7500,
@@ -5115,7 +5089,7 @@
    "river_survival",
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 150398,
   "tris_web": 14995,
   "tris_low": 7499,
@@ -5136,7 +5110,7 @@
    "river_survival",
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 1501229,
   "tris_web": 19381,
   "tris_low": 7458,
@@ -5157,7 +5131,7 @@
    "river_fishing",
    "river_survival"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 553010,
   "tris_web": 15000,
   "tris_low": 7500,
@@ -5182,7 +5156,7 @@
    "river_fishing",
    "river_survival"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 10000,
   "tris_web": 10000,
   "tris_low": 7500,
@@ -5207,7 +5181,7 @@
    "river_fishing",
    "river_survival"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 99977,
   "tris_web": 14999,
   "tris_low": 7500,
@@ -5232,7 +5206,7 @@
    "river_fishing",
    "river_survival"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 280443,
   "tris_web": 15000,
   "tris_low": 7500,
@@ -5257,7 +5231,7 @@
    "river_survival",
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 9664,
   "tris_web": 9664,
   "tris_low": 9664,
@@ -5282,7 +5256,7 @@
    "river_survival",
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 10360911,
   "tris_web": 147885,
   "tris_low": 29585,
@@ -5307,7 +5281,7 @@
    "river_survival",
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 2481143,
   "tris_web": 149905,
   "tris_low": 29886,
@@ -5332,7 +5306,7 @@
    "river_survival",
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 90998,
   "tris_web": 90998,
   "tris_low": 29953,
@@ -5356,7 +5330,7 @@
    "dino_journey",
    "river_survival"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 83285,
   "tris_web": 14663,
   "tris_low": 6931,
@@ -5376,7 +5350,7 @@
    "dino_journey",
    "river_survival"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 10242,
   "tris_web": 10242,
   "tris_low": 7500,
@@ -5395,7 +5369,7 @@
   "games": [
    "river_fishing"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 4565989,
   "tris_web": 149175,
   "tris_low": 29759,
@@ -5416,7 +5390,7 @@
    "river_fishing",
    "river_survival"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 3110672,
   "tris_web": 148876,
   "tris_low": 29942,
@@ -5438,7 +5412,7 @@
    "river_fishing",
    "river_survival"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 9996,
   "tris_web": 9996,
   "tris_low": 7500,
@@ -5460,7 +5434,7 @@
    "river_fishing",
    "river_survival"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 1916545,
   "tris_web": 14823,
   "tris_low": 7440,
@@ -5482,7 +5456,7 @@
    "river_survival",
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 522248,
   "tris_web": 14997,
   "tris_low": 7473,
@@ -5503,7 +5477,7 @@
    "kayak_rush",
    "river_survival"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 1858047,
   "tris_web": 14594,
   "tris_low": 7418,
@@ -5522,7 +5496,7 @@
   "games": [
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 593314,
   "tris_web": 15000,
   "tris_low": 7499,
@@ -5541,7 +5515,7 @@
   "games": [
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 407138,
   "tris_web": 15000,
   "tris_low": 7500,
@@ -5560,7 +5534,7 @@
   "games": [
    "river_survival"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 5855,
   "tris_web": 5855,
   "tris_low": 5855,
@@ -5579,7 +5553,7 @@
   "games": [
    "river_survival"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 769860,
   "tris_web": 16334,
   "tris_low": 7465,
@@ -5598,7 +5572,7 @@
   "games": [
    "river_survival"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 160181,
   "tris_web": 14999,
   "tris_low": 7499,
@@ -5619,7 +5593,7 @@
    "river_survival",
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 919847,
   "tris_web": 146892,
   "tris_low": 28613,
@@ -5644,7 +5618,7 @@
    "river_survival",
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 2621682,
   "tris_web": 149994,
   "tris_low": 29999,
@@ -5668,7 +5642,7 @@
    "dino_journey",
    "kayak_rush"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 730114,
   "tris_web": 14904,
   "tris_low": 7429,
@@ -5692,7 +5666,7 @@
    "dino_journey",
    "kayak_rush"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 801206,
   "tris_web": 17712,
   "tris_low": 7424,
@@ -5716,7 +5690,7 @@
    "dino_journey",
    "river_survival"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 299997,
   "tris_web": 14996,
   "tris_low": 8956,
@@ -5740,7 +5714,7 @@
    "dino_journey",
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 10000,
   "tris_web": 10000,
   "tris_low": 7500,
@@ -5764,7 +5738,7 @@
    "dino_journey",
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 20326,
   "tris_web": 14999,
   "tris_low": 7500,
@@ -5788,7 +5762,7 @@
    "dino_journey",
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 18754,
   "tris_web": 18754,
   "tris_low": 7500,
@@ -5814,7 +5788,7 @@
    "river_fishing",
    "river_survival"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 1632028,
   "tris_web": 119670,
   "tris_low": 119670,
@@ -5836,7 +5810,7 @@
    "river_fishing",
    "river_survival"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 8992,
   "tris_web": 8992,
   "tris_low": 8992,
@@ -5863,7 +5837,7 @@
    "river_survival",
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 316921,
   "tris_web": 15000,
   "tris_low": 7500,
@@ -5887,7 +5861,7 @@
    "dino_journey",
    "river_survival"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 929,
   "tris_web": 929,
   "tris_low": 929,
@@ -5932,7 +5906,7 @@
    "river_fishing",
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 5398,
   "tris_web": 5398,
   "tris_low": 5398,
@@ -5954,7 +5928,7 @@
    "river_fishing",
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 2536,
   "tris_web": 2536,
   "tris_low": 2536,
@@ -5976,7 +5950,7 @@
    "river_fishing",
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 70580,
   "tris_web": 14996,
   "tris_low": 7500,
@@ -5998,7 +5972,7 @@
    "river_fishing",
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 70580,
   "tris_web": 14996,
   "tris_low": 7500,
@@ -6020,7 +5994,7 @@
    "river_fishing",
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 70580,
   "tris_web": 14996,
   "tris_low": 7500,
@@ -6042,7 +6016,7 @@
    "river_fishing",
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 767920,
   "tris_web": 14992,
   "tris_low": 7500,
@@ -6062,7 +6036,7 @@
    "dino_journey",
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 1235725,
   "tris_web": 14999,
   "tris_low": 7493,
@@ -6083,7 +6057,7 @@
    "river_survival",
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 24895,
   "tris_web": 24895,
   "tris_low": 24895,
@@ -6108,7 +6082,7 @@
    "river_survival",
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 485086,
   "tris_web": 170416,
   "tris_low": 29463,
@@ -6133,7 +6107,7 @@
    "river_survival",
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 5621703,
   "tris_web": 145994,
   "tris_low": 29251,
@@ -6159,7 +6133,7 @@
    "river_fishing",
    "river_survival"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 10000,
   "tris_web": 10000,
   "tris_low": 7500,
@@ -6182,7 +6156,7 @@
    "river_survival",
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 4946,
   "tris_web": 4946,
   "tris_low": 4946,
@@ -6203,7 +6177,7 @@
    "river_survival",
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 2917161,
   "tris_web": 149755,
   "tris_low": 29925,
@@ -6241,7 +6215,7 @@
   "games": [
    "river_survival"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 487218,
   "tris_web": 8000,
   "tris_low": 4000,
@@ -6281,7 +6255,7 @@
    "river_survival",
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 131618,
   "tris_web": 8000,
   "tris_low": 4000,
@@ -6300,7 +6274,7 @@
   "games": [
    "river_survival"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 29918,
   "tris_web": 7998,
   "tris_low": 3992,
@@ -6319,7 +6293,7 @@
   "games": [
    "river_survival"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 1275954,
   "tris_web": 7901,
   "tris_low": 3990,
@@ -6377,7 +6351,7 @@
    "river_survival",
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 713550,
   "tris_web": 8000,
   "tris_low": 3999,
@@ -6396,7 +6370,7 @@
   "games": [
    "river_survival"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 473660,
   "tris_web": 7949,
   "tris_low": 3938,
@@ -6437,7 +6411,7 @@
    "river_survival",
    "summer_camp"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 1995104,
   "tris_web": 8000,
   "tris_low": 4000,
@@ -6456,7 +6430,7 @@
   "games": [
    "river_survival"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 194133,
   "tris_web": 9187,
   "tris_low": 4425,
@@ -6475,7 +6449,7 @@
   "games": [
    "river_survival"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 343620,
   "tris_web": 7999,
   "tris_low": 5033,
@@ -6494,7 +6468,7 @@
   "games": [
    "river_survival"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 5295,
   "tris_web": 5295,
   "tris_low": 4000,
@@ -6513,7 +6487,7 @@
   "games": [
    "river_survival"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 4174,
   "tris_web": 4174,
   "tris_low": 4174,
@@ -6551,7 +6525,7 @@
   "games": [
    "river_survival"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 778909,
   "tris_web": 7947,
   "tris_low": 3976,
@@ -6589,7 +6563,7 @@
   "games": [
    "river_survival"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 196278,
   "tris_web": 7999,
   "tris_low": 5062,
@@ -6646,7 +6620,7 @@
   "games": [
    "river_survival"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 378507,
   "tris_web": 8004,
   "tris_low": 4000,
@@ -6684,7 +6658,7 @@
   "games": [
    "river_survival"
   ],
-  "source": "meshy",
+  "source": "self",
   "tris_raw": 909884,
   "tris_web": 7997,
   "tris_low": 3994,

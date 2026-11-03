@@ -1,326 +1,346 @@
 {
-  "version": 1,
-  "note": "20 câu demo đơn giản (từ vựng trại hè/sông/khủng long). Nghĩa tiếng Việt nằm trong explanation vì thêm field mới cần duyệt schema.",
+  "version": 2,
+  "note": "20 câu thì hiện tại đơn (present simple), đơn giản, trắc nghiệm, theo PDF 'Thay game mới' tr.8. meaning_vi giữ chỗ trống là '…', không lộ đáp án. Bản từ vựng cũ (v1) lưu ở 06_docs_knowledge/backup.",
   "questions": [
     {
       "type": "mcq",
-      "question": "Which animal lives in water, and you catch it with a rod?",
+      "question": "She _____ to school every day.",
       "options": [
-        "bird",
-        "fish",
-        "horse",
-        "cat"
-      ],
-      "correct_idx": 1,
-      "difficulty": "easy",
-      "topic": "animals",
-      "skill_tag": "vocabulary",
-      "hint": "Nó bơi dưới nước.",
-      "explanation": "fish = con cá."
-    },
-    {
-      "type": "mcq",
-      "question": "Which word means \"con sông\"?",
-      "options": [
-        "mountain",
-        "river",
-        "forest",
-        "desert"
-      ],
-      "correct_idx": 1,
-      "difficulty": "easy",
-      "topic": "nature",
-      "skill_tag": "vocabulary",
-      "hint": "Thuyền kayak đi trên nó.",
-      "explanation": "river = con sông."
-    },
-    {
-      "type": "mcq",
-      "question": "We sleep in a _____ at the summer camp.",
-      "options": [
-        "boat",
-        "kitchen",
-        "tent",
-        "bridge"
-      ],
-      "correct_idx": 2,
-      "difficulty": "easy",
-      "topic": "camp",
-      "skill_tag": "vocabulary",
-      "hint": "Nhà vải dựng ngoài trời.",
-      "explanation": "tent = lều."
-    },
-    {
-      "type": "mcq",
-      "question": "I am hungry. I want to eat some _____.",
-      "options": [
-        "rope",
-        "bread",
-        "stone",
-        "water bottle"
-      ],
-      "correct_idx": 1,
-      "difficulty": "easy",
-      "topic": "food",
-      "skill_tag": "vocabulary",
-      "hint": "Thứ ăn được, làm từ bột mì.",
-      "explanation": "bread = bánh mì."
-    },
-    {
-      "type": "mcq",
-      "question": "The opposite of \"big\" is _____.",
-      "options": [
-        "small",
-        "tall",
-        "fast",
-        "heavy"
+        "goes",
+        "go",
+        "going",
+        "gone"
       ],
       "correct_idx": 0,
       "difficulty": "easy",
-      "topic": "antonyms",
-      "skill_tag": "vocabulary",
-      "hint": "Con kiến thì...",
-      "explanation": "small = nhỏ; big = to."
+      "topic": "present simple",
+      "skill_tag": "grammar",
+      "hint": "Chủ ngữ she là ngôi thứ ba số ít.",
+      "meaning_vi": "Cô ấy … đến trường mỗi ngày.",
+      "explanation": "Thì hiện tại đơn: he/she/it + động từ thêm s/es. go → goes."
     },
     {
       "type": "mcq",
-      "question": "It is dark. Please turn on the _____.",
+      "question": "I _____ breakfast at seven o'clock.",
       "options": [
-        "river",
-        "fish",
-        "apple",
-        "light"
-      ],
-      "correct_idx": 3,
-      "difficulty": "easy",
-      "topic": "daily",
-      "skill_tag": "vocabulary",
-      "hint": "Bật cái này để nhìn thấy.",
-      "explanation": "light = đèn / ánh sáng."
-    },
-    {
-      "type": "mcq",
-      "question": "A baby dinosaur is very _____ — it is not old.",
-      "options": [
-        "wet",
-        "hungry",
-        "young",
-        "angry"
-      ],
-      "correct_idx": 2,
-      "difficulty": "easy",
-      "topic": "dino",
-      "skill_tag": "vocabulary",
-      "hint": "Trái nghĩa với old.",
-      "explanation": "young = trẻ, nhỏ tuổi."
-    },
-    {
-      "type": "mcq",
-      "question": "Which one is a fruit?",
-      "options": [
-        "log",
-        "apple",
-        "corn stick",
-        "fish net"
+        "ate",
+        "eat",
+        "eats",
+        "eating"
       ],
       "correct_idx": 1,
       "difficulty": "easy",
-      "topic": "food",
-      "skill_tag": "vocabulary",
-      "hint": "Màu đỏ hoặc xanh, mọc trên cây.",
-      "explanation": "apple = quả táo."
+      "topic": "present simple",
+      "skill_tag": "grammar",
+      "hint": "Chủ ngữ là I.",
+      "meaning_vi": "Tôi … bữa sáng lúc bảy giờ.",
+      "explanation": "Với I/you/we/they, động từ giữ nguyên: I eat."
     },
     {
       "type": "mcq",
-      "question": "We cook sausages on the _____ at camp.",
+      "question": "My dog _____ fish.",
       "options": [
-        "grill",
-        "tent",
-        "paddle",
-        "raft"
-      ],
-      "correct_idx": 0,
-      "difficulty": "easy",
-      "topic": "camp",
-      "skill_tag": "vocabulary",
-      "hint": "Vỉ nướng, đặt trên lửa.",
-      "explanation": "grill = vỉ nướng."
-    },
-    {
-      "type": "mcq",
-      "question": "Use a _____ to move your kayak in the water.",
-      "options": [
-        "pillow",
-        "spoon",
-        "book",
-        "paddle"
-      ],
-      "correct_idx": 3,
-      "difficulty": "easy",
-      "topic": "kayak",
-      "skill_tag": "vocabulary",
-      "hint": "Mái chèo.",
-      "explanation": "paddle = mái chèo."
-    },
-    {
-      "type": "mcq",
-      "question": "Look! A big _____ is lying on the river. Watch out!",
-      "options": [
-        "hat",
-        "chair",
-        "log",
-        "cloud"
+        "liking",
+        "liked",
+        "likes",
+        "like"
       ],
       "correct_idx": 2,
       "difficulty": "easy",
-      "topic": "kayak",
-      "skill_tag": "vocabulary",
-      "hint": "Khúc gỗ trôi trên sông.",
-      "explanation": "log = khúc gỗ."
+      "topic": "present simple",
+      "skill_tag": "grammar",
+      "hint": "My dog = it, ngôi thứ ba số ít.",
+      "meaning_vi": "Con chó của tớ … cá.",
+      "explanation": "He/she/it + động từ thêm s: likes."
     },
     {
       "type": "mcq",
-      "question": "\"Fast\" means:",
+      "question": "They _____ in a big tent at camp.",
       "options": [
-        "chạy nhanh",
-        "chậm",
-        "nặng",
-        "lạnh"
-      ],
-      "correct_idx": 0,
-      "difficulty": "easy",
-      "topic": "vocabulary",
-      "skill_tag": "vocabulary",
-      "hint": "Kayak tăng tốc là fast.",
-      "explanation": "fast = nhanh."
-    },
-    {
-      "type": "mcq",
-      "question": "The sun is _____ in the morning, so it is a new day.",
-      "options": [
-        "rising",
+        "sleeps",
         "sleeping",
-        "cooking",
-        "swimming"
-      ],
-      "correct_idx": 0,
-      "difficulty": "medium",
-      "topic": "nature",
-      "skill_tag": "vocabulary",
-      "hint": "Mặt trời mọc.",
-      "explanation": "rising = đang mọc."
-    },
-    {
-      "type": "mcq",
-      "question": "Which word is a place where many trees grow?",
-      "options": [
-        "kitchen",
-        "bridge",
-        "boat",
-        "forest"
+        "slept",
+        "sleep"
       ],
       "correct_idx": 3,
-      "difficulty": "medium",
-      "topic": "nature",
-      "skill_tag": "vocabulary",
-      "hint": "Rừng.",
-      "explanation": "forest = khu rừng."
+      "difficulty": "easy",
+      "topic": "present simple",
+      "skill_tag": "grammar",
+      "hint": "They là số nhiều.",
+      "meaning_vi": "Họ … trong một chiếc lều lớn ở trại.",
+      "explanation": "They + động từ nguyên mẫu: sleep."
     },
     {
       "type": "mcq",
-      "question": "She _____ a fish every morning at the lake.",
+      "question": "He _____ a fish every morning.",
       "options": [
-        "catching",
-        "caught",
         "catches",
-        "catch"
-      ],
-      "correct_idx": 2,
-      "difficulty": "medium",
-      "topic": "grammar",
-      "skill_tag": "grammar",
-      "hint": "Chủ ngữ số ít, thì hiện tại đơn → thêm -es.",
-      "explanation": "She catches... : he/she/it + động từ thêm s/es."
-    },
-    {
-      "type": "mcq",
-      "question": "A _____ is a safe place to cross a river.",
-      "options": [
-        "hat",
-        "bridge",
-        "pillow",
-        "fork"
-      ],
-      "correct_idx": 1,
-      "difficulty": "medium",
-      "topic": "places",
-      "skill_tag": "vocabulary",
-      "hint": "Bắc qua sông.",
-      "explanation": "bridge = cây cầu."
-    },
-    {
-      "type": "mcq",
-      "question": "\"Brave\" means someone who is not _____.",
-      "options": [
-        "afraid",
-        "tired",
-        "funny",
-        "tall"
+        "catch",
+        "catching",
+        "catched"
       ],
       "correct_idx": 0,
       "difficulty": "medium",
-      "topic": "antonyms",
-      "skill_tag": "vocabulary",
-      "hint": "Dũng cảm là không sợ.",
-      "explanation": "brave = dũng cảm; afraid = sợ."
+      "topic": "present simple",
+      "skill_tag": "grammar",
+      "hint": "Động từ tận cùng bằng -ch thì thêm es.",
+      "meaning_vi": "Anh ấy … một con cá mỗi sáng.",
+      "explanation": "He + động từ: catch tận cùng -ch nên thêm es: catches."
     },
     {
       "type": "mcq",
-      "question": "Which word means \"đi bộ đường dài trong núi\"?",
+      "question": "We _____ swim in the river at night.",
       "options": [
-        "cooking",
-        "drawing",
-        "sleeping",
-        "hiking"
+        "aren't",
+        "don't",
+        "doesn't",
+        "isn't"
+      ],
+      "correct_idx": 1,
+      "difficulty": "easy",
+      "topic": "present simple",
+      "skill_tag": "grammar",
+      "hint": "Câu phủ định với we.",
+      "meaning_vi": "Chúng tớ … bơi ở sông vào ban đêm.",
+      "explanation": "Phủ định hiện tại đơn: I/you/we/they + don't + động từ."
+    },
+    {
+      "type": "mcq",
+      "question": "My brother _____ like spicy food.",
+      "options": [
+        "isn't",
+        "not",
+        "doesn't",
+        "don't"
+      ],
+      "correct_idx": 2,
+      "difficulty": "easy",
+      "topic": "present simple",
+      "skill_tag": "grammar",
+      "hint": "Brother là ngôi thứ ba số ít.",
+      "meaning_vi": "Anh trai tớ … thích đồ ăn cay.",
+      "explanation": "He/she/it + doesn't + động từ nguyên mẫu."
+    },
+    {
+      "type": "mcq",
+      "question": "_____ you play games after school?",
+      "options": [
+        "Does",
+        "Are",
+        "Is",
+        "Do"
+      ],
+      "correct_idx": 3,
+      "difficulty": "easy",
+      "topic": "present simple",
+      "skill_tag": "grammar",
+      "hint": "Câu hỏi với you.",
+      "meaning_vi": "… bạn có chơi game sau giờ học không?",
+      "explanation": "Câu hỏi hiện tại đơn: Do + I/you/we/they + động từ?"
+    },
+    {
+      "type": "mcq",
+      "question": "_____ she live near the river?",
+      "options": [
+        "Does",
+        "Do",
+        "Is",
+        "Are"
+      ],
+      "correct_idx": 0,
+      "difficulty": "easy",
+      "topic": "present simple",
+      "skill_tag": "grammar",
+      "hint": "Câu hỏi với she.",
+      "meaning_vi": "… cô ấy có sống gần sông không?",
+      "explanation": "Câu hỏi với he/she/it dùng Does."
+    },
+    {
+      "type": "mcq",
+      "question": "The sun _____ in the east.",
+      "options": [
+        "rose",
+        "rises",
+        "rise",
+        "rising"
+      ],
+      "correct_idx": 1,
+      "difficulty": "easy",
+      "topic": "present simple",
+      "skill_tag": "grammar",
+      "hint": "Sự thật hiển nhiên, chủ ngữ số ít.",
+      "meaning_vi": "Mặt trời … ở hướng đông.",
+      "explanation": "Chân lý, sự thật luôn đúng dùng hiện tại đơn; the sun = it nên rises."
+    },
+    {
+      "type": "mcq",
+      "question": "A baby dinosaur _____ big feet.",
+      "options": [
+        "having",
+        "haves",
+        "has",
+        "have"
+      ],
+      "correct_idx": 2,
+      "difficulty": "easy",
+      "topic": "present simple",
+      "skill_tag": "grammar",
+      "hint": "Have đổi khác với he/she/it.",
+      "meaning_vi": "Một chú khủng long con … đôi bàn chân to.",
+      "explanation": "Ngôi thứ ba số ít dùng has, không dùng haves."
+    },
+    {
+      "type": "mcq",
+      "question": "Tom _____ his hands before dinner.",
+      "options": [
+        "wash",
+        "washing",
+        "washs",
+        "washes"
       ],
       "correct_idx": 3,
       "difficulty": "medium",
-      "topic": "camp",
-      "skill_tag": "vocabulary",
-      "hint": "Hoạt động ở trại hè.",
-      "explanation": "hiking = đi bộ đường dài."
+      "topic": "present simple",
+      "skill_tag": "grammar",
+      "hint": "Động từ tận cùng -sh thì thêm es.",
+      "meaning_vi": "Tom … tay trước bữa tối.",
+      "explanation": "Động từ tận cùng -s, -sh, -ch, -x, -o thêm es: washes."
     },
     {
       "type": "mcq",
-      "question": "Choose the correct word: \"We _____ a big fire to keep warm.\"",
+      "question": "I _____ a student.",
       "options": [
-        "makes",
-        "making",
-        "made",
-        "maked"
+        "am",
+        "is",
+        "are",
+        "be"
+      ],
+      "correct_idx": 0,
+      "difficulty": "easy",
+      "topic": "present simple",
+      "skill_tag": "grammar",
+      "hint": "Động từ be đi với I.",
+      "meaning_vi": "Tôi … là học sinh.",
+      "explanation": "I am, he/she/it is, you/we/they are."
+    },
+    {
+      "type": "mcq",
+      "question": "They _____ very brave.",
+      "options": [
+        "be",
+        "are",
+        "is",
+        "am"
+      ],
+      "correct_idx": 1,
+      "difficulty": "easy",
+      "topic": "present simple",
+      "skill_tag": "grammar",
+      "hint": "They là số nhiều.",
+      "meaning_vi": "Họ … rất dũng cảm.",
+      "explanation": "They đi với are."
+    },
+    {
+      "type": "mcq",
+      "question": "She often _____ a red hat.",
+      "options": [
+        "wearing",
+        "wore",
+        "wears",
+        "wear"
       ],
       "correct_idx": 2,
-      "difficulty": "medium",
-      "topic": "grammar",
+      "difficulty": "easy",
+      "topic": "present simple",
       "skill_tag": "grammar",
-      "hint": "Quá khứ bất quy tắc của make.",
-      "explanation": "made = quá khứ của make (đã làm / đã nhóm)."
+      "hint": "Often không đổi dạng động từ; chủ ngữ là she.",
+      "meaning_vi": "Cô ấy thường … một chiếc mũ đỏ.",
+      "explanation": "Trạng từ tần suất (often) đứng trước động từ; she + wears."
     },
     {
       "type": "mcq",
-      "question": "A dinosaur lived a very long time _____.",
+      "question": "Water _____ at 100 degrees.",
       "options": [
-        "next",
-        "ago",
-        "before ago",
-        "after"
+        "boil",
+        "boiling",
+        "boiled",
+        "boils"
+      ],
+      "correct_idx": 3,
+      "difficulty": "medium",
+      "topic": "present simple",
+      "skill_tag": "grammar",
+      "hint": "Sự thật khoa học, chủ ngữ số ít.",
+      "meaning_vi": "Nước … ở 100 độ.",
+      "explanation": "Sự thật khoa học dùng hiện tại đơn; water = it nên boils."
+    },
+    {
+      "type": "mcq",
+      "question": "The kayak race _____ at nine every Saturday.",
+      "options": [
+        "starts",
+        "start",
+        "starting",
+        "started"
+      ],
+      "correct_idx": 0,
+      "difficulty": "medium",
+      "topic": "present simple",
+      "skill_tag": "grammar",
+      "hint": "Lịch cố định hằng tuần, chủ ngữ số ít.",
+      "meaning_vi": "Cuộc đua kayak … lúc chín giờ mỗi thứ Bảy.",
+      "explanation": "Lịch trình cố định dùng hiện tại đơn; race là số ít nên starts."
+    },
+    {
+      "type": "mcq",
+      "question": "My friends and I _____ camping in summer.",
+      "options": [
+        "gone",
+        "go",
+        "goes",
+        "going"
       ],
       "correct_idx": 1,
       "difficulty": "medium",
-      "topic": "dino",
-      "skill_tag": "vocabulary",
-      "hint": "Trước đây rất lâu.",
-      "explanation": "ago = cách đây (a long time ago = cách đây rất lâu)."
+      "topic": "present simple",
+      "skill_tag": "grammar",
+      "hint": "My friends and I = we.",
+      "meaning_vi": "Bạn bè và tớ … đi cắm trại vào mùa hè.",
+      "explanation": "Chủ ngữ ghép tương đương we nên động từ giữ nguyên: go."
+    },
+    {
+      "type": "mcq",
+      "question": "Does he _____ English?",
+      "options": [
+        "speaking",
+        "spoke",
+        "speak",
+        "speaks"
+      ],
+      "correct_idx": 2,
+      "difficulty": "medium",
+      "topic": "present simple",
+      "skill_tag": "grammar",
+      "hint": "Sau does, động từ trở về nguyên mẫu.",
+      "meaning_vi": "Anh ấy có … tiếng Anh không?",
+      "explanation": "Sau do/does dùng động từ nguyên mẫu, không thêm s."
+    },
+    {
+      "type": "mcq",
+      "question": "She doesn't _____ the answer.",
+      "options": [
+        "knows",
+        "knowing",
+        "knew",
+        "know"
+      ],
+      "correct_idx": 3,
+      "difficulty": "medium",
+      "topic": "present simple",
+      "skill_tag": "grammar",
+      "hint": "Sau doesn't, động từ trở về nguyên mẫu.",
+      "meaning_vi": "Cô ấy không … đáp án.",
+      "explanation": "Sau doesn't dùng động từ nguyên mẫu: doesn't know."
     }
   ]
 }

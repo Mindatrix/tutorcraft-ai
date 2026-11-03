@@ -11,6 +11,8 @@ const kits = JSON.parse(readFileSync('content/scene_kits.json', 'utf8')) as E.Sc
 const byId = new Map(catalog.map((c) => [c.id, c]));
 const fallbackNature = THREE_ASSET_MANIFEST.riverWorld.natureIds;
 const camps = scenarios.filter((s) => s.game === 'summer_camp');
+/** Ids retired by the 03/11 rename (content/…/doi_ten_2026-11-03.json) and the lantern tree. */
+const RETIRED_OR_WRONG = ['camp_lantern_3', 'camp_grill_2', 'camp_water_filter_2', 'camp_string_lights_2', 'camp_cup', 'camp_backpack', 'camp_firepit__alt1', 'camp_tent_stage__alt2', 'camp_tent_stage__alt3', 'camp_lantern_tree'];
 const layout = (s: (typeof scenarios)[number], level: number, extra: Partial<E.LayoutInput> = {}) =>
   E.buildSceneLayout({ scenario: s, catalog, aliases, layoutSeed: 20261102, fallbackNature, kits, level, ...extra });
 
@@ -24,7 +26,9 @@ test('WP4 kits data: every id exists with a web file, picks avoid the mis-named 
     }
   assert.deepEqual(missing, []);
   const picks = Object.values(kits.games).flatMap((k) => k.groups.flatMap((g) => g.members.flatMap((m) => m.pick ?? [])));
-  for (const bad of ['camp_lantern', 'camp_grill_2', 'camp_water_filter_2', 'camp_firepit__alt1', 'camp_tent_stage__alt2', 'camp_tent_stage__alt3']) assert.ok(!picks.includes(bad), bad);
+  // Names retired by the 03/11 rename (Claude chat checked every file in Blender): they must never
+  // come back, and the tree with lanterns is not a lantern.
+  for (const bad of RETIRED_OR_WRONG) assert.ok(!picks.includes(bad), bad);
   assert.equal(E.kitLevel(kits, 9).level, 6);
   assert.equal(E.kitLevel(kits, 0).ambient, 0);
 });
@@ -40,7 +44,7 @@ test('WP4 groups: same seed → same layout; the stage\'s own things sit in thei
       assert.equal(p.tint, E.kitLevel(kits, 3).tint);
     }
     // A wrongly named member never shows through a group.
-    for (const p of grouped) assert.ok(!['camp_lantern', 'camp_grill_2', 'camp_water_filter_2', 'camp_firepit__alt1'].includes(p.libraryId), p.libraryId);
+    for (const p of grouped) assert.ok(!RETIRED_OR_WRONG.includes(p.libraryId), p.libraryId);
     const n0 = layout(s, 0).placements.filter((p) => p.group).length;
     const n5 = layout(s, 5).placements.filter((p) => p.group).length;
     assert.ok(n0 <= n5, `${s.id}: level 0 ${n0} ≤ level 5 ${n5}`);

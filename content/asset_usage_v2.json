@@ -317,6 +317,12 @@
   "mv-04",
   "mv-05"
  ],
+ "mv_castle_module": [
+  "mv-01"
+ ],
+ "mv_castle_module_2": [
+  "mv-01"
+ ],
  "mv_hero_scarlet": [
   "mv-01",
   "mv-02",
@@ -335,6 +341,21 @@
   "mv-04",
   "mv-05"
  ],
+ "mv_salon_furniture": [
+  "mv-01"
+ ],
+ "mv_salon_furniture_2": [
+  "mv-01"
+ ],
+ "mv_torch": [
+  "mv-01"
+ ],
+ "mv_torch_2": [
+  "mv-01"
+ ],
+ "mv_torch_3": [
+  "mv-01"
+ ],
  "mv_wall_breach": [
   "mv-01"
  ],
@@ -352,6 +373,9 @@
  "mv_world_enchanted_candidate": [
   "mv-01"
  ],
+ "mv_cyber_room": [
+  "mv-02"
+ ],
  "mv_ruin_building": [
   "mv-02"
  ],
@@ -367,6 +391,9 @@
   "mv-03",
   "surv-05"
  ],
+ "mv_scene": [
+  "mv-03"
+ ],
  "mv_world_ruin_candidate": [
   "mv-03"
  ],
@@ -376,6 +403,15 @@
  "mini_floating_island": [
   "mv-04",
   "mv-05"
+ ],
+ "mv_castle_module_3": [
+  "mv-04"
+ ],
+ "mv_scene_3": [
+  "mv-04"
+ ],
+ "mv_torch_4": [
+  "mv-04"
  ],
  "mv_weapon_runecrossbow": [
   "mv-04"
@@ -396,6 +432,18 @@
  "mv_boss_verdant": [
   "mv-05"
  ],
+ "mv_castle_module_4": [
+  "mv-05"
+ ],
+ "mv_salon_furniture_3": [
+  "mv-05"
+ ],
+ "mv_scene_2": [
+  "mv-05"
+ ],
+ "mv_torch_5": [
+  "mv-05"
+ ],
  "anim_cook": [
   "camp-01",
   "camp-02"
@@ -409,11 +457,6 @@
   "camp-01",
   "camp-05"
  ],
- "camp_backpack": [
-  "camp-01",
-  "camp-03",
-  "camp-05"
- ],
  "camp_bottle": [
   "camp-01",
   "camp-03",
@@ -424,6 +467,10 @@
   "surv-04",
   "surv-05"
  ],
+ "camp_bottle_2": [
+  "camp-01",
+  "camp-02"
+ ],
  "camp_bucket": [
   "camp-01",
   "camp-02",
@@ -431,10 +478,6 @@
   "camp-05",
   "surv-04",
   "surv-05"
- ],
- "camp_cup": [
-  "camp-01",
-  "camp-02"
  ],
  "camp_fire_starter": [
   "camp-01"
@@ -448,6 +491,9 @@
   "surv-01",
   "surv-02",
   "surv-04"
+ ],
+ "camp_gear_pile": [
+  "camp-01"
  ],
  "camp_grill": [
   "camp-01",
@@ -480,7 +526,8 @@
  ],
  "camp_sleeping_bag": [
   "camp-01",
-  "camp-03"
+  "camp-03",
+  "camp-05"
  ],
  "camp_table": [
   "camp-01",
@@ -579,13 +626,27 @@
   "surv-04",
   "dino-04"
  ],
+ "anim_sit_female": [
+  "camp-02",
+  "camp-04"
+ ],
+ "anim_sit_male": [
+  "camp-02",
+  "camp-04"
+ ],
  "camp_bench": [
   "camp-02",
   "camp-04"
  ],
+ "camp_coffee_splash": [
+  "camp-02"
+ ],
  "camp_pan": [
   "camp-02",
   "camp-05"
+ ],
+ "camp_pot": [
+  "camp-02"
  ],
  "camp_skewer_fish": [
   "camp-02"
@@ -624,6 +685,9 @@
  "camp_tent_damaged": [
   "camp-03"
  ],
+ "camp_tent_ruined_grey": [
+  "camp-03"
+ ],
  "char_grass_kid": [
   "camp-03"
  ],
@@ -660,6 +724,9 @@
  "camp_chair": [
   "camp-04"
  ],
+ "camp_lantern_tree": [
+  "camp-04"
+ ],
  "char_nomad_boy": [
   "camp-04"
  ],
@@ -678,6 +745,12 @@
   "camp-04"
  ],
  "camp_firstaid": [
+  "camp-05"
+ ],
+ "camp_ration_pack": [
+  "camp-05"
+ ],
+ "camp_tent_family_grey": [
   "camp-05"
  ],
  "char_female_a": [
@@ -716,6 +789,10 @@
   "surv-03"
  ],
  "anim_cast": [
+  "fish-01",
+  "fish-04"
+ ],
+ "anim_fishing_idle": [
   "fish-01",
   "fish-04"
  ],
@@ -841,6 +918,9 @@
   "fish-02",
   "fish-03",
   "fish-05"
+ ],
+ "fish_rod_bundle": [
+  "fish-02"
  ],
  "fish_rod_carbon": [
   "fish-02"
@@ -1035,6 +1115,10 @@
   "surv-03",
   "surv-04",
   "surv-05"
+ ],
+ "anim_beckon": [
+  "surv-02",
+  "dino-05"
  ],
  "river_fence": [
   "surv-02"
@@ -1273,6 +1357,16 @@
  "tree_x11_ancient_b": [
   "dino-02",
   "dino-04"
+ ],
+ "dino_footprint": [
+  "dino-03",
+  "dino-05"
+ ],
+ "dino_sand": [
+  "dino-03"
+ ],
+ "dino_sand_2": [
+  "dino-03"
  ],
  "dino_world_dry_plateau": [
   "dino-03"

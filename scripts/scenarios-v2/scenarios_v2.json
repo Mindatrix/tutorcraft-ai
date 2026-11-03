@@ -4101,7 +4101,8 @@
     "goal": "Vào lâu đài, gặp lính canh sương.",
     "beats": [
      "Lính canh làm bằng sương, tan khi trúng đòn.",
-     "Thầy Thuốc Lục, nữ tiên rừng cầm trượng, trao thảo dược hồi máu: đọc đúng tên thảo dược để nhận."
+     "Thầy Thuốc Lục, nữ tiên rừng cầm trượng, trao thảo dược hồi máu: đọc đúng tên thảo dược để nhận.",
+     "Đuốc cháy dọc tường lâu đài: câu đúng làm ngọn lửa sáng, sương lui ra khỏi cổng."
     ],
     "question_hook": "Câu hỏi hiện thành ấn phép trên lưỡi kiếm của Scarlet; trả lời đúng là một đòn chém (đúng nhanh = chí mạng), sai thì Boss phản đòn nhẹ. Boss yếu đi 50% thì vết nứt không gian mở sang thế giới mới.",
     "reward": "Mở cổng.",
@@ -4110,12 +4111,19 @@
      "gate",
      "fog",
      "healer",
-     "herb"
+     "herb",
+     "torch",
+     "castle wall"
     ],
     "assets": [
      "mv_world_castle",
      "mv_hero_scarlet",
-     "mv_npc_druid_elf"
+     "mv_npc_druid_elf",
+     "mv_torch",
+     "mv_torch_2",
+     "mv_torch_3",
+     "mv_castle_module",
+     "mv_castle_module_2"
     ],
     "subtitles": [
      {
@@ -4172,7 +4180,8 @@
     "goal": "Đánh bóng ma trên hành lang.",
     "beats": [
      "Mỗi trang sách rơi ra một từ.",
-     "Cửa kính mở ra khu rừng phép: đọc đúng chữ thì lối đi hiện."
+     "Cửa kính mở ra khu rừng phép: đọc đúng chữ thì lối đi hiện.",
+     "Phòng khách cổ điển hiện ra sau tấm kính màu: ghế bành và ghế sofa là nơi giấu các trang sách rơi."
     ],
     "question_hook": "Câu hỏi hiện thành ấn phép trên lưỡi kiếm của Scarlet; trả lời đúng là một đòn chém (đúng nhanh = chí mạng), sai thì Boss phản đòn nhẹ. Boss yếu đi 50% thì vết nứt không gian mở sang thế giới mới.",
     "reward": "Trang sách 1-3.",
@@ -4181,11 +4190,15 @@
      "word",
      "save",
      "enchanted",
-     "forest"
+     "forest",
+     "sofa",
+     "armchair"
     ],
     "assets": [
      "mv_world_castle",
-     "mv_world_enchanted_candidate"
+     "mv_world_enchanted_candidate",
+     "mv_salon_furniture",
+     "mv_salon_furniture_2"
     ],
     "subtitles": [
      {
@@ -4901,9 +4914,16 @@
    "char_kid_dancer",
    "fx_spark",
    "mv_boss",
+   "mv_castle_module",
+   "mv_castle_module_2",
    "mv_hero_scarlet",
    "mv_minion_shadow",
    "mv_npc_druid_elf",
+   "mv_salon_furniture",
+   "mv_salon_furniture_2",
+   "mv_torch",
+   "mv_torch_2",
+   "mv_torch_3",
    "mv_wall_breach",
    "mv_world_castle",
    "mv_world_cyberpunk",
@@ -4911,7 +4931,37 @@
   ],
   "tags": [
    "castle"
-  ]
+  ],
+  "quest": {
+   "route": "mv-01",
+   "grammar": {
+    "key": "concession",
+    "label_vi": "Mệnh đề nhượng bộ: Mặc dù … , tuy vậy …"
+   },
+   "objects": [
+    {
+     "objectId": "mv01_tide_scroll"
+    },
+    {
+     "objectId": "mv01_marble_lexicon"
+    },
+    {
+     "objectId": "mv01_papyrus_pedestal"
+    },
+    {
+     "objectId": "mv01_tide_gate"
+    }
+   ],
+   "stones": [
+    {
+     "targetId": "mv01_stone_although"
+    },
+    {
+     "targetId": "mv01_stone_nevertheless"
+    }
+   ],
+   "next": "mv-02"
+  }
  },
  {
   "id": "mv-02",
@@ -4997,17 +5047,21 @@
     "optional": false,
     "goal": "Nhảy qua mái nhà, tránh drone.",
     "beats": [
-     "Drone soi đèn đỏ."
+     "Drone soi đèn đỏ.",
+     "Một căn phòng neon trên mái nhà: bật đúng bảng hiệu thì drone rời đi."
     ],
     "question_hook": "Câu hỏi hiện thành ấn phép trên lưỡi kiếm của Scarlet; trả lời đúng là một đòn chém (đúng nhanh = chí mạng), sai thì Boss phản đòn nhẹ. Boss yếu đi 50% thì vết nứt không gian mở sang thế giới mới.",
     "reward": "Giày phản lực.",
     "vocab": [
      "jump",
      "roof",
-     "rain"
+     "rain",
+     "room",
+     "neon sign"
     ],
     "assets": [
-     "mv_world_cyberpunk"
+     "mv_world_cyberpunk",
+     "mv_cyber_room"
     ],
     "subtitles": [
      {
@@ -5696,6 +5750,7 @@
    "anim_cheer",
    "fx_spark",
    "mv_boss",
+   "mv_cyber_room",
    "mv_hero_scarlet",
    "mv_npc_druid_elf",
    "mv_ruin_building",
@@ -5705,7 +5760,37 @@
   "tags": [
    "cyberpunk",
    "weather_locked"
-  ]
+  ],
+  "quest": {
+   "route": "mv-02",
+   "grammar": {
+    "key": "conditional",
+    "label_vi": "Câu điều kiện: Nếu … thì …"
+   },
+   "objects": [
+    {
+     "objectId": "mv02_data_terminal"
+    },
+    {
+     "objectId": "mv02_neon_billboard"
+    },
+    {
+     "objectId": "mv02_logic_node"
+    },
+    {
+     "objectId": "mv02_babel_gate"
+    }
+   ],
+   "stones": [
+    {
+     "targetId": "mv02_stone_if_then"
+    },
+    {
+     "targetId": "mv02_stone_compile"
+    }
+   ],
+   "next": "mv-03"
+  }
  },
  {
   "id": "mv-03",
@@ -5841,17 +5926,21 @@
     "optional": false,
     "goal": "Sắp xếp câu đúng để bậc thang hiện ra.",
     "beats": [
-     "Hợp câu sắp xếp (reorder)."
+     "Hợp câu sắp xếp (reorder).",
+     "Xa xa sau sa mạc là những mái đình giữa núi: đọc đúng thứ tự thì bậc thang dẫn tới đó."
     ],
     "question_hook": "Mỗi câu xếp đúng hiện một bậc thang.",
     "reward": "Lên tầng trên.",
     "vocab": [
      "order",
      "stairs",
-     "climb"
+     "climb",
+     "pavilion",
+     "mountain"
     ],
     "assets": [
-     "mv_world_desert"
+     "mv_world_desert",
+     "mv_scene"
     ],
     "subtitles": [
      {
@@ -6480,12 +6569,43 @@
    "mv_boss",
    "mv_hero_scarlet",
    "mv_npc_druid_elf",
+   "mv_scene",
    "mv_world_desert",
    "mv_world_ruin_candidate"
   ],
   "tags": [
    "desert"
-  ]
+  ],
+  "quest": {
+   "route": "mv-03",
+   "grammar": {
+    "key": "past_perfect_vs_past_simple",
+    "label_vi": "Trình tự thời gian: Quá khứ hoàn thành và Quá khứ đơn"
+   },
+   "objects": [
+    {
+     "objectId": "mv03_petrified_tree"
+    },
+    {
+     "objectId": "mv03_chrono_fungi"
+    },
+    {
+     "objectId": "mv03_time_ring"
+    },
+    {
+     "objectId": "mv03_chrono_gate"
+    }
+   ],
+   "stones": [
+    {
+     "targetId": "mv03_stone_had_glowed"
+    },
+    {
+     "targetId": "mv03_stone_rewind"
+    }
+   ],
+   "next": "mv-04"
+  }
  },
  {
   "id": "mv-04",
@@ -6506,17 +6626,22 @@
     "optional": false,
     "goal": "Bắt đầu ở mảnh lâu đài trôi nổi.",
     "beats": [
-     "Cầu ánh sáng hiện theo câu đúng."
+     "Cầu ánh sáng hiện theo câu đúng.",
+     "Một mảnh lâu đài trôi lơ lửng, đuốc vẫn cháy trên tường: câu đúng giữ ngọn lửa không tắt."
     ],
     "question_hook": "Câu hỏi hiện thành ấn phép trên lưỡi kiếm của Scarlet; trả lời đúng là một đòn chém (đúng nhanh = chí mạng), sai thì Boss phản đòn nhẹ. Boss yếu đi 50% thì vết nứt không gian mở sang thế giới mới.",
     "reward": "Cầu ánh sáng.",
     "vocab": [
      "bridge",
      "float",
-     "light"
+     "light",
+     "torch",
+     "tower"
     ],
     "assets": [
-     "mv_world_castle"
+     "mv_world_castle",
+     "mv_torch_4",
+     "mv_castle_module_3"
     ],
     "subtitles": [
      {
@@ -6856,7 +6981,8 @@
     "goal": "Kéo dài: nhặt mảnh vỡ còn sót.",
     "beats": [
      "Câu nhanh.",
-     "Mảnh vỡ lạc là một đảo nhỏ có hải đăng: đưa nó về đúng cổng để thắp đèn dẫn đường."
+     "Mảnh vỡ lạc là một đảo nhỏ có hải đăng: đưa nó về đúng cổng để thắp đèn dẫn đường.",
+     "Những tảng đá lơ lửng là mảnh vỡ lạc: đưa từng tảng về đúng cổng."
     ],
     "question_hook": "Câu hỏi hiện thành ấn phép trên kiếm của Scarlet như trận chính. Câu khó hơn một bậc, sao nhân đôi.",
     "reward": "Sao đôi.",
@@ -6864,11 +6990,14 @@
      "piece",
      "collect",
      "island",
-     "lighthouse"
+     "lighthouse",
+     "floating",
+     "stone"
     ],
     "assets": [
      "mv_world_castle",
-     "mini_floating_island"
+     "mini_floating_island",
+     "mv_scene_3"
     ],
     "subtitles": [
      {
@@ -7282,9 +7411,12 @@
    "fx_spark",
    "mini_floating_island",
    "mv_boss",
+   "mv_castle_module_3",
    "mv_hero_scarlet",
    "mv_minion_shadow",
    "mv_npc_druid_elf",
+   "mv_scene_3",
+   "mv_torch_4",
    "mv_weapon_runecrossbow",
    "mv_world_castle",
    "mv_world_cyberpunk"
@@ -7292,7 +7424,37 @@
   "tags": [
    "castle",
    "cyberpunk"
-  ]
+  ],
+  "quest": {
+   "route": "mv-04",
+   "grammar": {
+    "key": "modal_certainty",
+    "label_vi": "Động từ khuyết thiếu chỉ sự chắc chắn: chắc hẳn đã / không thể nào đã"
+   },
+   "objects": [
+    {
+     "objectId": "mv04_astrolabe"
+    },
+    {
+     "objectId": "mv04_lens_pedestal"
+    },
+    {
+     "objectId": "mv04_crystal_focus"
+    },
+    {
+     "objectId": "mv04_nebula_gate"
+    }
+   ],
+   "stones": [
+    {
+     "targetId": "mv04_stone_must_have"
+    },
+    {
+     "targetId": "mv04_stone_cant_have"
+    }
+   ],
+   "next": "mv-05"
+  }
  },
  {
   "id": "mv-05",
@@ -7314,7 +7476,8 @@
     "goal": "Các tổ đội tập hợp ở trái tim đa vũ trụ.",
     "beats": [
      "Mỗi tổ đội nhận cờ màu.",
-     "Bốn lữ khách từ các thế giới tới điểm triệu tập: ghép đúng tên và đặc điểm từng người."
+     "Bốn lữ khách từ các thế giới tới điểm triệu tập: ghép đúng tên và đặc điểm từng người.",
+     "Các tổ đội tập hợp quanh đuốc trong sân pháo đài: mỗi đội đọc đúng lời triệu tập thì đuốc của đội sáng lên."
     ],
     "question_hook": "Câu hỏi hiện thành ấn phép trên lưỡi kiếm của Scarlet; trả lời đúng là một đòn chém (đúng nhanh = chí mạng), sai thì Boss phản đòn nhẹ. Boss yếu đi 50% thì vết nứt không gian mở sang thế giới mới.",
     "reward": "Buff tổ đội.",
@@ -7322,7 +7485,9 @@
      "gather",
      "team",
      "final",
-     "hero"
+     "hero",
+     "torch",
+     "tower"
     ],
     "assets": [
      "mv_hero_scarlet",
@@ -7332,7 +7497,9 @@
      "char_iridescent_voyager",
      "char_grovaen_female",
      "char_tpose_boy",
-     "char_wanderer"
+     "char_wanderer",
+     "mv_torch_5",
+     "mv_castle_module_4"
     ],
     "subtitles": [
      {
@@ -7498,7 +7665,8 @@
     "goal": "Boss dùng sức mạnh sa mạc.",
     "beats": [
      "Câu sắp xếp làm cát lắng.",
-     "Thầy Thuốc Lục hồi sức cho cả tổ trước trận cuối."
+     "Thầy Thuốc Lục hồi sức cho cả tổ trước trận cuối.",
+     "Miệng núi lửa phủ tuyết ở phía xa lặng đi khi cát lắng: câu sắp xếp đúng làm gió ngừng."
     ],
     "question_hook": "Câu hỏi hiện thành ấn phép trên lưỡi kiếm của Scarlet; trả lời đúng là một đòn chém (đúng nhanh = chí mạng), sai thì Boss phản đòn nhẹ. Boss yếu đi 50% thì vết nứt không gian mở sang thế giới mới.",
     "reward": "Đóng cổng sa mạc.",
@@ -7507,12 +7675,15 @@
      "order",
      "calm",
      "heal",
-     "team"
+     "team",
+     "snow",
+     "crater"
     ],
     "assets": [
      "mv_boss",
      "mv_world_desert",
-     "mv_npc_druid_elf"
+     "mv_npc_druid_elf",
+     "mv_scene_2"
     ],
     "subtitles": [
      {
@@ -7563,7 +7734,8 @@
     "goal": "Cả lớp hợp sức đánh Boss Hợp Thể (thanh máu chung).",
     "beats": [
      "Mọi tổ đội cùng một thanh máu Boss.",
-     "Thần giữ rừng thức dậy làm một phần của Boss Hợp Thể: câu đúng làm lá trên người nó rụng dần."
+     "Thần giữ rừng thức dậy làm một phần của Boss Hợp Thể: câu đúng làm lá trên người nó rụng dần.",
+     "Boss Hợp Thể lẩn vào phòng khách cổ: chiếc ghế bành là chỗ cả tổ đội hợp sức đỡ đòn."
     ],
     "question_hook": "Câu hỏi hiện thành ấn phép trên lưỡi kiếm của Scarlet; trả lời đúng là một đòn chém (đúng nhanh = chí mạng), sai thì Boss phản đòn nhẹ. Boss yếu đi 50% thì vết nứt không gian mở sang thế giới mới.",
     "reward": "Tuyệt kỹ đồng đội.",
@@ -7572,12 +7744,15 @@
      "ultimate",
      "all",
      "guardian",
-     "forest"
+     "forest",
+     "chair",
+     "salon"
     ],
     "assets": [
      "mv_boss",
      "fx_spark",
-     "mv_boss_verdant"
+     "mv_boss_verdant",
+     "mv_salon_furniture_3"
     ],
     "subtitles": [
      {
@@ -8105,8 +8280,12 @@
    "mini_floating_island",
    "mv_boss",
    "mv_boss_verdant",
+   "mv_castle_module_4",
    "mv_hero_scarlet",
    "mv_npc_druid_elf",
+   "mv_salon_furniture_3",
+   "mv_scene_2",
+   "mv_torch_5",
    "mv_world_castle",
    "mv_world_cyberpunk",
    "mv_world_desert"
@@ -8115,7 +8294,37 @@
    "castle",
    "cyberpunk",
    "desert"
-  ]
+  ],
+  "quest": {
+   "route": "mv-05",
+   "grammar": {
+    "key": "passive_process",
+    "label_vi": "Câu bị động mô tả quy trình: được nung / được rót / được làm nguội"
+   },
+   "objects": [
+    {
+     "objectId": "mv05_brass_cog"
+    },
+    {
+     "objectId": "mv05_manometer"
+    },
+    {
+     "objectId": "mv05_furnace"
+    },
+    {
+     "objectId": "mv05_foundry_gate"
+    }
+   ],
+   "stones": [
+    {
+     "targetId": "mv05_stone_is_heated"
+    },
+    {
+     "targetId": "mv05_stone_powered_by"
+    }
+   ],
+   "next": null
+  }
  },
  {
   "id": "camp-01",
@@ -8138,7 +8347,8 @@
     "beats": [
      "Phim ngắn: xe buýt dừng bên hồ, anh Phong phát Bảng Nhiệm vụ.",
      "Mỗi Đội Lều mở rương gỗ bằng 3 câu đúng.",
-     "Cô hướng dẫn mở bản đồ nổi của trại; mỗi nơi chạm đúng tên là sáng lên."
+     "Cô hướng dẫn mở bản đồ nổi của trại; mỗi nơi chạm đúng tên là sáng lên.",
+     "Đống đồ trại bên cạnh rương: gọi đúng tên từng món thì Bảng Nhiệm vụ sáng lên."
     ],
     "question_hook": "Chạm vào vật thể đang phát sáng để mở câu hỏi nhỏ ngay cạnh nó; đúng thì hành động xảy ra trong thế giới, sai thì thử lại sau 5 giây, không trừ điểm nặng. Ổ khóa rương có 3 vòng số, mỗi câu đúng xoay một vòng.",
     "reward": "Búa đóng cọc + dây thừng.",
@@ -8150,10 +8360,11 @@
      "open",
      "camp map",
      "counselor",
-     "backpack"
+     "backpack",
+     "gear"
     ],
     "assets": [
-     "camp_backpack",
+     "camp_sleeping_bag",
      "camp_rope",
      "river_sign",
      "camp_bunting",
@@ -8161,7 +8372,8 @@
      "hdri_dawn",
      "mini_camp_hero",
      "char_hiker_girl",
-     "ground_grass_platform"
+     "ground_grass_platform",
+     "camp_gear_pile"
     ],
     "subtitles": [
      {
@@ -8453,7 +8665,7 @@
     "assets": [
      "camp_water_filter",
      "camp_bucket",
-     "camp_cup",
+     "camp_bottle_2",
      "camp_bottle",
      "river_pebbles"
     ],
@@ -9015,13 +9227,13 @@
    "anim_cook",
    "anim_kneel_work",
    "camp_axe",
-   "camp_backpack",
    "camp_bottle",
+   "camp_bottle_2",
    "camp_bucket",
    "camp_bunting",
-   "camp_cup",
    "camp_fire_starter",
    "camp_firepit",
+   "camp_gear_pile",
    "camp_grill",
    "camp_lantern",
    "camp_marshmallow_stick",
@@ -9348,7 +9560,8 @@
     "beats": [
      "Thanh độ chín cho mỗi món.",
      "Đúng lúc lật = 3 sao.",
-     "Xiên cá nướng vàng và xiên rau: lật đúng lúc, đọc đúng tên món để Chef Marco chấm điểm."
+     "Xiên cá nướng vàng và xiên rau: lật đúng lúc, đọc đúng tên món để Chef Marco chấm điểm.",
+     "Nồi trại bắc lên bếp để nấu súp: đọc đúng công thức thì nước sôi đều."
     ],
     "question_hook": "Câu hỏi trên món đang nướng; đúng = lật đúng lúc. Chạm vào vật thể đang phát sáng để mở câu hỏi nhỏ ngay cạnh nó; đúng thì hành động xảy ra trong thế giới, sai thì thử lại sau 5 giây, không trừ điểm nặng.",
     "reward": "Món chín vàng.",
@@ -9358,7 +9571,9 @@
      "golden",
      "smell",
      "grilled fish",
-     "turn over"
+     "turn over",
+     "pot",
+     "boil"
     ],
     "assets": [
      "camp_grill",
@@ -9368,7 +9583,8 @@
      "food_corn",
      "anim_cook",
      "camp_skewer_fish",
-     "camp_skewer_veg"
+     "camp_skewer_veg",
+     "camp_pot"
     ],
     "subtitles": [
      {
@@ -9418,7 +9634,9 @@
     "goal": "Trình bày món, Chef Marco chấm, bày lên bàn tiệc lớn.",
     "beats": [
      "Mỗi đội giới thiệu món bằng một câu tiếng Anh.",
-     "Bàn tiệc đầy món = Bảng Nhiệm vụ đầy."
+     "Bàn tiệc đầy món = Bảng Nhiệm vụ đầy.",
+     "Các đội ngồi quanh bàn tiệc của Chef Marco: ai đọc đúng món của mình thì được ngồi vào ghế.",
+     "Chef Marco rót nước cho cả bàn tiệc: câu đúng làm nước chảy đầy ly."
     ],
     "question_hook": "Câu giới thiệu món (viết ngắn hoặc chọn câu đúng). Chạm vào vật thể đang phát sáng để mở câu hỏi nhỏ ngay cạnh nó; đúng thì hành động xảy ra trong thế giới, sai thì thử lại sau 5 giây, không trừ điểm nặng.",
     "reward": "Cúp Đầu Bếp Lửa Trại.",
@@ -9426,14 +9644,21 @@
      "taste",
      "yummy",
      "present",
-     "best"
+     "best",
+     "sit down",
+     "dinner table",
+     "pour",
+     "drink"
     ],
     "assets": [
      "camp_table",
      "camp_bench",
      "food_bread",
-     "camp_cup",
-     "hdri_sunset"
+     "camp_bottle_2",
+     "hdri_sunset",
+     "anim_sit_male",
+     "anim_sit_female",
+     "camp_coffee_splash"
     ],
     "subtitles": [
      {
@@ -9915,13 +10140,17 @@
   ],
   "asset_ids": [
    "anim_cook",
+   "anim_sit_female",
+   "anim_sit_male",
    "camp_bench",
+   "camp_bottle_2",
    "camp_bucket",
-   "camp_cup",
+   "camp_coffee_splash",
    "camp_firepit",
    "camp_grill",
    "camp_matchbox",
    "camp_pan",
+   "camp_pot",
    "camp_skewer",
    "camp_skewer_fish",
    "camp_skewer_veg",
@@ -10038,7 +10267,8 @@
     "beats": [
      "Gió tăng mỗi phút; lều chưa chằng nghiêng dần.",
      "Mỗi câu đúng thêm một dây gió.",
-     "Lều rách từ trận gió trước nằm cạnh lều mới để so sánh: nhìn chỗ nào hở thì chằng chỗ đó."
+     "Lều rách từ trận gió trước nằm cạnh lều mới để so sánh: nhìn chỗ nào hở thì chằng chỗ đó.",
+     "Một chiếc lều cũ đã rách tả tơi sau cơn gió: các đội đọc đúng từ để vá lại cho chắc."
     ],
     "question_hook": "Chạm vào vật thể đang phát sáng để mở câu hỏi nhỏ ngay cạnh nó; đúng thì hành động xảy ra trong thế giới, sai thì thử lại sau 5 giây, không trừ điểm nặng. Câu hỏi hiện trên từng sợi dây gió.",
     "reward": "Lều vững trong bão.",
@@ -10048,14 +10278,17 @@
      "strong",
      "wind",
      "torn tent",
-     "rope"
+     "rope",
+     "torn",
+     "broken"
     ],
     "assets": [
      "camp_tent_stage",
      "camp_rope",
      "camp_tarp",
      "anim_kneel_work",
-     "camp_tent_damaged"
+     "camp_tent_damaged",
+     "camp_tent_ruined_grey"
     ],
     "subtitles": [
      {
@@ -10250,7 +10483,7 @@
      "found"
     ],
     "assets": [
-     "camp_backpack",
+     "camp_sleeping_bag",
      "river_bush",
      "river_stump",
      "decal_footprint_mud"
@@ -10788,7 +11021,6 @@
   "asset_ids": [
    "anim_cheer",
    "anim_kneel_work",
-   "camp_backpack",
    "camp_bottle",
    "camp_bucket",
    "camp_firepit",
@@ -10798,6 +11030,7 @@
    "camp_table",
    "camp_tarp",
    "camp_tent_damaged",
+   "camp_tent_ruined_grey",
    "camp_tent_stage",
    "camp_water_filter",
    "char_grass_kid",
@@ -10837,7 +11070,8 @@
     "beats": [
      "Mỗi đèn sáng làm lộ một góc trại.",
      "Lều phát sáng dần lên.",
-     "Đèn lồng được treo lên nhà trên cây: mỗi câu đúng thắp một ngọn."
+     "Đèn lồng được treo lên nhà trên cây: mỗi câu đúng thắp một ngọn.",
+     "Cây cổ thụ có đèn lồng treo trên cành: thắp sáng đèn là mở đầu đêm lửa trại."
     ],
     "question_hook": "Chạm vào vật thể đang phát sáng để mở câu hỏi nhỏ ngay cạnh nó; đúng thì hành động xảy ra trong thế giới, sai thì thử lại sau 5 giây, không trừ điểm nặng. Câu hỏi hiện trên từng chiếc đèn lồng.",
     "reward": "Lối đi sáng.",
@@ -10846,14 +11080,16 @@
      "light",
      "dark",
      "night",
-     "tree house"
+     "tree house",
+     "tree"
     ],
     "assets": [
      "camp_lantern",
      "camp_string_lights",
      "camp_tent_stage",
      "hdri_night",
-     "tree_fort"
+     "tree_fort",
+     "camp_lantern_tree"
     ],
     "subtitles": [
      {
@@ -10955,7 +11191,8 @@
     "goal": "Khiêng ghế, xếp vòng tròn quanh bếp.",
     "beats": [
      "Ghế xếp đúng vòng = chỗ ngồi cho cả lớp.",
-     "Lối lát đá dẫn tới ghế dài: xếp ghế theo đúng thứ tự câu chuyện."
+     "Lối lát đá dẫn tới ghế dài: xếp ghế theo đúng thứ tự câu chuyện.",
+     "Cả lớp ngồi xuống ghế dài quanh lửa: mỗi câu đúng xếp thêm một chỗ ngồi."
     ],
     "question_hook": "Câu nối cặp (matching) gắn ghế vào đúng chỗ. Chạm vào vật thể đang phát sáng để mở câu hỏi nhỏ ngay cạnh nó; đúng thì hành động xảy ra trong thế giới, sai thì thử lại sau 5 giây, không trừ điểm nặng.",
     "reward": "Vòng ghế quanh lửa.",
@@ -10964,12 +11201,15 @@
      "circle",
      "sit",
      "around",
-     "path"
+     "path",
+     "sit down"
     ],
     "assets": [
      "camp_bench",
      "camp_chair",
-     "ground_cobble_path_a"
+     "ground_cobble_path_a",
+     "anim_sit_male",
+     "anim_sit_female"
     ],
     "subtitles": [
      {
@@ -11627,10 +11867,13 @@
   ],
   "asset_ids": [
    "anim_cheer",
+   "anim_sit_female",
+   "anim_sit_male",
    "camp_bench",
    "camp_chair",
    "camp_firepit",
    "camp_lantern",
+   "camp_lantern_tree",
    "camp_marshmallow_stick",
    "camp_string_lights",
    "camp_table",
@@ -11671,7 +11914,8 @@
     "beats": [
      "Ba lô có giới hạn cân nặng: đồ thừa làm đi chậm.",
      "Chị dẫn đường kiểm ba lô của từng bạn trước khi lên đường.",
-     "Cô hướng đạo kiểm tra danh sách đồ mang: nhận đúng tên từng món."
+     "Cô hướng đạo kiểm tra danh sách đồ mang: nhận đúng tên từng món.",
+     "Gói lương khô cho chuyến đi: chỉ bỏ vào ba lô đúng số gói theo câu trả lời."
     ],
     "question_hook": "Câu chọn đồ (trắc nghiệm, nối cặp đồ - công dụng). Chạm vào vật thể đang phát sáng để mở câu hỏi nhỏ ngay cạnh nó; đúng thì hành động xảy ra trong thế giới, sai thì thử lại sau 5 giây, không trừ điểm nặng.",
     "reward": "Ba lô chuẩn.",
@@ -11683,16 +11927,18 @@
      "hiker",
      "backpack",
      "guide",
-     "map"
+     "map",
+     "food"
     ],
     "assets": [
-     "camp_backpack",
+     "camp_sleeping_bag",
      "camp_firstaid",
      "surv_flashlight",
      "camp_bottle",
      "river_dock",
      "char_hiker_girl",
-     "char_female_a"
+     "char_female_a",
+     "camp_ration_pack"
     ],
     "subtitles": [
      {
@@ -11934,7 +12180,8 @@
     "goal": "Dựng lều và bếp ở bãi cỏ bên hồ trên núi.",
     "beats": [
      "Lều 3 giai đoạn như ngày đầu nhưng nhanh hơn.",
-     "Hái nấm và quả an toàn (có biển nhận biết)."
+     "Hái nấm và quả an toàn (có biển nhận biết).",
+     "Lều lớn cho cả nhóm ở bãi mới: dựng đúng từng bước thì lều đứng vững."
     ],
     "question_hook": "Chạm vào vật thể đang phát sáng để mở câu hỏi nhỏ ngay cạnh nó; đúng thì hành động xảy ra trong thế giới, sai thì thử lại sau 5 giây, không trừ điểm nặng.",
     "reward": "Trại mới + bữa trưa.",
@@ -11942,14 +12189,17 @@
      "new",
      "lake",
      "pick",
-     "lunch"
+     "lunch",
+     "tent",
+     "shelter"
     ],
     "assets": [
      "camp_tent_stage",
      "camp_firepit",
      "camp_pan",
      "food_apple",
-     "food_bread"
+     "food_bread",
+     "camp_tent_family_grey"
     ],
     "subtitles": [
      {
@@ -12485,12 +12735,14 @@
   ],
   "asset_ids": [
    "camp_axe",
-   "camp_backpack",
    "camp_bottle",
    "camp_bucket",
    "camp_firepit",
    "camp_firstaid",
    "camp_pan",
+   "camp_ration_pack",
+   "camp_sleeping_bag",
+   "camp_tent_family_grey",
    "camp_tent_stage",
    "camp_water_filter",
    "char_female_a",
@@ -12619,7 +12871,8 @@
     "goal": "Học quăng cần bằng Thanh lực quăng, bắt con cá đầu tiên.",
     "beats": [
      "Thanh lực quăng: dừng đúng vùng xanh để phao rơi xa.",
-     "Cá rô phi và cá rô đồng cắn câu nhiều."
+     "Cá rô phi và cá rô đồng cắn câu nhiều.",
+     "Bác Năm đứng yên chờ cá cắn trong tư thế câu chờ: nhìn tư thế rồi đọc đúng tên từng động tác."
     ],
     "question_hook": "Cá cắn câu thì thanh căng dây hiện ra; các đáp án là những vùng màu trên thanh, kéo cần về đúng vùng đáp án để thu dây. Đúng: kéo cá lên, hiện cân nặng và chiều dài. Sai: dây chùng, cá thoát, mồi vẫn còn.",
     "reward": "Cá đầu tiên vào Sổ Câu Cá.",
@@ -12627,7 +12880,9 @@
      "cast",
      "float",
      "bite",
-     "pull"
+     "pull",
+     "bobber",
+     "wait"
     ],
     "assets": [
      "fish_bobber",
@@ -12635,7 +12890,8 @@
      "fish_hook",
      "fish_tilapia",
      "fish_climbing_perch",
-     "anim_cast"
+     "anim_cast",
+     "anim_fishing_idle"
     ],
     "subtitles": [
      {
@@ -13391,6 +13647,7 @@
   "asset_ids": [
    "anim_cast",
    "anim_cheer",
+   "anim_fishing_idle",
    "anim_pull_fish",
    "fish_bait",
    "fish_basket",
@@ -13450,7 +13707,8 @@
     "beats": [
      "Bé Bự giới thiệu từng thuyền.",
      "Mỗi câu đúng chọn thêm một món đồ nghề.",
-     "Năm cần câu thi đấu bày ra, mỗi đội bốc thăm một cần: nối đúng tên bộ phận trên cần để chọn."
+     "Năm cần câu thi đấu bày ra, mỗi đội bốc thăm một cần: nối đúng tên bộ phận trên cần để chọn.",
+     "Giá cần câu của ban tổ chức dựng ở bến: mỗi đội chọn đúng cần trước khi khai mạc."
     ],
     "question_hook": "Câu hỏi trên bảng đăng ký.",
     "reward": "Bộ đồ nghề xuất phát.",
@@ -13460,7 +13718,8 @@
      "start",
      "number",
      "rod",
-     "lucky draw"
+     "lucky draw",
+     "fishing rod"
     ],
     "assets": [
      "river_dock",
@@ -13473,7 +13732,8 @@
      "rod_cand_3",
      "rod_cand_4",
      "rod_cand_5",
-     "char_female_b"
+     "char_female_b",
+     "fish_rod_bundle"
     ],
     "subtitles": [
      {
@@ -14307,6 +14567,7 @@
    "fish_rainbow_trout",
    "fish_record_board",
    "fish_rod",
+   "fish_rod_bundle",
    "fish_rod_carbon",
    "fish_rod_fiberglass",
    "fish_rod_gold",
@@ -15349,18 +15610,22 @@
     "optional": false,
     "goal": "Đổi mồi phù hợp cá đêm (mồi tôm, mồi cám).",
     "beats": [
-     "Nâng cần sau 3 câu đúng."
+     "Nâng cần sau 3 câu đúng.",
+     "Thợ câu ngồi chờ dưới trăng, tay giữ cần thật yên: đọc đúng tên động tác trước khi nâng cần."
     ],
     "question_hook": "Cá cắn câu thì thanh căng dây hiện ra; các đáp án là những vùng màu trên thanh, kéo cần về đúng vùng đáp án để thu dây. Đúng: kéo cá lên, hiện cân nặng và chiều dài. Sai: dây chùng, cá thoát, mồi vẫn còn.",
     "reward": "Cần sợi thủy tinh + mồi tôm.",
     "vocab": [
      "shrimp",
      "smell",
-     "choose"
+     "choose",
+     "bobber",
+     "wait"
     ],
     "assets": [
      "fish_bait",
-     "fish_tackle_box"
+     "fish_tackle_box",
+     "anim_fishing_idle"
     ],
     "subtitles": [
      {
@@ -16008,6 +16273,7 @@
   "asset_ids": [
    "anim_cast",
    "anim_cheer",
+   "anim_fishing_idle",
    "anim_pull_fish",
    "camp_lantern",
    "fish_bait",
@@ -18076,7 +18342,8 @@
     "goal": "Đọc ba tấm bia để ghép ra lối vào hang sau thác.",
     "beats": [
      "Mỗi bia một câu chỉ đường bị mất chữ.",
-     "Người ở chuồng gỗ đọc bia qua ống nhòm và gửi chữ cho đội."
+     "Người ở chuồng gỗ đọc bia qua ống nhòm và gửi chữ cho đội.",
+     "Trinh sát vẫy tay gọi đồng đội đi theo hướng đúng: đọc đúng câu chỉ đường trên bia thì cả nhóm theo kịp."
     ],
     "question_hook": "Bia đá phủ rêu; mỗi câu đúng làm rêu tan bớt, lộ một chữ. Hợp với câu điền từ (cloze).",
     "reward": "Lối vào hang sau thác.",
@@ -18084,13 +18351,16 @@
      "stone",
      "behind",
      "through",
-     "secret"
+     "secret",
+     "come here",
+     "this way"
     ],
     "assets": [
      "surv_letter",
      "river_cave",
      "river_cliff",
-     "river_moss_rock"
+     "river_moss_rock",
+     "anim_beckon"
     ],
     "subtitles": [
      {
@@ -18717,6 +18987,7 @@
    }
   ],
   "asset_ids": [
+   "anim_beckon",
    "anim_cheer",
    "anim_wave",
    "camp_bottle",
@@ -23163,7 +23434,8 @@
     "goal": "Nhận ra dấu hiệu hạn hán và quyết định lên đường.",
     "beats": [
      "Đất nứt thành mảng, bụi bay, cỏ vàng úa.",
-     "Ông Cổ Dài kể về hồ nước xưa."
+     "Ông Cổ Dài kể về hồ nước xưa.",
+     "Đụn cát nóng nằm rải rác trên cao nguyên khô: gọi đúng tên thì cát lún nông cho cả bầy đi qua."
     ],
     "question_hook": "Chạm vào vật thể đang phát sáng trên đồng cỏ (dấu chân, vũng nước, bụi cỏ, quả trứng...) để mở câu hỏi nhỏ ngay cạnh nó; đúng thì khủng long con làm được việc đó (ngửi, vồ, uống, trốn, gầm), sai thì cha nhắc lại sau 5 giây, không trừ điểm nặng. Mỗi vết nứt là một câu về thời tiết và nước.",
     "reward": "Bầy xuất phát.",
@@ -23172,14 +23444,18 @@
      "hot",
      "thirsty",
      "plateau",
-     "leave"
+     "leave",
+     "sand",
+     "dust"
     ],
     "assets": [
      "dino_world_dry_plateau",
      "river_cliff__alt1",
      "ground_stone_floor",
      "dino_sauropod_grey",
-     "hdri_noon"
+     "hdri_noon",
+     "dino_sand",
+     "dino_sand_2"
     ],
     "subtitles": [
      {
@@ -23230,7 +23506,8 @@
     "goal": "Cả bầy đi thành hàng: lớn trước, nhỏ giữa, già cuối.",
     "beats": [
      "Mỗi nhóm giữ khoảng cách vừa đủ, không ai bị bỏ lại.",
-     "Tia Chớp chạy đi chạy lại báo tin cho cả hàng."
+     "Tia Chớp chạy đi chạy lại báo tin cho cả hàng.",
+     "Dấu chân của cha in sâu trên cát: đọc đúng từ thì đàn con đặt chân vào đúng dấu mà đi theo."
     ],
     "question_hook": "Chạm vào vật thể đang phát sáng trên đồng cỏ (dấu chân, vũng nước, bụi cỏ, quả trứng...) để mở câu hỏi nhỏ ngay cạnh nó; đúng thì khủng long con làm được việc đó (ngửi, vồ, uống, trốn, gầm), sai thì cha nhắc lại sau 5 giây, không trừ điểm nặng. Câu hỏi hiện trên lưng khủng long đi trước; đúng thì hàng gọn.",
     "reward": "Bầy đi nhanh hơn.",
@@ -23239,14 +23516,17 @@
      "front",
      "behind",
      "together",
-     "stay"
+     "stay",
+     "footprint",
+     "follow"
     ],
     "assets": [
      "dino_raptor_rider",
      "dino_triceratops",
      "dino_stegosaurus",
      "river_rock_small",
-     "river_rock_medium"
+     "river_rock_medium",
+     "dino_footprint"
     ],
     "subtitles": [
      {
@@ -23952,8 +24232,11 @@
   "asset_ids": [
    "dino_antelope",
    "dino_diplodocus",
+   "dino_footprint",
    "dino_rabbit",
    "dino_raptor_rider",
+   "dino_sand",
+   "dino_sand_2",
    "dino_sauropod_grey",
    "dino_stegosaurus",
    "dino_trex_brown",
@@ -24860,7 +25143,8 @@
     "goal": "Nhận ra cha đã già: đi chậm, uống chậm, hay nghỉ.",
     "beats": [
      "Mốc đi cạnh cha, chậm lại cho vừa nhịp.",
-     "Ông Cổ Dài nói: già không phải yếu, chỉ cần người bên cạnh."
+     "Ông Cổ Dài nói: già không phải yếu, chỉ cần người bên cạnh.",
+     "Cha chậm bước, dấu chân in nông; Mốc vẫy cha lại gần và đi chậm cho vừa nhịp."
     ],
     "question_hook": "Chạm vào vật thể đang phát sáng trên đồng cỏ (dấu chân, vũng nước, bụi cỏ, quả trứng...) để mở câu hỏi nhỏ ngay cạnh nó; đúng thì khủng long con làm được việc đó (ngửi, vồ, uống, trốn, gầm), sai thì cha nhắc lại sau 5 giây, không trừ điểm nặng. Câu hỏi hiện trên dấu chân cha, mỗi dấu chân nặng hơn trước.",
     "reward": "Mốc hiểu cha.",
@@ -24869,7 +25153,9 @@
      "slow",
      "tired",
      "help",
-     "back"
+     "back",
+     "footprint",
+     "come here"
     ],
     "assets": [
      "dino_trex_brown",
@@ -24877,7 +25163,9 @@
      "tree_x01",
      "tree_x03",
      "ground_grass_patch",
-     "hdri_noon"
+     "hdri_noon",
+     "dino_footprint",
+     "anim_beckon"
     ],
     "subtitles": [
      {
@@ -25651,9 +25939,11 @@
    }
   ],
   "asset_ids": [
+   "anim_beckon",
    "anim_cheer",
    "dino_antelope",
    "dino_diplodocus",
+   "dino_footprint",
    "dino_raptor_rider",
    "dino_sauropod_grey",
    "dino_stegosaurus",

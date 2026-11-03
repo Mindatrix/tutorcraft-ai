@@ -33,9 +33,8 @@ test('every scenario gets a valid, varied random-event plan', () => {
   }
 });
 
-// TODO(coverage): skipped 2026-11-03 to unblock CI. 23 library models have no scenario yet.
-// Re-enable once the content side (Claude chat) adds them to content/scenarios_v2.json.
-test.skip('asset catalog: every model in the 3D folder is used by at least one scenario', () => {
+// Re-enabled 03/11 evening: Claude chat gave every library model a scenario.
+test('asset catalog: every model in the 3D folder is used by at least one scenario', () => {
   const catalog: { id: string; scope: string }[] = JSON.parse(readFileSync(join(process.cwd(), 'content/asset_catalog.json'), 'utf8'));
   const used = new Set(scenarios.flatMap((s) => s.asset_ids));
   assert.ok(catalog.length >= 200);
