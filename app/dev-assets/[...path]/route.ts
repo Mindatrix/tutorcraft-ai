@@ -3,7 +3,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { Readable } from 'node:stream';
 
-// DEVELOPMENT ONLY: serves the local 3D library (~/Documents/3D_tutorcraft, outside the repo)
+// DEVELOPMENT ONLY: serves the local 3D library ($TC_3D_DIR, default ~/Documents/3D_tutorcraft/TutorCraft/01_assets_source, outside the repo)
 //   /dev-assets/web/<file>  → <library>/_optimized/<file>   (.glb)
 //   /dev-assets/low/<file>  → <library>/_low/<file>         (.glb)
 //   /dev-assets/mid/<file>  → <library>/_mid/<file>         (.glb, ~5 k triangle avatars)
@@ -13,7 +13,7 @@ import { Readable } from 'node:stream';
 // Production uses NEXT_PUBLIC_ASSET_BASE_URL (a CDN with web/, low/, mid/, fill/, fill_low/, hdri/, audio/: scripts/sync-assets-r2.mjs).
 // This route answers 404 in production, unless TC_SERVE_LOCAL_ASSETS=1 (a production build tested on the LAN).
 
-const ROOT = path.resolve((process.env.TC_3D_DIR || '~/Documents/3D_tutorcraft').replace(/^~/, os.homedir()));
+const ROOT = path.resolve((process.env.TC_3D_DIR || '~/Documents/3D_tutorcraft/TutorCraft/01_assets_source').replace(/^~/, os.homedir()));
 const DIRS: Record<string, { dir: string; ext: string; type: string }> = {
   web: { dir: '_optimized', ext: '.glb', type: 'model/gltf-binary' },
   low: { dir: '_low', ext: '.glb', type: 'model/gltf-binary' },

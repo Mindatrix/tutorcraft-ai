@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // A3.1 — Danh mục model 3D. Đây là script DUY NHẤT ghi content/asset_catalog.json và content/asset_coverage.json
 // (bản Python cũ đã bỏ ngày 27/10/2026; định dạng giữ nguyên, có thêm trường).
-//   node scripts/build-asset-catalog.mjs            (thư viện mặc định: ~/Documents/3D_tutorcraft)
+//   node scripts/build-asset-catalog.mjs            (thư viện mặc định: ~/Documents/3D_tutorcraft/TutorCraft/01_assets_source)
 //   TC_3D_DIR=/đường/dẫn node scripts/build-asset-catalog.mjs
 // Ghi:
 //   content/asset_catalog.json  — mỗi .glb: id, file, game, scope, source, games (kịch bản nào dùng),
@@ -13,7 +13,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
 
-const ROOT = path.resolve((process.env.TC_3D_DIR || '~/Documents/3D_tutorcraft').replace(/^~/, os.homedir()));
+const ROOT = path.resolve((process.env.TC_3D_DIR || '~/Documents/3D_tutorcraft/TutorCraft/01_assets_source').replace(/^~/, os.homedir()));
 const OPT = path.join(ROOT, '_optimized');
 const LOW = path.join(ROOT, '_low');
 const FILL = path.join(ROOT, '_fill');

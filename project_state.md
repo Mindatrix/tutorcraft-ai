@@ -131,7 +131,7 @@ WP2 → WP1 → **U0 → U1+U2** → WP3–WP5 → **U3, U4** → WP6 → WP7 �
 - **Dung lượng trận nặng nhất:** `dino-01` 37,9 MB (cao) / 13,5 MB (thấp), dưới ngân sách 40 / 15 MB. Cảnh thấp nặng nhất < 300 nghìn tam giác.
 - **Âm thanh:** nhạc nén 56 → 11 MB; 81 file.
 - **Thử tải giọng nói (03/11, bản build production trên máy, 50 học sinh × 60 s × 6 lượt/phút, cùng một IP lớp):** 333 lượt, p50 193 ms, p95 236 ms, p99 294 ms (mục tiêu p95 ≤ 200 ms chưa đạt: sàn là một vòng gọi Supabase ~200 ms cho bộ đếm giới hạn dùng chung); 0 lỗi, 0 lượt 429 với học sinh đúng nhịp; học sinh gửi nhanh bị chặn đúng ở lượt thứ 7; RSS server 67 → đỉnh 183 MB → 64 MB. Chưa đo ghi `speech_attempts`/`coin_ledger` dưới tải (cần một trận thật, sẽ ghi dữ liệu thật).
-- **Test (03/11 tối, sau PR #5 và chốt logic trận lớp):** 262 đạt, 0 hỏng, 2 bỏ qua; lint 0 lỗi. `test:security` 30/30 (03/11 19:55, bản build có Đại phẫu đợt 1, thư mục mới). Sau WP7: `test:security` chưa chạy lại sau WP7 (build trong môi trường agent không tải được phông Google). Sau sửa xu demo: 237 đạt. Trước đó (sau PR #1–#3): 225 đạt, 0 hỏng, 2 bỏ qua (2 test độ phủ model tạm `skip` kèm TODO, chờ Claude chat gán kịch bản cho 23 model). Type check sạch; lint 0 lỗi (49 cảnh báo cũ); `test:security` 30/30 trên bản build production.
+- **Test (03/11 23:15, sau khi nối đủ 6 thế giới và khôi phục `camp_pan`):** 320/320 đạt, 0 bỏ qua; lint 0 lỗi. Trước đó (03/11 tối, sau PR #5 và chốt logic trận lớp): 262 đạt, 0 hỏng, 2 bỏ qua; lint 0 lỗi. `test:security` 30/30 (03/11 19:55, bản build có Đại phẫu đợt 1, thư mục mới). Sau WP7: `test:security` chưa chạy lại sau WP7 (build trong môi trường agent không tải được phông Google). Sau sửa xu demo: 237 đạt. Trước đó (sau PR #1–#3): 225 đạt, 0 hỏng, 2 bỏ qua (2 test độ phủ model tạm `skip` kèm TODO, chờ Claude chat gán kịch bản cho 23 model). Type check sạch; lint 0 lỗi (49 cảnh báo cũ); `test:security` 30/30 trên bản build production.
 
 ## 5. Commit gần nhất
 
@@ -336,8 +336,8 @@ Mở `http://192.168.11.125:3005/tutor/scene-lab` trên điện thoại, bấm "
 
 ### 7.9. Sau PR #6 (03/11 tối)
 
-- **Mất file gốc `camp/camp_pan.glb`** (chảo, nhóm "bếp" của Summer Camp): chỉ còn bản `_optimized` / `_low`; không có trong bản sao lưu đợt đổi tên. Test `WP4 kits data` hỏng vì vậy (1 test). Cần Claude chat / chủ dự án khôi phục bản gốc hoặc chọn model khác. `camp_tent_ruined_grey` cũng chỉ có bản tối ưu.
-- **Thư viện 3D đã chuyển** vào `~/Documents/3D_tutorcraft/TutorCraft/01_assets_source` (vẫn trong Documents → iCloud). Script và `/dev-assets` mặc định đọc `~/Documents/3D_tutorcraft`: chạy script với `TC_3D_DIR=…/TutorCraft/01_assets_source`; để `/dev-assets` chạy, thêm `TC_3D_DIR` vào `.env.local`. Catalog đã dựng lại (329 model, không model mồ côi; thiếu 9 mã).
+- **Đã khôi phục (03/11 23:10):** file gốc `camp/camp_pan.glb` và `camp/camp_tent_ruined_grey.glb` bị mất được chép lại từ bản `_optimized` (ghi chú: `06_docs_knowledge/khoi_phuc_2026-11-03.md`). Test `WP4 kits data` đạt lại. Tìm được bản gốc chất lượng cao thì thay vào `camp/`.
+- **Thư viện 3D** ở `~/Documents/3D_tutorcraft/TutorCraft/01_assets_source` (vẫn trong Documents → iCloud; thư mục đang được Google Drive tải lên). Code, script và `/dev-assets` đã dùng đường dẫn này làm mặc định; `TC_3D_DIR` (trong `.env.local`) ghi đè nếu thư viện lại đổi chỗ. Catalog dựng lại: 331 model, thiếu 7 mã (danh sách cũ: `anim_cook`, `food_fish_raw`, `food_sausage`, `tex_mud`, `tex_sand`, `water_foam`, `water_normal`).
 - Đã bật lại 2 test độ phủ model.
 - `content/multiverse_quests.json` chứa đáp án (câu đố, chính tả, thứ tự thẻ): **chỉ đọc ở server**, không import vào code trình duyệt. Chấm dự phòng của nhiệm vụ đang tự chấm riêng (khớp chính xác), khác bộ chấm chính tả của server (`scoreDictation`, cho phép sai 1 chữ): khi nối trận thật nên dùng chung một bộ.
 - Trang nào dùng `MultiversePortalStage explore`: chưa có (cần trang thử hoặc nối vào trận).
@@ -351,7 +351,7 @@ Mở `http://192.168.11.125:3005/tutor/scene-lab` trên điện thoại, bấm "
 
 ### 7.11. Sau khi nối đủ 6 thế giới
 
-- Model thư viện (cây, khủng long) không tải được trên máy dev cho tới khi đặt `TC_3D_DIR` (thư viện đã chuyển vào `TutorCraft/01_assets_source`); cảnh vẫn chạy và bỏ qua model thiếu.
+- Model thư viện tải được trên máy dev (đã kiểm Dino: cây, nấm, đá, khủng long).
 - River Survival chưa có vị trí người chơi thật (server không theo dõi toạ độ): người chơi được xếp theo trạng thái. Nhánh A1–A7 của Antigravity (`agy/physics-spatial-scenes`, đá cố định "compass, shelter…") chưa gộp; vị trí trạm của nó có thể dùng lại nhưng đá phải là đá server.
 - Kayak Rush vẫn chạy cảnh riêng trong `BattleArena` (không qua `ModeStage`).
 

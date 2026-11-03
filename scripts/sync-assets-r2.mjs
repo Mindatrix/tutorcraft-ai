@@ -22,7 +22,7 @@ const args = process.argv.slice(2);
 const APPLY = args.includes('--apply');
 const CORS = args.includes('--cors');
 const ROOMS = args.includes('--include-rooms');
-const ROOT = path.resolve((process.env.TC_3D_DIR || '~/Documents/3D_tutorcraft').replace(/^~/, os.homedir()));
+const ROOT = path.resolve((process.env.TC_3D_DIR || '~/Documents/3D_tutorcraft/TutorCraft/01_assets_source').replace(/^~/, os.homedir()));
 const FOLDERS = [
   { prefix: 'web', dir: '_optimized', ext: '.glb' },
   { prefix: 'low', dir: '_low', ext: '.glb' },

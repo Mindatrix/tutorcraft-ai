@@ -23,7 +23,7 @@ import { ALL_EXTENSIONS } from '@gltf-transform/extensions';
 import { prune } from '@gltf-transform/functions';
 import { MeshoptDecoder, MeshoptEncoder } from 'meshoptimizer';
 
-const ROOT = path.resolve((process.env.TC_3D_DIR || '~/Documents/3D_tutorcraft').replace(/^~/, os.homedir()));
+const ROOT = path.resolve((process.env.TC_3D_DIR || '~/Documents/3D_tutorcraft/TutorCraft/01_assets_source').replace(/^~/, os.homedir()));
 const [fileArg, ...rest] = process.argv.slice(2);
 if (!fileArg) {
   console.error('Cách dùng: node scripts/clean-glb.mjs <file.glb> --inspect | --drop-planes z=0.95 | --drop-below 0.02 | --keep-pieces-over 0.02 [--dry]');

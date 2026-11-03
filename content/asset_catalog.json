@@ -809,6 +809,25 @@
   "skinned": false
  },
  {
+  "id": "camp_pan",
+  "file": "camp/camp_pan.glb",
+  "mb_raw": 0.07,
+  "mb_web": 0.07,
+  "mb_low": 0.05,
+  "scope": "game",
+  "game": "summer_camp",
+  "games": [
+   "summer_camp"
+  ],
+  "source": "self",
+  "tris_raw": 2074,
+  "tris_web": 2074,
+  "tris_low": 2074,
+  "textures": 1,
+  "animations": 0,
+  "skinned": false
+ },
+ {
   "id": "camp_pot",
   "file": "camp/camp_pot.glb",
   "mb_raw": 21.92,
@@ -1116,6 +1135,25 @@
   "tris_raw": 52594,
   "tris_web": 8000,
   "tris_low": 4804,
+  "textures": 3,
+  "animations": 0,
+  "skinned": false
+ },
+ {
+  "id": "camp_tent_ruined_grey",
+  "file": "camp/camp_tent_ruined_grey.glb",
+  "mb_raw": 0.64,
+  "mb_web": 0.64,
+  "mb_low": 0.23,
+  "scope": "game",
+  "game": "summer_camp",
+  "games": [
+   "summer_camp"
+  ],
+  "source": "self",
+  "tris_raw": 7964,
+  "tris_web": 7964,
+  "tris_low": 3910,
   "textures": 3,
   "animations": 0,
   "skinned": false

@@ -3,7 +3,7 @@ import aliasFile from '../../content/asset_aliases.json';
 import { resolveAsset } from '../engine/assetLoader';
 
 // The 3D model library (content/asset_catalog.json, built by scripts/build-asset-catalog.mjs).
-// Files live OUTSIDE the repo (~/Documents/3D_tutorcraft, 7.9 GB raw) and are served from:
+// Files live OUTSIDE the repo (~/Documents/3D_tutorcraft/TutorCraft/01_assets_source, or $TC_3D_DIR) and are served from:
 //   NEXT_PUBLIC_ASSET_BASE_URL/web/<file>  — optimized (high)
 //   NEXT_PUBLIC_ASSET_BASE_URL/low/<file>  — low variant for weak phones
 //   NEXT_PUBLIC_ASSET_BASE_URL/mid/<file>  — ~5 k triangle avatars (characters, dinosaurs, critters):
@@ -67,7 +67,7 @@ export type HdriSize = '2k' | '1k';
 /**
  * Sky image (HDRI, Poly Haven CC0). The 1K file is small and ships in /public: phones use it, and so
  * does everyone when the 2K one cannot be loaded. The 2K file (4–7 MB each) stays out of git, next to
- * the model library: NEXT_PUBLIC_ASSET_BASE_URL/hdri/… (dev: ~/Documents/3D_tutorcraft/hdri).
+ * the model library: NEXT_PUBLIC_ASSET_BASE_URL/hdri/… (dev: <library>/hdri).
  */
 export function hdri(key: string, size: HdriSize = '2k'): string {
   return size === '1k' ? `/assets/hdri/river_${key}_1k.hdr` : `${assetBase()}/hdri/river_${key}_2k.hdr`;

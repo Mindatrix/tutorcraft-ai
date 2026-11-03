@@ -32,7 +32,7 @@ import { MeshoptDecoder } from 'meshoptimizer';
 
 const APPLY = process.argv.includes('--apply');
 const REPLACE = process.argv.includes('--replace');
-const ROOT = path.resolve((process.env.TC_3D_DIR || '~/Documents/3D_tutorcraft').replace(/^~/, os.homedir()));
+const ROOT = path.resolve((process.env.TC_3D_DIR || '~/Documents/3D_tutorcraft/TutorCraft/01_assets_source').replace(/^~/, os.homedir()));
 const INBOX = path.join(ROOT, 'inbox');
 const DONE = path.join(INBOX, '_da_nhap');
 const BLENDER = process.env.BLENDER || '/Applications/Blender.app/Contents/MacOS/Blender';

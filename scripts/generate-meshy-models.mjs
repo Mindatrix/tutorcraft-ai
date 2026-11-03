@@ -22,7 +22,7 @@ const oi = args.indexOf('--only');
 const only = oi >= 0 ? (args[oi + 1] || '').split(',').filter(Boolean) : null;
 const gi = args.indexOf('--group');
 const group = gi >= 0 ? args[gi + 1] : null;
-const SRC = process.env.MESHY_SRC_DIR || path.join(os.homedir(), 'Documents', '3D_tutorcraft');
+const SRC = process.env.MESHY_SRC_DIR || path.join(os.homedir(), 'Documents', '3D_tutorcraft', 'TutorCraft', '01_assets_source');
 const DRY = has('--dry'), PREVIEW_ONLY = has('--preview-only'), LITE = has('--lite'), FORCE = has('--force');
 const MAX_BYTES = 8 * 1024 * 1024;
 const OUT = 'public/assets/3d';

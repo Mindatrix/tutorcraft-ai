@@ -27,7 +27,7 @@ const VALUE_FLAGS = ['--author', '--source', '--license', '--title'];
 const positional = argv.filter((a, i) => !a.startsWith('--') && !VALUE_FLAGS.includes(argv[i - 1]));
 const APPLY = argv.includes('--apply');
 const VARIANT = argv.includes('--variant');
-const ROOT = path.resolve((process.env.TC_3D_DIR || '~/Documents/3D_tutorcraft').replace(/^~/, os.homedir()));
+const ROOT = path.resolve((process.env.TC_3D_DIR || '~/Documents/3D_tutorcraft/TutorCraft/01_assets_source').replace(/^~/, os.homedir()));
 const CANDIDATES = path.join(ROOT, '_ung_vien');
 const INBOX = path.join(ROOT, 'inbox');
 const CREDITS = path.join(INBOX, 'credits.csv');

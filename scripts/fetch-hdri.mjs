@@ -15,7 +15,7 @@ const SKIES = [
   { key: 'cloudy', slug: 'kloofendal_overcast_puresky', vi: 'Nhiều mây' },
 ];
 const SIZES = ['2k', '1k'];
-const OUT = { '1k': 'public/assets/hdri', '2k': path.join((process.env.TC_3D_DIR || '~/Documents/3D_tutorcraft').replace(/^~/, os.homedir()), 'hdri') };
+const OUT = { '1k': 'public/assets/hdri', '2k': path.join((process.env.TC_3D_DIR || '~/Documents/3D_tutorcraft/TutorCraft/01_assets_source').replace(/^~/, os.homedir()), 'hdri') };
 const CREDITS = 'content/asset_credits.json';
 const force = process.argv.includes('--force');
 const H = { 'User-Agent': 'TutorCraftAI-asset-fetch/1.0' };

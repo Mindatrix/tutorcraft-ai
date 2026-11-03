@@ -18,7 +18,7 @@ import os from 'node:os';
 import path from 'node:path';
 
 const FORCE = process.argv.includes('--force');
-const ROOT = path.resolve((process.env.TC_3D_DIR || '~/Documents/3D_tutorcraft').replace(/^~/, os.homedir()));
+const ROOT = path.resolve((process.env.TC_3D_DIR || '~/Documents/3D_tutorcraft/TutorCraft/01_assets_source').replace(/^~/, os.homedir()));
 const SRC = path.join(ROOT, 'audio');
 const OUT = path.join(ROOT, '_audio_web');
 const BLENDER = process.env.BLENDER || '/Applications/Blender.app/Contents/MacOS/Blender';

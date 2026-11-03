@@ -15,7 +15,7 @@ const args = process.argv.slice(2);
 const opt = (k) => (args.includes(k) ? args[args.indexOf(k) + 1] : null);
 const ONLY = opt('--only');
 const SIZE = Number(opt('--size') ?? 320);
-const LIB = path.resolve((process.env.TC_3D_DIR || '~/Documents/3D_tutorcraft').replace(/^~/, os.homedir()));
+const LIB = path.resolve((process.env.TC_3D_DIR || '~/Documents/3D_tutorcraft/TutorCraft/01_assets_source').replace(/^~/, os.homedir()));
 const BLENDER = process.env.BLENDER || '/Applications/Blender.app/Contents/MacOS/Blender';
 const OUT = path.resolve('public/characters/thumbs');
 const SRC_PREFIX = '_ung_vien/nhan_vat/';

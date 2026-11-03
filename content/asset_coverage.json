@@ -1,14 +1,10 @@
 {
  "total_used": 310,
- "have_file": 301,
- "missing_count": 9,
+ "have_file": 303,
+ "missing_count": 7,
  "missing_by_group": {
   "anim": [
    "anim_cook"
-  ],
-  "camp": [
-   "camp_pan",
-   "camp_tent_ruined_grey"
   ],
   "food": [
    "food_fish_raw",
