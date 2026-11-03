@@ -1,0 +1,194 @@
+/* Đại phẫu (03/11/2026): Spatial UI glass controls (joystick, jump, "Xuyên không").
+   Turbopack makes every .css global, so every class starts with tc-sp-.
+   Glass = translucent + backdrop blur. Blur costs GPU time on phones: it is turned off on the low
+   tier (.tc-hud-lite on an ancestor), when the browser has no backdrop-filter, and when the user
+   asks for less transparency. Text and icons keep ≥ 4.5:1 contrast on the dark fallback. */
+
+.tc-sp-root {
+  --sp-glass: rgb(255 255 255 / 0.14);
+  --sp-glass-strong: rgb(255 255 255 / 0.22);
+  --sp-line: rgb(255 255 255 / 0.32);
+  --sp-solid: rgb(12 18 38 / 0.78);
+  --sp-ink: #ffffff;
+  --sp-accent: #7dd3fc;
+  --sp-warp: #c4b5fd;
+  --sp-size: 58px;
+  --sp-opacity: 0.75;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 20;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.tc-sp-glass {
+  background: var(--sp-glass);
+  border: 1px solid var(--sp-line);
+  backdrop-filter: blur(14px) saturate(1.4);
+  -webkit-backdrop-filter: blur(14px) saturate(1.4);
+  box-shadow: 0 6px 20px rgb(0 0 0 / 0.25), inset 0 1px 0 rgb(255 255 255 / 0.25);
+  color: var(--sp-ink);
+}
+.tc-hud-lite .tc-sp-glass {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  background: var(--sp-solid);
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .tc-sp-glass {
+    background: var(--sp-solid);
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .tc-sp-glass {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: var(--sp-solid);
+  }
+}
+
+/* Thumb zones: the joystick zone covers the bottom 45% of one side (moveHand), buttons the other. */
+.tc-sp-stickzone {
+  position: absolute;
+  bottom: 0;
+  width: 45%;
+  height: 45%;
+  pointer-events: auto;
+}
+.tc-sp-stickzone[data-hand='left'] {
+  left: 0;
+}
+.tc-sp-stickzone[data-hand='right'] {
+  right: 0;
+}
+.tc-sp-stick {
+  position: absolute;
+  width: calc(var(--sp-radius) * 2);
+  height: calc(var(--sp-radius) * 2);
+  margin: calc(var(--sp-radius) * -1) 0 0 calc(var(--sp-radius) * -1);
+  border-radius: 50%;
+  opacity: var(--sp-opacity);
+}
+.tc-sp-stick[data-idle='true'] {
+  /* Resting place when no thumb is down: a hint of where to touch. */
+  left: max(calc(var(--sp-radius) + 18px), calc(env(safe-area-inset-left) + var(--sp-radius) + 12px));
+  bottom: max(calc(var(--sp-radius) + 18px), calc(env(safe-area-inset-bottom) + var(--sp-radius) + 12px));
+  top: auto;
+  margin: 0 0 calc(var(--sp-radius) * -1) calc(var(--sp-radius) * -1);
+  opacity: calc(var(--sp-opacity) * 0.6);
+}
+.tc-sp-stickzone[data-hand='right'] .tc-sp-stick[data-idle='true'] {
+  left: auto;
+  right: max(calc(var(--sp-radius) + 18px), calc(env(safe-area-inset-right) + var(--sp-radius) + 12px));
+  margin: 0 calc(var(--sp-radius) * -1) calc(var(--sp-radius) * -1) 0;
+}
+.tc-sp-knob {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 46%;
+  height: 46%;
+  margin: -23% 0 0 -23%;
+  border-radius: 50%;
+  background: var(--sp-glass-strong);
+  border: 1px solid var(--sp-line);
+  box-shadow: 0 2px 10px rgb(0 0 0 / 0.3);
+}
+
+/* Action buttons (jump, warp) on the other thumb. */
+.tc-sp-actions {
+  position: absolute;
+  bottom: max(18px, calc(env(safe-area-inset-bottom) + 12px));
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  pointer-events: auto;
+  opacity: var(--sp-opacity);
+}
+.tc-sp-actions[data-hand='left'] {
+  right: max(18px, calc(env(safe-area-inset-right) + 12px));
+}
+.tc-sp-actions[data-hand='right'] {
+  left: max(18px, calc(env(safe-area-inset-left) + 12px));
+  flex-direction: row-reverse;
+}
+.tc-sp-btn {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: var(--sp-size);
+  height: var(--sp-size);
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: 50%;
+  font: 700 12px/1.1 var(--font-body, system-ui), system-ui;
+  text-shadow: 0 1px 2px rgb(0 0 0 / 0.6);
+  cursor: pointer;
+  touch-action: none;
+}
+.tc-sp-btn:focus-visible {
+  outline: 3px solid var(--sp-accent);
+  outline-offset: 3px;
+}
+.tc-sp-btn[aria-disabled='true'] {
+  opacity: 0.45;
+  cursor: default;
+}
+.tc-sp-btn-warp {
+  width: calc(var(--sp-size) * 1.25);
+  height: calc(var(--sp-size) * 1.25);
+}
+.tc-sp-btn-warp[data-phase='ready'] {
+  border-color: var(--sp-warp);
+  box-shadow: 0 0 0 2px rgb(196 181 253 / 0.5), 0 6px 20px rgb(0 0 0 / 0.25);
+  animation: tc-sp-pulse 1.6s ease-in-out infinite;
+}
+.tc-sp-ring {
+  position: absolute;
+  inset: -4px;
+  pointer-events: none;
+}
+.tc-sp-ring circle {
+  fill: none;
+  stroke-width: 4;
+}
+.tc-sp-ring .tc-sp-ring-track {
+  stroke: rgb(255 255 255 / 0.18);
+}
+.tc-sp-ring .tc-sp-ring-fill {
+  stroke: var(--sp-warp);
+  stroke-linecap: round;
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+}
+.tc-sp-label {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 0.01em;
+}
+.tc-sp-sronly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@keyframes tc-sp-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tc-sp-btn-warp[data-phase='ready'] {
+    animation: none;
+  }
+}

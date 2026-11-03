@@ -53,3 +53,6 @@ __pycache__/
 
 # HDRI 2K (4–7 MB mỗi ảnh) nằm cùng thư viện model, ngoài git: ~/Documents/3D_tutorcraft/hdri → CDN hdri/ (docs/operations.md)
 /public/assets/hdri/*_2k.hdr
+
+# FPS benchmark reports (scripts/fps-benchmark.mjs)
+/_report/

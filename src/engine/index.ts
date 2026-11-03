@@ -40,6 +40,8 @@ export * from './director';
 export * from './consequences';
 export * from './questionSchedule';
 export * from './classSession';
+export * from './characterMotion';
+export * from './fpsStats';
 export * from './coins';
 export * from './hints';
 export * from './rescue';

@@ -116,6 +116,7 @@ WP2 → WP1 → **U0 → U1+U2** → WP3–WP5 → **U3, U4** → WP6 → WP7 �
 | WP7 | Lịch câu hỏi trong trận lớp (`classSession.ts`), thử thách vàng đổi câu khó hơn, `GET /api/session/slot`, trường `meaning_vi` | **Server xong** `2197fa6` |
 | WP7 chốt logic (03/11) | Trận lớp: hết máu vẫn chơi tới hết giờ (`keepPlaying`); câu theo mức riêng từng em (`personalLevel`, từ `match_players.skill`); server tự chấm và ghi kết quả mọi em khi trận kết thúc (`finalizeMatch`, `onEnded`) | **Xong** (03/11, chưa commit) |
 | PR #5 Antigravity | Cảnh 3D Kayak Rush và Multiverse Portal + Đá Phát Âm + Pet (`KayakRushScene`, `MultiversePortalScene`, `pet_dialogues.json`) | **Đã gộp** `b79f425`; chỉ chạy ngoài trận thật |
+| Đại phẫu đợt 1 (03/11) | Vật lý Rapier trực tiếp (không Ecctrl: cần R3F + three 0.184; chủ dự án chọn), nhân vật capsule, Spatial UI kính mờ (joystick, Nhảy, Xuyên không), trang `/tutor/physics-lab`, đo FPS tự động `npm run test:fps` | **Xong** (03/11, commit `feat(overhaul)`). Chi tiết: `docs/dai_phau_physics_spatial_ui.md` |
 | WP7 giao diện | Đồng hồ chờ điểm hỏi, vật vàng, `ClassPodium` màn em | **Chưa** — nay là việc của Claude Code (Spatial UI), hợp đồng ở `docs/wp7_class_schedule_handoff.md` |
 | WP8, WP9 | Từng game làm trọn; F và G | Chưa. WP8 chỉ bắt đầu khi có số đo điện thoại hoặc người dùng nói "qua" |
 
@@ -126,7 +127,7 @@ WP2 → WP1 → **U0 → U1+U2** → WP3–WP5 → **U3, U4** → WP6 → WP7 �
 - **Dung lượng trận nặng nhất:** `dino-01` 37,9 MB (cao) / 13,5 MB (thấp), dưới ngân sách 40 / 15 MB. Cảnh thấp nặng nhất < 300 nghìn tam giác.
 - **Âm thanh:** nhạc nén 56 → 11 MB; 81 file.
 - **Thử tải giọng nói (03/11, bản build production trên máy, 50 học sinh × 60 s × 6 lượt/phút, cùng một IP lớp):** 333 lượt, p50 193 ms, p95 236 ms, p99 294 ms (mục tiêu p95 ≤ 200 ms chưa đạt: sàn là một vòng gọi Supabase ~200 ms cho bộ đếm giới hạn dùng chung); 0 lỗi, 0 lượt 429 với học sinh đúng nhịp; học sinh gửi nhanh bị chặn đúng ở lượt thứ 7; RSS server 67 → đỉnh 183 MB → 64 MB. Chưa đo ghi `speech_attempts`/`coin_ledger` dưới tải (cần một trận thật, sẽ ghi dữ liệu thật).
-- **Test (03/11 tối, sau PR #5 và chốt logic trận lớp):** 262 đạt, 0 hỏng, 2 bỏ qua; lint 0 lỗi. `test:security` 30/30 trên bản build WP7 (`2197fa6`); chưa chạy lại sau khi chuyển thư mục vì thiếu `.env.local` (mục 7.7). Sau WP7: `test:security` chưa chạy lại sau WP7 (build trong môi trường agent không tải được phông Google). Sau sửa xu demo: 237 đạt. Trước đó (sau PR #1–#3): 225 đạt, 0 hỏng, 2 bỏ qua (2 test độ phủ model tạm `skip` kèm TODO, chờ Claude chat gán kịch bản cho 23 model). Type check sạch; lint 0 lỗi (49 cảnh báo cũ); `test:security` 30/30 trên bản build production.
+- **Test (03/11 tối, sau PR #5 và chốt logic trận lớp):** 262 đạt, 0 hỏng, 2 bỏ qua; lint 0 lỗi. `test:security` 30/30 (03/11 19:55, bản build có Đại phẫu đợt 1, thư mục mới). Sau WP7: `test:security` chưa chạy lại sau WP7 (build trong môi trường agent không tải được phông Google). Sau sửa xu demo: 237 đạt. Trước đó (sau PR #1–#3): 225 đạt, 0 hỏng, 2 bỏ qua (2 test độ phủ model tạm `skip` kèm TODO, chờ Claude chat gán kịch bản cho 23 model). Type check sạch; lint 0 lỗi (49 cảnh báo cũ); `test:security` 30/30 trên bản build production.
 
 ## 5. Commit gần nhất
 
@@ -317,10 +318,17 @@ Mở `http://192.168.11.125:3005/tutor/scene-lab` trên điện thoại, bấm "
 - **Bộ nhớ ảnh bản cao (~293 MB):** kế hoạch giảm (nhân vật bản vừa + trời 1K, hoặc KTX2) chỉ làm khi số đo điện thoại cho thấy cần.
 - **File chưa theo dõi không thuộc gói nào:** `.archify/`, `.taste-skill/`, `animasyon-stil-katalogu/` (kho git riêng), `.claude/settings.json`, các file `docs/specs/*` và `content/character_casting.json` của Claude chat. Chỉ commit khi người dùng bảo.
 - **Chuyển thư mục (03/11 tối):** repo cũ `~/Desktop/tutorcraft-ai` (bị iCloud nhân bản file `… 2`) đã bị chuyển đi/xoá, kéo theo thư mục `.git`. Thư mục mới `/Users/mindatix100/tutorcraft-ai` (trước là worktree của Antigravity) được dựng lại git từ GitHub; mọi commit đều còn trên `origin`. File `.git` hỏng cũ được giữ ở thư mục tạm của phiên. Thay đổi `allowedDevOrigins: ['192.168.1.99']` trong `next.config.ts` cất trong `git stash`.
-- **Mất theo repo cũ (không có trên GitHub), cần khôi phục từ Thùng rác nếu còn:** `.env.local` (khoá Supabase/Gemini: **thiếu thì server không gọi được database**), các file chưa commit `docs/specs/code-next-steps.md`, `tasks-2026-11-01.md`, `asset-reuse-*.md`, `code-tasks-asset-reuse.md`, `ui-reference/`, `docs/TECHNICAL_BLUEPRINT.md` (còn bản PDF trên Desktop), phần sửa dở `content/game_guides.json` và `scripts/meshy-models-extra.mjs`, `.claude/settings.json`, `.archify/`, `.taste-skill/`, `animasyon-stil-katalogu/`.
+- **Mất theo repo cũ (không có trên GitHub):** `.env.local` (đã tạo lại 03/11 19:53), các file chưa commit `docs/specs/code-next-steps.md`, `tasks-2026-11-01.md`, `asset-reuse-*.md`, `code-tasks-asset-reuse.md`, `ui-reference/`, `docs/TECHNICAL_BLUEPRINT.md` (còn bản PDF trên Desktop), phần sửa dở `content/game_guides.json` và `scripts/meshy-models-extra.mjs`, `.claude/settings.json`, `.archify/`, `.taste-skill/`, `animasyon-stil-katalogu/`.
 - **Thư viện 3D vẫn trong iCloud:** `~/Documents/3D_tutorcraft` nằm trong thư mục Documents, cũng được iCloud đồng bộ; nên chuyển ra ngoài như repo.
 - **File tài liệu trống:** `CLAUDE.md`, `DESIGN.md`, `doc.md`, `road_map.md` (0 byte); hỏi trước khi ghi.
 - **Push:** chỉ push khi người dùng nói. `scripts/meshy-models-extra.mjs` và `content/game_guides.json` đang sửa dở trên máy, không thuộc gói nào.
+
+### 7.8. Đại phẫu: việc tiếp theo
+
+- Đưa nhân vật vật lý + SpatialControls vào cảnh thật đầu tiên; Antigravity làm lưới va chạm đơn giản cho từng cảnh.
+- Nối Xuyên không với cổng Multiverse; camera xoay bằng tay phải.
+- Đo `test:fps --android` trên máy Android tầm trung thật (cần cài `adb`); đo iPhone bằng Safari.
+- `.env.local` đã tạo lại (03/11 19:53); `test:security` 30/30 trên bản build production có Đại phẫu đợt 1.
 
 ## 8. Lệnh thường dùng (Terminal trong VS Code, ở thư mục dự án)
 
