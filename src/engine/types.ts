@@ -79,6 +79,12 @@ export interface Question {
   topic: string;
   skill_tag: SkillTag;
   hint?: string;
+  /**
+   * Vietnamese meaning of the question's English sentence / target word, for the tier-1 hint
+   * (C4.11). Never quotes the right answer. Server only (not in PublicQuestion). Optional: old
+   * questions without it fall back to `hint`.
+   */
+  meaning_vi?: string;
   explanation?: string;
   /** True when injected from the spaced-repetition review pool. */
   is_review?: boolean;

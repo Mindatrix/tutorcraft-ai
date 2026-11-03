@@ -38,6 +38,15 @@ import {
   answerStars,
   isAnswerCorrect,
   questionTimeLimit,
+  appendClassEntry,
+  classQuestionTotal,
+  rebuildClassSession,
+  schedulePlanFor,
+  type ClassAppend,
+  type ClassSchedule,
+  type ClassSlotView,
+  type MatchTime,
+  type Rebuilt,
 } from '../engine';
 import { SKILL_IDS } from '../engine/skills';
 import { open, seal } from './crypto';
@@ -68,6 +77,11 @@ export interface SessionView {
   state: BattleState;
   question: PublicQuestion | null;
   team?: SessionRecord['team'];
+  /**
+   * WP7 class match: the schedule point of the current question. `question` is null until the
+   * point opens; the client shows the countdown from `opensAt`. null for solo / demo sessions.
+   */
+  slot?: ClassSlotView | null;
 }
 
 export interface FinalizeResult {
@@ -91,7 +105,20 @@ export interface SessionDeps {
   persistResult: (input: { battle: LoadedBattle; rec: SessionRecord; ctx: BattleCtx; state: BattleState; score: BattleScore; hpRemaining: number; timings: AnswerTiming[] }) => Promise<PersistOutcome>;
   /** Essay / reading grader (AI rubric). Defaults to the rule-based grader. */
   gradeOpen?: (q: Question, text: string) => Promise<Grade>;
+  /**
+   * WP7: the clock and seed of a class match. With it, a session inside a match follows the
+   * question schedule (classSession.ts); without it (or null) the session runs in order.
+   */
+  classSchedule?: (matchId: string) => Promise<{ time: MatchTime; seedKey: string } | null>;
   now?: () => number;
+}
+
+/** A replay of a session: in order (solo / demo) or by the class schedule. */
+interface Replay {
+  rebuilt: Rebuilt;
+  /** The questions as served (class: picked per point, reviews in their new form). */
+  ctx: BattleCtx;
+  slot: ClassSlotView | null;
 }
 
 /** Salted hash shared with the browser (Web Crypto SHA-256, first 16 hex chars). */
@@ -149,15 +176,31 @@ export function createSessionService(deps: SessionDeps) {
     return pq;
   };
 
-  const view = (rec: SessionRecord, ctx: BattleCtx, state: BattleState): SessionView => ({
+  const view = (rec: SessionRecord, ctx: BattleCtx, state: BattleState, slot: ClassSlotView | null = null, sched: ClassSchedule | null = null): SessionView => ({
     battleId: rec.battleId,
     status: rec.status,
-    totalQuestions: ctx.questions.length,
+    totalQuestions: sched ? classQuestionTotal(sched) : ctx.questions.length,
     bossMaxHp: ctx.scaling.bossHp,
     state,
-    question: decorate(rec, ctx, state),
+    // A class question stays hidden until its point opens (every device at the same second).
+    question: slot && !slot.open ? null : decorate(rec, ctx, state),
     team: rec.team ?? null,
+    ...(sched ? { slot } : {}),
   });
+
+  /** The schedule of a session inside a class match (null: solo, demo, or no match clock). */
+  async function scheduleFor(rec: SessionRecord, battle: LoadedBattle): Promise<ClassSchedule | null> {
+    if (!rec.matchId || !deps.classSchedule) return null;
+    const m = await deps.classSchedule(rec.matchId);
+    if (!m) return null;
+    return { time: m.time, plan: schedulePlanFor(m.time, m.seedKey, battle.questions.length), studentId: rec.id, level: Number(battle.config.level ?? 3) };
+  }
+
+  function replay(rec: SessionRecord, ctx: BattleCtx, sched: ClassSchedule | null, at: number, log = rec.log): Replay {
+    if (!sched) return { rebuilt: rebuildSession(ctx, rec.startedAt, log), ctx, slot: null };
+    const r = rebuildClassSession(ctx, sched, rec.startedAt, log, at);
+    return { rebuilt: r, ctx: r.ctx, slot: r.slot };
+  }
 
   /** Grade a non-mcq answer on the server. The client's own scoring is never read. */
   async function gradeAnswer(ctx: BattleCtx, q: Question, response: unknown): Promise<{ grade?: Grade; text?: string }> {
@@ -197,7 +240,8 @@ export function createSessionService(deps: SessionDeps) {
     if (!rec || rec.battleId !== p.bid) throw new SessionError(404, 'Không tìm thấy phiên đấu.');
     const battle = await deps.loadBattle(rec.battleId);
     if (!battle) throw new SessionError(404, 'Đấu trường không còn tồn tại.');
-    return { store, rec, battle, ctx: contextFor(battle, rec.variant, rec.id) };
+    const sched = await scheduleFor(rec, battle);
+    return { store, rec, battle, ctx: contextFor(battle, rec.variant, rec.id), sched };
   }
 
   return {
@@ -227,8 +271,9 @@ export function createSessionService(deps: SessionDeps) {
     },
 
     async current(token: unknown) {
-      const { rec, ctx } = await resolve(token);
-      return view(rec, ctx, rebuildSession(ctx, rec.startedAt, rec.log).state);
+      const { rec, ctx, sched } = await resolve(token);
+      const r = replay(rec, ctx, sched, now());
+      return view(rec, r.ctx, r.rebuilt.state, r.slot, sched);
     },
 
     /** Who the token belongs to (class matches use it to find the student's match player). */
@@ -240,7 +285,7 @@ export function createSessionService(deps: SessionDeps) {
     async act(token: unknown, raw: RawAction, guard?: ActGuard) {
       const at = now(); // stamped on arrival — AI grading time doesn't count against the student
       // The durable rate limit runs in parallel with loading the session, not after it.
-      const [{ store, rec, ctx }, limit] = await Promise.all([resolve(token), guard ?? null]);
+      const [{ store, rec, ctx, sched }, limit] = await Promise.all([resolve(token), guard ?? null]);
       if (limit && !limit.ok) throw new SessionError(429, `Gửi quá nhanh. Thử lại sau ${limit.retryAfterSec}s.`);
       if (rec.status !== 'active') throw new SessionError(409, 'Trận đấu đã kết thúc.');
       if (rec.log.length >= MAX_LOG) throw new SessionError(429, 'Quá nhiều thao tác trong một trận.');
@@ -250,8 +295,10 @@ export function createSessionService(deps: SessionDeps) {
       if (raw.kind === 'answer' || raw.kind === 'pair') {
         const qid = Number(raw.questionId);
         if (!Number.isInteger(qid)) throw new SessionError(400, 'Câu trả lời không hợp lệ.');
-        const current = rebuildSession(ctx, rec.startedAt, rec.log).state;
-        const q = current.phase === 'playing' ? ctx.questions[current.idx] : undefined;
+        const before = replay(rec, ctx, sched, at);
+        const current = before.rebuilt.state;
+        if (before.slot && !before.slot.open) throw new SessionError(409, 'Chưa tới điểm hỏi — chờ câu tiếp theo nhé.');
+        const q = current.phase === 'playing' ? before.ctx.questions[current.idx] : undefined;
         if (!q || q.id !== qid) throw new SessionError(409, 'Câu hỏi này đã được trả lời hoặc không phải câu hiện tại.');
 
         if (raw.kind === 'pair') {
@@ -273,37 +320,42 @@ export function createSessionService(deps: SessionDeps) {
         entry = { t: 'cast', skill: raw.skill as SkillId, at: now() };
       }
 
-      const res = appendEntry(ctx, rec.startedAt, rec.log, entry);
+      const res = sched ? appendClassEntry(ctx, sched, rec.startedAt, rec.log, entry, at) : appendEntry(ctx, rec.startedAt, rec.log, entry);
       if (!res.ok) throw new SessionError(res.status, res.reason);
+      // Class sessions store the entry stamped with its schedule point (appendClassEntry).
+      const classRes = sched ? (res as Extract<ClassAppend, { ok: true }>) : null;
+      if (classRes) entry = classRes.entry;
+      const stored = classRes ? classRes.rebuilt : null;
+      const served = stored ? stored.ctx : ctx;
       // The last answer ends the match: from now on the result must reach battle_results even if
       // the student's browser never sends the final submit (picked up by retryPending).
       const over = res.rebuilt.state.phase === 'result';
       const updated: SessionRecord = { ...rec, log: [...rec.log, entry], ...(over ? { resultSaved: false } : {}) };
       if (!(await store.update(updated, rec.version))) throw new SessionError(409, 'Thao tác bị trùng — hãy thử lại.');
 
-      const reveal: AnswerReveal | null = res.afterAnswer ? revealFor(ctx, res.afterAnswer, grade) : null;
+      const reveal: AnswerReveal | null = res.afterAnswer ? revealFor(served, res.afterAnswer, grade) : null;
       // What the class match counts: right or wrong, and 1-3 stars by speed (0 when wrong).
       let scored: { correct: boolean; stars: number } | null = null;
       // C4 coins and class rescue: this answer's server timing, the right streak, and the server
       // times of the trailing wrong answers (newest last, at most 3).
       let streak: { qid: number; timeMs: number; rightInRow: number; wrongAt: number[] } | null = null;
       const last = res.afterAnswer?.answers[res.afterAnswer.answers.length - 1];
-      const lastQ = last ? ctx.questions.find((x) => x.id === last.questionId) : undefined;
+      const lastQ = last ? served.questions.find((x) => x.id === last.questionId) : undefined;
       if (last && lastQ && entry.t !== 'cast' && res.afterAnswer) {
         const correct = isAnswerCorrect(lastQ, last);
         scored = { correct, stars: answerStars({ correct, score: last.score, timeMs: last.timeMs, limitMs: questionTimeLimit(lastQ, ctx.config.level) * 1000 }) };
         const log = updated.log;
-        const answeredAt = (qid: number) => [...log].reverse().find((x) => x.t !== 'cast' && x.qid === qid)?.at ?? at;
+        const answeredAt = (qid: number) => [...log].reverse().find((x) => (x.t === 'answer' || x.t === 'pair') && x.qid === qid)?.at ?? at;
         const wrongAt: number[] = [];
         for (const a of [...res.afterAnswer.answers].reverse()) {
-          const q = ctx.questions.find((x) => x.id === a.questionId);
+          const q = served.questions.find((x) => x.id === a.questionId);
           if (!q || isAnswerCorrect(q, a) || wrongAt.length >= 3) break;
           wrongAt.unshift(answeredAt(a.questionId));
         }
         streak = { qid: lastQ.id, timeMs: last.timeMs, rightInRow: correct ? res.afterAnswer.combo : 0, wrongAt };
       }
       return {
-        view: view(updated, ctx, res.rebuilt.state),
+        view: view(updated, served, res.rebuilt.state, stored?.slot ?? null, sched),
         afterAnswer: res.afterAnswer,
         reveal,
         scored,
@@ -320,18 +372,46 @@ export function createSessionService(deps: SessionDeps) {
      * `question` to the client: only what the helper derives from it.
      */
     async questionContext(token: unknown) {
-      const { rec, ctx } = await resolve(token);
-      const rebuilt = rebuildSession(ctx, rec.startedAt, rec.log);
-      const s = rebuilt.state;
+      const { rec, ctx, sched } = await resolve(token);
+      const r = replay(rec, ctx, sched, now());
+      const s = r.rebuilt.state;
+      const open = s.phase === 'playing' && (!r.slot || r.slot.open);
       return {
         sessionId: rec.id,
         battleId: rec.battleId,
         studentKey: rec.studentKey,
         matchId: rec.matchId ?? null,
         game: ctx.config.gameMode ?? null,
-        question: s.phase === 'playing' ? ctx.questions[s.idx] ?? null : null,
-        issuedAt: rebuilt.issuedAt,
+        question: open ? r.ctx.questions[s.idx] ?? null : null,
+        issuedAt: r.rebuilt.issuedAt,
         wrongInRow: s.wrongStreak,
+      };
+    },
+
+    /**
+     * C4.9 class match: the student takes the golden challenge at the current glowing point. The
+     * question is swapped for a harder one (one difficulty step up); the answer then pays double.
+     * Returns the new question id (for the coin marker) and the view with the new question.
+     */
+    async takeGolden(token: unknown) {
+      const at = now();
+      const { store, rec, ctx, sched } = await resolve(token);
+      if (!sched) throw new SessionError(409, 'Thử thách vàng chỉ có trong trận lớp.');
+      if (rec.status !== 'active') throw new SessionError(409, 'Trận đấu đã kết thúc.');
+      if (rec.log.length >= MAX_LOG) throw new SessionError(429, 'Quá nhiều thao tác trong một trận.');
+      const res = appendClassEntry(ctx, sched, rec.startedAt, rec.log, { t: 'golden', slot: '', at }, at);
+      if (!res.ok) throw new SessionError(res.status, res.reason);
+      const updated: SessionRecord = { ...rec, log: [...rec.log, res.entry] };
+      if (!(await store.update(updated, rec.version))) throw new SessionError(409, 'Thao tác bị trùng — hãy thử lại.');
+      const st = res.rebuilt.state;
+      const q = res.rebuilt.ctx.questions[st.idx];
+      return {
+        view: view(updated, res.rebuilt.ctx, st, res.rebuilt.slot, sched),
+        qid: q?.id ?? null,
+        sessionId: rec.id,
+        studentKey: rec.studentKey,
+        matchId: rec.matchId ?? null,
+        battleId: rec.battleId,
       };
     },
 
@@ -340,8 +420,8 @@ export function createSessionService(deps: SessionDeps) {
      * were revealed, so their words can be speech targets). `questions` holds answer keys: server only.
      */
     async speechContext(token: unknown) {
-      const { rec, ctx } = await resolve(token);
-      const state = rebuildSession(ctx, rec.startedAt, rec.log).state;
+      const { rec, ctx, sched } = await resolve(token);
+      const state = replay(rec, ctx, sched, now()).rebuilt.state;
       return {
         sessionId: rec.id,
         battleId: rec.battleId,
@@ -356,8 +436,8 @@ export function createSessionService(deps: SessionDeps) {
     },
 
     async finalize(token: unknown): Promise<FinalizeResult> {
-      const { store, rec, battle, ctx } = await resolve(token);
-      return finalizeRecord(store, rec, battle, ctx);
+      const { store, rec, battle, ctx, sched } = await resolve(token);
+      return finalizeRecord(store, rec, battle, ctx, sched);
     },
 
     /**
@@ -373,7 +453,7 @@ export function createSessionService(deps: SessionDeps) {
         try {
           const battle = await deps.loadBattle(rec.battleId);
           if (!battle) continue;
-          const res = await finalizeRecord(store, rec, battle, contextFor(battle, rec.variant, rec.id));
+          const res = await finalizeRecord(store, rec, battle, contextFor(battle, rec.variant, rec.id), await scheduleFor(rec, battle));
           if (res.saved) out.saved += 1;
           if (res.flagged) out.flagged += 1;
         } catch {
@@ -385,10 +465,13 @@ export function createSessionService(deps: SessionDeps) {
   };
 
   /** Score from the server's own log and write it (once). Re-entrant: retries a failed save. */
-  async function finalizeRecord(store: SessionStore, rec: SessionRecord, battle: LoadedBattle, ctx: BattleCtx): Promise<FinalizeResult> {
+  async function finalizeRecord(store: SessionStore, rec: SessionRecord, battle: LoadedBattle, base: BattleCtx, sched: ClassSchedule | null = null): Promise<FinalizeResult> {
     if (rec.status === 'flagged') return { flagged: true, reasons: rec.flags, score: null, hpRemaining: null, saved: false };
 
-    const { state, timings } = rebuildSession(ctx, rec.startedAt, rec.log);
+    // Class sessions are scored on the questions they were actually served.
+    const r = replay(rec, base, sched, now());
+    const { state, timings } = r.rebuilt;
+    const ctx = r.ctx;
     if (rec.status === 'finished') {
       // Idempotent: a second submit returns the stored outcome instead of paying out twice —
       // but if the first write failed, this is the retry.
@@ -419,7 +502,7 @@ export function createSessionService(deps: SessionDeps) {
     if (!(await store.update(finished, rec.version))) {
       // Raced with another submit (double tap, or the server's retry sweep): report what won.
       const now2 = await store.get(rec.id);
-      if (now2?.status === 'finished') return finalizeRecord(store, now2, battle, ctx);
+      if (now2?.status === 'finished') return finalizeRecord(store, now2, battle, base, sched);
       throw new SessionError(409, 'Kết quả đã được nộp.');
     }
     if (outcome === false) console.error(`battle result for session ${rec.id} not saved yet — queued for retry`);

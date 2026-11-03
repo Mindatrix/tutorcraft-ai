@@ -21,7 +21,8 @@ export function hintAvailable(q: Question, tier: HintTier): boolean {
 /** The hint payload for the CURRENT question (server only: it reads the answer key to avoid it). */
 export function hintFor(q: Question, tier: HintTier, seed: string): HintPayload | null {
   if (!hintAvailable(q, tier)) return null;
-  if (tier === 1) return { tier: 1, meaning: (q.hint ?? '').trim() || `Chủ đề: ${q.topic}` };
+  // Tier 1 = the Vietnamese meaning (WP7 `meaning_vi`); older questions use their Vietnamese hint.
+  if (tier === 1) return { tier: 1, meaning: (q.meaning_vi ?? '').trim() || (q.hint ?? '').trim() || `Chủ đề: ${q.topic}` };
   const wrong = q.options.map((_, i) => i).filter((i) => i !== q.correct_idx);
   // Always leave at least two options, so the right one is never the only one standing.
   const n = Math.min(2, q.options.length - 2);

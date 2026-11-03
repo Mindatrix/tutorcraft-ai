@@ -71,6 +71,7 @@ For EVERY question:
 - "topic" = the specific grammar point or vocabulary set tested (e.g. "present perfect", "phrasal verbs: travel").
 - "skill_tag" = grammar | vocabulary | reading | listening | pronunciation | other.
 - "hint" in Vietnamese, short, does not give away the answer.
+- "meaning_vi": the Vietnamese meaning of the question's English sentence or target word (keep any blank as "…"); it must NOT contain the correct English answer or translate the blank's answer. "" when the question is already in Vietnamese.
 - "explanation" in Vietnamese, one or two sentences on why the answer is right.
 Also write 3 "teaching_notes" in Vietnamese: practical tips for the tutor to teach this topic.
 Return JSON only.`;

@@ -39,6 +39,7 @@ export function sanitizeQuestion(raw: unknown, id: number): Question | null {
     skill_tag,
     topic: str(r.topic, 80) ?? 'general',
     hint: str(r.hint, 300) ?? undefined,
+    meaning_vi: str(r.meaning_vi, 300) ?? undefined,
     explanation: str(r.explanation, 400) ?? undefined,
   };
 }
@@ -61,6 +62,7 @@ function sanitizeTypedQuestion(r: Record<string, unknown>, id: number): Question
     skill_tag,
     topic: str(r.topic, 80) ?? 'general',
     hint: str(r.hint, 300) ?? undefined,
+    meaning_vi: str(r.meaning_vi, 300) ?? undefined,
     explanation: str(r.explanation, 600) ?? undefined,
     ...(r.is_review === true ? { is_review: true } : {}),
     ...fields,
@@ -182,6 +184,7 @@ export const GEMINI_RESPONSE_SCHEMA = {
           topic: { type: 'STRING' },
           skill_tag: { type: 'STRING', enum: SKILL_TAGS },
           hint: { type: 'STRING' },
+          meaning_vi: { type: 'STRING' },
           explanation: { type: 'STRING' },
           // essay / reading
           passage: { type: 'STRING' },
@@ -221,7 +224,7 @@ export const GEMINI_RESPONSE_SCHEMA = {
         // considers unimportant (measured: mcq without correct_idx, cloze without gaps).
         // So the answer-key fields are required everywhere; unused formats send [] / -1.
         required: [
-          'type', 'question', 'difficulty', 'topic', 'skill_tag', 'hint', 'explanation',
+          'type', 'question', 'difficulty', 'topic', 'skill_tag', 'hint', 'meaning_vi', 'explanation',
           'options', 'correct_idx', 'gaps', 'text', 'word_bank',
           'hub', 'pairs', 'deep_insight',
           'source', 'cue', 'answers', 'key_phrases', 'tokens',

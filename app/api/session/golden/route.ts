@@ -1,25 +1,23 @@
 import { rewardErrorResponse, rewardsFor } from '../../../../src/server/rewards';
-import { matchErrorResponse, matches } from '../../../../src/server/matches';
 import { rateLimit } from '../../../../src/server/rateLimit';
-import { SESSION_HEADER, sessions } from '../../../../src/server/sessions';
+import { SESSION_HEADER, sessionErrorResponse, sessions } from '../../../../src/server/sessions';
 
 /**
  * C4.9 the student takes the golden challenge for the current question. Only at a golden point of
- * the class schedule (checked here with the match clock); the answer then pays double, a wrong one
- * only ends the streak.
+ * the class schedule while it is open (checked on the server with the match clock). WP7: the
+ * question is swapped for a harder one, then that question pays double; a wrong answer only ends
+ * the streak. Reply: { ok, view } with the new question (answer key never included).
  */
 export async function POST(req: Request) {
   const token = req.headers.get(SESSION_HEADER) ?? '';
   if (!rateLimit(`golden:${token.slice(-24)}`, 10, 60_000).ok) return Response.json({ error: 'Quá nhiều yêu cầu.' }, { status: 429 });
   try {
-    const ctx = await sessions.questionContext(token);
-    const svc = rewardsFor(ctx.battleId);
-    if (!svc) return Response.json({ error: 'Chưa bật xu.' }, { status: 503 });
-    if (!ctx.question) return Response.json({ error: 'Không có câu hỏi đang mở.' }, { status: 409 });
-    if (!ctx.matchId || !(await matches().goldenNow(ctx.matchId))) return Response.json({ error: 'Chưa có vật phát sáng lúc này.' }, { status: 409 });
-    const ok = await svc.acceptGolden({ studentKey: ctx.studentKey, sessionId: ctx.sessionId, matchId: ctx.matchId, qid: ctx.question.id });
-    return Response.json({ ok }, { headers: { 'Cache-Control': 'no-store' } });
+    const g = await sessions.takeGolden(token);
+    const svc = rewardsFor(g.battleId);
+    // The coin marker is on the NEW question: its answer pays ×2.
+    const ok = svc && g.qid != null ? await svc.acceptGolden({ studentKey: g.studentKey, sessionId: g.sessionId, matchId: g.matchId, qid: g.qid }) : false;
+    return Response.json({ ok, view: g.view }, { headers: { 'Cache-Control': 'no-store' } });
   } catch (e) {
-    return rewardErrorResponse(e) ?? matchErrorResponse(e);
+    return rewardErrorResponse(e) ?? sessionErrorResponse(e);
   }
 }

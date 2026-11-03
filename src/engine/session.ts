@@ -14,12 +14,24 @@ export const FEEDBACK_MS = 1400;
 /** Network allowance before a late answer counts as a timeout. */
 export const TIMEOUT_GRACE_MS = 2500;
 
+/**
+ * Class matches (WP7): answers carry the schedule point they were given at (`slot`, e.g. "s3-2")
+ * and the server time the question was served (`iss`), so a replay never has to map old times
+ * through pauses. Solo / demo sessions leave both out.
+ */
+interface SlotStamp {
+  slot?: string;
+  iss?: number;
+}
+
 export type SessionLogEntry =
   /** `grade` is computed by the server BEFORE the entry is written — replays never re-grade. */
-  | { t: 'answer'; qid: number; chosen: number; at: number; grade?: Grade; response?: string }
+  | ({ t: 'answer'; qid: number; chosen: number; at: number; grade?: Grade; response?: string } & SlotStamp)
   /** Matching: one pair try, both as ORIGINAL indices (the server maps display ids). */
-  | { t: 'pair'; qid: number; l: number; r: number; at: number }
-  | { t: 'cast'; skill: SkillId; at: number };
+  | ({ t: 'pair'; qid: number; l: number; r: number; at: number } & SlotStamp)
+  | { t: 'cast'; skill: SkillId; at: number }
+  /** C4.9 class match: the student took the golden challenge at this point (harder question). */
+  | { t: 'golden'; slot: string; at: number };
 
 export interface Rebuilt {
   state: BattleState;
@@ -47,6 +59,7 @@ export function rebuildSession(ctx: BattleCtx, startedAt: number, log: SessionLo
       if (e.skill === 'freeze' && s !== before) freezeAt = Math.max(issuedAt, e.at);
       continue;
     }
+    if (e.t === 'golden') continue; // class matches only (classSession.ts)
     if (e.qid !== q.id) continue; // stale or forged answer for another question
 
     // Time spent frozen doesn't count — but only the part that actually elapsed.

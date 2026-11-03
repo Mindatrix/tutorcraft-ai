@@ -3,6 +3,8 @@ import { gradeOpenResponse } from './grader';
 import { loadBattleCached } from './battles';
 import { serverSupabase } from './supabase-server';
 import { MemorySessionStore, SupabaseSessionStore, type SessionStore } from './sessionStore';
+import { SupabaseMatchStore, timeOf } from './matchStore';
+import type { MatchTime } from '../engine';
 import { createSessionService, SessionError, type SessionDeps } from './sessionService';
 
 const demoStore = new MemorySessionStore();
@@ -101,7 +103,29 @@ const persistResult: SessionDeps['persistResult'] = async ({ battle, rec, ctx, s
   return true;
 };
 
-export const sessions = createSessionService({ loadBattle: loadBattleCached, storeFor, persistResult, gradeOpen: gradeOpenResponse });
+// WP7: the clock of a class match, for sessions that follow the question schedule. Cached for a
+// moment so 50 students answering at the same point cost one read per server instance; a pause or
+// "Kéo dài" reaches the schedule within that time.
+const SCHEDULE_TTL_MS = 1_000;
+const scheduleCache = new Map<string, { at: number; value: Promise<{ time: MatchTime; seedKey: string } | null> }>();
+let matchStore: SupabaseMatchStore | null = null;
+
+function classSchedule(matchId: string) {
+  const db = serverSupabase();
+  if (!db) return Promise.resolve(null);
+  const t = Date.now();
+  const hit = scheduleCache.get(matchId);
+  if (hit && t - hit.at < SCHEDULE_TTL_MS) return hit.value;
+  matchStore ??= new SupabaseMatchStore(db);
+  // A failed read is not cached and fails the request (never silently fall back to the solo order).
+  const value = matchStore.get(matchId).then((m) => (m ? { time: timeOf(m), seedKey: m.seedKey } : null));
+  value.catch(() => scheduleCache.delete(matchId));
+  if (scheduleCache.size > 500) scheduleCache.clear();
+  scheduleCache.set(matchId, { at: t, value });
+  return value;
+}
+
+export const sessions = createSessionService({ loadBattle: loadBattleCached, storeFor, persistResult, gradeOpen: gradeOpenResponse, classSchedule });
 
 export const SESSION_HEADER = 'x-battle-session';
 

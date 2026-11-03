@@ -39,6 +39,7 @@ export * from './sceneBuilder';
 export * from './director';
 export * from './consequences';
 export * from './questionSchedule';
+export * from './classSession';
 export * from './coins';
 export * from './hints';
 export * from './rescue';

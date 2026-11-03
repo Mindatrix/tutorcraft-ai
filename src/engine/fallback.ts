@@ -41,6 +41,46 @@ const BANK: Q[] = [
   { question: 'Which word has the stress on the second syllable?', options: ['TAble', 'deCIDE', 'HAPpy', 'WINdow'], correct_idx: 1, difficulty: 'medium', topic: 'word stress', skill_tag: 'pronunciation', hint: 'Most two-syllable verbs stress the 2nd syllable.' },
 ];
 
+// WP7: Vietnamese meaning of each BANK question for the tier-1 hint (never the answer), same order.
+const BANK_MEANINGS_VI: string[] = [
+  "Năm nay cô ấy … tới London ba lần (tính đến bây giờ).",
+  "Nếu tôi … thêm thời gian (điều không có thật), tôi sẽ học thêm một ngôn ngữ.",
+  "Cây cầu … vào năm 1990 (cây cầu không tự xây).",
+  "Tôi đang nấu ăn thì điện thoại … (một việc ngắn xen vào).",
+  "Tới tháng Sáu năm sau, cô ấy … xong bằng cấp của mình.",
+  "Anh ấy hỏi tôi … ở đâu (câu tường thuật, lùi thì).",
+  "Trong tủ lạnh không còn … sữa nào.",
+  "Đây là bộ phim … nhất tôi từng xem.",
+  "Bạn … thắt dây an toàn. Đó là luật.",
+  "Tôi rất mong được … bạn.",
+  "Người đàn ông … chiếc xe bị trộm đã gọi cảnh sát.",
+  "Nếu cô ấy đã học bài (thực tế là không), cô ấy … kỳ thi.",
+  "Ước gì tôi … cao hơn (hiện tại thì không).",
+  "Cả Tom lẫn các bạn của cậu ấy đều không … đến.",
+  "Cô ấy sống ở đây … năm 2015 (một mốc thời gian).",
+  "Chọn từ đồng nghĩa với “enormous” (rất to lớn).",
+  "Chọn từ trái nghĩa với “generous” (hào phóng).",
+  "Chúng ta cần … một quyết định trước thứ Sáu.",
+  "Hãy … đèn khi bạn ra về.",
+  "Cuộc họp bị … vì quản lý bị ốm.",
+  "Cô ấy rất … — lúc nào cũng nói thật.",
+  "Chính sách mới có … rất lớn tới các doanh nghiệp nhỏ.",
+  "“Raining cats and dogs” nghĩa là trời đang mưa … (thành ngữ).",
+  "Người thiết kế các toà nhà là một …",
+  "Kết quả nghiên cứu của nhà khoa học đã được các thí nghiệm sau đó …",
+  "“Reluctant” nghĩa là ngần ngại, không muốn làm.",
+  "Tom: “Xin lỗi, tớ đến muộn.” Anna đáp thế nào cho lịch sự?",
+  "Bảo tàng mở cửa lúc 9 giờ nhưng đóng cửa sớm vào một ngày trong tuần. Đó là ngày nào?",
+  "“Despite the rain” = dù trời mưa. Vậy trận đấu đã dừng hay vẫn tiếp tục?",
+  "Từ nào có trọng âm rơi vào âm tiết thứ hai?",
+];
+BANK.forEach((q, i) => {
+  q.meaning_vi = BANK_MEANINGS_VI[i];
+});
+
+/** Every BANK question has its Vietnamese meaning (checked by tests). */
+export const BANK_MEANING_COUNT = BANK_MEANINGS_VI.length;
+
 export const FALLBACK_TEACHING_NOTES = [
   'Warm up with 2 quick examples from students\' daily life before the battle.',
   'After each wrong answer, ask the student to explain the rule in their own words.',

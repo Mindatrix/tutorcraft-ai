@@ -105,11 +105,11 @@ WP2 → WP1 → **U0 → U1+U2** → WP3–WP5 → **U3, U4** → WP6 → WP7 �
 | River Survival 3D (PR #4) | Cảnh `RiverSurvivalScene` (3 khu, Chuồng Gỗ, trạm Lưới) | **Đã gộp** `6e07c78`; chưa vào trận thật |
 | WP8 nối hiệu ứng server | `applySurvivalSpeechEffect` (manh mối Thợ giải mã), `survivalStonesOpen` (khoá đá trong cửa sổ 6 s / 8 s), `useKayakRage().addCharge` | **Xong** `dccdf0e` |
 | WP8 Đá Phát Âm (3D) | Đặt đá vào phao Kayak, khu rừng River Survival, bệ thờ Multiverse; nối 5 thế giới vào trận thật | **Chưa** — giao Antigravity, `docs/wp8_phonetic_worlds_handoff.md` mục 2b, 4 |
-| Xu demo | Phiên demo dùng ví xu trong bộ nhớ (`rewardsFor`, `demoRewards` trong `src/server/rewards.ts`), không ghi `coin_wallets` / `coin_ledger` | **Xong** (03/11, chưa commit) |
+| Xu demo | Phiên demo dùng ví xu trong bộ nhớ (`rewardsFor`, `demoRewards` trong `src/server/rewards.ts`), không ghi `coin_wallets` / `coin_ledger` | **Xong** `dc77c0d` |
 | U8 | Màn chờ + chọn nhân vật theo game | Chưa. Chờ chốt phạm vi |
 | WP5 | Nhân vật một mô hình nhiều vai (`character_casting.json`) | Chưa |
 | WP6 | Multiverse RoomKit, D6 | Chưa (đã có dải thẻ không gian từ U3) |
-| WP7 | Việc D còn từ C4 | Chưa (một mục đổi schema, phải báo trước) |
+| WP7 | Lịch câu hỏi trong trận lớp (`classSession.ts`), thử thách vàng đổi câu khó hơn, `GET /api/session/slot`, trường `meaning_vi` (người dùng duyệt 03/11) | **Server xong** (03/11, chưa commit). Giao diện (đồng hồ chờ, vật vàng, `ClassPodium` màn em) giao Antigravity: `docs/wp7_class_schedule_handoff.md` |
 | WP8, WP9 | Từng game làm trọn; F và G | Chưa. WP8 chỉ bắt đầu khi có số đo điện thoại hoặc người dùng nói "qua" |
 
 ### Kết quả đo chính
@@ -119,7 +119,7 @@ WP2 → WP1 → **U0 → U1+U2** → WP3–WP5 → **U3, U4** → WP6 → WP7 �
 - **Dung lượng trận nặng nhất:** `dino-01` 37,9 MB (cao) / 13,5 MB (thấp), dưới ngân sách 40 / 15 MB. Cảnh thấp nặng nhất < 300 nghìn tam giác.
 - **Âm thanh:** nhạc nén 56 → 11 MB; 81 file.
 - **Thử tải giọng nói (03/11, bản build production trên máy, 50 học sinh × 60 s × 6 lượt/phút, cùng một IP lớp):** 333 lượt, p50 193 ms, p95 236 ms, p99 294 ms (mục tiêu p95 ≤ 200 ms chưa đạt: sàn là một vòng gọi Supabase ~200 ms cho bộ đếm giới hạn dùng chung); 0 lỗi, 0 lượt 429 với học sinh đúng nhịp; học sinh gửi nhanh bị chặn đúng ở lượt thứ 7; RSS server 67 → đỉnh 183 MB → 64 MB. Chưa đo ghi `speech_attempts`/`coin_ledger` dưới tải (cần một trận thật, sẽ ghi dữ liệu thật).
-- **Test (03/11 chiều, sau PR #4, nối WP8 và sửa xu demo):** 237 đạt, 0 hỏng, 2 bỏ qua. Trước đó (sau PR #1–#3): 225 đạt, 0 hỏng, 2 bỏ qua (2 test độ phủ model tạm `skip` kèm TODO, chờ Claude chat gán kịch bản cho 23 model). Type check sạch; lint 0 lỗi (49 cảnh báo cũ); `test:security` 30/30 trên bản build production.
+- **Test (03/11 tối, sau WP7):** 251 đạt, 0 hỏng, 2 bỏ qua. `test:security` chưa chạy lại sau WP7 (build trong môi trường agent không tải được phông Google). Sau sửa xu demo: 237 đạt. Trước đó (sau PR #1–#3): 225 đạt, 0 hỏng, 2 bỏ qua (2 test độ phủ model tạm `skip` kèm TODO, chờ Claude chat gán kịch bản cho 23 model). Type check sạch; lint 0 lỗi (49 cảnh báo cũ); `test:security` 30/30 trên bản build production.
 
 ## 5. Commit gần nhất
 
@@ -127,7 +127,8 @@ Nhánh đã push lên `origin`. Các commit từ bản trạng thái 02/11 (mớ
 
 | Commit | Ngày | Nội dung |
 |---|---|---|
-| (chưa commit) | 03/11 | Xu demo chỉ trong bộ nhớ (`rewardsFor`), `tests/demoCoins.test.ts` |
+| (chưa commit) | 03/11 | WP7: lịch câu trận lớp, thử thách vàng, `meaning_vi`; `tests/classSession.test.ts`, `tests/meaningVi.test.ts` |
+| `dc77c0d` | 03/11 | Xu demo chỉ trong bộ nhớ (`rewardsFor`), `tests/demoCoins.test.ts` |
 | `dccdf0e` | 03/11 | WP8: nối hiệu ứng server vào River Survival và thanh Nộ Kayak |
 | `6e07c78` | 03/11 | Gộp PR #4 Antigravity: cảnh 3D River Survival |
 | `6398537` | 03/11 | Từ điển IPA `src/engine/lexicon.json` (PER dùng `cmu`) |
@@ -274,7 +275,7 @@ Thay game mới.pdf            yêu cầu giao diện WP10 (14 trang)
 - **WP4:** bộ cảnh cho river_fishing, river_survival, dino_journey, kayak_rush.
 - **WP5:** nhân vật nhiều vai theo `content/character_casting.json` (62 mô hình); nhập theo đợt; phụ kiện mua bằng xu phải báo trước.
 - **WP6:** Multiverse RoomKit (phòng ngủ và cyber dựng bằng hình khối + nội thất, cảnh khác làm cảnh xa), D6.1–D6.8, ảnh xem trước 512 px cho thẻ phòng.
-- **WP7:** nối `questionSchedule.ts` vào luồng câu thật; thử thách vàng chọn câu khó hơn; `ClassPodium` cho màn của em; trường "nghĩa tiếng Việt" (**đổi schema, báo trước**).
+- **WP7:** phần server xong (03/11). Còn: giao diện (Antigravity) và 3 câu hỏi mở ở mục 4 của `docs/wp7_class_schedule_handoff.md` (hết máu giữa trận lớp, mức riêng từng em, ghi kết quả khi em không gửi).
 - **WP8:** từng game làm trọn, theo thứ tự Summer Camp → River Fishing → Kayak Rush → River Survival → Dino Journey → Multiverse. Đưa minimap / thanh tọa độ của thế giới sông vào trận.
 - **WP9:** F (6 thẻ game ở Studio và trang chủ, ảnh bìa) và G (kiểm thử, bảo mật, đo GPU điện thoại, R2 tên miền riêng).
 
