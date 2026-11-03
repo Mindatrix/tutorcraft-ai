@@ -9,6 +9,7 @@ import {
   type SpeechRules,
   type SpeechTarget,
 } from '../engine/pronunciation';
+import type { SpeechGameEffect } from '../engine/speechGameEffects';
 
 export interface VoiceConfig {
   enabled: boolean;
@@ -54,6 +55,8 @@ export interface SpeechAttemptResponse {
   weakWords?: string[];
   hint?: 'mouth_shape';
   coins?: number;
+  /** Optional server-decided world effect (`speechGameEffects.ts`). */
+  effect?: SpeechGameEffect | null;
   detail?: {
     wordScore: number;
     phonemeScore: number;

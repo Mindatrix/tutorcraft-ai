@@ -3,6 +3,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { PhoneticStoneStateMachine } from '../../../../client/phoneticStones';
 import PhoneticStonesHud from '../../../hud/PhoneticStonesHud';
+import type { GoldenSlotLike } from '../goldenChallengeOrb';
 import {
   mountKayakRushScene,
   type KayakRushSceneHandle,
@@ -19,15 +20,29 @@ import {
 export interface KayakRushStageProps {
   /** Optional external state machine instance for testing or parent synchronization. */
   machine?: PhoneticStoneStateMachine;
+  /** Optional callback when a server/local `kayak_nitro` effect grants Nitro charge seconds (`rage.addCharge(chargeSec)`). */
+  onNitroCharge?: (chargeSec: number) => void;
+  /** Optional schedule slot for the 3D Golden Challenge orb (`slot.golden && !slot.goldenTaken`). */
+  slot?: GoldenSlotLike;
+  /** Callback supplied by Claude Code when the student taps the 3D Golden Challenge orb. */
+  onTakeGolden?: () => void;
 }
 
-export function KayakRushStage({ machine: externalMachine }: KayakRushStageProps) {
+export function KayakRushStage({
+  machine: externalMachine,
+  onNitroCharge,
+  slot = null,
+  onTakeGolden,
+}: KayakRushStageProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const sceneHandleRef = useRef<KayakRushSceneHandle | null>(null);
   const internalMachine = useMemo(
     () =>
       externalMachine ??
-      new PhoneticStoneStateMachine({ targets: KAYAK_RUSH_TARGETS }),
+      new PhoneticStoneStateMachine({
+        targets: KAYAK_RUSH_TARGETS,
+        gameMode: 'kayak_rush',
+      }),
     [externalMachine],
   );
 
@@ -47,8 +62,10 @@ export function KayakRushStage({ machine: externalMachine }: KayakRushStageProps
         onStoneSelected(userData) {
           internalMachine.selectStone(userData.targetId);
         },
+        onTakeGolden,
       });
       sceneHandleRef.current = mounted.sceneHandle;
+      mounted.sceneHandle.syncGoldenSlot(slot);
     } catch {
       setTimeout(() => setWebglReady(false), 0);
     }
@@ -72,11 +89,20 @@ export function KayakRushStage({ machine: externalMachine }: KayakRushStageProps
       sceneHandleRef.current?.setPetState(state);
     });
 
-    const unsubResult = internalMachine.bus.on('stone:result', ({ response }) => {
+    const unsubResult = internalMachine.bus.on('stone:result', ({ response, effect }) => {
       setBoostState((prev) => {
         const next = applyKayakWaypointStoneResult(prev, response);
         sceneHandleRef.current?.setClearedStones(next.clearedWaypointIds);
-        if (response.accepted && (response.passed || response.stars >= 1)) {
+        const resolvedEffect = effect ?? response.effect;
+        if (resolvedEffect?.kind === 'kayak_nitro') {
+          const applied = sceneHandleRef.current?.applyKayakSpeechEffect(
+            resolvedEffect,
+            next.currentWaypointIndex,
+          );
+          if (applied?.boosted) {
+            onNitroCharge?.(applied.chargeSec);
+          }
+        } else if (response.accepted && (response.passed || response.stars >= 1)) {
           sceneHandleRef.current?.triggerSpeedBoost(
             next.activeMultiplier,
             next.currentWaypointIndex,
@@ -100,7 +126,12 @@ export function KayakRushStage({ machine: externalMachine }: KayakRushStageProps
       sceneHandleRef.current = null;
       mounted?.dispose();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [internalMachine]);
+
+  useEffect(() => {
+    sceneHandleRef.current?.syncGoldenSlot(slot);
+  }, [slot]);
 
   return (
     <div

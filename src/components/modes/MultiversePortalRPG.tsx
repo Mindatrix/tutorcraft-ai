@@ -6,6 +6,7 @@ import { THREE_ASSET_MANIFEST, assetUrl } from '../../config/threeAssets';
 import { lib } from '../../config/assetLibrary';
 import type { BossAvatar } from '../../engine';
 import { Sparks, canvasTexture, clamp, createStage, damp, easeInOut, easeOut, glow, lowpoly, mesh, roughen, skyDome, swapInGlb, textSprite, toon } from './kit';
+import { buildMultiverseCollisionMesh } from './three/physics/sceneColliders';
 import type { BossSceneProps, SceneEvent } from './types';
 
 // GAME 2 — Multiverse Portal RPG.
@@ -615,6 +616,7 @@ export default function MultiversePortalRPG(props: BossSceneProps) {
     }
     let alive = true;
     const { scene, camera } = stage;
+    scene.add(buildMultiverseCollisionMesh({ visible: false }));
     const p0 = live.current;
 
     const hemi = new THREE.HemisphereLight(0xffffff, 0x222222, 1);

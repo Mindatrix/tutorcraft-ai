@@ -33,20 +33,25 @@ export function findPhoneticStoneAncestor(obj: THREE.Object3D | null): THREE.Obj
   return null;
 }
 
+const sharedRaycastHits: THREE.Intersection[] = [];
+
 /**
  * Raycast against `interactiveGroup.children` (recursive) and return the hit phonetic stone object.
- * Reuses caller-provided `Raycaster` and `Vector2` to avoid per-frame allocations (Blueprint §3.5).
+ * Reuses caller-provided `Raycaster`, `Vector2`, and a pre-allocated `hits` buffer to avoid per-frame allocations (Blueprint §3.5).
  */
 export function raycastPhoneticStones(
   raycaster: THREE.Raycaster,
   ndc: THREE.Vector2,
   camera: THREE.Camera,
   interactiveGroup: THREE.Group,
+  hitsOut: THREE.Intersection[] = sharedRaycastHits,
 ): { stone: THREE.Object3D; userData: PhoneticStoneUserData; hit: THREE.Intersection } | null {
   if (!interactiveGroup.children.length) return null;
   raycaster.setFromCamera(ndc, camera);
-  const hits = raycaster.intersectObjects(interactiveGroup.children, true);
-  for (const hit of hits) {
+  hitsOut.length = 0;
+  raycaster.intersectObjects(interactiveGroup.children, true, hitsOut);
+  for (let i = 0; i < hitsOut.length; i++) {
+    const hit = hitsOut[i];
     const stone = findPhoneticStoneAncestor(hit.object);
     if (stone && isPhoneticStoneUserData(stone.userData)) {
       return { stone, userData: stone.userData, hit };

@@ -11,6 +11,13 @@ import {
   type FishingWeightMultiplier,
 } from '../../../client/phoneticWorldRules';
 import type { CameraDirector } from './cameraDirector';
+import {
+  createGoldenChallengeOrb,
+  raycastAndTriggerGoldenOrb,
+  type GoldenChallengeOrbHandle,
+  type GoldenSlotLike,
+} from './goldenChallengeOrb';
+import { buildSummerCampCollisionMesh } from './physics/sceneColliders';
 import { damp, glow, lowpoly, mesh, roughen, textSprite, toon } from '../kit';
 import {
   findPhoneticStoneAncestor,
@@ -349,14 +356,22 @@ export interface PhoneticStonesRigOptions {
   worldMode?: PhoneticWorldId | 'hub';
   /** Returns true when a QuestionFrame modal is open or match is paused (ignores taps). */
   isBlocked?: () => boolean;
+  /** Callback supplied by parent / Claude Code when the student taps the 3D Golden Challenge orb. */
+  onTakeGolden?: () => void;
 }
 
 export interface PhoneticStonesRig {
   /** Group holding only interactive phonetic stones (passed to Raycaster, ≤ 12 stones). */
   interactiveGroup: THREE.Group;
-  /** Root group containing `interactiveGroup`, the 3D Pet companion, and world station props. */
+  /** Dedicated simple collision mesh (`userData.collision = true`) for Summer Camp / River Fishing. */
+  collisionGroup: THREE.Group;
+  /** Root group containing `interactiveGroup`, `collisionGroup`, the 3D Pet companion, and world station props. */
   rootGroup: THREE.Group;
   petGroup: THREE.Group;
+  /** 3D Golden Challenge orb (`slot.golden && !slot.goldenTaken`). */
+  goldenOrb: GoldenChallengeOrbHandle;
+  /** Sync the 3D Golden Challenge orb visibility from `slot`. */
+  syncGoldenSlot(slot: GoldenSlotLike): boolean;
   /** Attach pointer and keyboard listeners to a WebGL canvas. */
   attachCanvas(canvas: HTMLElement): () => void;
   /** Update stone, Pet, and station animations in the scene loop (zero per-frame allocations). */
@@ -417,9 +432,20 @@ export function createPhoneticStonesRig(opts: PhoneticStonesRigOptions): Phoneti
   rootGroup.name = 'phonetic-stones-root';
   rootGroup.position.set(cx, cy, cz);
 
+  // A1: Attach simple collision mesh (`userData.collision = true`, invisible during rendering)
+  const collisionGroup = buildSummerCampCollisionMesh({ visible: false });
+  rootGroup.add(collisionGroup);
+
   const interactiveGroup = new THREE.Group();
   interactiveGroup.name = 'interactiveGroup';
   rootGroup.add(interactiveGroup);
+
+  // A5: 3D Glowing Golden Challenge Orb (`slot.golden && !slot.goldenTaken`)
+  const goldenOrb = createGoldenChallengeOrb({
+    position: [0, 1.55, -2.6],
+    onTakeGolden: opts.onTakeGolden,
+  });
+  rootGroup.add(goldenOrb.group);
 
   const pet = buildPetCompanion();
   if (worldMode === 'river_fishing') {
@@ -654,8 +680,14 @@ export function createPhoneticStonesRig(opts: PhoneticStonesRigOptions): Phoneti
 
   return {
     interactiveGroup,
+    collisionGroup,
     rootGroup,
     petGroup: pet.root,
+    goldenOrb,
+
+    syncGoldenSlot(slot: GoldenSlotLike) {
+      return goldenOrb.syncSlot(slot);
+    },
 
     attachCanvas(canvas: HTMLElement) {
       let lastHoverAt = 0;
@@ -714,6 +746,9 @@ export function createPhoneticStonesRig(opts: PhoneticStonesRigOptions): Phoneti
         if (!isTap || !computeNdc(e.clientX, e.clientY)) return;
         const cam = findCamera() ?? (director as unknown as { camera?: THREE.Camera })?.camera ?? null;
         if (!cam) return;
+        if (raycastAndTriggerGoldenOrb(raycaster, ndc, cam, goldenOrb)) {
+          return;
+        }
         const hit = raycastPhoneticStones(raycaster, ndc, cam, interactiveGroup);
         if (hit) {
           machine.selectStone(hit.userData.targetId);
@@ -844,6 +879,7 @@ export function createPhoneticStonesRig(opts: PhoneticStonesRigOptions): Phoneti
         pet.listenMat.opacity = 0;
         pet.celebrateMat.opacity = 0;
       }
+      goldenOrb.update(t);
     },
 
     setTargets(targets: PhoneticStoneTarget[]) {
@@ -868,6 +904,7 @@ export function createPhoneticStonesRig(opts: PhoneticStonesRigOptions): Phoneti
       unsubPet();
       unsubState();
       clearStones();
+      goldenOrb.dispose();
       rootGroup.removeFromParent();
     },
   };

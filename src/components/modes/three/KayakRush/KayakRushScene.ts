@@ -14,7 +14,14 @@ import {
   toon,
 } from '../../kit';
 import { lib } from '../../../../config/assetLibrary';
-import type { PetState } from '../../../../client/phoneticStones';
+import type { PetState, SpeechGameEffect } from '../../../../client/phoneticStones';
+import {
+  createGoldenChallengeOrb,
+  raycastAndTriggerGoldenOrb,
+  type GoldenChallengeOrbHandle,
+  type GoldenSlotLike,
+} from '../goldenChallengeOrb';
+import { buildKayakCollisionMesh } from '../physics/sceneColliders';
 import {
   raycastPhoneticStones,
   TapGestureTracker,
@@ -28,14 +35,22 @@ import {
 
 export interface KayakRushSceneHandle {
   readonly root: THREE.Group;
+  readonly collisionGroup: THREE.Group;
   readonly interactiveGroup: THREE.Group;
   readonly kayakGroup: THREE.Group;
   readonly petCompanionGroup: THREE.Group;
   readonly wakeSparks: Sparks;
+  readonly goldenOrb: GoldenChallengeOrbHandle;
   setActiveStone(targetId: string | null): void;
   setClearedStones(clearedIds: string[]): void;
   setPetState(state: PetState): void;
   triggerSpeedBoost(multiplier: KayakBoostMultiplier, targetWaypointIndex: number): void;
+  /** Decoupled server effect handler (`reply.effect` with `kind === 'kayak_nitro'`). */
+  applyKayakSpeechEffect(
+    effect: SpeechGameEffect | null | undefined,
+    targetWaypointIndex?: number,
+  ): { boosted: boolean; chargeSec: number };
+  syncGoldenSlot(slot: GoldenSlotLike): boolean;
   update(dt: number, t: number): void;
   dispose(): void;
 }
@@ -307,13 +322,27 @@ function buildPlayerKayak(
  * Builds the Kayak Rush 3D environment with floating Phonetic Stone river waypoints
  * and the 3D Pet Companion attached to the player's Kayak.
  */
-export function buildKayakRushEnvironment(alive: () => boolean = () => true): KayakRushSceneHandle {
+export function buildKayakRushEnvironment(
+  alive: () => boolean = () => true,
+  onTakeGolden?: () => void,
+): KayakRushSceneHandle {
   const root = new THREE.Group();
   root.name = 'KayakRushRoot';
+
+  // A1: Attach dedicated Kayak collision mesh (`userData.collision = true`: banks, docks/piers, steps, ramp, rocks)
+  const collisionGroup = buildKayakCollisionMesh({ visible: false });
+  root.add(collisionGroup);
 
   const interactiveGroup = new THREE.Group();
   interactiveGroup.name = 'PhoneticStonesInteractiveGroup';
   root.add(interactiveGroup);
+
+  // A5: 3D Glowing Golden Challenge Orb (`slot.golden && !slot.goldenTaken`)
+  const goldenOrb = createGoldenChallengeOrb({
+    position: [0, 1.4, 1.2],
+    onTakeGolden,
+  });
+  root.add(goldenOrb.group);
 
   // Sky & river lighting
   root.add(skyDome(0x0c4a6e, 0x0284c7, 0xbae6fd, { radius: 160, stars: 0.15 }));
@@ -509,12 +538,41 @@ export function buildKayakRushEnvironment(alive: () => boolean = () => true): Ka
     }
   }
 
+  function fireSpeedBoost(multiplier: KayakBoostMultiplier, targetWaypointIndex: number) {
+    activeBoostMultiplier = multiplier;
+    boostTimer = 1.6;
+    const wp =
+      KAYAK_RUSH_WAYPOINTS[
+        Math.max(0, Math.min(KAYAK_RUSH_WAYPOINTS.length - 1, targetWaypointIndex))
+      ];
+    if (wp) {
+      kayakTargetX = wp.position[0] * 0.65;
+      kayakTargetZ = wp.position[2] + 1.35;
+    }
+
+    emitOrigin.copy(kayakGroup.position);
+    emitOrigin.y += 0.25;
+    emitOrigin.z += 0.7;
+    wakeSparks.emit(emitOrigin, multiplier >= 1.5 ? 36 : 22, {
+      color: multiplier >= 1.5 ? 0xfacc15 : 0x38bdf8,
+      speed: 3.4 * multiplier,
+      life: 0.75,
+      size: 1.15,
+      gravity: 3.5,
+      up: 1.4,
+      spread: emitSpread,
+      dir: emitDir,
+    });
+  }
+
   return {
     root,
+    collisionGroup,
     interactiveGroup,
     kayakGroup,
     petCompanionGroup,
     wakeSparks,
+    goldenOrb,
 
     setActiveStone(targetId: string | null) {
       activeStoneId = targetId;
@@ -551,30 +609,24 @@ export function buildKayakRushEnvironment(alive: () => boolean = () => true): Ka
     },
 
     triggerSpeedBoost(multiplier: KayakBoostMultiplier, targetWaypointIndex: number) {
-      activeBoostMultiplier = multiplier;
-      boostTimer = 1.6;
-      const wp =
-        KAYAK_RUSH_WAYPOINTS[
-          Math.max(0, Math.min(KAYAK_RUSH_WAYPOINTS.length - 1, targetWaypointIndex))
-        ];
-      if (wp) {
-        kayakTargetX = wp.position[0] * 0.65;
-        kayakTargetZ = wp.position[2] + 1.35;
-      }
+      fireSpeedBoost(multiplier, targetWaypointIndex);
+    },
 
-      emitOrigin.copy(kayakGroup.position);
-      emitOrigin.y += 0.25;
-      emitOrigin.z += 0.7;
-      wakeSparks.emit(emitOrigin, multiplier >= 1.5 ? 36 : 22, {
-        color: multiplier >= 1.5 ? 0xfacc15 : 0x38bdf8,
-        speed: 3.4 * multiplier,
-        life: 0.75,
-        size: 1.15,
-        gravity: 3.5,
-        up: 1.4,
-        spread: emitSpread,
-        dir: emitDir,
-      });
+    applyKayakSpeechEffect(
+      effect: SpeechGameEffect | null | undefined,
+      targetWaypointIndex = 0,
+    ): { boosted: boolean; chargeSec: number } {
+      if (!effect || effect.kind !== 'kayak_nitro' || !(effect.chargeSec > 0)) {
+        return { boosted: false, chargeSec: 0 };
+      }
+      const mult: KayakBoostMultiplier =
+        effect.chargeSec >= 8 ? 1.85 : effect.chargeSec >= 6 ? 1.5 : 1.25;
+      fireSpeedBoost(mult, targetWaypointIndex);
+      return { boosted: true, chargeSec: effect.chargeSec };
+    },
+
+    syncGoldenSlot(slot: GoldenSlotLike) {
+      return goldenOrb.syncSlot(slot);
     },
 
     update(dt: number, t: number) {
@@ -632,11 +684,13 @@ export function buildKayakRushEnvironment(alive: () => boolean = () => true): Ka
       petBuilt.wingLeft.rotation.z = Math.sin(t * wingSpeed) * wingAmp;
       petBuilt.wingRight.rotation.z = -Math.sin(t * wingSpeed) * wingAmp;
 
-      // Update pooled wake/boost sparks
+      // Update pooled wake/boost sparks & Golden Challenge Orb
       wakeSparks.update(dt);
+      goldenOrb.update(t);
     },
 
     dispose() {
+      goldenOrb.dispose();
       disposeObject(root);
     },
   };
@@ -645,6 +699,7 @@ export function buildKayakRushEnvironment(alive: () => boolean = () => true): Ka
 export interface MountKayakRushOptions {
   container: HTMLElement;
   onStoneSelected?: (userData: PhoneticStoneUserData) => void;
+  onTakeGolden?: () => void;
 }
 
 export interface MountedKayakRushStage {
@@ -657,7 +712,7 @@ export interface MountedKayakRushStage {
  * tap detection against the floating Phonetic Stone waypoints.
  */
 export function mountKayakRushScene(options: MountKayakRushOptions): MountedKayakRushStage {
-  const { container, onStoneSelected } = options;
+  const { container, onStoneSelected, onTakeGolden } = options;
   let alive = true;
 
   const stage = createStage(container, {
@@ -670,7 +725,7 @@ export function mountKayakRushScene(options: MountKayakRushOptions): MountedKaya
   stage.camera.position.set(0, 4.8, 8.6);
   stage.camera.lookAt(0, 0.4, -1.8);
 
-  const sceneHandle = buildKayakRushEnvironment(() => alive);
+  const sceneHandle = buildKayakRushEnvironment(() => alive, onTakeGolden);
   stage.scene.add(sceneHandle.root);
 
   const raycaster = new THREE.Raycaster();
@@ -700,6 +755,16 @@ export function mountKayakRushScene(options: MountKayakRushOptions): MountedKaya
       ((e.clientX - rect.left) / rect.width) * 2 - 1,
       -((e.clientY - rect.top) / rect.height) * 2 + 1,
     );
+    if (
+      raycastAndTriggerGoldenOrb(
+        raycaster,
+        pointerNdc,
+        stage.camera,
+        sceneHandle.goldenOrb,
+      )
+    ) {
+      return;
+    }
     const hit = raycastPhoneticStones(
       raycaster,
       pointerNdc,

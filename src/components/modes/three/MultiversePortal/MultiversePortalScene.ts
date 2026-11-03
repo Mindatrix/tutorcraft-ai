@@ -14,7 +14,14 @@ import {
   toon,
 } from '../../kit';
 import { lib } from '../../../../config/assetLibrary';
-import type { PetState } from '../../../../client/phoneticStones';
+import type { PetState, SpeechGameEffect } from '../../../../client/phoneticStones';
+import {
+  createGoldenChallengeOrb,
+  raycastAndTriggerGoldenOrb,
+  type GoldenChallengeOrbHandle,
+  type GoldenSlotLike,
+} from '../goldenChallengeOrb';
+import { buildMultiverseCollisionMesh } from '../physics/sceneColliders';
 import {
   raycastPhoneticStones,
   TapGestureTracker,
@@ -29,16 +36,24 @@ import {
 
 export interface MultiversePortalSceneHandle {
   readonly root: THREE.Group;
+  readonly collisionGroup: THREE.Group;
   readonly interactiveGroup: THREE.Group;
   readonly portalGateGroup: THREE.Group;
   readonly centralPedestalGroup: THREE.Group;
   readonly petCompanionGroup: THREE.Group;
   readonly portalSparks: Sparks;
   readonly portalSpiralMesh: THREE.InstancedMesh;
+  readonly goldenOrb: GoldenChallengeOrbHandle;
   getGateState(): PortalGateState;
   setActiveStone(targetId: string | null): void;
   setPetState(state: PetState): void;
   triggerPortalOpening(stars: 1 | 2 | 3): void;
+  /** Decoupled server effect handler (`reply.effect` with `kind === 'portal_open'`). */
+  applyPortalSpeechEffect(
+    effect: SpeechGameEffect | null | undefined,
+    stars?: 1 | 2 | 3,
+  ): boolean;
+  syncGoldenSlot(slot: GoldenSlotLike): boolean;
   update(dt: number, t: number): void;
   dispose(): void;
 }
@@ -180,13 +195,25 @@ function buildPortalPetCompanion(at: [number, number, number]): {
  */
 export function buildMultiversePortalEnvironment(
   alive: () => boolean = () => true,
+  onTakeGolden?: () => void,
 ): MultiversePortalSceneHandle {
   const root = new THREE.Group();
   root.name = 'MultiversePortalRoot';
 
+  // A1: Attach dedicated Multiverse collision mesh (`userData.collision = true`: room floors, portal thresholds, steps, ramp, walls)
+  const collisionGroup = buildMultiverseCollisionMesh({ visible: false });
+  root.add(collisionGroup);
+
   const interactiveGroup = new THREE.Group();
   interactiveGroup.name = 'PhoneticStonesInteractiveGroup';
   root.add(interactiveGroup);
+
+  // A5: 3D Glowing Golden Challenge Orb (`slot.golden && !slot.goldenTaken`)
+  const goldenOrb = createGoldenChallengeOrb({
+    position: [-1.45, 1.55, 2.1],
+    onTakeGolden,
+  });
+  root.add(goldenOrb.group);
 
   // Starry multiverse twilight sky dome & dramatic lighting
   root.add(skyDome(0x090418, 0x1e1b4b, 0x3b0764, { radius: 170, stars: 1.4 }));
@@ -493,14 +520,65 @@ export function buildMultiversePortalEnvironment(
     }
   }
 
+  function firePortalOpening(stars: 1 | 2 | 3) {
+    const cfg = computePortalOpeningConfig(stars);
+    gateState = 'opening';
+    openingPulseTimer = 1.8;
+    vortexTargetScale = cfg.vortexTargetScale;
+    spiralOrbitSpeed = cfg.spiralOrbitSpeed;
+
+    for (let i = 0; i < SPIRAL_COUNT; i++) {
+      portalSpiralMesh.setColorAt(
+        i,
+        spiralColor.setHex(i % 2 === 0 ? cfg.primaryColorHex : cfg.secondaryColorHex),
+      );
+    }
+    if (portalSpiralMesh.instanceColor) {
+      portalSpiralMesh.instanceColor.needsUpdate = true;
+    }
+
+    for (let i = 0; i < runeNodeMats.length; i++) {
+      runeNodeMats[i].color.setHex(i % 2 === 0 ? cfg.primaryColorHex : cfg.secondaryColorHex);
+      runeNodeMats[i].opacity = 0.98;
+    }
+    conduitBeamMat.color.setHex(cfg.primaryColorHex);
+    conduitBeamMat.opacity = 0.88;
+    vortexCoreMat.color.setHex(cfg.secondaryColorHex);
+    vortexSwirlMat.color.setHex(cfg.primaryColorHex);
+    portalCoreLight.color.setHex(cfg.primaryColorHex);
+    portalCoreLight.intensity = 3.2;
+
+    portalSparks.emit(pedestalEmitPos, Math.round(cfg.burstParticleCount * 0.45), {
+      color: cfg.primaryColorHex,
+      speed: 4.2,
+      life: 1.05,
+      size: 1.25,
+      gravity: 1.5,
+      up: 2.2,
+    });
+    portalSparks.emit(gateEmitPos, cfg.burstParticleCount, {
+      color: cfg.secondaryColorHex,
+      speed: 5.0,
+      life: 1.35,
+      size: 1.4,
+      gravity: 0.4,
+      up: 0.8,
+      spread: gateSpread,
+    });
+
+    refreshCentralStoneVisual();
+  }
+
   return {
     root,
+    collisionGroup,
     interactiveGroup,
     portalGateGroup,
     centralPedestalGroup,
     petCompanionGroup,
     portalSparks,
     portalSpiralMesh,
+    goldenOrb,
 
     getGateState() {
       return gateState;
@@ -533,55 +611,20 @@ export function buildMultiversePortalEnvironment(
     },
 
     triggerPortalOpening(stars: 1 | 2 | 3) {
-      const cfg = computePortalOpeningConfig(stars);
-      gateState = 'opening';
-      openingPulseTimer = 1.8;
-      vortexTargetScale = cfg.vortexTargetScale;
-      spiralOrbitSpeed = cfg.spiralOrbitSpeed;
+      firePortalOpening(stars);
+    },
 
-      // Update spiral particle colors to match star tier
-      for (let i = 0; i < SPIRAL_COUNT; i++) {
-        portalSpiralMesh.setColorAt(
-          i,
-          spiralColor.setHex(i % 2 === 0 ? cfg.primaryColorHex : cfg.secondaryColorHex),
-        );
-      }
-      if (portalSpiralMesh.instanceColor) {
-        portalSpiralMesh.instanceColor.needsUpdate = true;
-      }
+    applyPortalSpeechEffect(
+      effect: SpeechGameEffect | null | undefined,
+      stars: 1 | 2 | 3 = 3,
+    ): boolean {
+      if (!effect || effect.kind !== 'portal_open') return false;
+      firePortalOpening(stars);
+      return true;
+    },
 
-      // Brighten rune nodes & conduit beam
-      for (let i = 0; i < runeNodeMats.length; i++) {
-        runeNodeMats[i].color.setHex(i % 2 === 0 ? cfg.primaryColorHex : cfg.secondaryColorHex);
-        runeNodeMats[i].opacity = 0.98;
-      }
-      conduitBeamMat.color.setHex(cfg.primaryColorHex);
-      conduitBeamMat.opacity = 0.88;
-      vortexCoreMat.color.setHex(cfg.secondaryColorHex);
-      vortexSwirlMat.color.setHex(cfg.primaryColorHex);
-      portalCoreLight.color.setHex(cfg.primaryColorHex);
-      portalCoreLight.intensity = 3.2;
-
-      // Emit glowing particle bursts at the central pedestal and the portal gate aperture
-      portalSparks.emit(pedestalEmitPos, Math.round(cfg.burstParticleCount * 0.45), {
-        color: cfg.primaryColorHex,
-        speed: 4.2,
-        life: 1.05,
-        size: 1.25,
-        gravity: 1.5,
-        up: 2.2,
-      });
-      portalSparks.emit(gateEmitPos, cfg.burstParticleCount, {
-        color: cfg.secondaryColorHex,
-        speed: 5.0,
-        life: 1.35,
-        size: 1.4,
-        gravity: 0.4,
-        up: 0.8,
-        spread: gateSpread,
-      });
-
-      refreshCentralStoneVisual();
+    syncGoldenSlot(slot: GoldenSlotLike) {
+      return goldenOrb.syncSlot(slot);
     },
 
     update(dt: number, t: number) {
@@ -662,11 +705,13 @@ export function buildMultiversePortalEnvironment(
       petBuilt.wingLeft.rotation.z = Math.sin(t * wingRate) * wingAmp;
       petBuilt.wingRight.rotation.z = -Math.sin(t * wingRate) * wingAmp;
 
-      // Update pooled spark burst particles
+      // Update pooled spark burst particles & Golden Challenge Orb
       portalSparks.update(dt);
+      goldenOrb.update(t);
     },
 
     dispose() {
+      goldenOrb.dispose();
       disposeObject(root);
     },
   };
@@ -679,6 +724,7 @@ function clampScale(v: number): number {
 export interface MountMultiversePortalOptions {
   container: HTMLElement;
   onStoneSelected?: (userData: PhoneticStoneUserData) => void;
+  onTakeGolden?: () => void;
 }
 
 export interface MountedMultiversePortalStage {
@@ -693,7 +739,7 @@ export interface MountedMultiversePortalStage {
 export function mountMultiversePortalScene(
   options: MountMultiversePortalOptions,
 ): MountedMultiversePortalStage {
-  const { container, onStoneSelected } = options;
+  const { container, onStoneSelected, onTakeGolden } = options;
   let alive = true;
 
   const stage = createStage(container, {
@@ -706,7 +752,7 @@ export function mountMultiversePortalScene(
   stage.camera.position.set(0, 3.6, 7.6);
   stage.camera.lookAt(0, 2.1, -0.8);
 
-  const sceneHandle = buildMultiversePortalEnvironment(() => alive);
+  const sceneHandle = buildMultiversePortalEnvironment(() => alive, onTakeGolden);
   stage.scene.add(sceneHandle.root);
 
   const raycaster = new THREE.Raycaster();
@@ -736,6 +782,16 @@ export function mountMultiversePortalScene(
       ((e.clientX - rect.left) / rect.width) * 2 - 1,
       -((e.clientY - rect.top) / rect.height) * 2 + 1,
     );
+    if (
+      raycastAndTriggerGoldenOrb(
+        raycaster,
+        pointerNdc,
+        stage.camera,
+        sceneHandle.goldenOrb,
+      )
+    ) {
+      return;
+    }
     const hit = raycastPhoneticStones(
       raycaster,
       pointerNdc,

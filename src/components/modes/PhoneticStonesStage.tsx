@@ -20,6 +20,7 @@ import {
 import PhoneticStonesHud from '../hud/PhoneticStonesHud';
 import { glow, lowpoly, mesh, roughen } from './kit';
 import { createRuntime, type GfxTier } from './three/SceneRuntime';
+import type { GoldenSlotLike } from './three/goldenChallengeOrb';
 import { createPhoneticStonesRig, type PhoneticStonesRig } from './three/phoneticStones';
 
 export interface PhoneticStonesStageProps {
@@ -33,6 +34,10 @@ export interface PhoneticStonesStageProps {
   level?: number;
   questionOpen?: boolean;
   paused?: boolean;
+  /** Optional schedule slot for the 3D Golden Challenge orb (`slot.golden && !slot.goldenTaken`). */
+  slot?: GoldenSlotLike;
+  /** Callback supplied by Claude Code when the student taps the 3D Golden Challenge orb. */
+  onTakeGolden?: () => void;
   className?: string;
 }
 
@@ -45,6 +50,8 @@ export default function PhoneticStonesStage({
   level = 3,
   questionOpen = false,
   paused = false,
+  slot = null,
+  onTakeGolden,
   className = 'h-[560px] w-full',
 }: PhoneticStonesStageProps) {
   const [activeWorld, setActiveWorld] = useState<'summer_camp' | 'river_fishing'>(initialWorldMode);
@@ -175,7 +182,9 @@ export default function PhoneticStonesStage({
       radius: 4.1,
       center: [0, 0, -0.4],
       isBlocked: () => blockedRef.current,
+      onTakeGolden,
     });
+    rig.syncGoldenSlot(slot);
     rigRef.current = rig;
     scene.add(rig.rootGroup);
 
@@ -192,7 +201,12 @@ export default function PhoneticStonesStage({
       machine.dispose();
       runtime?.dispose();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [machine, tier, activeWorld]);
+
+  useEffect(() => {
+    rigRef.current?.syncGoldenSlot(slot);
+  }, [slot]);
 
   return (
     <div

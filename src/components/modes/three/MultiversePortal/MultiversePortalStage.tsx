@@ -3,6 +3,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { PhoneticStoneStateMachine } from '../../../../client/phoneticStones';
 import PhoneticStonesHud from '../../../hud/PhoneticStonesHud';
+import type { GoldenSlotLike } from '../goldenChallengeOrb';
 import {
   mountMultiversePortalScene,
   type MultiversePortalSceneHandle,
@@ -18,17 +19,26 @@ import {
 export interface MultiversePortalStageProps {
   /** Optional external state machine instance for testing or parent synchronization. */
   machine?: PhoneticStoneStateMachine;
+  /** Optional schedule slot for the 3D Golden Challenge orb (`slot.golden && !slot.goldenTaken`). */
+  slot?: GoldenSlotLike;
+  /** Callback supplied by Claude Code when the student taps the 3D Golden Challenge orb. */
+  onTakeGolden?: () => void;
 }
 
 export function MultiversePortalStage({
   machine: externalMachine,
+  slot = null,
+  onTakeGolden,
 }: MultiversePortalStageProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const sceneHandleRef = useRef<MultiversePortalSceneHandle | null>(null);
   const internalMachine = useMemo(
     () =>
       externalMachine ??
-      new PhoneticStoneStateMachine({ targets: MULTIVERSE_PORTAL_TARGETS }),
+      new PhoneticStoneStateMachine({
+        targets: MULTIVERSE_PORTAL_TARGETS,
+        gameMode: 'multiverse_portal',
+      }),
     [externalMachine],
   );
 
@@ -48,8 +58,10 @@ export function MultiversePortalStage({
         onStoneSelected(userData) {
           internalMachine.selectStone(userData.targetId);
         },
+        onTakeGolden,
       });
       sceneHandleRef.current = mounted.sceneHandle;
+      mounted.sceneHandle.syncGoldenSlot(slot);
     } catch {
       setTimeout(() => setWebglReady(false), 0);
     }
@@ -62,10 +74,16 @@ export function MultiversePortalStage({
       sceneHandleRef.current?.setPetState(state);
     });
 
-    const unsubResult = internalMachine.bus.on('stone:result', ({ response }) => {
+    const unsubResult = internalMachine.bus.on('stone:result', ({ response, effect }) => {
       setLockState((prev) => {
         const next = applyPortalPasscodeResult(prev, response);
-        if (
+        const resolvedEffect = effect ?? response.effect;
+        if (resolvedEffect?.kind === 'portal_open') {
+          sceneHandleRef.current?.applyPortalSpeechEffect(
+            resolvedEffect,
+            next.openingConfig?.stars ?? 3,
+          );
+        } else if (
           response.accepted &&
           (response.passed || response.stars >= 1) &&
           next.openingConfig
@@ -90,7 +108,12 @@ export function MultiversePortalStage({
       sceneHandleRef.current = null;
       mounted?.dispose();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [internalMachine]);
+
+  useEffect(() => {
+    sceneHandleRef.current?.syncGoldenSlot(slot);
+  }, [slot]);
 
   const centralTarget = MULTIVERSE_PORTAL_TARGETS[0];
 

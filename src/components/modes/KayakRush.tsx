@@ -8,6 +8,7 @@ import type { SceneEvent } from './types';
 import { playCue } from '../../client/audio';
 import { cycleHits } from '../../engine/audioPlan';
 import { KAYAK_COURSE_LENGTH, KAYAK_LANE, kayakObstacles } from '../../engine/kayakCourse';
+import { buildKayakCollisionMesh } from './three/physics/sceneColliders';
 
 // GAME 1 — Kayak Rush 3D (upgrade of Boat Race; the server-authoritative race logic is unchanged).
 // Turquoise low-poly river, kayaks with modular hats on `hat_attachment_slot`, spinning logs,
@@ -310,6 +311,7 @@ export default function KayakRush(props: KayakRushProps) {
     }
     let alive = true;
     const { scene, camera } = stage;
+    scene.add(buildKayakCollisionMesh({ visible: false }));
     scene.add(skyDome(0x5bb8f0, 0xdff4fb, 0xbfe6f2, { radius: 200 }));
     scene.fog = new THREE.Fog(0xbfe6f2, 40, 110);
     scene.add(new THREE.HemisphereLight(0xffffff, 0x6aa36a, 1.2));

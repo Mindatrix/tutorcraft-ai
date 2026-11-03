@@ -5,7 +5,17 @@ import {
   type SpeechHistory,
   type SpeechMode,
 } from '../engine/pronunciation';
-import petDialoguesData from '../content/pet_dialogues.json';
+import {
+  petStateFor,
+  rageAddCharge,
+  SPEECH_GAME_HOOKS,
+  speechGameEffect,
+  survivalStonesOpen,
+  type DecoderClue,
+  type PetState,
+  type SpeechGameEffect,
+} from '../engine/speechGameEffects';
+import petDialoguesData from '../../content/pet_dialogues.json';
 import {
   evaluateMockSpeechAttempt,
   MOCK_SPEECH_RULES,
@@ -31,6 +41,16 @@ export {
   MOCK_SPEECH_TARGETS,
   MOCK_VOICE_CONFIG,
 } from './phoneticStonesMock';
+export {
+  petStateFor,
+  rageAddCharge,
+  SPEECH_GAME_HOOKS,
+  speechGameEffect,
+  survivalStonesOpen,
+  type DecoderClue,
+  type PetState,
+  type SpeechGameEffect,
+};
 export * from './phoneticWorldRules';
 
 /**
@@ -52,9 +72,6 @@ export type PhoneticStoneState =
   | 'fallback'
   | 'passed'
   | 'retry';
-
-/** Pet states from `docs/TECHNICAL_BLUEPRINT.md` §3.5 (never sad/punishing). */
-export type PetState = 'idle' | 'listening' | 'celebrate' | 'coach';
 
 export interface StoneProgress {
   targetId: string;
@@ -107,6 +124,11 @@ export interface PhoneticStoneEventMap {
     stars: 0 | 1 | 2 | 3;
     attempt: number;
     response: SpeechAttemptResponse;
+    effect?: SpeechGameEffect | null;
+  };
+  'stone:effect': {
+    targetId: string;
+    effect: SpeechGameEffect;
   };
   'pet:state': { state: PetState; hint?: 'mouth_shape'; targetId?: string | null };
   'state:change': {
@@ -157,6 +179,8 @@ export interface PhoneticStoneMachineOptions {
   targets?: PhoneticStoneTarget[];
   voiceConfig?: VoiceConfig;
   level?: number;
+  /** Optional game world (`kayak_rush` | `river_survival` | `multiverse_portal`) for local effect evaluation when server `response.effect` is omitted. */
+  gameMode?: string | null;
   /** Delay (ms) before `selected` auto-advances to `modeling` (default 180ms; 0 = immediate). */
   autoModelDelayMs?: number;
   /** Default duration (ms) for TTS modeling when speechSynthesis onend does not fire (default 900ms). */
@@ -239,6 +263,7 @@ export class PhoneticStoneStateMachine {
   private progressByTarget: Record<string, StoneProgress> = {};
   private voiceConfig: VoiceConfig;
   private level: number;
+  private gameMode: string | null;
   private autoModelDelayMs: number;
   private modelDurationMs: number;
   private speakFn: (text: string, rate: number, lang: 'en-US' | 'en-GB') => Promise<void>;
@@ -251,6 +276,7 @@ export class PhoneticStoneStateMachine {
     this.targets = (opts.targets ?? MOCK_SPEECH_TARGETS).map((t) => ({ ...t, modes: [...t.modes] }));
     this.voiceConfig = { ...(opts.voiceConfig ?? MOCK_VOICE_CONFIG) };
     this.level = opts.level ?? 3;
+    this.gameMode = opts.gameMode ?? null;
     this.autoModelDelayMs = opts.autoModelDelayMs ?? 160;
     this.modelDurationMs = opts.modelDurationMs ?? 850;
     this.speakFn =
@@ -744,40 +770,70 @@ export class PhoneticStoneStateMachine {
     const consideredPassed = response.passed || isRepeatCompleted;
     const misses = prev.misses + (response.passed || this.activeMode === 'repeat' ? 0 : 1);
     const bestStars = Math.max(prev.bestStars, response.stars) as 0 | 1 | 2 | 3;
+    const doneBefore = Object.values(this.progressByTarget).filter((p) => p.passed).length;
+
+    const resolvedEffect: SpeechGameEffect | null =
+      response.effect !== undefined
+        ? response.effect
+        : this.gameMode
+          ? speechGameEffect({
+              game: this.gameMode,
+              success: consideredPassed,
+              prevBestStars: prev.bestStars,
+              bestStars,
+              alreadyDone: prev.passed,
+              doneBefore,
+              flagged: false,
+            })
+          : null;
+
+    const finalResponse: SpeechAttemptResponse =
+      resolvedEffect && response.effect === undefined
+        ? { ...response, effect: resolvedEffect }
+        : response;
+    this.lastResult = finalResponse;
 
     this.progressByTarget[targetId] = {
       targetId,
-      attempts: response.attemptNo,
+      attempts: finalResponse.attemptNo,
       misses,
-      attemptsLeft: response.attemptsLeft,
-      bestScore: Math.max(prev.bestScore, response.bestScore, response.score),
+      attemptsLeft: finalResponse.attemptsLeft,
+      bestScore: Math.max(prev.bestScore, finalResponse.bestScore, finalResponse.score),
       bestStars,
       passed: prev.passed || consideredPassed,
-      lastResponse: response,
+      lastResponse: finalResponse,
     };
 
-    if (response.hint === 'mouth_shape') {
+    if (finalResponse.hint === 'mouth_shape') {
       this.petHint = 'mouth_shape';
     }
 
     this.bus.emit('stone:result', {
       targetId,
-      passed: response.passed,
-      score: response.score,
-      stars: response.stars,
-      attempt: response.attemptNo,
-      response,
+      passed: finalResponse.passed,
+      score: finalResponse.score,
+      stars: finalResponse.stars,
+      attempt: finalResponse.attemptNo,
+      response: finalResponse,
+      effect: resolvedEffect,
     });
 
+    if (resolvedEffect) {
+      this.bus.emit('stone:effect', {
+        targetId,
+        effect: resolvedEffect,
+      });
+    }
+
     if (consideredPassed) {
-      this.setPetState('celebrate', this.petHint);
+      this.setPetState(resolvedEffect?.pet ?? 'celebrate', this.petHint);
       this.transition('passed');
     } else {
-      this.setPetState(response.hint === 'mouth_shape' ? 'coach' : 'idle', this.petHint);
+      this.setPetState(finalResponse.hint === 'mouth_shape' ? 'coach' : 'idle', this.petHint);
       this.transition('retry');
     }
 
-    return response;
+    return finalResponse;
   }
 
   /**
