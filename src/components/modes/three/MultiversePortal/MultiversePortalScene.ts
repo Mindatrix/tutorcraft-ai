@@ -41,6 +41,16 @@ import {
   MULTIVERSE_PORTAL_TARGETS,
   type PortalGateState,
 } from './portalRules';
+import {
+  createStonePositionalFormantRig,
+  type StonePositionalFormantRig,
+} from './positionalFormants';
+import {
+  createSpatialPortalCollider,
+  type PortalStepThroughResult,
+  type SpatialPortalCollider,
+} from './portalCollision';
+import { defaultNextRouteId } from '../../../../engine/questStateMachine';
 
 export interface MultiversePortalEnvironmentOptions {
   sceneId?: MultiverseSceneId;
@@ -59,6 +69,8 @@ export interface MultiversePortalSceneHandle {
   readonly portalVortexFX: PortalEnergyVortexFX;
   readonly stoneBurstFX: PhoneticStoneBurstFX;
   readonly lumiPetFX: LumiPetCompanionFX;
+  readonly formantRig: StonePositionalFormantRig;
+  readonly portalCollider: SpatialPortalCollider;
   getThemePrefab(): MultiverseEnvironmentPrefab;
   getSceneId(): MultiverseSceneId;
   getTier(): AssetQuality;
@@ -69,6 +81,12 @@ export interface MultiversePortalSceneHandle {
   setActiveStone(targetId: string | null): void;
   setPetState(state: PetState): void;
   triggerPortalOpening(stars: 1 | 2 | 3): void;
+  /** Evaluates AABB `THREE.Box3` step-through across the Render Target Portal plane and seamlessly transitions routes on the same WebGL context. */
+  checkPortalStepThrough(
+    prevPos: [number, number, number] | THREE.Vector3,
+    nextPos: [number, number, number] | THREE.Vector3,
+    autoAdvanceTheme?: boolean,
+  ): PortalStepThroughResult;
   auditPerformance(): MultiversePerformanceAudit;
   update(dt: number, t: number, camera?: THREE.Camera): void;
   dispose(): void;
@@ -343,6 +361,21 @@ export function buildMultiversePortalEnvironment(
   });
   root.add(stoneBurstFX.group);
 
+  // 3.1) Web Audio API Positional Formants anchored at the Phonetic Stone coordinates
+  const formantRig = createStonePositionalFormantRig({
+    stonePosition: [0, 1.62, 2.2],
+    ipa: centralTarget.ipa,
+  });
+  root.add(formantRig.anchorNode);
+
+  // 3.2) Spatial Portal AABB (`THREE.Box3`) Collider along the Render Target Portal plane
+  const portalCollider = createSpatialPortalCollider({
+    center: [0, 2.2, -2.0],
+    width: 3.6,
+    height: 4.4,
+    thickness: 0.65,
+  });
+
   // Energy Conduit Beam connecting the Central Pedestal to the Portal Gate
   const conduitBeamMat = glow(0x38bdf8, 0.25, true);
   const conduitBeam = mesh(
@@ -441,6 +474,8 @@ export function buildMultiversePortalEnvironment(
     portalVortexFX,
     stoneBurstFX,
     lumiPetFX,
+    formantRig,
+    portalCollider,
 
     getThemePrefab() {
       return themePrefab;
@@ -507,10 +542,11 @@ export function buildMultiversePortalEnvironment(
       vortexTargetScale = cfg.vortexTargetScale;
       spiralOrbitSpeed = cfg.spiralOrbitSpeed;
 
-      // Transition Portal Energy Vortex to PORTAL_STABILIZED and fire Phonetic Stone Burst FX
+      // Transition Portal Energy Vortex to PORTAL_STABILIZED, fire Phonetic Stone Burst FX & Positional Formant Resonance
       portalVortexFX.setThemeColors(cfg.primaryColorHex, cfg.secondaryColorHex);
       portalVortexFX.setState('PORTAL_STABILIZED');
       stoneBurstFX.triggerBurst(pedestalEmitPos, stars);
+      formantRig.triggerFormantResonance({ ipa: centralTarget.ipa, stars });
 
       for (let i = 0; i < SPIRAL_COUNT; i++) {
         portalSpiralMesh.setColorAt(
@@ -548,6 +584,21 @@ export function buildMultiversePortalEnvironment(
       });
 
       refreshCentralStoneVisual();
+    },
+
+    checkPortalStepThrough(prevPos, nextPos, autoAdvanceTheme = true) {
+      const stabilized =
+        gateState === 'open' ||
+        gateState === 'opening' ||
+        portalVortexFX.getState() === 'PORTAL_STABILIZED';
+      const result = portalCollider.detectStepThrough(prevPos, nextPos, stabilized);
+      if (result.triggeredWarp && autoAdvanceTheme) {
+        const nextRoute = defaultNextRouteId(currentSceneId);
+        if (nextRoute) {
+          this.setSceneTheme(nextRoute, currentTier);
+        }
+      }
+      return result;
     },
 
     auditPerformance() {
@@ -645,6 +696,7 @@ export function buildMultiversePortalEnvironment(
     },
 
     dispose() {
+      formantRig.dispose();
       disposeObject(root);
     },
   };

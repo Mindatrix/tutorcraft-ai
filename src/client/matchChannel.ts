@@ -97,7 +97,7 @@ export interface MatchConnection {
   receive(payload: unknown): Promise<boolean>;
 }
 
-const TYPES: MatchMessageType[] = ['state', 'stage', 'scores', 'roster', 'survival', 'ended', 'rescue'];
+const TYPES: MatchMessageType[] = ['state', 'stage', 'scores', 'roster', 'survival', 'ended', 'rescue', 'portal_resonance'];
 
 function b64urlBytes(s: string): Uint8Array<ArrayBuffer> {
   const bin = atob(s.replace(/-/g, '+').replace(/_/g, '/') + '==='.slice((s.length + 3) % 4));
@@ -248,6 +248,8 @@ export async function connectMatch(opts: MatchConnectOptions): Promise<MatchConn
       case 'rescue':
         // C4.14: kept as the latest rescue news; the game shows it (helper: the question).
         snap.rescue = msg.d as MatchSnapshot['rescue'];
+        break;
+      case 'portal_resonance':
         break;
     }
   }

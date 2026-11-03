@@ -34,6 +34,12 @@ import {
   rescueExpire,
   scheduleAt,
   schedulePlanFor,
+  aggregatePortalResonanceUpdate,
+  createSquadQuorumState,
+  updateSquadQuorumSize,
+  type MultiverseRouteId,
+  type SquadContributionEvent,
+  type SquadQuorumState,
   type RescueEvent,
   type RescueState,
   type ClassResult,
@@ -334,6 +340,50 @@ export function createMatchService(deps: MatchDeps) {
   }
 
   const rescueOf = (m: MatchRow): RescueState => (m.state as { rescue?: RescueState }).rescue ?? newRescueState();
+
+  const quorumOf = (m: MatchRow, routeId: MultiverseRouteId, squadSize: number): SquadQuorumState => {
+    const existing = (m.state as { portalQuorum?: SquadQuorumState }).portalQuorum;
+    if (existing && existing.routeId === routeId) {
+      return updateSquadQuorumSize(existing, squadSize, now());
+    }
+    return createSquadQuorumState(m.id, routeId, squadSize);
+  };
+
+  /** GDS-TC-2026-EXP §4.2 apply a squad portal resonance update with CAS retry and broadcast `portal_resonance`. */
+  async function portalResonanceStep(
+    m: MatchRow,
+    routeId: MultiverseRouteId,
+    squadSize: number,
+    event: SquadContributionEvent,
+  ): Promise<SquadQuorumState> {
+    let cur = m;
+    for (let i = 0; i < STATE_RETRIES; i++) {
+      const before = quorumOf(cur, routeId, squadSize);
+      const next = aggregatePortalResonanceUpdate(before, event);
+      if (next === before) return next;
+      const up = await store.update(
+        cur.id,
+        {
+          state: { ...cur.state, portalQuorum: next as unknown as Record<string, unknown> },
+          stateVersion: cur.stateVersion + 1,
+        },
+        { stateVersion: cur.stateVersion },
+      );
+      if (up) {
+        await send(up, 'portal_resonance', {
+          type: 'PORTAL_RESONANCE_UPDATE',
+          quorum: next,
+          event,
+        });
+        return next;
+      }
+      const fresh = await store.get(cur.id);
+      if (!fresh) throw new MatchError(404, 'Không tìm thấy trận.');
+      cur = fresh;
+      await new Promise((res) => setTimeout(res, 15 + Math.random() * 40 * (i + 1)));
+    }
+    throw new MatchError(409, 'Trận đang bận, thử lại.');
+  }
 
   /** C4.14 apply a class-rescue step (same optimistic loop as Survival), then tell the class. */
   async function rescueStep(m: MatchRow, fn: (s: RescueState) => { state: RescueState; events: RescueEvent[] }, question?: RescueBroadcast['question']): Promise<{ m: MatchRow; events: RescueEvent[] }> {
@@ -778,6 +828,45 @@ export function createMatchService(deps: MatchDeps) {
         await survivalStep(m, at, (s, ctx) => survivalSettle(s, ctx, answered)).catch((e: unknown) => console.warn('survival window kept for the next settle:', (e as Error).message));
       }
       return tick;
+    },
+
+    /**
+     * GDS-TC-2026-EXP §4.2 Record a student's Multiverse Phonetic Stone calibration
+     * toward the Squad Quorum (`Rv = Math.ceil(Nsquad * 0.60)`) and broadcast
+     * `PORTAL_RESONANCE_UPDATE` across all active student sessions in real time.
+     */
+    async recordPortalResonance(params: {
+      matchId: string;
+      studentId: string;
+      routeId?: MultiverseRouteId;
+      targetId: string;
+      mode?: 'shadow' | 'dictate' | 'tiles' | 'repeat';
+      score: number;
+      passed: boolean;
+    }): Promise<SquadQuorumState | null> {
+      const at = now();
+      const m = await store.get(params.matchId);
+      if (!m || m.status !== 'running') return null;
+      const players = await store.players(m.id);
+      const activePlayers = players.filter((p) => p.leftAt == null);
+      const squadSize = Math.max(1, activePlayers.length);
+      const routeId: MultiverseRouteId =
+        params.routeId ??
+        (m.scenarioId && /^mv-0[1-5]$/.test(m.scenarioId)
+          ? (m.scenarioId as MultiverseRouteId)
+          : 'mv-01');
+      const event: SquadContributionEvent = {
+        type: 'PORTAL_RESONANCE_UPDATE',
+        matchId: m.id,
+        routeId,
+        studentId: params.studentId,
+        targetId: params.targetId,
+        mode: params.mode ?? 'shadow',
+        score: params.score,
+        passed: params.passed,
+        timestampMs: at,
+      };
+      return portalResonanceStep(m, routeId, squadSize, event);
     },
   };
 }

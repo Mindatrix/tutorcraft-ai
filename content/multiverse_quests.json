@@ -1,0 +1,389 @@
+{
+  "_doc": "Multiverse quest routes mv-01..mv-05 (GDS-TC-2026-EXP v2.6 §6.1 state machine, §6.2 Object Interaction Matrix, §5.2 non-blocking fallback). Keyed by the scenario ids already in content/scenarios_v2.json; that file is NOT edited here. `scenarios_v2_merge` lists the fields Claude chat should copy into each scenario. Stress arrays: one entry per syllable, stress = primary | secondary | none. Fallback Path A = typed dictation, Path B = syntactic tile sort (tiles in display order, `solution` = the correct order).",
+  "version": 1,
+  "rules": {
+    "maxSpeechAttempts": 3,
+    "fallbackXpRatio": 0.8,
+    "quorumRatio": 0.6,
+    "maxSquad": 50
+  },
+  "routes": [
+    {
+      "id": "mv-01",
+      "theme": "Alexandria Archive",
+      "theme_vi": "Thư Viện Alexandria Ngầm",
+      "next": "mv-02",
+      "grammar": {
+        "key": "concession",
+        "label": "Concession: Although … , … nevertheless …",
+        "label_vi": "Mệnh đề nhượng bộ: Mặc dù … , tuy vậy …",
+        "pattern": "Although + clause, main clause (+ nevertheless)"
+      },
+      "objects": [
+        { "objectId": "mv01_tide_scroll", "kind": "papyrus_chest", "anchor": "chest", "stage": "EXPLORATION", "action": "open", "clue_en": "Although the archive flooded, the scrolls survived.", "clue_vi": "Mặc dù thư viện bị ngập, các cuộn giấy vẫn còn nguyên." },
+        { "objectId": "mv01_marble_lexicon", "kind": "marble_ruin", "anchor": "altar", "stage": "INVESTIGATION", "action": "inspect", "clue_en": "The water was cold; nevertheless, the scribes kept reading.", "clue_vi": "Nước rất lạnh; tuy vậy, các thầy ký lục vẫn tiếp tục đọc." },
+        { "objectId": "mv01_papyrus_pedestal", "kind": "papyrus_pedestal", "anchor": "stone_pedestal", "stage": "PHONETIC_CHALLENGE", "action": "speak", "clue_en": "Speak the concession to calm the tide.", "clue_vi": "Đọc câu nhượng bộ để làm dịu con sóng." },
+        { "objectId": "mv01_tide_gate", "kind": "portal_archway", "anchor": "portal_archway", "stage": "PORTAL_CHARGING", "action": "traverse", "clue_en": "The tide gate opens when the squad speaks together.", "clue_vi": "Cổng thủy triều mở khi cả đội cùng đọc." }
+      ],
+      "puzzle": {
+        "prompt": "___ the library was underwater, the books were safe.",
+        "options": ["Although", "Because", "So", "Unless"],
+        "correctIdx": 0,
+        "explanation_vi": "\"Although\" nối hai ý trái ngược: ngập nước nhưng sách vẫn an toàn."
+      },
+      "stones": [
+        {
+          "targetId": "mv01_stone_although",
+          "text": "Although it was dark, we found the scroll",
+          "kind": "sentence",
+          "ipa": "/ɔːlˈðəʊ ɪt wəz dɑːk wi faʊnd ðə skrəʊl/",
+          "stress": [
+            { "syllable": "al", "stress": "none" },
+            { "syllable": "THOUGH", "stress": "primary" },
+            { "syllable": "it", "stress": "none" },
+            { "syllable": "was", "stress": "none" },
+            { "syllable": "DARK", "stress": "primary" },
+            { "syllable": "we", "stress": "none" },
+            { "syllable": "FOUND", "stress": "primary" },
+            { "syllable": "the", "stress": "none" },
+            { "syllable": "SCROLL", "stress": "primary" }
+          ],
+          "meaning_vi": "Mặc dù trời tối, chúng tôi vẫn tìm thấy cuộn giấy.",
+          "mouthTipVi": "Âm /ð/ trong \"although\": đặt đầu lưỡi giữa hai răng và rung nhẹ.",
+          "fallback": {
+            "dictation": { "answer": "Although it was dark, we found the scroll", "accept": ["although it was dark we found the scroll"] },
+            "tiles": { "tiles": ["we found", "Although", "the scroll", "it was dark,"], "solution": ["Although", "it was dark,", "we found", "the scroll"] }
+          }
+        },
+        {
+          "targetId": "mv01_stone_nevertheless",
+          "text": "Nevertheless, the tide gate opened",
+          "kind": "sentence",
+          "ipa": "/ˌnevəðəˈles ðə taɪd ɡeɪt ˈəʊpənd/",
+          "stress": [
+            { "syllable": "ne", "stress": "secondary" },
+            { "syllable": "ver", "stress": "none" },
+            { "syllable": "the", "stress": "none" },
+            { "syllable": "LESS", "stress": "primary" },
+            { "syllable": "the", "stress": "none" },
+            { "syllable": "TIDE", "stress": "primary" },
+            { "syllable": "GATE", "stress": "primary" },
+            { "syllable": "O", "stress": "primary" },
+            { "syllable": "pened", "stress": "none" }
+          ],
+          "meaning_vi": "Tuy vậy, cổng thủy triều đã mở ra.",
+          "mouthTipVi": "Nhấn mạnh âm tiết cuối \"-LESS\" của \"nevertheless\".",
+          "fallback": {
+            "dictation": { "answer": "Nevertheless, the tide gate opened", "accept": ["nevertheless the tide gate opened"] },
+            "tiles": { "tiles": ["opened", "the tide gate", "Nevertheless,"], "solution": ["Nevertheless,", "the tide gate", "opened"] }
+          }
+        }
+      ]
+    },
+    {
+      "id": "mv-02",
+      "theme": "Cyber-Babel",
+      "theme_vi": "Hẻm Điện Toán Cyber-Babel",
+      "next": "mv-03",
+      "grammar": {
+        "key": "conditional",
+        "label": "Conditional logic: If … , (then) …",
+        "label_vi": "Câu điều kiện: Nếu … thì …",
+        "pattern": "If + present simple, will + verb"
+      },
+      "objects": [
+        { "objectId": "mv02_data_terminal", "kind": "data_terminal", "anchor": "chest", "stage": "EXPLORATION", "action": "hack", "clue_en": "If you enter the code, the terminal will wake up.", "clue_vi": "Nếu em nhập mã, thiết bị đầu cuối sẽ bật lên." },
+        { "objectId": "mv02_neon_billboard", "kind": "neon_billboard", "anchor": "altar", "stage": "INVESTIGATION", "action": "inspect", "clue_en": "IF the signal is green THEN the door will unlock.", "clue_vi": "NẾU tín hiệu xanh THÌ cửa sẽ mở khóa." },
+        { "objectId": "mv02_logic_node", "kind": "data_conduit", "anchor": "stone_pedestal", "stage": "PHONETIC_CHALLENGE", "action": "speak", "clue_en": "Speak the condition to route the data.", "clue_vi": "Đọc câu điều kiện để dẫn luồng dữ liệu." },
+        { "objectId": "mv02_babel_gate", "kind": "portal_archway", "anchor": "portal_archway", "stage": "PORTAL_CHARGING", "action": "traverse", "clue_en": "The Babel gate compiles when the squad agrees.", "clue_vi": "Cổng Babel khởi động khi cả đội đồng thanh." }
+      ],
+      "puzzle": {
+        "prompt": "If the light turns green, the door ___ open.",
+        "options": ["will", "would have", "opened", "is opening"],
+        "correctIdx": 0,
+        "explanation_vi": "Điều kiện loại 1: If + hiện tại đơn, mệnh đề chính dùng \"will\"."
+      },
+      "stones": [
+        {
+          "targetId": "mv02_stone_if_then",
+          "text": "If the signal is green, the door will open",
+          "kind": "sentence",
+          "ipa": "/ɪf ðə ˈsɪɡnəl ɪz ɡriːn ðə dɔː wɪl ˈəʊpən/",
+          "stress": [
+            { "syllable": "if", "stress": "none" },
+            { "syllable": "the", "stress": "none" },
+            { "syllable": "SIG", "stress": "primary" },
+            { "syllable": "nal", "stress": "none" },
+            { "syllable": "is", "stress": "none" },
+            { "syllable": "GREEN", "stress": "primary" },
+            { "syllable": "the", "stress": "none" },
+            { "syllable": "DOOR", "stress": "primary" },
+            { "syllable": "will", "stress": "none" },
+            { "syllable": "O", "stress": "primary" },
+            { "syllable": "pen", "stress": "none" }
+          ],
+          "meaning_vi": "Nếu tín hiệu chuyển xanh, cánh cửa sẽ mở.",
+          "mouthTipVi": "Kéo dài nguyên âm /iː/ trong \"green\", miệng cười nhẹ.",
+          "fallback": {
+            "dictation": { "answer": "If the signal is green, the door will open", "accept": ["if the signal is green the door will open"] },
+            "tiles": { "tiles": ["will open", "If the signal", "the door", "is green,"], "solution": ["If the signal", "is green,", "the door", "will open"] }
+          }
+        },
+        {
+          "targetId": "mv02_stone_compile",
+          "text": "If we speak together, the gate will compile",
+          "kind": "sentence",
+          "ipa": "/ɪf wi spiːk təˈɡeðə ðə ɡeɪt wɪl kəmˈpaɪl/",
+          "stress": [
+            { "syllable": "if", "stress": "none" },
+            { "syllable": "we", "stress": "none" },
+            { "syllable": "SPEAK", "stress": "primary" },
+            { "syllable": "to", "stress": "none" },
+            { "syllable": "GE", "stress": "primary" },
+            { "syllable": "ther", "stress": "none" },
+            { "syllable": "the", "stress": "none" },
+            { "syllable": "GATE", "stress": "primary" },
+            { "syllable": "will", "stress": "none" },
+            { "syllable": "com", "stress": "none" },
+            { "syllable": "PILE", "stress": "primary" }
+          ],
+          "meaning_vi": "Nếu chúng ta cùng nói, cánh cổng sẽ khởi động.",
+          "mouthTipVi": "\"together\" nhấn âm giữa: to-GE-ther.",
+          "fallback": {
+            "dictation": { "answer": "If we speak together, the gate will compile", "accept": ["if we speak together the gate will compile"] },
+            "tiles": { "tiles": ["the gate", "If we speak", "will compile", "together,"], "solution": ["If we speak", "together,", "the gate", "will compile"] }
+          }
+        }
+      ]
+    },
+    {
+      "id": "mv-03",
+      "theme": "Chrono-Forest",
+      "theme_vi": "Rừng Thời Gian Phát Quang",
+      "next": "mv-04",
+      "grammar": {
+        "key": "past_perfect_vs_past_simple",
+        "label": "Temporal sequencing: Past Perfect vs Past Simple",
+        "label_vi": "Trình tự thời gian: Quá khứ hoàn thành và Quá khứ đơn",
+        "pattern": "By the time / When + past simple, subject + had + past participle"
+      },
+      "objects": [
+        { "objectId": "mv03_petrified_tree", "kind": "petrified_tree", "anchor": "altar", "stage": "EXPLORATION", "action": "inspect", "clue_en": "The tree had turned to stone before the first king was born.", "clue_vi": "Cái cây đã hóa đá trước khi vị vua đầu tiên ra đời." },
+        { "objectId": "mv03_chrono_fungi", "kind": "chrono_fungi", "anchor": "chest", "stage": "INVESTIGATION", "action": "collect", "clue_en": "When we arrived, the mushrooms had already glowed.", "clue_vi": "Khi chúng tôi đến, những cây nấm đã phát sáng rồi." },
+        { "objectId": "mv03_time_ring", "kind": "temporal_ring", "anchor": "stone_pedestal", "stage": "PHONETIC_CHALLENGE", "action": "speak", "clue_en": "Put the events in order with your voice.", "clue_vi": "Sắp xếp các sự kiện theo thứ tự bằng giọng nói." },
+        { "objectId": "mv03_chrono_gate", "kind": "portal_archway", "anchor": "portal_archway", "stage": "PORTAL_CHARGING", "action": "traverse", "clue_en": "The chrono gate rewinds when the squad speaks.", "clue_vi": "Cổng thời gian quay ngược khi cả đội lên tiếng." }
+      ],
+      "puzzle": {
+        "prompt": "When we reached the forest, the fog ___ already ___.",
+        "options": ["had / lifted", "has / lifted", "was / lift", "will / lift"],
+        "correctIdx": 0,
+        "explanation_vi": "Việc sương tan xảy ra TRƯỚC khi chúng tôi đến, nên dùng quá khứ hoàn thành \"had lifted\"."
+      },
+      "stones": [
+        {
+          "targetId": "mv03_stone_had_glowed",
+          "text": "The mushrooms had glowed before we arrived",
+          "kind": "sentence",
+          "ipa": "/ðə ˈmʌʃrʊmz həd ɡləʊd bɪˈfɔː wi əˈraɪvd/",
+          "stress": [
+            { "syllable": "the", "stress": "none" },
+            { "syllable": "MUSH", "stress": "primary" },
+            { "syllable": "rooms", "stress": "none" },
+            { "syllable": "had", "stress": "none" },
+            { "syllable": "GLOWED", "stress": "primary" },
+            { "syllable": "be", "stress": "none" },
+            { "syllable": "FORE", "stress": "primary" },
+            { "syllable": "we", "stress": "none" },
+            { "syllable": "a", "stress": "none" },
+            { "syllable": "RRIVED", "stress": "primary" }
+          ],
+          "meaning_vi": "Những cây nấm đã phát sáng trước khi chúng tôi đến.",
+          "mouthTipVi": "Đọc rõ âm cuối /d/ trong \"glowed\" và \"arrived\" để thể hiện thì quá khứ.",
+          "fallback": {
+            "dictation": { "answer": "The mushrooms had glowed before we arrived", "accept": ["the mushrooms had glowed before we arrived"] },
+            "tiles": { "tiles": ["before we arrived", "had glowed", "The mushrooms"], "solution": ["The mushrooms", "had glowed", "before we arrived"] }
+          }
+        },
+        {
+          "targetId": "mv03_stone_rewind",
+          "text": "By the time the clock stopped, the gate had opened",
+          "kind": "sentence",
+          "ipa": "/baɪ ðə taɪm ðə klɒk stɒpt ðə ɡeɪt həd ˈəʊpənd/",
+          "stress": [
+            { "syllable": "by", "stress": "none" },
+            { "syllable": "the", "stress": "none" },
+            { "syllable": "TIME", "stress": "primary" },
+            { "syllable": "the", "stress": "none" },
+            { "syllable": "CLOCK", "stress": "primary" },
+            { "syllable": "STOPPED", "stress": "primary" },
+            { "syllable": "the", "stress": "none" },
+            { "syllable": "GATE", "stress": "primary" },
+            { "syllable": "had", "stress": "none" },
+            { "syllable": "O", "stress": "primary" },
+            { "syllable": "pened", "stress": "none" }
+          ],
+          "meaning_vi": "Vào lúc đồng hồ dừng lại, cánh cổng đã mở rồi.",
+          "mouthTipVi": "\"stopped\" kết thúc bằng âm /t/, không phải /ed/.",
+          "fallback": {
+            "dictation": { "answer": "By the time the clock stopped, the gate had opened", "accept": ["by the time the clock stopped the gate had opened"] },
+            "tiles": { "tiles": ["had opened", "By the time", "the gate", "the clock stopped,"], "solution": ["By the time", "the clock stopped,", "the gate", "had opened"] }
+          }
+        }
+      ]
+    },
+    {
+      "id": "mv-04",
+      "theme": "Nebula Spire",
+      "theme_vi": "Đài Tinh Vân Thiên Cầu",
+      "next": "mv-05",
+      "grammar": {
+        "key": "modal_certainty",
+        "label": "Modal verbs of certainty: must have been / can't have been",
+        "label_vi": "Động từ khuyết thiếu chỉ sự chắc chắn: chắc hẳn đã / không thể nào đã",
+        "pattern": "subject + must / might / can't + have + past participle"
+      },
+      "objects": [
+        { "objectId": "mv04_astrolabe", "kind": "astrolabe", "anchor": "altar", "stage": "EXPLORATION", "action": "rotate", "clue_en": "The stars moved: someone must have turned the astrolabe.", "clue_vi": "Các vì sao đã dịch chuyển: chắc hẳn ai đó đã xoay thiên cầu." },
+        { "objectId": "mv04_lens_pedestal", "kind": "lens_pedestal", "anchor": "chest", "stage": "INVESTIGATION", "action": "focus", "clue_en": "The lens is warm, so it must have been used.", "clue_vi": "Thấu kính còn ấm, vậy chắc hẳn nó vừa được dùng." },
+        { "objectId": "mv04_crystal_focus", "kind": "crystal_lens", "anchor": "stone_pedestal", "stage": "PHONETIC_CHALLENGE", "action": "speak", "clue_en": "Speak your deduction to align the crystals.", "clue_vi": "Đọc lời suy luận để căn chỉnh các tinh thể." },
+        { "objectId": "mv04_nebula_gate", "kind": "portal_archway", "anchor": "portal_archway", "stage": "PORTAL_CHARGING", "action": "traverse", "clue_en": "The nebula gate aligns when the squad resonates.", "clue_vi": "Cổng tinh vân thẳng hàng khi cả đội cộng hưởng." }
+      ],
+      "puzzle": {
+        "prompt": "The lens is still warm. Someone ___ used it a moment ago.",
+        "options": ["must have", "can't have", "should", "will have"],
+        "correctIdx": 0,
+        "explanation_vi": "Có bằng chứng (thấu kính còn ấm) nên suy luận chắc chắn: \"must have used\"."
+      },
+      "stones": [
+        {
+          "targetId": "mv04_stone_must_have",
+          "text": "It must have been the comet",
+          "kind": "sentence",
+          "ipa": "/ɪt mʌst həv biːn ðə ˈkɒmɪt/",
+          "stress": [
+            { "syllable": "it", "stress": "none" },
+            { "syllable": "MUST", "stress": "primary" },
+            { "syllable": "have", "stress": "none" },
+            { "syllable": "been", "stress": "none" },
+            { "syllable": "the", "stress": "none" },
+            { "syllable": "CO", "stress": "primary" },
+            { "syllable": "met", "stress": "none" }
+          ],
+          "meaning_vi": "Chắc hẳn đó là sao chổi.",
+          "mouthTipVi": "\"must have\" nói nhanh thành /ˈmʌstəv/, nhấn vào MUST.",
+          "fallback": {
+            "dictation": { "answer": "It must have been the comet", "accept": ["it must have been the comet"] },
+            "tiles": { "tiles": ["been", "the comet", "It must", "have"], "solution": ["It must", "have", "been", "the comet"] }
+          }
+        },
+        {
+          "targetId": "mv04_stone_cant_have",
+          "text": "The stars can't have moved by themselves",
+          "kind": "sentence",
+          "ipa": "/ðə stɑːz kɑːnt həv muːvd baɪ ðəmˈselvz/",
+          "stress": [
+            { "syllable": "the", "stress": "none" },
+            { "syllable": "STARS", "stress": "primary" },
+            { "syllable": "CAN'T", "stress": "primary" },
+            { "syllable": "have", "stress": "none" },
+            { "syllable": "MOVED", "stress": "primary" },
+            { "syllable": "by", "stress": "none" },
+            { "syllable": "them", "stress": "none" },
+            { "syllable": "SELVES", "stress": "primary" }
+          ],
+          "meaning_vi": "Các vì sao không thể nào tự di chuyển được.",
+          "mouthTipVi": "Giữ âm /t/ trong \"can't\" ngắn gọn để phân biệt với \"can\".",
+          "fallback": {
+            "dictation": { "answer": "The stars can't have moved by themselves", "accept": ["the stars cant have moved by themselves", "the stars cannot have moved by themselves"] },
+            "tiles": { "tiles": ["by themselves", "can't have", "The stars", "moved"], "solution": ["The stars", "can't have", "moved", "by themselves"] }
+          }
+        }
+      ]
+    },
+    {
+      "id": "mv-05",
+      "theme": "Steam Foundry",
+      "theme_vi": "Xưởng Đúc Hơi Nước Đồng Thau",
+      "next": null,
+      "grammar": {
+        "key": "passive_process",
+        "label": "Passive voice for processes: is heated / is poured / is cooled",
+        "label_vi": "Câu bị động mô tả quy trình: được nung / được rót / được làm nguội",
+        "pattern": "subject + is/are + past participle (+ by …)"
+      },
+      "objects": [
+        { "objectId": "mv05_brass_cog", "kind": "brass_cog", "anchor": "chest", "stage": "EXPLORATION", "action": "turn", "clue_en": "The cogs are turned by steam.", "clue_vi": "Các bánh răng được quay bằng hơi nước." },
+        { "objectId": "mv05_manometer", "kind": "pressure_manometer", "anchor": "altar", "stage": "INVESTIGATION", "action": "read", "clue_en": "First the metal is heated, then it is poured.", "clue_vi": "Đầu tiên kim loại được nung nóng, sau đó được rót vào khuôn." },
+        { "objectId": "mv05_furnace", "kind": "furnace", "anchor": "stone_pedestal", "stage": "PHONETIC_CHALLENGE", "action": "speak", "clue_en": "Describe the process to balance the pressure.", "clue_vi": "Mô tả quy trình để cân bằng áp suất." },
+        { "objectId": "mv05_foundry_gate", "kind": "portal_archway", "anchor": "portal_archway", "stage": "PORTAL_CHARGING", "action": "traverse", "clue_en": "The final gate is powered by every voice.", "clue_vi": "Cổng cuối cùng được cấp năng lượng bởi mọi giọng nói." }
+      ],
+      "puzzle": {
+        "prompt": "In the foundry, the hot metal ___ into moulds.",
+        "options": ["is poured", "pours", "is pouring", "poured by"],
+        "correctIdx": 0,
+        "explanation_vi": "Mô tả quy trình, chủ ngữ là vật chịu tác động nên dùng bị động \"is poured\"."
+      },
+      "stones": [
+        {
+          "targetId": "mv05_stone_is_heated",
+          "text": "The metal is heated and then poured",
+          "kind": "sentence",
+          "ipa": "/ðə ˈmetl ɪz ˈhiːtɪd ən ðen pɔːd/",
+          "stress": [
+            { "syllable": "the", "stress": "none" },
+            { "syllable": "ME", "stress": "primary" },
+            { "syllable": "tal", "stress": "none" },
+            { "syllable": "is", "stress": "none" },
+            { "syllable": "HEA", "stress": "primary" },
+            { "syllable": "ted", "stress": "none" },
+            { "syllable": "and", "stress": "none" },
+            { "syllable": "THEN", "stress": "primary" },
+            { "syllable": "POURED", "stress": "primary" }
+          ],
+          "meaning_vi": "Kim loại được nung nóng rồi sau đó được rót vào khuôn.",
+          "mouthTipVi": "\"heated\" có đuôi /ɪd/ vì kết thúc bằng âm /t/.",
+          "fallback": {
+            "dictation": { "answer": "The metal is heated and then poured", "accept": ["the metal is heated and then poured"] },
+            "tiles": { "tiles": ["and then poured", "is heated", "The metal"], "solution": ["The metal", "is heated", "and then poured"] }
+          }
+        },
+        {
+          "targetId": "mv05_stone_powered_by",
+          "text": "The final gate is powered by our voices",
+          "kind": "sentence",
+          "ipa": "/ðə ˈfaɪnl ɡeɪt ɪz ˈpaʊəd baɪ ˈaʊə ˈvɔɪsɪz/",
+          "stress": [
+            { "syllable": "the", "stress": "none" },
+            { "syllable": "FI", "stress": "primary" },
+            { "syllable": "nal", "stress": "none" },
+            { "syllable": "GATE", "stress": "primary" },
+            { "syllable": "is", "stress": "none" },
+            { "syllable": "POW", "stress": "primary" },
+            { "syllable": "ered", "stress": "none" },
+            { "syllable": "by", "stress": "none" },
+            { "syllable": "our", "stress": "none" },
+            { "syllable": "VOI", "stress": "primary" },
+            { "syllable": "ces", "stress": "none" }
+          ],
+          "meaning_vi": "Cánh cổng cuối cùng được cấp năng lượng bởi giọng nói của chúng ta.",
+          "mouthTipVi": "Âm đôi /ɔɪ/ trong \"voices\": bắt đầu tròn môi rồi kéo sang /ɪ/.",
+          "fallback": {
+            "dictation": { "answer": "The final gate is powered by our voices", "accept": ["the final gate is powered by our voices"] },
+            "tiles": { "tiles": ["by our voices", "The final gate", "is powered"], "solution": ["The final gate", "is powered", "by our voices"] }
+          }
+        }
+      ]
+    }
+  ],
+  "scenarios_v2_merge": {
+    "_doc": "For Claude chat: copy these fields into the matching scenario of content/scenarios_v2.json (left untouched in this PR because the working copy has someone else's uncommitted edits).",
+    "fields": ["quest.grammar.key", "quest.grammar.label_vi", "quest.objects[].objectId", "quest.stones[].targetId", "quest.next"],
+    "byScenario": {
+      "mv-01": { "questRoute": "mv-01", "grammarKey": "concession", "next": "mv-02" },
+      "mv-02": { "questRoute": "mv-02", "grammarKey": "conditional", "next": "mv-03" },
+      "mv-03": { "questRoute": "mv-03", "grammarKey": "past_perfect_vs_past_simple", "next": "mv-04" },
+      "mv-04": { "questRoute": "mv-04", "grammarKey": "modal_certainty", "next": "mv-05" },
+      "mv-05": { "questRoute": "mv-05", "grammarKey": "passive_process", "next": null }
+    }
+  }
+}

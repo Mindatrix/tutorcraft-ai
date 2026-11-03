@@ -108,7 +108,7 @@ WP2 → WP1 → **U0 → U1+U2** → WP3–WP5 → **U3, U4** → WP6 → WP7 �
 | WP8 Đá Phát Âm (server) | Hiệu ứng do server quyết: Nitro Kayak, manh mối Thợ giải mã (Chuồng Gỗ → Lưới), mở cổng Multiverse + Lumi; `src/engine/speechGameEffects.ts`, trường `effect` trong `/api/session/speech` | **Xong** (03/11) |
 | River Survival 3D (PR #4) | Cảnh `RiverSurvivalScene` (3 khu, Chuồng Gỗ, trạm Lưới) | **Đã gộp** `6e07c78`; chưa vào trận thật |
 | WP8 nối hiệu ứng server | `applySurvivalSpeechEffect` (manh mối Thợ giải mã), `survivalStonesOpen` (khoá đá trong cửa sổ 6 s / 8 s), `useKayakRage().addCharge` | **Xong** `dccdf0e` |
-| WP8 Đá Phát Âm (3D) | Đặt đá vào phao Kayak, khu rừng River Survival, bệ thờ Multiverse; nối 5 thế giới vào trận thật | **Chưa** — giao Antigravity, `docs/wp8_phonetic_worlds_handoff.md` mục 2b, 4 |
+| WP8 Đá Phát Âm (3D) | Đặt đá vào phao Kayak, khu rừng River Survival, bệ thờ Multiverse; nối 5 thế giới vào trận thật | **Đã hoàn thiện Multiverse & 5 cảnh 3D** (`agy/multiverse-full-integration`): `content/multiverse_quests.json` (`mv-01`..`mv-05`), `questStateMachine.ts` (8 giai đoạn + Squad Quorum `Rv = ceil(N * 0.60)` + `PORTAL_RESONANCE_UPDATE`), Web Audio 3D Formants (`positionalFormants.ts`), va chạm cổng `THREE.Box3` (`portalCollision.ts`), fallback 3 lần 80% XP, bộ test `QA-P01`..`QA-P04` |
 | Xu demo | Phiên demo dùng ví xu trong bộ nhớ (`rewardsFor`, `demoRewards` trong `src/server/rewards.ts`), không ghi `coin_wallets` / `coin_ledger` | **Xong** `dc77c0d` |
 | U8 | Màn chờ + chọn nhân vật theo game | Chưa. Chờ chốt phạm vi |
 | WP5 | Nhân vật một mô hình nhiều vai (`character_casting.json`) | Chưa |
