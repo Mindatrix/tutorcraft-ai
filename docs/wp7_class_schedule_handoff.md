@@ -1,6 +1,6 @@
 # WP7: lịch câu hỏi trong trận lớp, thử thách vàng, nghĩa tiếng Việt (bàn giao cho Antigravity)
 
-> Viết 03/11/2026 bởi Claude Code (backend). **Server xong; giao diện chưa làm** (Antigravity, nhánh `agy/*`, chỉ sửa `app/`, `src/components/`, `src/client/`).
+> Viết 03/11/2026 bởi Claude Code. **Server xong; giao diện chưa làm.** Từ tối 03/11: giao diện (Spatial UI) do Claude Code làm, hình ảnh 3D/shader do Antigravity.
 
 ## 1. Server đã làm gì
 
@@ -47,15 +47,17 @@ Trả `{ slot, serverNow }`. Dùng `serverNow` để tính lệch đồng hồ m
 ### Gợi ý bậc 1 (`POST /api/session/hint`, `tier: 1`)
 Không đổi hợp đồng. `hint.meaning` giờ là `meaning_vi` nếu câu có, không thì như cũ.
 
-## 3. Việc giao diện cần làm (Antigravity)
+## 3. Việc giao diện cần làm (Claude Code; vật phát sáng 3D: Antigravity)
 
 1. Màn trận lớp của em: đồng hồ chờ tới điểm hỏi (từ `opensAt` và `serverNow`), ẩn khung hỏi khi `question === null`, nhãn "Chốt chặng 1/3, 2/3, 3/3" theo `chain`.
 2. Vật phát sáng trong cảnh 3D khi `slot.golden`, chạm để nhận (gọi `/api/session/golden`); không bắt buộc, có nút "Bỏ qua".
 3. `ClassPodium` (top 3 vàng, bạc, đồng) cho màn trận lớp phía em: thành phần đã có ở `src/components/ClassPodium.tsx`, dữ liệu từ bảng điểm trận.
 4. Khi trận kết thúc (`view.state.phase === 'result'`), gọi `/api/battle-result` để ghi kết quả. Phiên trận lớp giờ kết thúc theo đồng hồ trận, không theo câu cuối.
 
-## 4. Còn mở (cần chủ dự án quyết)
+## 4. Đã chốt (chủ dự án, 03/11)
 
-- **Hết máu giữa trận lớp:** ở chế độ `gamified`, em hết HP thì phiên kết thúc sớm (như trước). Với lịch 30 phút, nên cho em chơi tiếp tới hết trận không?
-- **Mức riêng từng em:** server đang dùng mức của lớp (`config.level`) cộng tự cân độ khó. Mức riêng (`match_players.skill`) chưa đưa vào.
-- **Kết quả khi em không gửi:** nếu trình duyệt không gọi `/api/battle-result` sau khi trận hết giờ, kết quả không vào hàng đợi ghi lại.
+- **Hết máu giữa trận lớp:** em vẫn chơi tiếp tới hết giờ (`BattleCtx.keepPlaying`, bật cho mọi phiên trận lớp). HP về 0 chỉ là hình ảnh.
+- **Mức riêng từng em:** `personalLevel(mức lớp, match_players.skill)`: +1 mức cho mỗi 0,2 độ chính xác trên 0,6, −1 cho mỗi 0,2 dưới; giới hạn 0–5.
+- **Server tự ghi kết quả khi hết giờ:** khi trận kết thúc (hết giờ hoặc gia sư bấm kết thúc), `matchService` gọi `onEnded` → `sessions.finalizeMatch` chấm và ghi kết quả của mọi em trong trận. Trình duyệt gọi `/api/battle-result` sau đó vẫn được (trả kết quả đã lưu, không ghi hai lần).
+
+Từ 03/11, phần giao diện trong mục 3 là việc của **Claude Code** (Spatial UI); Antigravity lo hình ảnh (vật phát sáng 3D, shader).

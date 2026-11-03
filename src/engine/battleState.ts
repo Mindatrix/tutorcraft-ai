@@ -18,6 +18,11 @@ export interface BattleCtx {
   boss?: BossProfile;
   /** Per-session seed: shuffles matching cards / reorder chips differently for every student. */
   seed?: number;
+  /**
+   * Class matches (owner, 03/11): running out of HP never ends the session; the student plays on
+   * until the match clock ends it.
+   */
+  keepPlaying?: boolean;
 }
 
 /** Story moments layered on top of an event: boss transformation, enrage, quest completion. */
@@ -319,7 +324,7 @@ function pair(s: BattleState, left: number, right: number, ctx: BattleCtx): Batt
 function next(s: BattleState, ctx: BattleCtx): BattleState {
   if (s.phase !== 'playing' || s.selected === null) return s;
   const gamified = ctx.config.mode === 'gamified';
-  if (gamified && s.hp <= 0 && ctx.config.scenario !== 'boat_race') { // a race is decided by distance, not HP
+  if (gamified && s.hp <= 0 && !ctx.keepPlaying && ctx.config.scenario !== 'boat_race') { // a race is decided by distance, not HP
     return { ...s, phase: 'result', outcome: 'defeat', event: emit(s, 'defeat') };
   }
   if (s.idx + 1 >= ctx.questions.length) {

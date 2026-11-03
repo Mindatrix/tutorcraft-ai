@@ -40,6 +40,7 @@ import {
   questionTimeLimit,
   appendClassEntry,
   classQuestionTotal,
+  personalLevel,
   rebuildClassSession,
   schedulePlanFor,
   type ClassAppend,
@@ -109,8 +110,15 @@ export interface SessionDeps {
    * WP7: the clock and seed of a class match. With it, a session inside a match follows the
    * question schedule (classSession.ts); without it (or null) the session runs in order.
    */
-  classSchedule?: (matchId: string) => Promise<{ time: MatchTime; seedKey: string } | null>;
+  classSchedule?: (matchId: string, sessionId: string) => Promise<ClassClock | null>;
   now?: () => number;
+}
+
+/** The clock and seed of a class match, and the student's recent accuracy (match_players.skill). */
+export interface ClassClock {
+  time: MatchTime;
+  seedKey: string;
+  skill?: number | null;
 }
 
 /** A replay of a session: in order (solo / demo) or by the class schedule. */
@@ -189,11 +197,12 @@ export function createSessionService(deps: SessionDeps) {
   });
 
   /** The schedule of a session inside a class match (null: solo, demo, or no match clock). */
-  async function scheduleFor(rec: SessionRecord, battle: LoadedBattle): Promise<ClassSchedule | null> {
-    if (!rec.matchId || !deps.classSchedule) return null;
-    const m = await deps.classSchedule(rec.matchId);
+  async function scheduleFor(rec: SessionRecord, battle: LoadedBattle, clock?: ClassClock | null): Promise<ClassSchedule | null> {
+    if (!rec.matchId) return null;
+    const m = clock !== undefined ? clock : deps.classSchedule ? await deps.classSchedule(rec.matchId, rec.id) : null;
     if (!m) return null;
-    return { time: m.time, plan: schedulePlanFor(m.time, m.seedKey, battle.questions.length), studentId: rec.id, level: Number(battle.config.level ?? 3) };
+    // Each student's own level (owner, 03/11): the class level moved by their recent accuracy.
+    return { time: m.time, plan: schedulePlanFor(m.time, m.seedKey, battle.questions.length), studentId: rec.id, level: personalLevel(Number(battle.config.level ?? 3), m.skill) };
   }
 
   function replay(rec: SessionRecord, ctx: BattleCtx, sched: ClassSchedule | null, at: number, log = rec.log): Replay {
@@ -445,6 +454,34 @@ export function createSessionService(deps: SessionDeps) {
      * (insert failed, or the final submit never arrived). Safe to run anywhere, any time:
      * every step is idempotent and goes through the same anti-cheat checks.
      */
+    /**
+     * The class match ended (time up or the tutor ended it): score and store every student's
+     * session on the server, without waiting for the browsers (owner, 03/11). Idempotent: a
+     * session already finished is returned as stored; a failed write stays in the retry queue.
+     */
+    async finalizeMatch(input: { matchId: string; time: MatchTime; seedKey: string; players: { sessionId: string | null; skill?: number | null }[] }): Promise<{ tried: number; saved: number; flagged: number; failed: number }> {
+      const out = { tried: 0, saved: 0, flagged: 0, failed: 0 };
+      const store = deps.storeFor('');
+      for (const p of input.players.slice(0, 80)) {
+        if (!p.sessionId) continue;
+        try {
+          const rec = await store.get(p.sessionId);
+          if (!rec || rec.matchId !== input.matchId || rec.status === 'flagged') continue;
+          const battle = await deps.loadBattle(rec.battleId);
+          if (!battle) continue;
+          out.tried += 1;
+          const sched = await scheduleFor(rec, battle, { time: input.time, seedKey: input.seedKey, skill: p.skill });
+          const res = await finalizeRecord(store, rec, battle, contextFor(battle, rec.variant, rec.id), sched);
+          if (res.saved) out.saved += 1;
+          if (res.flagged) out.flagged += 1;
+        } catch (e) {
+          out.failed += 1;
+          console.error(`finalize at match end failed for session ${p.sessionId}:`, e instanceof Error ? e.message : String(e));
+        }
+      }
+      return out;
+    },
+
     async retryPending(limit = 10, idleMs = 2 * 60_000): Promise<{ tried: number; saved: number; flagged: number }> {
       const out = { tried: 0, saved: 0, flagged: 0 };
       const store = deps.storeFor('');

@@ -28,8 +28,22 @@ export interface ClassSchedule {
   plan: SchedulePlan;
   /** Seeds the per-student pick (the session id). */
   studentId: string;
-  /** Teaching level 0..5. */
+  /** The student's own teaching level 0..5 (`personalLevel`). */
   level: number;
+}
+
+/** Recent accuracy of an average student (match_players.skill default). */
+export const DEFAULT_SKILL = 0.6;
+
+/**
+ * The student's own level for question picks (owner, 03/11): the class level moved by their recent
+ * accuracy in this class (match_players.skill, 0..1): +1 level per 0.2 above 0.6, −1 per 0.2 below.
+ * No history (null) = the class level.
+ */
+export function personalLevel(classLevel: number, skill: number | null | undefined): number {
+  const base = Number.isFinite(classLevel) ? classLevel : 3;
+  const s = typeof skill === 'number' && Number.isFinite(skill) ? Math.max(0, Math.min(1, skill)) : DEFAULT_SKILL;
+  return Math.max(0, Math.min(5, Math.round(base + (s - DEFAULT_SKILL) * 5)));
 }
 
 export interface ClassSlotView {
@@ -84,7 +98,8 @@ export function rebuildClassSession(base: BattleCtx, sched: ClassSchedule, start
   if (loggedIdx >= 0 && (si < 0 || loggedIdx < si)) si = loggedIdx;
 
   const served: Question[] = [];
-  const ctx: BattleCtx = { ...base, questions: served };
+  // Out of HP is not the end in a class match: the clock decides (owner, 03/11).
+  const ctx: BattleCtx = { ...base, questions: served, keepPlaying: true };
   const reduce = battleReducer(ctx);
   const history: AskedRecord[] = [];
   const results: boolean[] = [];

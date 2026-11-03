@@ -1,6 +1,6 @@
 # TutorCraft AI: trạng thái dự án
 
-Cập nhật: 03/11/2026 (chiều). Nhánh `feat/3d-lego-engine`. Đã gộp PR #1, #3, #4 (Antigravity) và #2 (Jules). Backend phát âm xong, migration `speech_attempts` đã áp và kiểm. WP8 Đá Phát Âm: **phía server xong cho cả 6 thế giới, phần đặt đá trong cảnh 3D chưa** (mục 7.1). Có công cụ thử tải giọng nói 50 học sinh (`scripts/speech-load-test.mjs`).
+Cập nhật: 03/11/2026 (tối). Nhánh `feat/3d-lego-engine`. Đã gộp PR #1, #3, #4, #5 (Antigravity) và #2 (Jules). **Dự án chuyển sang "Kế hoạch Đại phẫu Đồ họa & Gameplay"** (mục 3): bỏ Jules; Claude Code là Kỹ sư Trưởng Fullstack kiêm QA Lead; Antigravity làm toàn bộ hình ảnh, shader, asset 3D. Repo chuyển ra khỏi iCloud: **`/Users/mindatix100/tutorcraft-ai`** (git dựng lại từ GitHub ngày 03/11, mục 7.7).
 
 Tài liệu này tổng hợp bối cảnh, tiến độ, cấu trúc thư mục và các việc đang dở. Chi tiết vận hành (số đo, lệnh, quy trình) nằm trong `docs/operations.md`. Các đặc tả nằm trong `docs/specs/`. Bản trước của file này (01/11) là commit `104ee00`.
 
@@ -64,7 +64,11 @@ Tài liệu này tổng hợp bối cảnh, tiến độ, cấu trúc thư mục
 
 - Báo cáo bằng **tiếng Việt**, ngắn, có số đo. Mỗi gói việc làm xong thì dừng, báo cáo và chờ duyệt rồi mới sang gói sau.
 - **Push chỉ khi người dùng bảo trong lượt đó** (từ 02/11 người dùng đã cho push nhiều lần). Chỉ commit khi người dùng nói "commit"; mỗi gói một commit riêng, cuối message có dòng `Co-Authored-By`.
-- **Nhiều agent (từ 02/11):** Claude Code lo backend, API, Supabase, `src/engine/`, ở nhánh `feat/3d-lego-engine`. Antigravity làm UI/WebGL trên nhánh `agy/*` (chỉ sửa `app/`, `src/components/`, `src/client/`); Claude Code không ghi đè phần UI của họ. Jules lo test/CI trên nhánh `jules/*`. NotebookLM là kho kiến thức (Blueprint, schema).
+- **Vai trò (từ 03/11, "Kế hoạch Đại phẫu Đồ họa & Gameplay"):**
+  - **Claude Code — Kỹ sư Trưởng Fullstack kiêm QA Lead**, nhánh `feat/3d-lego-engine`: logic game và server (API, Supabase, `src/engine/`, `src/server/`), **Spatial UI** (HUD, khung hỏi, giao diện gắn trong cảnh 3D, luồng trận trong `app/`, `src/components/`, `src/client/`), nối cảnh vào trận thật, test và **kịch bản đo FPS trên điện thoại**; gộp nhánh của Antigravity.
+  - **Antigravity — 100% hình ảnh:** cảnh 3D, shader, ánh sáng, hiệu ứng, xử lý asset 3D, trên nhánh `agy/*`. Claude Code không viết lại phần hình ảnh của họ; khi hai bên cùng sửa một file thì báo trước.
+  - **Jules: đã bỏ khỏi quy trình.** Nhánh `jules/*` và PR #2 giữ làm lịch sử, không giao việc mới. CI (`.github/workflows/ci.yml`) vẫn chạy cho mọi PR.
+  - NotebookLM vẫn là kho kiến thức (Blueprint, schema).
 - **Không bao giờ commit `scripts/meshy-models-extra.mjs`**: file này do người khác sửa.
 - Không sửa `content/` và `scripts/scenarios-v2/` (phần của Claude chat). Ngoại lệ: `content/asset_aliases.json`, file sinh bằng script (catalog, coverage, audio_catalog), và file mới đã được duyệt trong spec (`scene_kits.json`, `game_guides.json`, sắp tới `kayak_rage.json`).
 - Đổi schema (bảng, cột, JSON schema câu hỏi) hoặc bảng xu / cửa hàng: báo kế hoạch trước, chờ đồng ý.
@@ -109,7 +113,10 @@ WP2 → WP1 → **U0 → U1+U2** → WP3–WP5 → **U3, U4** → WP6 → WP7 �
 | U8 | Màn chờ + chọn nhân vật theo game | Chưa. Chờ chốt phạm vi |
 | WP5 | Nhân vật một mô hình nhiều vai (`character_casting.json`) | Chưa |
 | WP6 | Multiverse RoomKit, D6 | Chưa (đã có dải thẻ không gian từ U3) |
-| WP7 | Lịch câu hỏi trong trận lớp (`classSession.ts`), thử thách vàng đổi câu khó hơn, `GET /api/session/slot`, trường `meaning_vi` (người dùng duyệt 03/11) | **Server xong** (03/11, chưa commit). Giao diện (đồng hồ chờ, vật vàng, `ClassPodium` màn em) giao Antigravity: `docs/wp7_class_schedule_handoff.md` |
+| WP7 | Lịch câu hỏi trong trận lớp (`classSession.ts`), thử thách vàng đổi câu khó hơn, `GET /api/session/slot`, trường `meaning_vi` | **Server xong** `2197fa6` |
+| WP7 chốt logic (03/11) | Trận lớp: hết máu vẫn chơi tới hết giờ (`keepPlaying`); câu theo mức riêng từng em (`personalLevel`, từ `match_players.skill`); server tự chấm và ghi kết quả mọi em khi trận kết thúc (`finalizeMatch`, `onEnded`) | **Xong** (03/11, chưa commit) |
+| PR #5 Antigravity | Cảnh 3D Kayak Rush và Multiverse Portal + Đá Phát Âm + Pet (`KayakRushScene`, `MultiversePortalScene`, `pet_dialogues.json`) | **Đã gộp** `b79f425`; chỉ chạy ngoài trận thật |
+| WP7 giao diện | Đồng hồ chờ điểm hỏi, vật vàng, `ClassPodium` màn em | **Chưa** — nay là việc của Claude Code (Spatial UI), hợp đồng ở `docs/wp7_class_schedule_handoff.md` |
 | WP8, WP9 | Từng game làm trọn; F và G | Chưa. WP8 chỉ bắt đầu khi có số đo điện thoại hoặc người dùng nói "qua" |
 
 ### Kết quả đo chính
@@ -119,7 +126,7 @@ WP2 → WP1 → **U0 → U1+U2** → WP3–WP5 → **U3, U4** → WP6 → WP7 �
 - **Dung lượng trận nặng nhất:** `dino-01` 37,9 MB (cao) / 13,5 MB (thấp), dưới ngân sách 40 / 15 MB. Cảnh thấp nặng nhất < 300 nghìn tam giác.
 - **Âm thanh:** nhạc nén 56 → 11 MB; 81 file.
 - **Thử tải giọng nói (03/11, bản build production trên máy, 50 học sinh × 60 s × 6 lượt/phút, cùng một IP lớp):** 333 lượt, p50 193 ms, p95 236 ms, p99 294 ms (mục tiêu p95 ≤ 200 ms chưa đạt: sàn là một vòng gọi Supabase ~200 ms cho bộ đếm giới hạn dùng chung); 0 lỗi, 0 lượt 429 với học sinh đúng nhịp; học sinh gửi nhanh bị chặn đúng ở lượt thứ 7; RSS server 67 → đỉnh 183 MB → 64 MB. Chưa đo ghi `speech_attempts`/`coin_ledger` dưới tải (cần một trận thật, sẽ ghi dữ liệu thật).
-- **Test (03/11 tối, sau WP7):** 251 đạt, 0 hỏng, 2 bỏ qua. `test:security` chưa chạy lại sau WP7 (build trong môi trường agent không tải được phông Google). Sau sửa xu demo: 237 đạt. Trước đó (sau PR #1–#3): 225 đạt, 0 hỏng, 2 bỏ qua (2 test độ phủ model tạm `skip` kèm TODO, chờ Claude chat gán kịch bản cho 23 model). Type check sạch; lint 0 lỗi (49 cảnh báo cũ); `test:security` 30/30 trên bản build production.
+- **Test (03/11 tối, sau PR #5 và chốt logic trận lớp):** 262 đạt, 0 hỏng, 2 bỏ qua; lint 0 lỗi. `test:security` 30/30 trên bản build WP7 (`2197fa6`); chưa chạy lại sau khi chuyển thư mục vì thiếu `.env.local` (mục 7.7). Sau WP7: `test:security` chưa chạy lại sau WP7 (build trong môi trường agent không tải được phông Google). Sau sửa xu demo: 237 đạt. Trước đó (sau PR #1–#3): 225 đạt, 0 hỏng, 2 bỏ qua (2 test độ phủ model tạm `skip` kèm TODO, chờ Claude chat gán kịch bản cho 23 model). Type check sạch; lint 0 lỗi (49 cảnh báo cũ); `test:security` 30/30 trên bản build production.
 
 ## 5. Commit gần nhất
 
@@ -127,7 +134,9 @@ Nhánh đã push lên `origin`. Các commit từ bản trạng thái 02/11 (mớ
 
 | Commit | Ngày | Nội dung |
 |---|---|---|
-| (chưa commit) | 03/11 | WP7: lịch câu trận lớp, thử thách vàng, `meaning_vi`; `tests/classSession.test.ts`, `tests/meaningVi.test.ts` |
+| (chưa commit) | 03/11 | Chốt logic trận lớp: hết máu chơi tiếp, mức riêng từng em, tự ghi kết quả khi hết giờ; `tests/classMatchEnd.test.ts` |
+| `b79f425` | 03/11 | Gộp PR #5 Antigravity: cảnh Kayak Rush và Multiverse Portal |
+| `2197fa6` | 03/11 | WP7: lịch câu trận lớp, thử thách vàng, `meaning_vi`; `tests/classSession.test.ts`, `tests/meaningVi.test.ts` |
 | `dc77c0d` | 03/11 | Xu demo chỉ trong bộ nhớ (`rewardsFor`), `tests/demoCoins.test.ts` |
 | `dccdf0e` | 03/11 | WP8: nối hiệu ứng server vào River Survival và thanh Nộ Kayak |
 | `6e07c78` | 03/11 | Gộp PR #4 Antigravity: cảnh 3D River Survival |
@@ -164,7 +173,7 @@ Các commit cũ hơn (A, B, C, C4, từ `deb1866` tới `5f4984a`) xem `git log`
 
 ## 6. Cấu trúc thư mục
 
-### Repo `/Users/mindatix100/tutorcraft-ai`
+### Repo `/Users/mindatix100/tutorcraft-ai` (ngoài iCloud từ 03/11)
 
 ```
 app/                         Next.js App Router
@@ -275,7 +284,7 @@ Thay game mới.pdf            yêu cầu giao diện WP10 (14 trang)
 - **WP4:** bộ cảnh cho river_fishing, river_survival, dino_journey, kayak_rush.
 - **WP5:** nhân vật nhiều vai theo `content/character_casting.json` (62 mô hình); nhập theo đợt; phụ kiện mua bằng xu phải báo trước.
 - **WP6:** Multiverse RoomKit (phòng ngủ và cyber dựng bằng hình khối + nội thất, cảnh khác làm cảnh xa), D6.1–D6.8, ảnh xem trước 512 px cho thẻ phòng.
-- **WP7:** phần server xong (03/11). Còn: giao diện (Antigravity) và 3 câu hỏi mở ở mục 4 của `docs/wp7_class_schedule_handoff.md` (hết máu giữa trận lớp, mức riêng từng em, ghi kết quả khi em không gửi).
+- **WP7:** server và 3 quyết định logic xong (03/11). Còn: giao diện trận lớp phía em (Claude Code, Spatial UI).
 - **WP8:** từng game làm trọn, theo thứ tự Summer Camp → River Fishing → Kayak Rush → River Survival → Dino Journey → Multiverse. Đưa minimap / thanh tọa độ của thế giới sông vào trận.
 - **WP9:** F (6 thẻ game ở Studio và trang chủ, ảnh bìa) và G (kiểm thử, bảo mật, đo GPU điện thoại, R2 tên miền riêng).
 
@@ -307,7 +316,9 @@ Mở `http://192.168.11.125:3005/tutor/scene-lab` trên điện thoại, bấm "
 - **Gemini:** kiểm 10 lần sinh liên tiếp có tài liệu (lần đo 26/10 mất ~31 s, quá mức chờ 20 s).
 - **Bộ nhớ ảnh bản cao (~293 MB):** kế hoạch giảm (nhân vật bản vừa + trời 1K, hoặc KTX2) chỉ làm khi số đo điện thoại cho thấy cần.
 - **File chưa theo dõi không thuộc gói nào:** `.archify/`, `.taste-skill/`, `animasyon-stil-katalogu/` (kho git riêng), `.claude/settings.json`, các file `docs/specs/*` và `content/character_casting.json` của Claude chat. Chỉ commit khi người dùng bảo.
-- **iCloud đồng bộ thư mục Desktop:** repo nằm ở `~/Desktop/tutorcraft-ai`, iCloud Drive tạo bản trùng `… 2` (khoảng 2.200 file trong `node_modules`, 39 trong `.next`, cả `.git/index 2`). Mã nguồn chưa bị trùng. Ngày 03/11 đã xoá các thư mục rỗng `node_modules/@types/* 2` và `.next/types/* 2.ts` vì làm hỏng typecheck. Nên chuyển repo ra khỏi Desktop/Documents (ví dụ `~/dev/tutorcraft-ai`) hoặc tắt đồng bộ Desktop của iCloud.
+- **Chuyển thư mục (03/11 tối):** repo cũ `~/Desktop/tutorcraft-ai` (bị iCloud nhân bản file `… 2`) đã bị chuyển đi/xoá, kéo theo thư mục `.git`. Thư mục mới `/Users/mindatix100/tutorcraft-ai` (trước là worktree của Antigravity) được dựng lại git từ GitHub; mọi commit đều còn trên `origin`. File `.git` hỏng cũ được giữ ở thư mục tạm của phiên. Thay đổi `allowedDevOrigins: ['192.168.1.99']` trong `next.config.ts` cất trong `git stash`.
+- **Mất theo repo cũ (không có trên GitHub), cần khôi phục từ Thùng rác nếu còn:** `.env.local` (khoá Supabase/Gemini: **thiếu thì server không gọi được database**), các file chưa commit `docs/specs/code-next-steps.md`, `tasks-2026-11-01.md`, `asset-reuse-*.md`, `code-tasks-asset-reuse.md`, `ui-reference/`, `docs/TECHNICAL_BLUEPRINT.md` (còn bản PDF trên Desktop), phần sửa dở `content/game_guides.json` và `scripts/meshy-models-extra.mjs`, `.claude/settings.json`, `.archify/`, `.taste-skill/`, `animasyon-stil-katalogu/`.
+- **Thư viện 3D vẫn trong iCloud:** `~/Documents/3D_tutorcraft` nằm trong thư mục Documents, cũng được iCloud đồng bộ; nên chuyển ra ngoài như repo.
 - **File tài liệu trống:** `CLAUDE.md`, `DESIGN.md`, `doc.md`, `road_map.md` (0 byte); hỏi trước khi ghi.
 - **Push:** chỉ push khi người dùng nói. `scripts/meshy-models-extra.mjs` và `content/game_guides.json` đang sửa dở trên máy, không thuộc gói nào.
 

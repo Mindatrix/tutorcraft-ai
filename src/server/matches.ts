@@ -1,3 +1,4 @@
+import { after } from 'next/server';
 import { isDemoBattleId } from '../engine';
 import { loadBattle } from './battles';
 import { realtimeBroadcaster } from './matchBroadcast';
@@ -25,6 +26,21 @@ export function matches(): MatchService {
     session: (token) => sessions.student(token),
     scenario: scenarioMeta,
     rewards: rewards() ?? undefined,
+    // Owner, 03/11: at the end of a class match the server stores every student's result itself.
+    onEnded: (info) => {
+      const task = () =>
+        sessions.finalizeMatch(info).then(
+          (r) => {
+            if (r.failed) console.error(`match ${info.matchId} ended: ${r.failed} result(s) not stored, retry queue will pick them up`);
+          },
+          (e: unknown) => console.error('finalize at match end failed:', e instanceof Error ? e.message : String(e)),
+        );
+      try {
+        after(task); // keeps the work alive after the response on Vercel
+      } catch {
+        void task(); // outside a request (tests, scripts)
+      }
+    },
   });
   return service;
 }

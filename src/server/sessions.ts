@@ -5,7 +5,7 @@ import { serverSupabase } from './supabase-server';
 import { MemorySessionStore, SupabaseSessionStore, type SessionStore } from './sessionStore';
 import { SupabaseMatchStore, timeOf } from './matchStore';
 import type { MatchTime } from '../engine';
-import { createSessionService, SessionError, type SessionDeps } from './sessionService';
+import { createSessionService, SessionError, type ClassClock, type SessionDeps } from './sessionService';
 
 const demoStore = new MemorySessionStore();
 let dbStore: SupabaseSessionStore | null = null;
@@ -107,22 +107,34 @@ const persistResult: SessionDeps['persistResult'] = async ({ battle, rec, ctx, s
 // moment so 50 students answering at the same point cost one read per server instance; a pause or
 // "Kéo dài" reaches the schedule within that time.
 const SCHEDULE_TTL_MS = 1_000;
+/** A student's skill is fixed when they join the match: read once, kept a while. */
+const SKILL_TTL_MS = 10 * 60_000;
 const scheduleCache = new Map<string, { at: number; value: Promise<{ time: MatchTime; seedKey: string } | null> }>();
+const skillCache = new Map<string, { at: number; value: Promise<number | null> }>();
 let matchStore: SupabaseMatchStore | null = null;
 
-function classSchedule(matchId: string) {
-  const db = serverSupabase();
-  if (!db) return Promise.resolve(null);
+function cached<T>(cache: Map<string, { at: number; value: Promise<T> }>, key: string, ttl: number, load: () => Promise<T>): Promise<T> {
   const t = Date.now();
-  const hit = scheduleCache.get(matchId);
-  if (hit && t - hit.at < SCHEDULE_TTL_MS) return hit.value;
-  matchStore ??= new SupabaseMatchStore(db);
+  const hit = cache.get(key);
+  if (hit && t - hit.at < ttl) return hit.value;
+  const value = load();
   // A failed read is not cached and fails the request (never silently fall back to the solo order).
-  const value = matchStore.get(matchId).then((m) => (m ? { time: timeOf(m), seedKey: m.seedKey } : null));
-  value.catch(() => scheduleCache.delete(matchId));
-  if (scheduleCache.size > 500) scheduleCache.clear();
-  scheduleCache.set(matchId, { at: t, value });
+  value.catch(() => cache.delete(key));
+  if (cache.size > 500) cache.clear();
+  cache.set(key, { at: t, value });
   return value;
+}
+
+async function classSchedule(matchId: string, sessionId: string): Promise<ClassClock | null> {
+  const db = serverSupabase();
+  if (!db) return null;
+  const store = (matchStore ??= new SupabaseMatchStore(db));
+  const [m, skill] = await Promise.all([
+    cached(scheduleCache, matchId, SCHEDULE_TTL_MS, () => store.get(matchId).then((r) => (r ? { time: timeOf(r), seedKey: r.seedKey } : null))),
+    // Per-student level (owner, 03/11): match_players.skill, the recent accuracy in this class.
+    cached(skillCache, sessionId, SKILL_TTL_MS, () => store.playerBySession(sessionId).then((p) => p?.skill ?? null)),
+  ]);
+  return m ? { ...m, skill } : null;
 }
 
 export const sessions = createSessionService({ loadBattle: loadBattleCached, storeFor, persistResult, gradeOpen: gradeOpenResponse, classSchedule });

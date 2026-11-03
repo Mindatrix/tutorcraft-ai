@@ -91,6 +91,11 @@ export interface MatchDeps {
   throttleMs?: number;
   /** C4 coins (class rescue, gift box, golden challenge). Without it those pay nothing. */
   rewards?: RewardService;
+  /**
+   * The match just ended (time up or the tutor ended it), once. The wiring stores every student's
+   * result on the server from here (owner, 03/11), so nothing waits for the browsers.
+   */
+  onEnded?(info: { matchId: string; time: MatchTime; seedKey: string; players: { sessionId: string | null; skill: number }[] }): void;
 }
 
 /** C4.14 a rescue as the class sees it: who helps whom, and the helper's question (no answer key). */
@@ -403,6 +408,11 @@ export function createMatchService(deps: MatchDeps) {
     const up = await store.update(m.id, { ...timePatch(ctl.time), result, state }, { status: ['lobby', 'running', 'paused'] });
     if (!up) return (await store.get(m.id)) ?? m;
     await send(up, 'ended', { result, time: timeOf(up) });
+    try {
+      deps.onEnded?.({ matchId: up.id, time: timeOf(up), seedKey: up.seedKey, players: players.map((p) => ({ sessionId: p.sessionId, skill: p.skill })) });
+    } catch (e) {
+      console.error('match onEnded failed:', e instanceof Error ? e.message : String(e));
+    }
     return up;
   }
 
