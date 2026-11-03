@@ -4,7 +4,7 @@ import { loadBattleCached } from './battles';
 import { serverSupabase } from './supabase-server';
 import { MemorySessionStore, SupabaseSessionStore, type SessionStore } from './sessionStore';
 import { SupabaseMatchStore, timeOf } from './matchStore';
-import type { MatchTime } from '../engine';
+import type { MatchTime, UrgentWindow } from '../engine';
 import { createSessionService, SessionError, type ClassClock, type SessionDeps } from './sessionService';
 
 const demoStore = new MemorySessionStore();
@@ -107,10 +107,11 @@ const persistResult: SessionDeps['persistResult'] = async ({ battle, rec, ctx, s
 // moment so 50 students answering at the same point cost one read per server instance; a pause or
 // "Kéo dài" reaches the schedule within that time.
 const SCHEDULE_TTL_MS = 1_000;
-/** A student's skill is fixed when they join the match: read once, kept a while. */
-const SKILL_TTL_MS = 10 * 60_000;
-const scheduleCache = new Map<string, { at: number; value: Promise<{ time: MatchTime; seedKey: string } | null> }>();
-const skillCache = new Map<string, { at: number; value: Promise<number | null> }>();
+/** A student's player row (id, skill) is fixed when they join the match: read once, kept a while. */
+const PLAYER_TTL_MS = 10 * 60_000;
+type MatchRowLite = { time: MatchTime; seedKey: string; state: Record<string, unknown> };
+const scheduleCache = new Map<string, { at: number; value: Promise<MatchRowLite | null> }>();
+const playerCache = new Map<string, { at: number; value: Promise<{ id: string; skill: number } | null> }>();
 let matchStore: SupabaseMatchStore | null = null;
 
 function cached<T>(cache: Map<string, { at: number; value: Promise<T> }>, key: string, ttl: number, load: () => Promise<T>): Promise<T> {
@@ -125,16 +126,27 @@ function cached<T>(cache: Map<string, { at: number; value: Promise<T> }>, key: s
   return value;
 }
 
+/** River Survival windows of one player in the match state (dodge 6 s, snatch 8 s). */
+export function urgentWindowsOf(state: Record<string, unknown>, playerId: string): UrgentWindow[] {
+  const tags = (state.pendingTags as { escaper: string; at: number; until: number }[] | undefined) ?? [];
+  const snatches = (state.pendingSnatches as { escaper: string; at: number; until: number }[] | undefined) ?? [];
+  return [
+    ...tags.filter((p) => p.escaper === playerId).map((p) => ({ kind: 'dodge' as const, at: p.at, until: p.until })),
+    ...snatches.filter((p) => p.escaper === playerId).map((p) => ({ kind: 'snatch' as const, at: p.at, until: p.until })),
+  ];
+}
+
 async function classSchedule(matchId: string, sessionId: string): Promise<ClassClock | null> {
   const db = serverSupabase();
   if (!db) return null;
   const store = (matchStore ??= new SupabaseMatchStore(db));
-  const [m, skill] = await Promise.all([
-    cached(scheduleCache, matchId, SCHEDULE_TTL_MS, () => store.get(matchId).then((r) => (r ? { time: timeOf(r), seedKey: r.seedKey } : null))),
+  const [m, player] = await Promise.all([
+    cached(scheduleCache, matchId, SCHEDULE_TTL_MS, () => store.get(matchId).then((r) => (r ? { time: timeOf(r), seedKey: r.seedKey, state: r.state } : null))),
     // Per-student level (owner, 03/11): match_players.skill, the recent accuracy in this class.
-    cached(skillCache, sessionId, SKILL_TTL_MS, () => store.playerBySession(sessionId).then((p) => p?.skill ?? null)),
+    cached(playerCache, sessionId, PLAYER_TTL_MS, () => store.playerBySession(sessionId).then((p) => (p ? { id: p.id, skill: p.skill } : null))),
   ]);
-  return m ? { ...m, skill } : null;
+  if (!m) return null;
+  return { time: m.time, seedKey: m.seedKey, skill: player?.skill ?? null, urgent: player ? urgentWindowsOf(m.state ?? {}, player.id) : [] };
 }
 
 export const sessions = createSessionService({ loadBattle: loadBattleCached, storeFor, persistResult, gradeOpen: gradeOpenResponse, classSchedule });

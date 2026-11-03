@@ -25,6 +25,8 @@ const SCENES: Partial<Record<BossMode, ComponentType<BossSceneProps>>> = {
   // 03/11 live match: Summer Camp hub and the River Fishing dock with server-graded Phonetic Stones.
   summer_camp: dynamic(() => import('./LivePhoneticWorld').then((m) => m.SummerCampLiveScene), { ssr: false, loading: Loading }),
   river_fishing: dynamic(() => import('./LivePhoneticWorld').then((m) => m.RiverFishingLiveScene), { ssr: false, loading: Loading }),
+  river_survival: dynamic(() => import('./LiveRiverSurvival'), { ssr: false, loading: Loading }),
+  dino_journey: dynamic(() => import('./LiveDinoJourney'), { ssr: false, loading: Loading }),
 };
 
 /** Bevelled "game screen" frame (no rounded rectangles). */

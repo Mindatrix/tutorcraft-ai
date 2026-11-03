@@ -49,6 +49,7 @@ import Scenery from './scenery/Scenery';
 import ModeStage, { StageFrame } from './modes/ModeStage';
 import type { LiveSpeech } from './modes/types';
 import { useTentQuest } from '../client/useTentQuest';
+import { useMatchLive } from '../client/useMatchLive';
 import { readTier, saveTier, type RenderTier } from './modes/gfxTier';
 import SubtitleBar from './modes/SubtitleBar';
 import ArenaHUD, { raceStanding } from './hud/ArenaHUD';
@@ -489,9 +490,18 @@ export default function BattleArena({ battle, variant, prefs, autostart }: { bat
   const rage = useKayakRage(kayakHud && !halted, questionOpen);
   // 03/11 live match: Phonetic Stones of Summer Camp / River Fishing talk to the server, and a class
   // session follows its tent's Quest Board on the match channel.
-  const phoneticWorld = world === 'summer_camp' || world === 'river_fishing';
+  const phoneticWorld = world === 'summer_camp' || world === 'river_fishing' || world === 'river_survival';
   const classSession = view?.slot !== undefined;
   const tentQuest = useTentQuest(token, world === 'summer_camp' && classSession);
+  // River Survival class match: the signed match channel (players, nets, windows, events, actions).
+  const survivalLive = useMatchLive(token, world === 'river_survival' && classSession);
+  // A "Né lưới" / "Cướp lưới" window just opened for me: fetch the question the server now serves.
+  const myId = survivalLive?.snap?.me?.id ?? null;
+  const urgentKey = `${survivalLive?.snap?.view?.survival?.pendingTags.find((p) => p.escaper === myId)?.until ?? ''}:${survivalLive?.snap?.me?.snatchUntil ?? ''}`;
+  useEffect(() => {
+    if (!token || urgentKey === ':') return;
+    sessionApi.current(token).then((r) => applyView(r.view), () => undefined);
+  }, [token, urgentKey, applyView]);
   const liveSpeech = useMemo<LiveSpeech | undefined>(
     () =>
       token && phoneticWorld
@@ -754,6 +764,10 @@ export default function BattleArena({ battle, variant, prefs, autostart }: { bat
                 onPickOption: phase === 'playing' && question?.type === 'mcq' && !feedback && !pending ? (i) => void submit({ chosenIdx: i }) : undefined,
                 onFocusQuestion: () => document.getElementById('tc-question')?.scrollIntoView({ behavior: 'smooth', block: 'center' }),
                 speech: liveSpeech,
+                match: survivalLive,
+                scenarioKey: config.scenarioKey,
+                layoutSeedKey: battle.id,
+                level: config.level,
               }}
               onTier={setStageTier}
               hud={

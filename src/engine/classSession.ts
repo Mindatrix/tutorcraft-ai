@@ -30,6 +30,18 @@ export interface ClassSchedule {
   studentId: string;
   /** The student's own teaching level 0..5 (`personalLevel`). */
   level: number;
+  /**
+   * River Survival (03/11): the student's open "Né lưới" (6 s) / "Cướp lưới" (8 s) windows, server
+   * times. These are won by answering a question INSIDE the window, so while one is open the next
+   * question is served at once, even between schedule points (it then counts for its point).
+   */
+  urgent?: UrgentWindow[];
+}
+
+export interface UrgentWindow {
+  kind: 'dodge' | 'snatch';
+  at: number;
+  until: number;
 }
 
 /** Recent accuracy of an average student (match_players.skill default). */
@@ -61,6 +73,8 @@ export interface ClassSlotView {
   /** Server epoch ms; null while paused or before the start. */
   opensAt: number | null;
   closesAt: number | null;
+  /** Served early for a "Né lưới" / "Cướp lưới" window: answer before `closesAt`. */
+  urgent?: UrgentWindow['kind'] | null;
 }
 
 export interface ClassRebuilt extends Rebuilt {
@@ -265,10 +279,17 @@ export function rebuildClassSession(base: BattleCtx, sched: ClassSchedule, start
   let view: ClassSlotView | null = null;
   const slot = s.phase === 'playing' ? slots[si] : undefined;
   if (slot) {
-    const opensAt = chain > 0 ? issuedAt : slotOpensAt(slot);
-    const closesAt = slotClosesAt(slot);
+    let opensAt = chain > 0 ? issuedAt : slotOpensAt(slot);
+    let closesAt = slotClosesAt(slot);
     const running = time.status === 'running';
-    const open = running && s.selected === null && nowPlay >= slot.atMs && nowPlay < slot.closesMs && (opensAt == null || now >= opensAt);
+    let open = running && s.selected === null && nowPlay >= slot.atMs && nowPlay < slot.closesMs && (opensAt == null || now >= opensAt);
+    // A dodge / snatch window is open and no point is: serve the coming question now.
+    const urgent = !open && running && s.selected === null ? (sched.urgent ?? []).find((w) => now >= w.at && now < w.until) : undefined;
+    if (urgent) {
+      open = true;
+      opensAt = urgent.at;
+      closesAt = urgent.until;
+    }
     view = {
       id: slot.id,
       kind: slot.kind,
@@ -280,6 +301,7 @@ export function rebuildClassSession(base: BattleCtx, sched: ClassSchedule, start
       open,
       opensAt,
       closesAt,
+      urgent: urgent ? urgent.kind : null,
     };
   }
   return { state: s, afterLastAnswer, timings, issuedAt: view?.opensAt ?? now, ctx, slot: view };

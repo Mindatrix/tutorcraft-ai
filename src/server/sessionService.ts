@@ -46,6 +46,7 @@ import {
   type ClassAppend,
   type ClassSchedule,
   type ClassSlotView,
+  type UrgentWindow,
   type MatchTime,
   type Rebuilt,
 } from '../engine';
@@ -119,6 +120,8 @@ export interface ClassClock {
   time: MatchTime;
   seedKey: string;
   skill?: number | null;
+  /** River Survival: this student's open dodge / snatch windows (the next question is served at once). */
+  urgent?: UrgentWindow[];
 }
 
 /** A replay of a session: in order (solo / demo) or by the class schedule. */
@@ -202,7 +205,7 @@ export function createSessionService(deps: SessionDeps) {
     const m = clock !== undefined ? clock : deps.classSchedule ? await deps.classSchedule(rec.matchId, rec.id) : null;
     if (!m) return null;
     // Each student's own level (owner, 03/11): the class level moved by their recent accuracy.
-    return { time: m.time, plan: schedulePlanFor(m.time, m.seedKey, battle.questions.length), studentId: rec.id, level: personalLevel(Number(battle.config.level ?? 3), m.skill) };
+    return { time: m.time, plan: schedulePlanFor(m.time, m.seedKey, battle.questions.length), studentId: rec.id, level: personalLevel(Number(battle.config.level ?? 3), m.skill), urgent: m.urgent };
   }
 
   function replay(rec: SessionRecord, ctx: BattleCtx, sched: ClassSchedule | null, at: number, log = rec.log): Replay {

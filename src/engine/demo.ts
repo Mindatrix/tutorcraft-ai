@@ -78,10 +78,20 @@ export function formatShowcaseQuestions(): Question[] {
   return order.map((q, i) => ({ ...q, id: i + 1 }));
 }
 
+/** The story world each demo shows (first scenario of the game): 3D worlds lay out from it. */
+export const DEMO_SCENARIO_KEYS: Record<GameMode, string> = {
+  [GameMode.KAYAK_RUSH_3D]: 'kayak-01',
+  [GameMode.MULTIVERSE_PORTAL_RPG]: 'mv-01',
+  [GameMode.SUMMER_CAMP_QUESTS]: 'camp-01',
+  [GameMode.RIVER_FISHING]: 'fish-01',
+  [GameMode.RIVER_SURVIVAL]: 'surv-01',
+  [GameMode.DINO_JOURNEY]: 'dino-01',
+};
+
 export function demoBattle(game: GameMode = DEMO_DEFAULT_GAME): { topic: string; config: BattleConfig; payload: BattlePayload } {
   return {
     topic: 'Thì hiện tại đơn — Present simple (Demo)',
-    config: { ...DEMO_CONFIG, scenario: demoScenario(game), gameMode: game, level: 1, durationMinutes: 6, questionTypes: ['mcq'] },
+    config: { ...DEMO_CONFIG, scenario: demoScenario(game), gameMode: game, scenarioKey: DEMO_SCENARIO_KEYS[game], level: 1, durationMinutes: 6, questionTypes: ['mcq'] },
     payload: { teaching_notes: FALLBACK_TEACHING_NOTES, questions: demoQuestions(), boss: DEMO_BOSS },
   };
 }

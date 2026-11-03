@@ -1,6 +1,7 @@
 import type { BattleEvent, BossProfile, QuestionType, StoryBeat } from '../../engine';
 import type { GfxTier } from './three/SceneRuntime';
 import type { TentQuestView } from '../../engine/campQuest';
+import type { MatchLive } from '../../client/useMatchLive';
 import type { PhoneticStoneTarget, SpeechAttemptRequest, SpeechAttemptResponse, VoiceConfig } from '../../client/phoneticStonesMock';
 
 export type SceneEvent = { kind: BattleEvent; n: number; amount?: number; beats?: StoryBeat[] } | null;
@@ -45,6 +46,12 @@ export interface BossSceneProps {
    * server (/api/session/speech); scores, stars, coins and world effects come back from it.
    */
   speech?: LiveSpeech;
+  /** Class match channel (River Survival): server state, events and actions. Null solo / not connected. */
+  match?: MatchLive | null;
+  /** Scenario of the battle (Dino Journey world layout) and the seed shared by the class. */
+  scenarioKey?: string;
+  layoutSeedKey?: string;
+  level?: number;
 }
 
 /** The arena's connection to the server's pronunciation layer, for a 3D world. */
