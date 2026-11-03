@@ -19,6 +19,7 @@ import {
   type MatchTime,
   type SquadContributionEvent,
   type SquadQuorumState,
+  type TentQuestView,
 } from '../engine';
 
 // The device side of a class match (plan B2.4 / B2.5).
@@ -63,6 +64,8 @@ export interface MatchSnapshot {
   rescue?: { events: RescueEvent[]; question?: { id: number; question: string; options: string[] } | null } | null;
   /** PR #6: latest Multiverse squad quorum (PORTAL_RESONANCE_UPDATE): who spoke, how many more needed. */
   portalResonance?: { type: 'PORTAL_RESONANCE_UPDATE'; quorum: SquadQuorumState; event: SquadContributionEvent } | null;
+  /** Summer Camp: each tent's Quest Board ("g1", "g2"…, or "all"), latest broadcast. */
+  campQuest?: Record<string, TentQuestView>;
 }
 
 export interface MatchConnectOptions {
@@ -101,7 +104,7 @@ export interface MatchConnection {
   receive(payload: unknown): Promise<boolean>;
 }
 
-const TYPES: MatchMessageType[] = ['state', 'stage', 'scores', 'roster', 'survival', 'ended', 'rescue', 'portal_resonance'];
+const TYPES: MatchMessageType[] = ['state', 'stage', 'scores', 'roster', 'survival', 'ended', 'rescue', 'portal_resonance', 'camp_quest'];
 
 function b64urlBytes(s: string): Uint8Array<ArrayBuffer> {
   const bin = atob(s.replace(/-/g, '+').replace(/_/g, '/') + '==='.slice((s.length + 3) % 4));
@@ -256,6 +259,11 @@ export async function connectMatch(opts: MatchConnectOptions): Promise<MatchConn
       case 'portal_resonance':
         snap.portalResonance = msg.d as MatchSnapshot['portalResonance'];
         break;
+      case 'camp_quest': {
+        const d = msg.d as { tent: string; quest: TentQuestView | null };
+        if (d?.tent && d.quest) snap.campQuest = { ...(snap.campQuest ?? {}), [d.tent]: d.quest };
+        break;
+      }
     }
   }
 

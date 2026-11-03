@@ -22,6 +22,9 @@ function Loading() {
 // Worlds without a scene yet (3D still being built) play on the 2D canvas, without marking the device as weak.
 const SCENES: Partial<Record<BossMode, ComponentType<BossSceneProps>>> = {
   multiverse_portal: dynamic(() => import('./MultiversePortalRPG'), { ssr: false, loading: Loading }),
+  // 03/11 live match: Summer Camp hub and the River Fishing dock with server-graded Phonetic Stones.
+  summer_camp: dynamic(() => import('./LivePhoneticWorld').then((m) => m.SummerCampLiveScene), { ssr: false, loading: Loading }),
+  river_fishing: dynamic(() => import('./LivePhoneticWorld').then((m) => m.RiverFishingLiveScene), { ssr: false, loading: Loading }),
 };
 
 /** Bevelled "game screen" frame (no rounded rectangles). */

@@ -339,6 +339,24 @@ function buildFishingDockProps(): FishingPropsVisual {
   return { group, rodPivot, bobber, leapFish, rippleRing, rippleMat };
 }
 
+/** Fishing line on the dock (03/11 live match): one formula for the 3D rod and the tension overlay. */
+export interface FishingLineState {
+  phase: 'idle' | 'casting';
+  /** 0..1 through the 1.6 s cast. */
+  progress: number;
+  /** 0..1 line tension: peaks mid-cast, higher for a heavier (bonus) catch. */
+  tension: number;
+}
+
+export const FISHING_CAST_SEC = 1.6;
+
+export function fishingLineState(now: number, castUntil: number, castScale: number): FishingLineState {
+  if (!(now < castUntil)) return { phase: 'idle', progress: 0, tension: 0 };
+  const progress = 1 - Math.min(1, Math.max(0, (castUntil - now) / FISHING_CAST_SEC));
+  const weight = 0.65 + Math.max(0, Math.min(1, (castScale - 1) / 0.35)) * 0.35;
+  return { phase: 'casting', progress, tension: Math.sin(progress * Math.PI) * weight };
+}
+
 export interface PhoneticStonesRigOptions {
   targets: PhoneticStoneTarget[];
   machine: PhoneticStoneStateMachine;
@@ -367,6 +385,8 @@ export interface PhoneticStonesRig {
   setCampQuestProgress(progressRatio: number, flagUnlocked: boolean): void;
   /** Trigger 3D fishing rod cast & leaping fish animation with catch weight multiplier. */
   triggerFishingCast(multiplier: FishingWeightMultiplier): void;
+  /** Current line state (same numbers that bend the 3D rod), for the tension overlay. */
+  fishingLine(): FishingLineState;
   dispose(): void;
 }
 
@@ -789,8 +809,7 @@ export function createPhoneticStonesRig(opts: PhoneticStonesRigOptions): Phoneti
         fishingProps.rippleMat.opacity = 0.65 * (1 - ((t * 0.85) % 0.9));
 
         if (t < castAnimUntil) {
-          const rem = castAnimUntil - t;
-          const phase = 1 - Math.min(1, Math.max(0, rem / 1.6));
+          const phase = fishingLineState(t, castAnimUntil, castScale).progress;
           fishingProps.rodPivot.rotation.x = 0.55 - Math.sin(phase * Math.PI) * 0.65;
           fishingProps.leapFish.position.y = -0.4 + Math.sin(phase * Math.PI) * 2.1;
           fishingProps.leapFish.rotation.z = (phase - 0.5) * 1.8;
@@ -858,7 +877,11 @@ export function createPhoneticStonesRig(opts: PhoneticStonesRigOptions): Phoneti
 
     triggerFishingCast(multiplier: FishingWeightMultiplier) {
       castScale = multiplier === 1.2 ? 1.35 : multiplier === 1.1 ? 1.18 : 1.0;
-      castAnimUntil = castClock + 1.6;
+      castAnimUntil = castClock + FISHING_CAST_SEC;
+    },
+
+    fishingLine() {
+      return fishingLineState(castClock, castAnimUntil, castScale);
     },
 
     dispose() {

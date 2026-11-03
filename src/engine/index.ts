@@ -52,4 +52,5 @@ export * from './kayakRage';
 export * from './portalRail';
 export * from './pronunciation';
 export * from './speechGameEffects';
+export * from './campQuest';
 export * from './questStateMachine';

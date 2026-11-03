@@ -1,5 +1,6 @@
 'use client';
 
+import type { ClassSlotView } from '../engine/classSession';
 import type { AnswerReveal, BattleScore, BattleState, PublicQuestion, RaceOutcome, SkillId } from '../engine';
 import type { PhoneticStoneTarget, SpeechAttemptRequest, SpeechAttemptResponse, VoiceConfig } from './phoneticStonesMock';
 
@@ -14,6 +15,8 @@ export interface SessionView {
   state: BattleState;
   question: PublicQuestion | null;
   team?: 'A' | 'B' | null;
+  /** WP7: present (object or null) only for a session inside a class match. */
+  slot?: ClassSlotView | null;
 }
 
 export interface ActResponse {

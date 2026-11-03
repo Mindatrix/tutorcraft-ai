@@ -1,3 +1,4 @@
+import type { TentQuestView } from './campQuest';
 // Class match (plan phase B): one shared match for a whole class (up to 50 students).
 // Pure logic shared by the server (which decides) and the browser (which only displays):
 //  - the match clock: 6 stages × 5 minutes, +2 optional stages when the tutor presses "Kéo dài",
@@ -226,7 +227,9 @@ export type MatchMessageType =
   /** C4.14 class rescue: a classmate is asked to help (or the rescue worked / failed). */
   | 'rescue'
   /** GDS-TC-2026-EXP §4.2 Multiverse Portal squad quorum resonance update (`PORTAL_RESONANCE_UPDATE`). */
-  | 'portal_resonance';
+  | 'portal_resonance'
+  /** Summer Camp live match: a tent's Quest Board changed { tent, quest } (03/11). */
+  | 'camp_quest';
 
 export interface MatchMessage<T = unknown> {
   /** Match id: a message for another match is ignored. */
@@ -311,6 +314,8 @@ export interface MatchView {
   result: MatchResult | null;
   /** The tutor muted the whole class. */
   muted: boolean;
+  /** Summer Camp live match: every tent's Quest Board ("g1"…, or "all"), for devices that (re)join. */
+  campQuest?: Record<string, TentQuestView>;
 }
 
 export interface MatchMe {

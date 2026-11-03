@@ -47,6 +47,8 @@ import { useRouter } from 'next/navigation';
 import RaceTrack from './RaceTrack';
 import Scenery from './scenery/Scenery';
 import ModeStage, { StageFrame } from './modes/ModeStage';
+import type { LiveSpeech } from './modes/types';
+import { useTentQuest } from '../client/useTentQuest';
 import { readTier, saveTier, type RenderTier } from './modes/gfxTier';
 import SubtitleBar from './modes/SubtitleBar';
 import ArenaHUD, { raceStanding } from './hud/ArenaHUD';
@@ -485,6 +487,18 @@ export default function BattleArena({ battle, variant, prefs, autostart }: { bat
   const kayakHud = isRace && renderer === 'three' && phase === 'playing';
   // U5: rage boost (fills while racing, starts only between questions; look only, result unchanged).
   const rage = useKayakRage(kayakHud && !halted, questionOpen);
+  // 03/11 live match: Phonetic Stones of Summer Camp / River Fishing talk to the server, and a class
+  // session follows its tent's Quest Board on the match channel.
+  const phoneticWorld = world === 'summer_camp' || world === 'river_fishing';
+  const classSession = view?.slot !== undefined;
+  const tentQuest = useTentQuest(token, world === 'summer_camp' && classSession);
+  const liveSpeech = useMemo<LiveSpeech | undefined>(
+    () =>
+      token && phoneticWorld
+        ? { load: () => sessionApi.speechTargets(token), attempt: (req) => sessionApi.speechAttempt(token, req), tentQuest, lockDuringQuestion: classSession }
+        : undefined,
+    [token, phoneticWorld, tentQuest, classSession],
+  );
   const raceNow = race ? { player: race.playerPos, bot: race.botPos } : null;
   const botLabel = `Bot ${levelLabel(config.level)}`;
   useEffect(() => {
@@ -739,6 +753,7 @@ export default function BattleArena({ battle, variant, prefs, autostart }: { bat
                 // Answering from inside the scene goes through the same server call as the answer buttons.
                 onPickOption: phase === 'playing' && question?.type === 'mcq' && !feedback && !pending ? (i) => void submit({ chosenIdx: i }) : undefined,
                 onFocusQuestion: () => document.getElementById('tc-question')?.scrollIntoView({ behavior: 'smooth', block: 'center' }),
+                speech: liveSpeech,
               }}
               onTier={setStageTier}
               hud={

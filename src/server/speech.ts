@@ -12,6 +12,7 @@ import {
   speechAttemptOutcome,
   speechGameEffect,
   speechTargetsFor,
+  campStationFor,
   type Question,
   type SpeechAlternative,
   type SpeechGameEffect,
@@ -241,6 +242,8 @@ export function createSpeechService(deps: {
         voice: { enabled, lang: r.lang },
         targets: targets(ctx).map((t) => ({
           ...t,
+          // Summer Camp: the hub station of this stone (server-decided, same on every device).
+          ...(ctx.game === 'summer_camp' ? { stationId: campStationFor(t.targetId) } : {}),
           modes: enabled ? t.modes : t.modes.filter((m) => m !== 'shadow'),
           attemptsLeft: Math.max(0, r.maxAttempts - rows.filter((x) => x.targetId === t.targetId).length),
         })),
@@ -324,6 +327,7 @@ export function createSpeechService(deps: {
       // WP8: the in-world effect. A target is "done" once passed or completed by listen-and-repeat.
       const done = (x: { passed: boolean; mode: SpeechMode }) => x.passed || x.mode === 'repeat';
       const effect = speechGameEffect({
+        targetId,
         game: ctx.game,
         success: mode === 'repeat' || scored.passed,
         prevBestStars: best.bestStars,

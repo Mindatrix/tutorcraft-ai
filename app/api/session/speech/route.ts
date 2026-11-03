@@ -3,7 +3,7 @@ import { SESSION_HEADER, sessionErrorResponse, sessions } from '../../../../src/
 import { speechErrorResponse, speechRules, speechService } from '../../../../src/server/speech';
 import { peekSession } from '../../../../src/server/sessionService';
 import { after } from 'next/server';
-import { portalResonanceTask } from '../../../../src/server/matches';
+import { campQuestTask, portalResonanceTask } from '../../../../src/server/matches';
 
 /**
  * Pronunciation layer (docs/pronunciation_logic_handoff.md §3).
@@ -54,6 +54,9 @@ export async function POST(req: Request) {
     // Multiverse class match: the server-graded attempt feeds the squad portal quorum.
     const task = portalResonanceTask(ctx, reply, body.mode);
     if (task) after(task);
+    // Summer Camp class match: the passed stone counts for the student's tent Quest Board.
+    const camp = campQuestTask(ctx, reply);
+    if (camp) after(camp);
     return Response.json(reply, { headers: noStore });
   } catch (e) {
     return speechErrorResponse(e) ?? sessionErrorResponse(e);

@@ -80,7 +80,7 @@ export function formatShowcaseQuestions(): Question[] {
 
 export function demoBattle(game: GameMode = DEMO_DEFAULT_GAME): { topic: string; config: BattleConfig; payload: BattlePayload } {
   return {
-    topic: 'Từ vựng tiếng Anh đơn giản (Demo)',
+    topic: 'Thì hiện tại đơn — Present simple (Demo)',
     config: { ...DEMO_CONFIG, scenario: demoScenario(game), gameMode: game, level: 1, durationMinutes: 6, questionTypes: ['mcq'] },
     payload: { teaching_notes: FALLBACK_TEACHING_NOTES, questions: demoQuestions(), boss: DEMO_BOSS },
   };

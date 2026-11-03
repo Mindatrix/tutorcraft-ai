@@ -354,6 +354,14 @@ export class PhoneticStoneStateMachine {
     });
   }
 
+  /**
+   * Live match (03/11): send attempts to the server (`/api/session/speech`). Replaces the mock
+   * evaluator; pass a function that rejects when the server is not reachable (never mock in a match).
+   */
+  setSubmitAttempt(fn: PhoneticStoneMachineOptions['submitAttempt']) {
+    this.submitAttemptFn = fn;
+  }
+
   setLevel(level: number) {
     this.level = Math.max(0, Math.min(5, Math.round(level)));
     const isBeginner = this.level === 0;

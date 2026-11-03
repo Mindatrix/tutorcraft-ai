@@ -1,3 +1,4 @@
+import type { SpeechGameEffect } from '../engine/speechGameEffects';
 import {
   DEFAULT_SPEECH_RULES,
   scoreDictation,
@@ -59,6 +60,8 @@ export interface SpeechAttemptResponse {
     phonemeScore: number;
     confScore: number | null;
   };
+  /** Server-decided world effect (WP8 / 03/11 live match). Never built in the browser. */
+  effect?: SpeechGameEffect;
 }
 
 export const MOCK_VOICE_CONFIG: VoiceConfig = {

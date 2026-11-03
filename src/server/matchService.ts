@@ -35,6 +35,11 @@ import {
   scheduleAt,
   schedulePlanFor,
   aggregatePortalResonanceUpdate,
+  applyCampStation,
+  emptyCampQuest,
+  tentQuestView,
+  type CampQuestState,
+  type CampStation,
   createSquadQuorumState,
   updateSquadQuorumSize,
   type MultiverseRouteId,
@@ -239,6 +244,7 @@ export function createMatchService(deps: MatchDeps) {
       survival: survivalPublic(m.state, players),
       result: (m.result as MatchResult | null) ?? null,
       muted: !!m.muted,
+      ...campQuestView(m),
     };
   }
 
@@ -338,6 +344,18 @@ export function createMatchService(deps: MatchDeps) {
     }
     throw new MatchError(409, 'Trận đang bận, thử lại.');
   }
+
+  /** Summer Camp tents' Quest Boards for the view (no student ids). */
+  const campQuestView = (m: MatchRow): { campQuest?: Record<string, ReturnType<typeof tentQuestView> & object> } => {
+    const cq = (m.state as { campQuest?: CampQuestState }).campQuest;
+    if (!cq) return {};
+    const out: Record<string, NonNullable<ReturnType<typeof tentQuestView>>> = {};
+    for (const [k, t] of Object.entries(cq.tents)) {
+      const v = tentQuestView(t);
+      if (v) out[k] = v;
+    }
+    return { campQuest: out };
+  };
 
   const rescueOf = (m: MatchRow): RescueState => (m.state as { rescue?: RescueState }).rescue ?? newRescueState();
 
@@ -828,6 +846,37 @@ export function createMatchService(deps: MatchDeps) {
         await survivalStep(m, at, (s, ctx) => survivalSettle(s, ctx, answered)).catch((e: unknown) => console.warn('survival window kept for the next settle:', (e as Error).message));
       }
       return tick;
+    },
+
+    /**
+     * Summer Camp live match (03/11): a student's server-graded stone at a hub station counts for
+     * their tent's Quest Board (engine/campQuest.ts). One count per student per station; the
+     * station is done at ceil(tent size / 2) (≤ 3); broadcast `camp_quest` to the class.
+     */
+    async recordCampStation(params: { matchId: string; sessionId: string; stationId: CampStation }) {
+      const m0 = await store.get(params.matchId);
+      if (!m0 || m0.status !== 'running') return null;
+      const players = await store.players(m0.id);
+      const me = players.find((p) => p.sessionId === params.sessionId && p.leftAt == null);
+      if (!me) return null;
+      const tentKey = me.grp != null ? `g${me.grp}` : 'all';
+      const tentSize = players.filter((p) => p.leftAt == null && (me.grp == null || p.grp === me.grp)).length;
+      let cur = m0;
+      for (let i = 0; i < STATE_RETRIES; i++) {
+        const before = ((cur.state as { campQuest?: CampQuestState }).campQuest) ?? emptyCampQuest();
+        const r = applyCampStation(before, tentKey, tentSize, me.id, params.stationId);
+        if (!r.changed) return tentQuestView(r.tent);
+        const up = await store.update(cur.id, { state: { ...cur.state, campQuest: r.state as unknown as Record<string, unknown> }, stateVersion: cur.stateVersion + 1 }, { stateVersion: cur.stateVersion });
+        if (up) {
+          await send(up, 'camp_quest', { tent: tentKey, quest: tentQuestView(r.tent), stationDone: r.stationDone ? params.stationId : null, flagRaised: r.flagRaised });
+          return tentQuestView(r.tent);
+        }
+        const fresh = await store.get(cur.id);
+        if (!fresh) throw new MatchError(404, 'Không tìm thấy trận.');
+        cur = fresh;
+        await new Promise((res) => setTimeout(res, 15 + Math.random() * 40 * (i + 1)));
+      }
+      throw new MatchError(409, 'Trận đang bận, thử lại.');
     },
 
     /**

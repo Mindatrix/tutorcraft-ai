@@ -1,5 +1,5 @@
 import { after } from 'next/server';
-import { isDemoBattleId } from '../engine';
+import { isDemoBattleId, type CampStation } from '../engine';
 import { loadBattle } from './battles';
 import { realtimeBroadcaster } from './matchBroadcast';
 import { createMatchService, MatchError, type MatchService } from './matchService';
@@ -91,6 +91,26 @@ export function portalResonanceTask(
       .then(
         () => undefined,
         (e: unknown) => console.error('portal resonance failed:', (e as Error).message),
+      );
+}
+
+/**
+ * Summer Camp live match (03/11): a passed stone (server effect `camp_station`) counts for the
+ * student's tent on the class Quest Board.
+ */
+export function campQuestTask(
+  ctx: { matchId: string | null; sessionId: string; game: string | null },
+  reply: { accepted: boolean; effect?: { kind: string; stationId?: CampStation } },
+) {
+  if (!ctx.matchId || ctx.game !== 'summer_camp' || !reply.accepted || reply.effect?.kind !== 'camp_station' || !reply.effect.stationId) return null;
+  const matchId = ctx.matchId;
+  const stationId = reply.effect.stationId;
+  return () =>
+    matches()
+      .recordCampStation({ matchId, sessionId: ctx.sessionId, stationId })
+      .then(
+        () => undefined,
+        (e: unknown) => console.error('camp quest failed:', (e as Error).message),
       );
 }
 
