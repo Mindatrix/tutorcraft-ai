@@ -309,6 +309,7 @@ export function createSessionService(deps: SessionDeps) {
         scored,
         streak,
         sessionId: rec.id,
+        battleId: rec.battleId,
         studentKey: rec.studentKey,
         matchId: rec.matchId ?? null,
       };
@@ -324,6 +325,7 @@ export function createSessionService(deps: SessionDeps) {
       const s = rebuilt.state;
       return {
         sessionId: rec.id,
+        battleId: rec.battleId,
         studentKey: rec.studentKey,
         matchId: rec.matchId ?? null,
         game: ctx.config.gameMode ?? null,

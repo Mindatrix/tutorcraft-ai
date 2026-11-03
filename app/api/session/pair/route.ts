@@ -29,8 +29,9 @@ export async function POST(req: Request) {
     if (task) after(task);
     // C4.16 coins when the last pair completes the question (server grading and timing only).
     const coins = await answerCoins(res);
-    const { sessionId: _sid, matchId: _mid, studentKey: _key, streak: _streak, ...out } = res;
+    const { sessionId: _sid, battleId: _bid, matchId: _mid, studentKey: _key, streak: _streak, ...out } = res;
     void _sid;
+    void _bid;
     void _mid;
     void _key;
     void _streak;

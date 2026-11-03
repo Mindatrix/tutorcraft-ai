@@ -1,4 +1,5 @@
-import { SupabaseCoinStore } from './coinStore';
+import { isDemoBattleId } from '../engine';
+import { MemoryCoinStore, SupabaseCoinStore } from './coinStore';
 import { RewardError, createRewardService, type AnswerReward, type RewardService } from './rewardService';
 import { SessionError } from './sessionService';
 import { serverSupabase } from './supabase-server';
@@ -15,15 +16,35 @@ export function rewards(): RewardService | null {
   return service;
 }
 
+// Demo sessions (`demo-*`) live in memory, so their coins do too: the demo still shows coins and can
+// buy hints, but nothing reaches coin_wallets / coin_ledger in the real database.
+const DEMO_MAX_ROWS = 20_000;
+let demoStore: MemoryCoinStore | null = null;
+let demoService: RewardService | null = null;
+
+export function demoRewards(): RewardService {
+  if (!demoService || !demoStore || demoStore.rows.length > DEMO_MAX_ROWS) {
+    demoStore = new MemoryCoinStore();
+    demoService = createRewardService({ coins: demoStore });
+  }
+  return demoService;
+}
+
+/** The coin service for a session's battle: in memory for the demo, the Supabase ledger otherwise. */
+export function rewardsFor(battleId: string): RewardService | null {
+  return isDemoBattleId(battleId) ? demoRewards() : rewards();
+}
+
 /** Coins for a graded answer; a coin failure never fails the answer (it is logged and skipped). */
 export async function answerCoins(res: {
+  battleId: string;
   sessionId: string;
   studentKey: string;
   matchId: string | null;
   scored: { correct: boolean } | null;
   streak: { qid: number; timeMs: number; rightInRow: number } | null;
 }): Promise<Pick<AnswerReward, 'total' | 'fast' | 'multiplier' | 'golden' | 'awarded' | 'balance'> | null> {
-  const svc = rewards();
+  const svc = rewardsFor(res.battleId);
   if (!svc || !res.scored || !res.streak) return null;
   try {
     const r = await svc.answer({ studentKey: res.studentKey, sessionId: res.sessionId, matchId: res.matchId, qid: res.streak.qid, correct: res.scored.correct, timeMs: res.streak.timeMs, rightInRow: res.streak.rightInRow });

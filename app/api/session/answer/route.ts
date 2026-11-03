@@ -31,8 +31,9 @@ export async function POST(req: Request) {
     if (task) after(task);
     // C4.16 coins, from the server's own grading, timing and streak (wrong = 0, never negative).
     const coins = await answerCoins(res);
-    const { sessionId: _sid, matchId: _mid, studentKey: _key, streak: _streak, ...out } = res;
+    const { sessionId: _sid, battleId: _bid, matchId: _mid, studentKey: _key, streak: _streak, ...out } = res;
     void _sid;
+    void _bid;
     void _mid;
     void _key;
     void _streak;

@@ -1,4 +1,4 @@
-import { rewardErrorResponse, rewards } from '../../../../src/server/rewards';
+import { rewardErrorResponse, rewardsFor } from '../../../../src/server/rewards';
 import { rateLimit } from '../../../../src/server/rateLimit';
 import { SESSION_HEADER, sessionErrorResponse, sessions } from '../../../../src/server/sessions';
 
@@ -11,8 +11,6 @@ import { SESSION_HEADER, sessionErrorResponse, sessions } from '../../../../src/
 export async function POST(req: Request) {
   const token = req.headers.get(SESSION_HEADER) ?? '';
   if (!rateLimit(`hint:${token.slice(-24)}`, 20, 60_000).ok) return Response.json({ error: 'Quá nhiều yêu cầu.' }, { status: 429 });
-  const svc = rewards();
-  if (!svc) return Response.json({ error: 'Chưa bật xu.' }, { status: 503 });
   let body: Record<string, unknown>;
   try {
     body = await req.json();
@@ -21,6 +19,8 @@ export async function POST(req: Request) {
   }
   try {
     const ctx = await sessions.questionContext(token);
+    const svc = rewardsFor(ctx.battleId);
+    if (!svc) return Response.json({ error: 'Chưa bật xu.' }, { status: 503 });
     const reply = await svc.hint(ctx, body.tier);
     return Response.json(reply, { headers: { 'Cache-Control': 'no-store' } });
   } catch (e) {
