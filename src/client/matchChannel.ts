@@ -17,6 +17,8 @@ import {
   type RescueEvent,
   type MatchResult,
   type MatchTime,
+  type SquadContributionEvent,
+  type SquadQuorumState,
 } from '../engine';
 
 // The device side of a class match (plan B2.4 / B2.5).
@@ -59,6 +61,8 @@ export interface MatchSnapshot {
   stale: number;
   /** C4.14 latest class-rescue news (the helper's question carries no answer key). */
   rescue?: { events: RescueEvent[]; question?: { id: number; question: string; options: string[] } | null } | null;
+  /** PR #6: latest Multiverse squad quorum (PORTAL_RESONANCE_UPDATE): who spoke, how many more needed. */
+  portalResonance?: { type: 'PORTAL_RESONANCE_UPDATE'; quorum: SquadQuorumState; event: SquadContributionEvent } | null;
 }
 
 export interface MatchConnectOptions {
@@ -250,6 +254,7 @@ export async function connectMatch(opts: MatchConnectOptions): Promise<MatchConn
         snap.rescue = msg.d as MatchSnapshot['rescue'];
         break;
       case 'portal_resonance':
+        snap.portalResonance = msg.d as MatchSnapshot['portalResonance'];
         break;
     }
   }

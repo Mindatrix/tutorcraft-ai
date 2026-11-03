@@ -51,11 +51,17 @@ import {
   type SpatialPortalCollider,
 } from './portalCollision';
 import { defaultNextRouteId } from '../../../../engine/questStateMachine';
+import type { MoveInputMixer } from '../../../../client/spatialInput';
+import { applyListenerPose, poseFromCamera, type SpatialAudioOut } from '../../../../client/spatialAudio';
+import { createPhysicsWorld, loadRapier, type PhysicsWorld } from '../physics/rapierWorld';
+import { createPortalExplorer, type PortalExplorer, type PortalTraverse } from './portalExplorer';
 
 export interface MultiversePortalEnvironmentOptions {
   sceneId?: MultiverseSceneId;
   tier?: AssetQuality;
   loadGlb?: boolean;
+  /** PR #6 integration: the game's shared audio for the stone's positional formants. */
+  audio?: () => SpatialAudioOut | null;
 }
 
 export interface MultiversePortalSceneHandle {
@@ -365,6 +371,7 @@ export function buildMultiversePortalEnvironment(
   const formantRig = createStonePositionalFormantRig({
     stonePosition: [0, 1.62, 2.2],
     ipa: centralTarget.ipa,
+    audio: options.audio,
   });
   root.add(formantRig.anchorNode);
 
@@ -711,12 +718,31 @@ export interface MountMultiversePortalOptions {
   sceneId?: MultiverseSceneId;
   tier?: AssetQuality;
   onStoneSelected?: (userData: PhoneticStoneUserData) => void;
+  /**
+   * PR #6 integration: the game's shared audio. The Web Audio listener follows the camera every
+   * frame so the stone's formant resonance is heard from the stone.
+   */
+  audio?: () => SpatialAudioOut | null;
+  /**
+   * PR #6 integration: the player walks the room (Rapier character, joystick / keys from the mixer).
+   * Stepping through a STABILISED portal fires onPortalTraverse (WARP_TRANSITION) and the room
+   * changes on the same WebGL context.
+   */
+  player?: {
+    mixer: MoveInputMixer;
+    onPortalTraverse?: (t: PortalTraverse & { fromRoute: MultiverseSceneId; toRoute: MultiverseSceneId }) => void;
+  };
 }
 
 export interface MountedMultiversePortalStage {
   readonly sceneHandle: MultiversePortalSceneHandle;
+  /** Present once physics has loaded (player option only). */
+  readonly explorer: PortalExplorer | null;
   dispose(): void;
 }
+
+/** Entry point of every room: in front of the central pedestal, facing the portal (−Z). */
+export const MULTIVERSE_SPAWN = { x: 0, y: 0.05, z: 5.2 };
 
 /**
  * Mounts the Multiverse Portal 3D WebGL stage inside `container` and wires
@@ -743,6 +769,7 @@ export function mountMultiversePortalScene(
   const sceneHandle = buildMultiversePortalEnvironment(() => alive, {
     sceneId,
     tier,
+    audio: options.audio,
   });
   stage.scene.add(sceneHandle.root);
 
@@ -789,16 +816,65 @@ export function mountMultiversePortalScene(
   canvas.addEventListener('pointermove', onPointerMove);
   canvas.addEventListener('pointerup', onPointerUp);
 
+  // Player physics (optional): loaded lazily, the room is usable before it arrives.
+  let phys: PhysicsWorld | null = null;
+  let explorer: PortalExplorer | null = null;
+  if (options.player) {
+    const player = options.player;
+    void loadRapier().then((R) => {
+      if (!alive) return;
+      phys = createPhysicsWorld(R);
+      phys.addGround(0, 60);
+      // The central pedestal is solid; the portal arch is NOT (it is walked through).
+      const pedestal = new THREE.Box3().setFromObject(sceneHandle.centralPedestalGroup);
+      if (!pedestal.isEmpty()) {
+        const c = pedestal.getCenter(new THREE.Vector3());
+        const h = pedestal.getSize(new THREE.Vector3()).multiplyScalar(0.5);
+        phys.addBox({ x: c.x, y: c.y, z: c.z }, { x: Math.max(0.2, h.x), y: Math.max(0.2, h.y), z: Math.max(0.2, h.z) });
+      }
+      explorer = createPortalExplorer(phys, {
+        spawn: MULTIVERSE_SPAWN,
+        checkPortal: (prev, next) => {
+          const fromRoute = sceneHandle.getSceneId();
+          const r = sceneHandle.checkPortalStepThrough(prev, next, true);
+          if (r.triggeredWarp) lastTraverse = { fromRoute, toRoute: sceneHandle.getSceneId() };
+          return r;
+        },
+        onTraverse: (t) => {
+          if (lastTraverse) player.onPortalTraverse?.({ ...t, ...lastTraverse });
+          lastTraverse = null;
+        },
+      });
+    });
+  }
+  let lastTraverse: { fromRoute: MultiverseSceneId; toRoute: MultiverseSceneId } | null = null;
+  const camTarget = new THREE.Vector3();
+
   stage.run((dt: number, t: number) => {
     const prefab = sceneHandle.getThemePrefab();
     stage.scene.fog = prefab.lighting.fog;
+    if (explorer && options.player) {
+      explorer.step(dt, options.player.mixer.read(), 0);
+      const p = explorer.character.renderPosition(phys?.alpha ?? 1);
+      camTarget.set(p.x, p.y + 3.4, p.z + 6.2);
+      stage.camera.position.lerp(camTarget, Math.min(1, dt * 4));
+      stage.camera.lookAt(p.x, p.y + 1.4, p.z - 2);
+    }
     sceneHandle.update(dt, t, stage.camera);
+    // The listener follows the camera: positional sounds come from where they are in the room.
+    const out = options.audio?.();
+    if (out) applyListenerPose(out.context, poseFromCamera(stage.camera));
   });
 
   return {
     sceneHandle,
+    get explorer() {
+      return explorer;
+    },
     dispose() {
       alive = false;
+      explorer?.dispose();
+      (phys as PhysicsWorld | null)?.dispose();
       canvas.removeEventListener('pointerdown', onPointerDown);
       canvas.removeEventListener('pointermove', onPointerMove);
       canvas.removeEventListener('pointerup', onPointerUp);

@@ -72,6 +72,28 @@ export function matchAnswerTask(res: { matchId?: string | null; sessionId?: stri
       );
 }
 
+/**
+ * PR #6 integration (03/11): a Multiverse class student's pronunciation attempt counts toward the
+ * squad quorum (ceil(N × 0.6)) and is broadcast as PORTAL_RESONANCE_UPDATE. Score and pass come
+ * from the SERVER's grading (the speech service reply), never from the request body.
+ */
+export function portalResonanceTask(
+  ctx: { matchId: string | null; sessionId: string; game: string | null },
+  reply: { accepted: boolean; targetId: string; score: number; passed: boolean },
+  mode: unknown,
+) {
+  if (!ctx.matchId || ctx.game !== 'multiverse_portal' || !reply.accepted) return null;
+  const matchId = ctx.matchId;
+  const m = mode === 'dictate' || mode === 'repeat' ? mode : 'shadow';
+  return () =>
+    matches()
+      .recordPortalResonance({ matchId, studentId: ctx.sessionId, targetId: reply.targetId, mode: m, score: reply.score, passed: reply.passed })
+      .then(
+        () => undefined,
+        (e: unknown) => console.error('portal resonance failed:', (e as Error).message),
+      );
+}
+
 export function matchErrorResponse(e: unknown): Response {
   if (e instanceof MatchError) return Response.json({ error: e.message, ...(e.extra ?? {}) }, { status: e.status });
   if (e instanceof SessionError) return Response.json({ error: e.message }, { status: e.status });

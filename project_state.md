@@ -117,6 +117,8 @@ WP2 → WP1 → **U0 → U1+U2** → WP3–WP5 → **U3, U4** → WP6 → WP7 �
 | WP7 chốt logic (03/11) | Trận lớp: hết máu vẫn chơi tới hết giờ (`keepPlaying`); câu theo mức riêng từng em (`personalLevel`, từ `match_players.skill`); server tự chấm và ghi kết quả mọi em khi trận kết thúc (`finalizeMatch`, `onEnded`) | **Xong** (03/11, chưa commit) |
 | PR #5 Antigravity | Cảnh 3D Kayak Rush và Multiverse Portal + Đá Phát Âm + Pet (`KayakRushScene`, `MultiversePortalScene`, `pet_dialogues.json`) | **Đã gộp** `b79f425`; chỉ chạy ngoài trận thật |
 | Đại phẫu đợt 1 (03/11) | Vật lý Rapier trực tiếp (không Ecctrl: cần R3F + three 0.184; chủ dự án chọn), nhân vật capsule, Spatial UI kính mờ (joystick, Nhảy, Xuyên không), trang `/tutor/physics-lab`, đo FPS tự động `npm run test:fps` | **Xong** (03/11, commit `feat(overhaul)`). Chi tiết: `docs/dai_phau_physics_spatial_ui.md` |
+| PR #6 Antigravity (03/11 tối) | Multiverse đầy đủ: 5 phòng `mv-01..05`, VFX, Lumi, máy trạng thái nhiệm vụ 8 giai đoạn (`questStateMachine.ts`), ngưỡng nhóm `ceil(N × 0,6)`, dự phòng 3 lần (gõ chữ / xếp thẻ, 80% XP), âm formant vị trí, va chạm cổng `Box3`, `content/multiverse_quests.json` | **Đã gộp** `d80aacb` (Claude Code tiếp nhận) |
+| Tích hợp PR #6 (Claude Code) | Trường `quest` (chỉ mã, không đáp án) vào `mv-01..05` trong `scenarios_v2.json` (+ bản trong `scripts/scenarios-v2`); âm formant đi vào bus hiệu ứng dùng chung, tai nghe Web Audio theo camera (`src/client/spatialAudio.ts`, `gameSpatialAudio.ts`); người chơi Rapier đi qua cổng ổn định → `WARP_TRANSITION` → phòng kế tiếp trên cùng canvas (`portalExplorer.ts`, `MultiversePortalStage explore`); `PORTAL_RESONANCE_UPDATE` từ lượt nói do server chấm (`portalResonanceTask` trong route giọng nói), máy học sinh lưu `snapshot.portalResonance` | **Xong, chưa commit**. Test: `multiverseQuestData`, `portalIntegration` |
 | WP7 giao diện | Đồng hồ chờ điểm hỏi, vật vàng, `ClassPodium` màn em | **Chưa** — nay là việc của Claude Code (Spatial UI), hợp đồng ở `docs/wp7_class_schedule_handoff.md` |
 | WP8, WP9 | Từng game làm trọn; F và G | Chưa. WP8 chỉ bắt đầu khi có số đo điện thoại hoặc người dùng nói "qua" |
 
@@ -329,6 +331,14 @@ Mở `http://192.168.11.125:3005/tutor/scene-lab` trên điện thoại, bấm "
 - Nối Xuyên không với cổng Multiverse; camera xoay bằng tay phải.
 - Đo `test:fps --android` trên máy Android tầm trung thật (cần cài `adb`); đo iPhone bằng Safari.
 - `.env.local` đã tạo lại (03/11 19:53); `test:security` 30/30 trên bản build production có Đại phẫu đợt 1.
+
+### 7.9. Sau PR #6 (03/11 tối)
+
+- **Mất file gốc `camp/camp_pan.glb`** (chảo, nhóm "bếp" của Summer Camp): chỉ còn bản `_optimized` / `_low`; không có trong bản sao lưu đợt đổi tên. Test `WP4 kits data` hỏng vì vậy (1 test). Cần Claude chat / chủ dự án khôi phục bản gốc hoặc chọn model khác. `camp_tent_ruined_grey` cũng chỉ có bản tối ưu.
+- **Thư viện 3D đã chuyển** vào `~/Documents/3D_tutorcraft/TutorCraft/01_assets_source` (vẫn trong Documents → iCloud). Script và `/dev-assets` mặc định đọc `~/Documents/3D_tutorcraft`: chạy script với `TC_3D_DIR=…/TutorCraft/01_assets_source`; để `/dev-assets` chạy, thêm `TC_3D_DIR` vào `.env.local`. Catalog đã dựng lại (329 model, không model mồ côi; thiếu 9 mã).
+- Đã bật lại 2 test độ phủ model.
+- `content/multiverse_quests.json` chứa đáp án (câu đố, chính tả, thứ tự thẻ): **chỉ đọc ở server**, không import vào code trình duyệt. Chấm dự phòng của nhiệm vụ đang tự chấm riêng (khớp chính xác), khác bộ chấm chính tả của server (`scoreDictation`, cho phép sai 1 chữ): khi nối trận thật nên dùng chung một bộ.
+- Trang nào dùng `MultiversePortalStage explore`: chưa có (cần trang thử hoặc nối vào trận).
 
 ## 8. Lệnh thường dùng (Terminal trong VS Code, ở thư mục dự án)
 

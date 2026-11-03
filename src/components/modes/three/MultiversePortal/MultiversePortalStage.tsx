@@ -4,6 +4,10 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { PhoneticStoneStateMachine } from '../../../../client/phoneticStones';
 import type { AssetQuality } from '../../../../config/assetLibrary';
 import PhoneticStonesHud from '../../../hud/PhoneticStonesHud';
+import SpatialControls from '../../../hud/SpatialControls';
+import { MoveInputMixer } from '../../../../client/spatialInput';
+import { gameSpatialAudio } from '../../../../client/gameSpatialAudio';
+import { WARP } from '../../../../client/spatialInput';
 import {
   MULTIVERSE_SCENE_IDS,
   MULTIVERSE_THEME_CONFIGS,
@@ -30,13 +34,24 @@ export interface MultiversePortalStageProps {
   initialSceneId?: MultiverseSceneId;
   /** Initial device graphics profile (`high` | `low`). */
   initialTier?: AssetQuality;
+  /**
+   * PR #6 integration: walk the room (joystick / keys, Rapier) and step through the stabilised
+   * portal; the stone's resonance plays on the game's effects bus from the stone's position.
+   */
+  explore?: boolean;
 }
+
+/** Quest zone shown in the HUD: the portal part of the quest machine (engine/questStateMachine). */
+type PortalZone = 'EXPLORATION' | 'PORTAL_CHARGING' | 'PORTAL_STABILIZED' | 'WARP_TRANSITION';
 
 export function MultiversePortalStage({
   machine: externalMachine,
   initialSceneId = 'mv-01',
   initialTier = 'high',
+  explore = false,
 }: MultiversePortalStageProps) {
+  const [mixer] = useState(() => new MoveInputMixer());
+  const [zone, setZone] = useState<PortalZone>('EXPLORATION');
   const containerRef = useRef<HTMLDivElement | null>(null);
   const sceneHandleRef = useRef<MultiversePortalSceneHandle | null>(null);
   const internalMachine = useMemo(
@@ -70,6 +85,22 @@ export function MultiversePortalStage({
         onStoneSelected(userData) {
           internalMachine.selectStone(userData.targetId);
         },
+        audio: gameSpatialAudio,
+        ...(explore
+          ? {
+              player: {
+                mixer,
+                onPortalTraverse: ({ toRoute }) => {
+                  // PORTAL_STABILIZED → WARP_TRANSITION → the next room, same WebGL context.
+                  setZone('WARP_TRANSITION');
+                  setSceneId(toRoute);
+                  setVortexState('IDLE');
+                  setLockState(createInitialPortalLockState());
+                  setTimeout(() => setZone('EXPLORATION'), WARP.warpMs);
+                },
+              },
+            }
+          : {}),
       });
       sceneHandleRef.current = mounted.sceneHandle;
       setTimeout(() => {
@@ -84,6 +115,7 @@ export function MultiversePortalStage({
     const unsubSelect = internalMachine.bus.on('stone:select', ({ target }) => {
       sceneHandleRef.current?.setActiveStone(target.targetId);
       setVortexState(sceneHandleRef.current?.getVortexState() ?? 'PORTAL_CHARGING');
+      setZone((z) => (z === 'EXPLORATION' ? 'PORTAL_CHARGING' : z));
     });
 
     const unsubPet = internalMachine.bus.on('pet:state', ({ state }) => {
@@ -100,6 +132,7 @@ export function MultiversePortalStage({
         ) {
           sceneHandleRef.current?.triggerPortalOpening(next.openingConfig.stars);
           setVortexState('PORTAL_STABILIZED');
+          setZone('PORTAL_STABILIZED');
         }
         return next;
       });
@@ -184,6 +217,12 @@ export function MultiversePortalStage({
                   {vortexState}
                 </strong>
               </span>
+              <span className="ml-2 text-slate-400">
+                Vùng:{' '}
+                <strong data-testid="portal-zone-state" className="text-violet-300">
+                  {zone}
+                </strong>
+              </span>
             </div>
             {perfAudit && (
               <div
@@ -265,6 +304,12 @@ export function MultiversePortalStage({
 
       {/* Shared Phonetic Stones HUD */}
       <PhoneticStonesHud machine={internalMachine} />
+
+      {/* Explore mode: joystick + jump (the portal itself is the warp: walk through it). */}
+      {explore && <SpatialControls mixer={mixer} showWarp={false} lite={tier === 'low'} />}
+      {zone === 'WARP_TRANSITION' && (
+        <div aria-hidden="true" data-testid="portal-warp-flash" className="pointer-events-none absolute inset-0 z-40 bg-violet-300/70 motion-safe:transition-opacity" />
+      )}
     </div>
   );
 }

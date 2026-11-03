@@ -2,6 +2,8 @@ import { rateLimit, rateLimitShared, clientKey } from '../../../../src/server/ra
 import { SESSION_HEADER, sessionErrorResponse, sessions } from '../../../../src/server/sessions';
 import { speechErrorResponse, speechRules, speechService } from '../../../../src/server/speech';
 import { peekSession } from '../../../../src/server/sessionService';
+import { after } from 'next/server';
+import { portalResonanceTask } from '../../../../src/server/matches';
 
 /**
  * Pronunciation layer (docs/pronunciation_logic_handoff.md §3).
@@ -48,7 +50,11 @@ export async function POST(req: Request) {
   try {
     const [perMin, ctx] = await Promise.all([perMinP, sessions.speechContext(token)]);
     if (!perMin.ok) return Response.json({ error: `Nói chậm lại một chút. Thử lại sau ${perMin.retryAfterSec}s.`, reason: 'rate_limited', retryAfterSec: perMin.retryAfterSec }, { status: 429 });
-    return Response.json(await speechService().submit(ctx, body), { headers: noStore });
+    const reply = await speechService().submit(ctx, body);
+    // Multiverse class match: the server-graded attempt feeds the squad portal quorum.
+    const task = portalResonanceTask(ctx, reply, body.mode);
+    if (task) after(task);
+    return Response.json(reply, { headers: noStore });
   } catch (e) {
     return speechErrorResponse(e) ?? sessionErrorResponse(e);
   }

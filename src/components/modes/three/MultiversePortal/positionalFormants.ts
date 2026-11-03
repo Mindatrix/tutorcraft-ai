@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import type { SpatialAudioOut } from '../../../../client/spatialAudio';
 
 // ============================================================================
 // GDS-TC-2026-EXP v2.6 — §3.1 Web Audio API Positional Formants
@@ -52,6 +53,13 @@ export interface PositionalFormantOptions {
   refDistance?: number;
   /** Max distance for 3D spatial attenuation (meters). */
   maxDistance?: number;
+  /**
+   * PR #6 integration (03/11): the game's shared audio (context, effects bus, on/off switch),
+   * resolved when a resonance plays (the context only exists after the first tap). With it the
+   * pulse obeys mute / volume / the tutor's class mute and is placed relative to the listener that
+   * follows the camera (client/spatialAudio.ts). Returns null → no sound (never a new context).
+   */
+  audio?: () => SpatialAudioOut | null;
 }
 
 export interface SynthesizedFormantPulseReport {
@@ -115,11 +123,15 @@ export function createStonePositionalFormantRig(
   anchorNode.name = 'PhoneticStonePositionalFormantAnchor';
   anchorNode.position.set(stonePosition[0], stonePosition[1], stonePosition[2]);
 
-  const ctx =
-    options.audioContext !== undefined ? options.audioContext : getBrowserAudioContext();
+  // With the game's audio provider, never open a context of our own (Safari allows only a few).
+  const ctx = options.audio
+    ? null
+    : options.audioContext !== undefined
+      ? options.audioContext
+      : getBrowserAudioContext();
 
   let positionalAudio: THREE.PositionalAudio | null = null;
-  if (ctx && typeof THREE.AudioListener !== 'undefined') {
+  if (!options.audio && ctx && typeof THREE.AudioListener !== 'undefined') {
     try {
       // Only construct THREE.AudioListener if AudioContext is a real browser instance
       if (typeof (ctx as AudioContext).createPanner === 'function' && typeof window !== 'undefined') {
@@ -170,8 +182,12 @@ export function createStonePositionalFormantRig(
         q: base.q,
       };
 
-      if (ctx) {
+      const shared = options.audio?.() ?? null;
+      const playCtx: BaseAudioContext | null = shared ? (shared.enabled() ? shared.context : null) : ctx;
+      if (playCtx) {
+        const ctx = playCtx;
         try {
+          if ((ctx as AudioContext).state === 'suspended') void (ctx as AudioContext).resume?.();
           const now = ctx.currentTime;
           const durSec = durationMs / 1000;
 
@@ -215,11 +231,8 @@ export function createStonePositionalFormantRig(
           }
 
           panner.connect(masterGain);
-          if (positionalAudio && positionalAudio.context === ctx) {
-            positionalAudio.setNodeSource(masterGain as unknown as AudioBufferSourceNode);
-          } else {
-            masterGain.connect(ctx.destination);
-          }
+          // The effects bus (mute, volume, class mute) when the game's audio is wired in.
+          masterGain.connect(shared ? shared.output : ctx.destination);
 
           osc.start(now);
           osc.stop(now + durSec);
