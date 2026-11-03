@@ -5,6 +5,7 @@ import {
   type SpeechHistory,
   type SpeechMode,
 } from '../engine/pronunciation';
+import petDialoguesData from '../content/pet_dialogues.json';
 import {
   evaluateMockSpeechAttempt,
   MOCK_SPEECH_RULES,
@@ -817,3 +818,97 @@ export class PhoneticStoneStateMachine {
     cancelBrowserTts();
   }
 }
+
+export type PetDialogueMode = 'survival' | 'kayak';
+
+export interface PetDialogueEntry {
+  mode: PetDialogueMode;
+  trigger: string;
+  text_en: string;
+  text_vi: string;
+}
+
+export const PET_DIALOGUES: readonly PetDialogueEntry[] =
+  petDialoguesData as PetDialogueEntry[];
+
+const CELEBRATE_TRIGGERS = new Set([
+  'dodge_success',
+  'combo_boost',
+  'recovery_boost',
+  'net_snag_near_miss',
+]);
+
+const COACH_TRIGGERS = new Set([
+  'voice_fail_1',
+  'voice_fail_2',
+  'voice_low_volume',
+  'voice_stuck_vowel',
+  'voice_speed_hint',
+  'net_incoming',
+  'rapid_rush_ahead',
+  'dodge_warning',
+]);
+
+export interface SelectPetDialogueOptions {
+  petState: PetState;
+  mode?: string;
+  trigger?: string;
+  attemptNo?: number;
+  hint?: string;
+  reason?: string;
+  random?: () => number;
+}
+
+/**
+ * Randomly selects an appropriate Pet Companion dialogue from `src/content/pet_dialogues.json`
+ * when the state machine enters `coach` or `celebrate`, filtered by `mode` and `trigger`.
+ */
+export function selectPetDialogue(opts: SelectPetDialogueOptions): PetDialogueEntry | null {
+  const { petState, mode, trigger, attemptNo, hint, reason, random = Math.random } = opts;
+  if (petState !== 'coach' && petState !== 'celebrate') {
+    return null;
+  }
+
+  const normalizedMode: PetDialogueMode =
+    mode === 'kayak' || mode === 'kayak_rush' || mode === 'river_fishing'
+      ? 'kayak'
+      : 'survival';
+
+  const modePool = PET_DIALOGUES.filter((d) => d.mode === normalizedMode);
+  const pool = modePool.length > 0 ? modePool : PET_DIALOGUES;
+
+  if (trigger) {
+    const exact = pool.filter((d) => d.trigger === trigger);
+    if (exact.length > 0) {
+      return exact[Math.floor(random() * exact.length)];
+    }
+  }
+
+  if (petState === 'celebrate') {
+    const celebratePool = pool.filter((d) => CELEBRATE_TRIGGERS.has(d.trigger));
+    const candidates = celebratePool.length > 0 ? celebratePool : pool;
+    return candidates[Math.floor(random() * candidates.length)];
+  }
+
+  // `petState === 'coach'`
+  let preferredTriggers: string[] = [];
+  if (reason === 'too_short') {
+    preferredTriggers = ['voice_low_volume', 'voice_speed_hint'];
+  } else if (hint === 'mouth_shape' || (attemptNo && attemptNo >= 2)) {
+    preferredTriggers = ['voice_fail_2', 'voice_stuck_vowel', 'voice_speed_hint'];
+  } else if (attemptNo === 1) {
+    preferredTriggers = ['voice_fail_1'];
+  }
+
+  if (preferredTriggers.length > 0) {
+    const matched = pool.filter((d) => preferredTriggers.includes(d.trigger));
+    if (matched.length > 0) {
+      return matched[Math.floor(random() * matched.length)];
+    }
+  }
+
+  const coachPool = pool.filter((d) => COACH_TRIGGERS.has(d.trigger));
+  const candidates = coachPool.length > 0 ? coachPool : pool;
+  return candidates[Math.floor(random() * candidates.length)];
+}
+
