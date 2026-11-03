@@ -224,7 +224,9 @@ export type MatchMessageType =
   /** Time up or ended by the tutor: { result, time }. */
   | 'ended'
   /** C4.14 class rescue: a classmate is asked to help (or the rescue worked / failed). */
-  | 'rescue';
+  | 'rescue'
+  /** GDS-TC-2026-EXP §4.2 Multiverse Portal squad quorum resonance update (`PORTAL_RESONANCE_UPDATE`). */
+  | 'portal_resonance';
 
 export interface MatchMessage<T = unknown> {
   /** Match id: a message for another match is ignored. */

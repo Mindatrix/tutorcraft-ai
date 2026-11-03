@@ -7,13 +7,10 @@ import {
   lowpoly,
   mesh,
   roughen,
-  skyDome,
   Sparks,
   swapInGlb,
-  textSprite,
-  toon,
 } from '../../kit';
-import { lib } from '../../../../config/assetLibrary';
+import { lib, type AssetQuality } from '../../../../config/assetLibrary';
 import type { PetState } from '../../../../client/phoneticStones';
 import {
   raycastPhoneticStones,
@@ -21,11 +18,45 @@ import {
   type PhoneticStoneUserData,
 } from '../phoneticStoneRaycaster';
 import {
+  auditMultiverseScenePerformance,
+  buildMultiverseThemePrefab,
+  MULTIVERSE_THEME_CONFIGS,
+  type MultiverseEnvironmentPrefab,
+  type MultiversePerformanceAudit,
+  type MultiverseSceneId,
+} from './multiverseEnvironments';
+import {
+  createLumiPetCompanionFX,
+  createPhoneticStoneBurstFX,
+  createPortalEnergyVortexFX,
+  safeTextSprite,
+  type LumiPetCompanionFX,
+  type PhoneticStoneBurstFX,
+  type PortalEnergyVortexFX,
+  type PortalVortexState,
+} from './multiverseVfx';
+import {
   CENTRAL_PORTAL_STONE_ID,
   computePortalOpeningConfig,
   MULTIVERSE_PORTAL_TARGETS,
   type PortalGateState,
 } from './portalRules';
+import {
+  createStonePositionalFormantRig,
+  type StonePositionalFormantRig,
+} from './positionalFormants';
+import {
+  createSpatialPortalCollider,
+  type PortalStepThroughResult,
+  type SpatialPortalCollider,
+} from './portalCollision';
+import { defaultNextRouteId } from '../../../../engine/questStateMachine';
+
+export interface MultiversePortalEnvironmentOptions {
+  sceneId?: MultiverseSceneId;
+  tier?: AssetQuality;
+  loadGlb?: boolean;
+}
 
 export interface MultiversePortalSceneHandle {
   readonly root: THREE.Group;
@@ -35,45 +66,37 @@ export interface MultiversePortalSceneHandle {
   readonly petCompanionGroup: THREE.Group;
   readonly portalSparks: Sparks;
   readonly portalSpiralMesh: THREE.InstancedMesh;
+  readonly portalVortexFX: PortalEnergyVortexFX;
+  readonly stoneBurstFX: PhoneticStoneBurstFX;
+  readonly lumiPetFX: LumiPetCompanionFX;
+  readonly formantRig: StonePositionalFormantRig;
+  readonly portalCollider: SpatialPortalCollider;
+  getThemePrefab(): MultiverseEnvironmentPrefab;
+  getSceneId(): MultiverseSceneId;
+  getTier(): AssetQuality;
+  setSceneTheme(sceneId: MultiverseSceneId, tier?: AssetQuality): MultiverseEnvironmentPrefab;
   getGateState(): PortalGateState;
+  getVortexState(): PortalVortexState;
+  setPortalVortexState(state: PortalVortexState): void;
   setActiveStone(targetId: string | null): void;
   setPetState(state: PetState): void;
   triggerPortalOpening(stars: 1 | 2 | 3): void;
-  update(dt: number, t: number): void;
+  /** Evaluates AABB `THREE.Box3` step-through across the Render Target Portal plane and seamlessly transitions routes on the same WebGL context. */
+  checkPortalStepThrough(
+    prevPos: [number, number, number] | THREE.Vector3,
+    nextPos: [number, number, number] | THREE.Vector3,
+    autoAdvanceTheme?: boolean,
+  ): PortalStepThroughResult;
+  auditPerformance(): MultiversePerformanceAudit;
+  update(dt: number, t: number, camera?: THREE.Camera): void;
   dispose(): void;
-}
-
-function buildSanctumPillar(
-  at: [number, number, number],
-  variant: 1 | 2 = 1,
-  alive: () => boolean = () => true,
-): THREE.Group {
-  const g = new THREE.Group();
-  g.position.set(at[0], at[1], at[2]);
-
-  const col = mesh(
-    roughen(new THREE.CylinderGeometry(0.45, 0.56, 4.2, 8), 0.04, 17),
-    lowpoly(0x1e1b4b, { rough: 0.72, metal: 0.25, emissive: 0x312e81, glow: 0.28 }),
-    [0, 2.1, 0],
-  );
-  const cap = mesh(
-    new THREE.BoxGeometry(1.25, 0.45, 1.25),
-    lowpoly(0x312e81, { rough: 0.6, metal: 0.3, emissive: 0x6366f1, glow: 0.35 }),
-    [0, 4.3, 0],
-  );
-  g.add(col, cap);
-  swapInGlb(
-    g,
-    lib(variant === 1 ? 'mv_castle_module' : 'mv_castle_module_2'),
-    4.5,
-    alive,
-  );
-  return g;
 }
 
 function buildArcaneTorch(
   at: [number, number, number],
   alt = false,
+  loadGlb = true,
+  tier: AssetQuality = 'high',
   alive: () => boolean = () => true,
 ): { group: THREE.Group; flame: THREE.Mesh } {
   const group = new THREE.Group();
@@ -86,7 +109,9 @@ function buildArcaneTorch(
     [0, 0.68, 0],
   );
   holder.add(stand);
-  swapInGlb(holder, lib(alt ? 'mv_torch_3' : 'mv_torch'), 1.4, alive);
+  if (loadGlb) {
+    swapInGlb(holder, lib(alt ? 'mv_torch_3' : 'mv_torch', tier), 1.4, alive);
+  }
 
   const flame = mesh(
     new THREE.OctahedronGeometry(0.22, 1),
@@ -99,141 +124,57 @@ function buildArcaneTorch(
   return { group, flame };
 }
 
-function buildPortalPetCompanion(at: [number, number, number]): {
-  group: THREE.Group;
-  auraMat: THREE.MeshBasicMaterial;
-  bodyMat: THREE.MeshToonMaterial;
-  wingLeft: THREE.Mesh;
-  wingRight: THREE.Mesh;
-} {
-  const group = new THREE.Group();
-  group.name = 'PortalPetCompanion';
-  group.position.set(at[0], at[1], at[2]);
-
-  const bodyMat = toon(0xa855f7, 0x6b21a8, 0.35);
-  const body = mesh(new THREE.SphereGeometry(0.3, 16, 14), bodyMat, [0, 0.34, 0]);
-  body.scale.set(1, 1.14, 0.95);
-
-  const belly = mesh(
-    new THREE.SphereGeometry(0.21, 12, 10),
-    toon(0xf3e8ff, 0xd8b4fe, 0.18),
-    [0, 0.3, 0.13],
-  );
-
-  const eyeWhiteMat = glow(0xffffff, 1);
-  const pupilMat = glow(0x1e1b4b, 1);
-  const leftEye = mesh(new THREE.SphereGeometry(0.065, 10, 10), eyeWhiteMat, [-0.1, 0.42, 0.22]);
-  const rightEye = mesh(new THREE.SphereGeometry(0.065, 10, 10), eyeWhiteMat, [0.1, 0.42, 0.22]);
-  const leftPupil = mesh(new THREE.SphereGeometry(0.032, 8, 8), pupilMat, [-0.1, 0.42, 0.27]);
-  const rightPupil = mesh(new THREE.SphereGeometry(0.032, 8, 8), pupilMat, [0.1, 0.42, 0.27]);
-
-  const beak = mesh(
-    new THREE.ConeGeometry(0.06, 0.14, 6),
-    toon(0xfacc15, 0xd97706, 0.4),
-    [0, 0.36, 0.3],
-  );
-  beak.rotation.x = Math.PI / 2;
-
-  const wingGeo = new THREE.BoxGeometry(0.12, 0.25, 0.18);
-  const wingMat = toon(0x7e22ce, 0x581c87, 0.28);
-  const wingLeft = mesh(wingGeo, wingMat, [-0.31, 0.34, 0]);
-  const wingRight = mesh(wingGeo, wingMat, [0.31, 0.34, 0]);
-
-  const auraMat = glow(0xc084fc, 0.48, true);
-  const auraRing = mesh(
-    new THREE.RingGeometry(0.32, 0.44, 24),
-    auraMat,
-    [0, 0.05, 0],
-  );
-  auraRing.rotation.x = -Math.PI / 2;
-
-  const label = textSprite('PET KEEPER', {
-    color: '#f3e8ff',
-    bg: 'rgba(59, 7, 100, 0.85)',
-    border: '#c084fc',
-    height: 0.24,
-  });
-  label.position.set(0, 0.84, 0);
-
-  group.add(
-    body,
-    belly,
-    leftEye,
-    rightEye,
-    leftPupil,
-    rightPupil,
-    beak,
-    wingLeft,
-    wingRight,
-    auraRing,
-    label,
-  );
-
-  return { group, auraMat, bodyMat, wingLeft, wingRight };
-}
-
 /**
- * Builds the Multiverse Portal 3D environment:
- * - Majestic 3D Portal Gate with twin obsidian pillars, counter-rotating rune rings, and dimensional iris vortex
- * - Central Phonetic Stone pedestal directly in front of the gate serving as the voice-passcode lock
- * - Glowing particle animation (pooled Sparks burst + 48-particle spiral vortex ring) for the portal opening sequence
+ * Builds the Multiverse Portal 3D environment (`GDS-TC-2026-EXP v2.6`):
+ * - Modular theme prefab (`mv-01` Alexandria Archive .. `mv-05` Steam Foundry) with
+ *   `THREE.InstancedMesh` clusters, `THREE.LOD` hierarchy, lighting rig, fog & skybox,
+ *   and quest prop visual anchors (`chest`, `altar`, `stone_pedestal`, `portal_archway`).
+ * - Majestic 3D Portal Gate with GPU `PortalEnergyVortexFX` (`IDLE` / `PORTAL_CHARGING` / `PORTAL_STABILIZED`).
+ * - Central Phonetic Stone pedestal with GPU `PhoneticStoneBurstFX` upon voice/text calibration.
+ * - Lumi Pet 3D Companion (`LumiPetCompanionFX`) with harmonic floating bob curve, soft glow aura,
+ *   and movement particle trail.
  */
 export function buildMultiversePortalEnvironment(
   alive: () => boolean = () => true,
+  options: MultiversePortalEnvironmentOptions = {},
 ): MultiversePortalSceneHandle {
+  let currentSceneId: MultiverseSceneId = options.sceneId ?? 'mv-01';
+  let currentTier: AssetQuality = options.tier ?? 'high';
+  const loadGlb = options.loadGlb ?? true;
+
   const root = new THREE.Group();
   root.name = 'MultiversePortalRoot';
+
+  const themeHostGroup = new THREE.Group();
+  themeHostGroup.name = 'MultiverseThemeHost';
+  root.add(themeHostGroup);
+
+  let themePrefab = buildMultiverseThemePrefab({
+    sceneId: currentSceneId,
+    tier: currentTier,
+    loadGlb,
+    alive,
+  });
+  themeHostGroup.add(themePrefab.root);
 
   const interactiveGroup = new THREE.Group();
   interactiveGroup.name = 'PhoneticStonesInteractiveGroup';
   root.add(interactiveGroup);
 
-  // Starry multiverse twilight sky dome & dramatic lighting
-  root.add(skyDome(0x090418, 0x1e1b4b, 0x3b0764, { radius: 170, stars: 1.4 }));
-
-  const hemi = new THREE.HemisphereLight(0xe9d5ff, 0x1e1b4b, 0.88);
-  const keyLight = new THREE.DirectionalLight(0xc084fc, 1.25);
-  keyLight.position.set(6, 12, 8);
-  const portalCoreLight = new THREE.PointLight(0x38bdf8, 1.6, 20);
-  portalCoreLight.position.set(0, 2.8, -1.8);
-  const pedestalLight = new THREE.PointLight(0xfacc15, 1.1, 10);
-  pedestalLight.position.set(0, 1.8, 2.2);
-  root.add(hemi, keyLight, portalCoreLight, pedestalLight);
-
-  // Astral sanctum floor platform + stepped causeway
-  const sanctumFloor = mesh(
-    new THREE.CylinderGeometry(8.2, 9.0, 0.5, 32),
-    lowpoly(0x0f172a, { rough: 0.78, metal: 0.25, emissive: 0x1e1b4b, glow: 0.25 }),
-    [0, -0.25, 0],
-  );
+  // Stepped inner causeway leading from the central pedestal to the portal archway
   const innerRunway = mesh(
     new THREE.BoxGeometry(3.2, 0.14, 7.2),
     lowpoly(0x1e1b4b, { rough: 0.55, metal: 0.35, emissive: 0x4c1d95, glow: 0.3 }),
     [0, 0.05, 0.8],
   );
-  root.add(sanctumFloor, innerRunway);
+  root.add(innerRunway);
 
-  // Background sanctum ruins & flanking castle pillars
-  const leftRuin = new THREE.Group();
-  leftRuin.position.set(-5.6, 0, -2.6);
-  swapInGlb(leftRuin, lib('mv_ruin_building'), 3.8, alive);
-  const rightRuin = new THREE.Group();
-  rightRuin.position.set(5.6, 0, -2.6);
-  swapInGlb(rightRuin, lib('mv_ruin_building'), 3.8, alive);
-
-  root.add(
-    leftRuin,
-    rightRuin,
-    buildSanctumPillar([-4.2, 0, -1.8], 1, alive),
-    buildSanctumPillar([4.2, 0, -1.8], 2, alive),
-  );
-
-  // Flanking arcane torches
+  // Arcane torches flanking the central stone pedestal
   const torches = [
-    buildArcaneTorch([-2.2, 0, 1.4], false, alive),
-    buildArcaneTorch([2.2, 0, 1.4], false, alive),
-    buildArcaneTorch([-2.9, 0, -1.2], true, alive),
-    buildArcaneTorch([2.9, 0, -1.2], true, alive),
+    buildArcaneTorch([-2.3, 0, 1.8], false, loadGlb, currentTier, alive),
+    buildArcaneTorch([2.3, 0, 1.8], false, loadGlb, currentTier, alive),
+    buildArcaneTorch([-2.9, 0, -1.2], true, loadGlb, currentTier, alive),
+    buildArcaneTorch([2.9, 0, -1.2], true, loadGlb, currentTier, alive),
   ];
   for (const t of torches) {
     root.add(t.group);
@@ -247,7 +188,6 @@ export function buildMultiversePortalEnvironment(
   portalGateGroup.position.set(0, 0, -2.0);
   root.add(portalGateGroup);
 
-  // Dais steps under the gate
   const gateBase1 = mesh(
     new THREE.CylinderGeometry(3.4, 3.8, 0.32, 24),
     lowpoly(0x1e1b4b, { rough: 0.6, metal: 0.3, emissive: 0x312e81, glow: 0.25 }),
@@ -260,7 +200,6 @@ export function buildMultiversePortalEnvironment(
   );
   portalGateGroup.add(gateBase1, gateBase2);
 
-  // Left & Right Obsidian Arch Pillars + Keystone Crown
   const leftGateObelisk = mesh(
     roughen(new THREE.BoxGeometry(0.75, 4.4, 0.75), 0.03, 51),
     lowpoly(0x0f172a, { rough: 0.45, metal: 0.45, emissive: 0x4c1d95, glow: 0.4 }),
@@ -287,42 +226,40 @@ export function buildMultiversePortalEnvironment(
     emissive: 0x8b5cf6,
     glow: 0.75,
   });
-  const outerTorus = mesh(new THREE.TorusGeometry(2.05, 0.14, 14, 48), outerTorusMat);
+  const outerTorus = mesh(new THREE.TorusGeometry(2.05, 0.14, 12, 36), outerTorusMat);
   outerRuneRing.add(outerTorus);
 
-  // 8 glowing rune nodes embedded along the outer ring
-  const runeNodeMats: THREE.MeshBasicMaterial[] = [];
+  // Instanced rune nodes along the outer ring (1 draw call instead of 8)
   const runeNodeGeo = new THREE.OctahedronGeometry(0.16, 0);
+  const runeNodeMat = glow(0x38bdf8, 0.8, true);
+  const runeNodesInstanced = new THREE.InstancedMesh(runeNodeGeo, runeNodeMat, 8);
+  runeNodesInstanced.name = 'PortalOuterRuneNodes';
+  const tmpM = new THREE.Matrix4();
   for (let i = 0; i < 8; i++) {
     const angle = (i / 8) * Math.PI * 2;
-    const nodeMat = glow(0x38bdf8, 0.75, true);
-    runeNodeMats.push(nodeMat);
-    const node = mesh(runeNodeGeo, nodeMat, [
-      Math.cos(angle) * 2.05,
-      Math.sin(angle) * 2.05,
-      0.08,
-    ]);
-    outerRuneRing.add(node);
+    tmpM.makeTranslation(Math.cos(angle) * 2.05, Math.sin(angle) * 2.05, 0.08);
+    runeNodesInstanced.setMatrixAt(i, tmpM);
   }
+  runeNodesInstanced.instanceMatrix.needsUpdate = true;
+  outerRuneRing.add(runeNodesInstanced);
 
   const innerRuneRing = new THREE.Group();
   innerRuneRing.position.set(0, 2.75, 0.14);
   const innerTorusMat = glow(0x38bdf8, 0.7, true);
-  const innerTorus = mesh(new THREE.TorusGeometry(1.68, 0.07, 12, 40), innerTorusMat);
+  const innerTorus = mesh(new THREE.TorusGeometry(1.68, 0.07, 10, 32), innerTorusMat);
   innerRuneRing.add(innerTorus);
 
   // Swirling Portal Vortex Iris (`portalVortexGroup`)
   const portalVortexGroup = new THREE.Group();
   portalVortexGroup.name = 'PortalVortexIris';
   portalVortexGroup.position.set(0, 2.75, 0.05);
-  // Starts tightly contracted (`0.08`) while locked; expands to `1.0+` on activation
   portalVortexGroup.scale.setScalar(0.08);
 
   const vortexCoreMat = glow(0x38bdf8, 0.82, true);
-  const vortexCoreDisc = mesh(new THREE.CircleGeometry(1.62, 40), vortexCoreMat, [0, 0, 0]);
+  const vortexCoreDisc = mesh(new THREE.CircleGeometry(1.62, 32), vortexCoreMat, [0, 0, 0]);
   const vortexSwirlMat = glow(0xc084fc, 0.68, true);
   const vortexSwirlRing = mesh(
-    new THREE.RingGeometry(0.75, 1.45, 32),
+    new THREE.RingGeometry(0.75, 1.45, 28),
     vortexSwirlMat,
     [0, 0, 0.04],
   );
@@ -334,7 +271,15 @@ export function buildMultiversePortalEnvironment(
   );
   portalVortexGroup.add(vortexCoreDisc, vortexSwirlRing, vortexInnerStar);
 
-  const gateBanner = textSprite('MULTIVERSE PORTAL GATE', {
+  // 2a) GPU Portal Energy Vortex FX (`THREE.Points` + custom ShaderMaterial)
+  const portalVortexFX = createPortalEnergyVortexFX({
+    particleCount: currentTier === 'low' ? 96 : 160,
+    primaryColor: themePrefab.meta.primaryColorHex,
+    secondaryColor: themePrefab.meta.secondaryColorHex,
+    position: [0, 2.75, 0.18],
+  });
+
+  const gateBanner = safeTextSprite('MULTIVERSE PORTAL GATE', {
     color: '#e9d5ff',
     bg: 'rgba(30, 27, 75, 0.9)',
     border: '#a855f7',
@@ -342,7 +287,13 @@ export function buildMultiversePortalEnvironment(
   });
   gateBanner.position.set(0, 5.55, 0);
 
-  portalGateGroup.add(outerRuneRing, innerRuneRing, portalVortexGroup, gateBanner);
+  portalGateGroup.add(
+    outerRuneRing,
+    innerRuneRing,
+    portalVortexGroup,
+    portalVortexFX.group,
+    gateBanner,
+  );
 
   // =========================================================================
   // CENTRAL PHONETIC STONE PEDESTAL (`centralPedestalGroup`) — Voice Passcode Lock
@@ -365,21 +316,18 @@ export function buildMultiversePortalEnvironment(
   );
   const pedestalRuneRingMat = glow(0xfacc15, 0.65, true);
   const pedestalRuneRing = mesh(
-    new THREE.RingGeometry(0.82, 1.05, 32),
+    new THREE.RingGeometry(0.82, 1.05, 28),
     pedestalRuneRingMat,
     [0, 0.08, 0],
   );
   pedestalRuneRing.rotation.x = -Math.PI / 2;
 
-  const pedestalLabel = textSprite(
-    `🔮 ${centralTarget.text} ${centralTarget.ipa}`,
-    {
-      color: '#fef08a',
-      bg: 'rgba(30, 27, 75, 0.92)',
-      border: '#facc15',
-      height: 0.36,
-    },
-  );
+  const pedestalLabel = safeTextSprite(`🔮 ${centralTarget.text} ${centralTarget.ipa}`, {
+    color: '#fef08a',
+    bg: 'rgba(30, 27, 75, 0.92)',
+    border: '#facc15',
+    height: 0.36,
+  });
   pedestalLabel.position.set(0, 2.35, 0);
 
   centralPedestalGroup.add(pedestalBase, pedestalColumn, pedestalRuneRing, pedestalLabel);
@@ -406,29 +354,53 @@ export function buildMultiversePortalEnvironment(
   centralStoneMesh.userData = centralUserData;
   interactiveGroup.add(centralStoneMesh);
 
+  // 2b) Phonetic Stone Burst FX (radiant energy ring expansion + GPU particle burst)
+  const stoneBurstFX = createPhoneticStoneBurstFX({
+    particleCount: currentTier === 'low' ? 64 : 96,
+    origin: [0, 1.62, 2.2],
+  });
+  root.add(stoneBurstFX.group);
+
+  // 3.1) Web Audio API Positional Formants anchored at the Phonetic Stone coordinates
+  const formantRig = createStonePositionalFormantRig({
+    stonePosition: [0, 1.62, 2.2],
+    ipa: centralTarget.ipa,
+  });
+  root.add(formantRig.anchorNode);
+
+  // 3.2) Spatial Portal AABB (`THREE.Box3`) Collider along the Render Target Portal plane
+  const portalCollider = createSpatialPortalCollider({
+    center: [0, 2.2, -2.0],
+    width: 3.6,
+    height: 4.4,
+    thickness: 0.65,
+  });
+
   // Energy Conduit Beam connecting the Central Pedestal to the Portal Gate
   const conduitBeamMat = glow(0x38bdf8, 0.25, true);
   const conduitBeam = mesh(
-    new THREE.CylinderGeometry(0.08, 0.14, 4.2, 12),
+    new THREE.CylinderGeometry(0.08, 0.14, 4.2, 10),
     conduitBeamMat,
     [0, 1.45, 0.1],
   );
   conduitBeam.rotation.x = Math.PI / 2;
   root.add(conduitBeam);
 
-  // 3D Pet Companion hovering beside the central pedestal
-  const petBuilt = buildPortalPetCompanion([1.35, 0.55, 2.1]);
-  const petCompanionGroup = petBuilt.group;
-  root.add(petCompanionGroup);
+  // 2c) Lumi Pet Companion FX (floating bob curve, soft ambient glow aura, movement trail)
+  const lumiPetFX = createLumiPetCompanionFX({
+    position: [1.35, 0.55, 2.1],
+    trailCount: currentTier === 'low' ? 24 : 36,
+    label: 'LUMI PET',
+  });
+  const petCompanionGroup = lumiPetFX.petMeshGroup;
+  root.add(lumiPetFX.group);
 
   // =========================================================================
   // GLOWING PARTICLE ANIMATION FOR PORTAL OPENING SEQUENCE
   // =========================================================================
-  // 1. Burst emitter (`portalSparks` - pooled InstancedMesh)
   const portalSparks = new Sparks(180, new THREE.IcosahedronGeometry(0.085, 0), true);
   root.add(portalSparks.mesh);
 
-  // 2. Swirling Multidimensional Spiral Ring (`portalSpiralMesh` - 48 orbiting particles, zero per-frame allocations)
   const SPIRAL_COUNT = 48;
   const spiralGeo = new THREE.OctahedronGeometry(0.09, 0);
   const spiralMat = new THREE.MeshBasicMaterial({
@@ -444,7 +416,6 @@ export function buildMultiversePortalEnvironment(
   portalSpiralMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
   root.add(portalSpiralMesh);
 
-  // Pre-allocated transforms & colors for zero per-frame allocation in `update(dt, t)`
   const spiralMatrix = new THREE.Matrix4();
   const spiralPos = new THREE.Vector3();
   const spiralQuat = new THREE.Quaternion();
@@ -465,7 +436,6 @@ export function buildMultiversePortalEnvironment(
 
   let gateState: PortalGateState = 'locked';
   let activeStoneId: string | null = null;
-  let currentPetState: PetState = 'idle';
   let vortexTargetScale = 0.08;
   let spiralOrbitSpeed = 1.2;
   let openingPulseTimer = 0;
@@ -501,35 +471,68 @@ export function buildMultiversePortalEnvironment(
     petCompanionGroup,
     portalSparks,
     portalSpiralMesh,
+    portalVortexFX,
+    stoneBurstFX,
+    lumiPetFX,
+    formantRig,
+    portalCollider,
+
+    getThemePrefab() {
+      return themePrefab;
+    },
+
+    getSceneId() {
+      return currentSceneId;
+    },
+
+    getTier() {
+      return currentTier;
+    },
+
+    setSceneTheme(sceneId: MultiverseSceneId, tier: AssetQuality = currentTier) {
+      currentSceneId = sceneId;
+      currentTier = tier;
+      themeHostGroup.remove(themePrefab.root);
+      themePrefab.dispose();
+
+      themePrefab = buildMultiverseThemePrefab({
+        sceneId,
+        tier,
+        loadGlb,
+        alive,
+      });
+      themeHostGroup.add(themePrefab.root);
+      portalVortexFX.setThemeColors(
+        themePrefab.meta.primaryColorHex,
+        themePrefab.meta.secondaryColorHex,
+      );
+      return themePrefab;
+    },
 
     getGateState() {
       return gateState;
     },
 
+    getVortexState() {
+      return portalVortexFX.getState();
+    },
+
+    setPortalVortexState(state: PortalVortexState) {
+      portalVortexFX.setState(state);
+    },
+
     setActiveStone(targetId: string | null) {
       activeStoneId = targetId;
+      if (targetId && gateState === 'locked') {
+        portalVortexFX.setState('PORTAL_CHARGING');
+      } else if (!targetId && gateState === 'locked') {
+        portalVortexFX.setState('IDLE');
+      }
       refreshCentralStoneVisual();
     },
 
     setPetState(state: PetState) {
-      currentPetState = state;
-      if (state === 'listening') {
-        petBuilt.auraMat.color.setHex(0x34d399);
-        petBuilt.auraMat.opacity = 0.9;
-        petBuilt.bodyMat.emissive.setHex(0x059669);
-      } else if (state === 'celebrate') {
-        petBuilt.auraMat.color.setHex(0xfacc15);
-        petBuilt.auraMat.opacity = 0.95;
-        petBuilt.bodyMat.emissive.setHex(0xd97706);
-      } else if (state === 'coach') {
-        petBuilt.auraMat.color.setHex(0xfb923c);
-        petBuilt.auraMat.opacity = 0.85;
-        petBuilt.bodyMat.emissive.setHex(0xea580c);
-      } else {
-        petBuilt.auraMat.color.setHex(0xc084fc);
-        petBuilt.auraMat.opacity = 0.48;
-        petBuilt.bodyMat.emissive.setHex(0x6b21a8);
-      }
+      lumiPetFX.setPetState(state);
     },
 
     triggerPortalOpening(stars: 1 | 2 | 3) {
@@ -539,7 +542,12 @@ export function buildMultiversePortalEnvironment(
       vortexTargetScale = cfg.vortexTargetScale;
       spiralOrbitSpeed = cfg.spiralOrbitSpeed;
 
-      // Update spiral particle colors to match star tier
+      // Transition Portal Energy Vortex to PORTAL_STABILIZED, fire Phonetic Stone Burst FX & Positional Formant Resonance
+      portalVortexFX.setThemeColors(cfg.primaryColorHex, cfg.secondaryColorHex);
+      portalVortexFX.setState('PORTAL_STABILIZED');
+      stoneBurstFX.triggerBurst(pedestalEmitPos, stars);
+      formantRig.triggerFormantResonance({ ipa: centralTarget.ipa, stars });
+
       for (let i = 0; i < SPIRAL_COUNT; i++) {
         portalSpiralMesh.setColorAt(
           i,
@@ -550,19 +558,13 @@ export function buildMultiversePortalEnvironment(
         portalSpiralMesh.instanceColor.needsUpdate = true;
       }
 
-      // Brighten rune nodes & conduit beam
-      for (let i = 0; i < runeNodeMats.length; i++) {
-        runeNodeMats[i].color.setHex(i % 2 === 0 ? cfg.primaryColorHex : cfg.secondaryColorHex);
-        runeNodeMats[i].opacity = 0.98;
-      }
+      runeNodeMat.color.setHex(cfg.primaryColorHex);
+      runeNodeMat.opacity = 0.98;
       conduitBeamMat.color.setHex(cfg.primaryColorHex);
       conduitBeamMat.opacity = 0.88;
       vortexCoreMat.color.setHex(cfg.secondaryColorHex);
       vortexSwirlMat.color.setHex(cfg.primaryColorHex);
-      portalCoreLight.color.setHex(cfg.primaryColorHex);
-      portalCoreLight.intensity = 3.2;
 
-      // Emit glowing particle bursts at the central pedestal and the portal gate aperture
       portalSparks.emit(pedestalEmitPos, Math.round(cfg.burstParticleCount * 0.45), {
         color: cfg.primaryColorHex,
         speed: 4.2,
@@ -584,13 +586,51 @@ export function buildMultiversePortalEnvironment(
       refreshCentralStoneVisual();
     },
 
-    update(dt: number, t: number) {
+    checkPortalStepThrough(prevPos, nextPos, autoAdvanceTheme = true) {
+      const stabilized =
+        gateState === 'open' ||
+        gateState === 'opening' ||
+        portalVortexFX.getState() === 'PORTAL_STABILIZED';
+      const result = portalCollider.detectStepThrough(prevPos, nextPos, stabilized);
+      if (result.triggeredWarp && autoAdvanceTheme) {
+        const nextRoute = defaultNextRouteId(currentSceneId);
+        if (nextRoute) {
+          this.setSceneTheme(nextRoute, currentTier);
+        }
+      }
+      return result;
+    },
+
+    auditPerformance() {
+      return auditMultiverseScenePerformance({
+        sceneId: currentSceneId,
+        tier: currentTier,
+        meta: MULTIVERSE_THEME_CONFIGS[currentSceneId],
+        root,
+        instancedMeshes: {
+          ...themePrefab.instancedMeshes,
+          portalSpiral: portalSpiralMesh,
+          runeNodes: runeNodesInstanced,
+        },
+        lodGroups: themePrefab.lodGroups,
+      });
+    },
+
+    update(dt: number, t: number, camera?: THREE.Camera) {
       if (openingPulseTimer > 0) {
         openingPulseTimer = Math.max(0, openingPulseTimer - dt);
         if (openingPulseTimer === 0 && gateState === 'opening') {
           gateState = 'open';
         }
       }
+
+      // Update active Multiverse room prefab (shaders, animations, LOD levels)
+      themePrefab.update(dt, t, camera);
+
+      // Update GPU VFX systems (`PortalEnergyVortexFX`, `PhoneticStoneBurstFX`, `LumiPetCompanionFX`)
+      portalVortexFX.update(dt, t);
+      stoneBurstFX.update(dt, t);
+      lumiPetFX.update(dt, t);
 
       // Levitate and rotate the Central Phonetic Stone on the pedestal
       const isSelected = activeStoneId === CENTRAL_PORTAL_STONE_ID;
@@ -651,22 +691,12 @@ export function buildMultiversePortalEnvironment(
         f.scale.set(flick, flick * 1.25, flick);
       }
 
-      // Animate 3D Pet Companion beside the pedestal
-      const petBob =
-        currentPetState === 'celebrate'
-          ? Math.abs(Math.sin(t * 8.5)) * 0.25
-          : Math.sin(t * 3.1) * 0.08;
-      petCompanionGroup.position.y = 0.55 + petBob;
-      const wingRate = currentPetState === 'celebrate' ? 12 : 4.2;
-      const wingAmp = currentPetState === 'celebrate' ? 0.55 : 0.22;
-      petBuilt.wingLeft.rotation.z = Math.sin(t * wingRate) * wingAmp;
-      petBuilt.wingRight.rotation.z = -Math.sin(t * wingRate) * wingAmp;
-
       // Update pooled spark burst particles
       portalSparks.update(dt);
     },
 
     dispose() {
+      formantRig.dispose();
       disposeObject(root);
     },
   };
@@ -678,6 +708,8 @@ function clampScale(v: number): number {
 
 export interface MountMultiversePortalOptions {
   container: HTMLElement;
+  sceneId?: MultiverseSceneId;
+  tier?: AssetQuality;
   onStoneSelected?: (userData: PhoneticStoneUserData) => void;
 }
 
@@ -693,20 +725,25 @@ export interface MountedMultiversePortalStage {
 export function mountMultiversePortalScene(
   options: MountMultiversePortalOptions,
 ): MountedMultiversePortalStage {
-  const { container, onStoneSelected } = options;
+  const { container, sceneId = 'mv-01', tier = 'high', onStoneSelected } = options;
   let alive = true;
 
+  const initialMeta = MULTIVERSE_THEME_CONFIGS[sceneId];
   const stage = createStage(container, {
     fov: 50,
     near: 0.1,
     far: 200,
-    background: 0x090418,
+    background: initialMeta.fogColorHex,
   });
+  stage.scene.fog = new THREE.FogExp2(initialMeta.fogColorHex, initialMeta.fogDensity);
 
   stage.camera.position.set(0, 3.6, 7.6);
   stage.camera.lookAt(0, 2.1, -0.8);
 
-  const sceneHandle = buildMultiversePortalEnvironment(() => alive);
+  const sceneHandle = buildMultiversePortalEnvironment(() => alive, {
+    sceneId,
+    tier,
+  });
   stage.scene.add(sceneHandle.root);
 
   const raycaster = new THREE.Raycaster();
@@ -753,7 +790,9 @@ export function mountMultiversePortalScene(
   canvas.addEventListener('pointerup', onPointerUp);
 
   stage.run((dt: number, t: number) => {
-    sceneHandle.update(dt, t);
+    const prefab = sceneHandle.getThemePrefab();
+    stage.scene.fog = prefab.lighting.fog;
+    sceneHandle.update(dt, t, stage.camera);
   });
 
   return {
@@ -763,6 +802,7 @@ export function mountMultiversePortalScene(
       canvas.removeEventListener('pointerdown', onPointerDown);
       canvas.removeEventListener('pointermove', onPointerMove);
       canvas.removeEventListener('pointerup', onPointerUp);
+      sceneHandle.dispose();
       stage.dispose();
     },
   };
